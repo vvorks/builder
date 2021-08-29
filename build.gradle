@@ -1,0 +1,54 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id "de.esoco.gwt" version "1.1.0"
+}
+
+apply plugin: 'eclipse'
+
+group = 'com.github.vvorks.builder'
+version = '0.0.1-SNAPSHOT'
+
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+gwt {
+	/** Module to compile, can be multiple */
+	module 'com.github.vvorks.builder.Builder'
+	/** Add GWT plugin config (only if plugin 'eclipse' is enabled) */
+	gwtPluginEclipse = false
+	/** GWT compile options */
+	compile {
+		/** The level of logging detail (ERROR, WARN, INFO, TRACE, DEBUG, SPAM, ALL) */
+		logLevel = "INFO"
+		/** Script output style. (OBF, PRETTY, DETAILED)*/
+		style = "PRETTY"
+		/** Sets the optimization level used by the compiler. 0=none 9=maximum. */
+		optimize = 5
+	}
+}
+
+task copyGWTCode(dependsOn: ["gwtCompile"], type: Copy) {
+	from file("${buildDir}/gwt/out")
+	into file("${buildDir}/resources/main/static")
+}
+
+bootJar {
+	dependsOn copyGWTCode
+	archiveName = "vvorksbuilder-${version}.jar"
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+	useJUnitPlatform()
+}

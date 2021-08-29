@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>build & run</title>
+</head>
+<body>
+<h1>HOW TO BUILD & DEBUG</h1>
+<h2>build</h2>
+<pre>
+gradlew bootJar
+</pre>
+<h2>run</h2>
+<pre>
+java -jar build/vvorksbuilder-[version].jar
+</pre>
+<p>and access http://localhost:8080/gwt.html</p>
+<h2>debug</h2>
+<h3>loadging</h3>
+<h4>on linux</h4>
+<pre>
+gradlew bootRun &
+gradlew gwtCodeServer &
+</pre>
+<h4>on windows</h4>
+<pre>
+start gradlew bootRun
+start gradlew gwtCodeServer
+</pre>
+<h4>on eclipse</h4>
+<p>launch bootRun and gwtCodeServer tasks using 'Gradle task'</p>
+<h3>run</h3>
+<p>access http://localhost:8080/gwtDebug.html</p>
+</body>
+</html>

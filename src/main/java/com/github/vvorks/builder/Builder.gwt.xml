@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to="Builder">
+
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name="com.google.gwt.logging.Logging" />
+	<inherits name="com.google.gwt.http.HTTP"/>
+	<inherits name="com.google.gwt.i18n.I18N"/>
+	<!-- <inherits name="com.google.common.collect.Collect"/> -->
+	<!--  <inherits name="org.vectomatic.libgwtfile" />  -->
+
+	<!--  <set-property name="user.agent" value="safari"/> -->
+
+	<set-property name="gwt.logging.enabled" value="TRUE" />
+	<set-property name="gwt.logging.logLevel" value="FINEST" />
+	<!-- <set-property name="gwt.logging.logLevel" value="SEVERE" /> -->
+	<set-property name="gwt.logging.consoleHandler" value="DISABLED" />
+	<set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />
+
+	<!-- <set-property name="compiler.emulatedStack" value="true" />  -->
+	<set-property name="compiler.stackMode" value="emulated" />
+	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
+	<set-property name="compiler.useSourceMaps" value="true" />
+
+	<source path='client' />
+	<source path='dto' />
+
+	<entry-point class='com.github.vvorks.builder.client.BuilderEntryPoint' />
+
+</module>
