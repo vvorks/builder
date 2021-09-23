@@ -57,7 +57,7 @@
 		SELECT
 			F_VALUE_ID      AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
-			F_VALUE_NO      AS "valueNo",
+			F_CODE          AS "code",
 			F_TITLE         AS "title",
 			F_DESCRIPTION   AS "description",
 			F_NOTE          AS "note"

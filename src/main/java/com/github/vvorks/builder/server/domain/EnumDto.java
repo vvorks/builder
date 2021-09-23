@@ -10,62 +10,142 @@ import java.util.Objects;
  */
 public class EnumDto {
 
+	/**
+	 * 列挙ID
+	 *
+	 * （代理キー）
+	 */
 	private int enumId;
 
+	/**
+	 * 所属プロジェクトのプロジェクトID
+	 */
 	private int ownerProjectId;
 
+	/**
+	 * 列挙名
+	 */
 	private String enumName;
 
+	/**
+	 * タイトル
+	 */
 	private String title;
 
+	/**
+	 * 説明
+	 */
 	private String description;
 
+	/**
+	 * メモ
+	 */
 	private String note;
 
+	/**
+	 * 列挙IDを取得する
+	 *
+	 * @return 列挙ID
+	 */
 	public int getEnumId() {
 		return this.enumId;
 	}
 
+	/**
+	 * 列挙IDを設定する
+	 *
+	 * @param enumId 設定する列挙ID
+	 */
 	public void setEnumId(int enumId) {
 		this.enumId = enumId;
 	}
 
+	/**
+	 * 所属プロジェクトのプロジェクトIDを取得する
+	 *
+	 * @return 所属プロジェクトのプロジェクトID
+	 */
 	public int getOwnerProjectId() {
 		return this.ownerProjectId;
 	}
 
+	/**
+	 * 所属プロジェクトのプロジェクトIDを設定する
+	 *
+	 * @param ownerProjectId 設定する所属プロジェクトのプロジェクトID
+	 */
 	public void setOwnerProjectId(int ownerProjectId) {
 		this.ownerProjectId = ownerProjectId;
 	}
 
+	/**
+	 * 列挙名を取得する
+	 *
+	 * @return 列挙名
+	 */
 	public String getEnumName() {
 		return this.enumName;
 	}
 
+	/**
+	 * 列挙名を設定する
+	 *
+	 * @param enumName 設定する列挙名
+	 */
 	public void setEnumName(String enumName) {
 		this.enumName = enumName;
 	}
 
+	/**
+	 * タイトルを取得する
+	 *
+	 * @return タイトル
+	 */
 	public String getTitle() {
 		return this.title;
 	}
 
+	/**
+	 * タイトルを設定する
+	 *
+	 * @param title 設定するタイトル
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
+	/**
+	 * 説明を取得する
+	 *
+	 * @return 説明
+	 */
 	public String getDescription() {
 		return this.description;
 	}
 
+	/**
+	 * 説明を設定する
+	 *
+	 * @param description 設定する説明
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	/**
+	 * メモを取得する
+	 *
+	 * @return メモ
+	 */
 	public String getNote() {
 		return this.note;
 	}
 
+	/**
+	 * メモを設定する
+	 *
+	 * @param note 設定するメモ
+	 */
 	public void setNote(String note) {
 		this.note = note;
 	}

@@ -10,62 +10,140 @@ import java.util.Objects;
  */
 public class EnumValueDto {
 
+	/**
+	 * 列挙名
+	 */
 	private String valueId;
 
+	/**
+	 * 所属列挙の列挙ID
+	 */
 	private int ownerEnumId;
 
-	private Integer valueNo;
+	/**
+	 * 列挙コード
+	 */
+	private Integer code;
 
+	/**
+	 * タイトル
+	 */
 	private String title;
 
+	/**
+	 * 説明
+	 */
 	private String description;
 
+	/**
+	 * メモ
+	 */
 	private String note;
 
+	/**
+	 * 列挙名を取得する
+	 *
+	 * @return 列挙名
+	 */
 	public String getValueId() {
 		return this.valueId;
 	}
 
+	/**
+	 * 列挙名を設定する
+	 *
+	 * @param valueId 設定する列挙名
+	 */
 	public void setValueId(String valueId) {
 		this.valueId = valueId;
 	}
 
+	/**
+	 * 所属列挙の列挙IDを取得する
+	 *
+	 * @return 所属列挙の列挙ID
+	 */
 	public int getOwnerEnumId() {
 		return this.ownerEnumId;
 	}
 
+	/**
+	 * 所属列挙の列挙IDを設定する
+	 *
+	 * @param ownerEnumId 設定する所属列挙の列挙ID
+	 */
 	public void setOwnerEnumId(int ownerEnumId) {
 		this.ownerEnumId = ownerEnumId;
 	}
 
-	public Integer getValueNo() {
-		return this.valueNo;
+	/**
+	 * 列挙コードを取得する
+	 *
+	 * @return 列挙コード
+	 */
+	public Integer getCode() {
+		return this.code;
 	}
 
-	public void setValueNo(Integer valueNo) {
-		this.valueNo = valueNo;
+	/**
+	 * 列挙コードを設定する
+	 *
+	 * @param code 設定する列挙コード
+	 */
+	public void setCode(Integer code) {
+		this.code = code;
 	}
 
+	/**
+	 * タイトルを取得する
+	 *
+	 * @return タイトル
+	 */
 	public String getTitle() {
 		return this.title;
 	}
 
+	/**
+	 * タイトルを設定する
+	 *
+	 * @param title 設定するタイトル
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
+	/**
+	 * 説明を取得する
+	 *
+	 * @return 説明
+	 */
 	public String getDescription() {
 		return this.description;
 	}
 
+	/**
+	 * 説明を設定する
+	 *
+	 * @param description 設定する説明
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	/**
+	 * メモを取得する
+	 *
+	 * @return メモ
+	 */
 	public String getNote() {
 		return this.note;
 	}
 
+	/**
+	 * メモを設定する
+	 *
+	 * @param note 設定するメモ
+	 */
 	public void setNote(String note) {
 		this.note = note;
 	}
@@ -75,7 +153,7 @@ public class EnumValueDto {
 		return Objects.hash(
 			valueId,
 			ownerEnumId,
-			valueNo,
+			code,
 			title,
 			description,
 			note
@@ -99,7 +177,7 @@ public class EnumValueDto {
 		return
 			Objects.equals(this.valueId, other.valueId) && 
 			this.ownerEnumId == other.ownerEnumId && 
-			Objects.equals(this.valueNo, other.valueNo) && 
+			Objects.equals(this.code, other.code) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note)
@@ -112,7 +190,7 @@ public class EnumValueDto {
 		sb.append("EnumValueDto [");
 		sb.append("valueId=").append(valueId).append(", ");
 		sb.append("ownerEnumId=").append(ownerEnumId).append(", ");
-		sb.append("valueNo=").append(valueNo).append(", ");
+		sb.append("code=").append(code).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note);

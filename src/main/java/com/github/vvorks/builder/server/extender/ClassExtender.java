@@ -1,6 +1,8 @@
 package com.github.vvorks.builder.server.extender;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,9 @@ public class ClassExtender {
 
 	public List<FieldDto> getProperties(ClassDto cls) {
 		List<FieldDto> props = new ArrayList<>();
+		Deque<FieldDto> stack = new ArrayDeque<>();
 		for (FieldDto field : getFields(cls)) {
-			fieldExtender.extractKey(field, "", props);
+			fieldExtender.extractKey(field, stack, props);
 		}
 		return props;
 	}

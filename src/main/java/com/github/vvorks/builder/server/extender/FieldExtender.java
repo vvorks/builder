@@ -3,7 +3,9 @@ package com.github.vvorks.builder.server.extender;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Deque;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,29 +52,46 @@ public class FieldExtender {
 	private FieldMapper fieldMapper;
 
 
-	public void extractKey(FieldDto fld, String prefix, List<FieldDto> into) {
+	public void extractKey(FieldDto fld, Deque<FieldDto> stack, List<FieldDto> into) {
 		DataType type = fld.getType();
 		if (type == DataType.FIELD_REF) {
 			FieldDto refField = fieldMapper.get(fld.getFrefFieldId());
 			ClassDto refClass = classMapper.get(refField.getOwnerClassId());
-			String newPrefix = concatCamel(prefix, fld.getFieldName());
+			stack.push(fld);
 			for (FieldDto f : classMapper.listPkFields(refClass)) {
-				extractKey(f, newPrefix, into);
+				extractKey(f, stack, into);
 			}
+			stack.pop();
 		} else if (type == DataType.CLASS_REF) {
 			ClassDto refClass = classMapper.get(fld.getCrefClassId());
-			String newPrefix = concatCamel(prefix, fld.getFieldName());
+			stack.push(fld);
 			for (FieldDto f : classMapper.listPkFields(refClass)) {
-				extractKey(f, newPrefix, into);
+				extractKey(f, stack, into);
 			}
+			stack.pop();
 		} else if (type != DataType.INVERT_REF) {
-			if (prefix.isEmpty()) {
+			if (stack.isEmpty()) {
 				into.add(fld);
 			} else {
+				stack.push(fld);
 				FieldDto k = new FieldDto();
-				k.setFieldName(concatCamel(prefix, fld.getFieldName()));
-				k.setType(fld.getType());
+				StringBuilder names = new StringBuilder();
+				StringBuilder titles = new StringBuilder();
+				Iterator<FieldDto> itr = stack.descendingIterator();
+				FieldDto e = itr.next();
+				names.append(e.getFieldName());
+				titles.append(e.getTitle());
+				while (itr.hasNext()) {
+					e = itr.next();
+					names.append(Strings.toFirstUpper(e.getFieldName()));
+					//TODO I18n
+					titles.append("の").append(e.getTitle());
+				}
+				k.setFieldName(names.toString());
+				k.setTitle(titles.toString());
+				k.setType(e.getType());
 				into.add(k);
+				stack.pop();
 			}
 		}
 	}
@@ -103,12 +122,13 @@ public class FieldExtender {
 		if (cls == null) {
 			cls = Object.class;
 		} else if (cls == Integer.class) {
-			int width = fld.getWidth();
-			if (width == 1 || width == 2 || width == 4 || width == 8) {
+			Integer width = fld.getWidth();
+			if (width != null && (width == 1 || width == 2 || width == 4 || width == 8)) {
 				cls = INTEGER_TYPES[log2(width)];
 			}
 		} else if (cls == Double.class) {
-			if (fld.getWidth() == 4) {
+			Integer width = fld.getWidth();
+			if (width != null && width == 4) {
 				cls = Float.class;
 			}
 		}

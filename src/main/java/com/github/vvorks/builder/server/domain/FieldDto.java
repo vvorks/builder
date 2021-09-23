@@ -10,132 +10,303 @@ import java.util.Objects;
  */
 public class FieldDto {
 
+	/**
+	 * フィールドID
+	 *
+	 * （代理キー）
+	 */
 	private int fieldId;
 
+	/**
+	 * 所属クラスのクラスID
+	 */
 	private int ownerClassId;
 
+	/**
+	 * フィールド名
+	 */
 	private String fieldName;
 
+	/**
+	 * フィールド型
+	 */
 	private DataType type;
 
+	/**
+	 * フィールド型の幅
+	 */
 	private Integer width;
 
+	/**
+	 * フィールド型精度
+	 */
 	private Integer scale;
 
+	/**
+	 * クラス参照先のクラスID
+	 */
 	private int crefClassId;
 
+	/**
+	 * 列挙参照先の列挙ID
+	 */
 	private int erefEnumId;
 
+	/**
+	 * フィールド参照先のフィールドID
+	 */
 	private int frefFieldId;
 
+	/**
+	 * プライマリキー
+	 */
 	private Boolean pk;
 
+	/**
+	 * タイトル
+	 */
 	private String title;
 
+	/**
+	 * 説明
+	 */
 	private String description;
 
+	/**
+	 * メモ
+	 */
 	private String note;
 
+	/**
+	 * フィールドIDを取得する
+	 *
+	 * @return フィールドID
+	 */
 	public int getFieldId() {
 		return this.fieldId;
 	}
 
+	/**
+	 * フィールドIDを設定する
+	 *
+	 * @param fieldId 設定するフィールドID
+	 */
 	public void setFieldId(int fieldId) {
 		this.fieldId = fieldId;
 	}
 
+	/**
+	 * 所属クラスのクラスIDを取得する
+	 *
+	 * @return 所属クラスのクラスID
+	 */
 	public int getOwnerClassId() {
 		return this.ownerClassId;
 	}
 
+	/**
+	 * 所属クラスのクラスIDを設定する
+	 *
+	 * @param ownerClassId 設定する所属クラスのクラスID
+	 */
 	public void setOwnerClassId(int ownerClassId) {
 		this.ownerClassId = ownerClassId;
 	}
 
+	/**
+	 * フィールド名を取得する
+	 *
+	 * @return フィールド名
+	 */
 	public String getFieldName() {
 		return this.fieldName;
 	}
 
+	/**
+	 * フィールド名を設定する
+	 *
+	 * @param fieldName 設定するフィールド名
+	 */
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
 	}
 
+	/**
+	 * フィールド型を取得する
+	 *
+	 * @return フィールド型
+	 */
 	public DataType getType() {
 		return this.type;
 	}
 
+	/**
+	 * フィールド型を設定する
+	 *
+	 * @param type 設定するフィールド型
+	 */
 	public void setType(DataType type) {
 		this.type = type;
 	}
 
+	/**
+	 * フィールド型の幅を取得する
+	 *
+	 * @return フィールド型の幅
+	 */
 	public Integer getWidth() {
 		return this.width;
 	}
 
+	/**
+	 * フィールド型の幅を設定する
+	 *
+	 * @param width 設定するフィールド型の幅
+	 */
 	public void setWidth(Integer width) {
 		this.width = width;
 	}
 
+	/**
+	 * フィールド型精度を取得する
+	 *
+	 * @return フィールド型精度
+	 */
 	public Integer getScale() {
 		return this.scale;
 	}
 
+	/**
+	 * フィールド型精度を設定する
+	 *
+	 * @param scale 設定するフィールド型精度
+	 */
 	public void setScale(Integer scale) {
 		this.scale = scale;
 	}
 
+	/**
+	 * クラス参照先のクラスIDを取得する
+	 *
+	 * @return クラス参照先のクラスID
+	 */
 	public int getCrefClassId() {
 		return this.crefClassId;
 	}
 
+	/**
+	 * クラス参照先のクラスIDを設定する
+	 *
+	 * @param crefClassId 設定するクラス参照先のクラスID
+	 */
 	public void setCrefClassId(int crefClassId) {
 		this.crefClassId = crefClassId;
 	}
 
+	/**
+	 * 列挙参照先の列挙IDを取得する
+	 *
+	 * @return 列挙参照先の列挙ID
+	 */
 	public int getErefEnumId() {
 		return this.erefEnumId;
 	}
 
+	/**
+	 * 列挙参照先の列挙IDを設定する
+	 *
+	 * @param erefEnumId 設定する列挙参照先の列挙ID
+	 */
 	public void setErefEnumId(int erefEnumId) {
 		this.erefEnumId = erefEnumId;
 	}
 
+	/**
+	 * フィールド参照先のフィールドIDを取得する
+	 *
+	 * @return フィールド参照先のフィールドID
+	 */
 	public int getFrefFieldId() {
 		return this.frefFieldId;
 	}
 
+	/**
+	 * フィールド参照先のフィールドIDを設定する
+	 *
+	 * @param frefFieldId 設定するフィールド参照先のフィールドID
+	 */
 	public void setFrefFieldId(int frefFieldId) {
 		this.frefFieldId = frefFieldId;
 	}
 
+	/**
+	 * プライマリキーを取得する
+	 *
+	 * @return プライマリキー
+	 */
 	public Boolean isPk() {
 		return this.pk;
 	}
 
+	/**
+	 * プライマリキーを設定する
+	 *
+	 * @param pk 設定するプライマリキー
+	 */
 	public void setPk(Boolean pk) {
 		this.pk = pk;
 	}
 
+	/**
+	 * タイトルを取得する
+	 *
+	 * @return タイトル
+	 */
 	public String getTitle() {
 		return this.title;
 	}
 
+	/**
+	 * タイトルを設定する
+	 *
+	 * @param title 設定するタイトル
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
+	/**
+	 * 説明を取得する
+	 *
+	 * @return 説明
+	 */
 	public String getDescription() {
 		return this.description;
 	}
 
+	/**
+	 * 説明を設定する
+	 *
+	 * @param description 設定する説明
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	/**
+	 * メモを取得する
+	 *
+	 * @return メモ
+	 */
 	public String getNote() {
 		return this.note;
 	}
 
+	/**
+	 * メモを設定する
+	 *
+	 * @param note 設定するメモ
+	 */
 	public void setNote(String note) {
 		this.note = note;
 	}
