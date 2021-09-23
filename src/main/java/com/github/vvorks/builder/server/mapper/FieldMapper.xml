@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.vvorks.builder.server.mapper.FieldMapper">
+
+	<insert id="insert" parameterType="FieldDto">
+		INSERT INTO T_FIELD (
+			F_FIELD_ID,
+			F_OWNER_CLASS_ID,
+			F_FIELD_NAME,
+			F_TYPE,
+			F_WIDTH,
+			F_SCALE,
+			F_CREF_CLASS_ID,
+			F_EREF_ENUM_ID,
+			F_FREF_FIELD_ID,
+			F_PK,
+			F_TITLE,
+			F_DESCRIPTION,
+			F_NOTE
+		) VALUES (
+			#{fieldId},
+			#{ownerClassId},
+			#{fieldName},
+			#{type},
+			#{width},
+			#{scale},
+			#{crefClassId},
+			#{erefEnumId},
+			#{frefFieldId},
+			#{pk},
+			#{title},
+			#{description},
+			#{note}
+		)
+	</insert>
+
+	<update id="update" parameterType="FieldDto">
+		UPDATE T_FIELD SET
+			F_OWNER_CLASS_ID = #{ownerClassId},
+			F_FIELD_NAME = #{fieldName},
+			F_TYPE = #{type},
+			F_WIDTH = #{width},
+			F_SCALE = #{scale},
+			F_CREF_CLASS_ID = #{crefClassId},
+			F_EREF_ENUM_ID = #{erefEnumId},
+			F_FREF_FIELD_ID = #{frefFieldId},
+			F_PK = #{pk},
+			F_TITLE = #{title},
+			F_DESCRIPTION = #{description},
+			F_NOTE = #{note}
+		WHERE
+			F_FIELD_ID = #{fieldId}
+	</update>
+
+	<delete id="delete" parameterType="FieldDto">
+		DELETE FROM T_FIELD
+		WHERE
+			F_FIELD_ID = #{fieldId}
+	</delete>
+
+	<select id="get" resultType="FieldDto">
+		SELECT
+			F_FIELD_ID       AS "fieldId",
+			F_OWNER_CLASS_ID AS "ownerClassId",
+			F_FIELD_NAME     AS "fieldName",
+			F_TYPE           AS "type",
+			F_WIDTH          AS "width",
+			F_SCALE          AS "scale",
+			F_CREF_CLASS_ID  AS "crefClassId",
+			F_EREF_ENUM_ID   AS "erefEnumId",
+			F_FREF_FIELD_ID  AS "frefFieldId",
+			F_PK             AS "pk",
+			F_TITLE          AS "title",
+			F_DESCRIPTION    AS "description",
+			F_NOTE           AS "note"
+		FROM
+			T_FIELD
+		WHERE
+			F_FIELD_ID = #{fieldId}
+	</select>
+
+</mapper>

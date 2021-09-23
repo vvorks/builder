@@ -1,4 +1,4 @@
-package com.github.vvorks.builder.controller;
+package com.github.vvorks.builder.server.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

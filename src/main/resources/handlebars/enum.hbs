@@ -1,0 +1,53 @@
+{{#each this.enums}}
+{{#java this "server/domain/" enumName ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+{{#if title}}
+/**
+ * {{title}}
+{{#if description}}
+ *
+ * {{description}}
+{{/if}}
+{{#if note}}
+ *
+ * {{note}}
+{{/if}}
+ */
+{{/if}}
+public enum {{enumName}} {
+
+	{{#each enumValues}}
+	{{valueId}}({{valueNo}}){{#separator}},{{/separator}}
+	{{/each}}
+	;
+
+	private final int code;
+
+	private {{enumName}}(int code) {
+		this.code = code;
+	}
+
+	public int code() {
+		return this.code;
+	}
+
+	public static {{enumName}} valueOf(int value) {
+		for ({{enumName}} e : values()) {
+			if (e.code() == value) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+}
+{{/java}}
+{{/each}}

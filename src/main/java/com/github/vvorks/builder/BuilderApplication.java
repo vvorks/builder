@@ -5,6 +5,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import com.github.vvorks.builder.client.common.json.GwtJsonContext;
+import com.github.vvorks.builder.common.json.JsonContext;
+import com.github.vvorks.builder.common.lang.Factory;
+import com.github.vvorks.builder.common.util.Logger;
+import com.github.vvorks.builder.server.common.logging.Slf4jLogger;
+
 @SpringBootApplication
 public class BuilderApplication {
 
@@ -13,6 +19,10 @@ public class BuilderApplication {
     private static ConfigurableApplicationContext context;
 
 	public static void main(String[] args) {
+		Factory.configure()
+				.bindTo(Logger.class,		a -> new Slf4jLogger((Class<?>) a[0]))
+				.bindTo(JsonContext.class,	a -> new GwtJsonContext(a[0]))
+				;
 		start(args);
 	}
 

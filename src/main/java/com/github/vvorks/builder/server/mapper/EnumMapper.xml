@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.vvorks.builder.server.mapper.EnumMapper">
+
+	<insert id="insert" parameterType="EnumDto">
+		INSERT INTO T_ENUM (
+			F_ENUM_ID,
+			F_OWNER_PROJECT_ID,
+			F_ENUM_NAME,
+			F_TITLE,
+			F_DESCRIPTION,
+			F_NOTE
+		) VALUES (
+			#{enumId},
+			#{ownerProjectId},
+			#{enumName},
+			#{title},
+			#{description},
+			#{note}
+		)
+	</insert>
+
+	<update id="update" parameterType="EnumDto">
+		UPDATE T_ENUM SET
+			F_OWNER_PROJECT_ID = #{ownerProjectid},
+			F_ENUM_NAME        = #{enumName},
+			F_TITLE            = #{title},
+			F_DESCRIPTION      = #{description},
+			F_NOTE             = #{note}
+		WHERE
+			F_ENUM_ID = #{enumId}
+	</update>
+
+	<delete id="delete" parameterType="EnumDto">
+		DELETE FROM T_ENUM
+		WHERE
+			F_ENUM_ID = #{enumId}
+	</delete>
+
+	<select id="get" resultType="EnumDto">
+		SELECT
+			F_ENUM_ID          AS "enumId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_ENUM_NAME        AS "enumName",
+			F_TITLE            AS "title",
+			F_DESCRIPTION      AS "description",
+			F_NOTE             AS "note"
+		FROM
+			T_ENUM
+		WHERE
+			F_ENUM_ID = #{enumId}
+	</select>
+
+	<select id="listValues" resultType="EnumValueDto">
+		SELECT
+			F_VALUE_ID      AS "valueId",
+			F_OWNER_ENUM_ID AS "ownerEnumId",
+			F_VALUE_NO      AS "valueNo",
+			F_TITLE         AS "title",
+			F_DESCRIPTION   AS "description",
+			F_NOTE          AS "note"
+		FROM
+			T_ENUM_VALUE
+		WHERE
+			F_OWNER_ENUM_ID = #{e.enumId}
+		<if test="limit != 0">
+			LIMIT #{limit}
+		</if>
+		<if test="offset != 0">
+			OFFSET #{offset}
+		</if>
+	</select>
+
+</mapper>

@@ -5,6 +5,7 @@
 	<inherits name="com.google.gwt.logging.Logging" />
 	<inherits name="com.google.gwt.http.HTTP"/>
 	<inherits name="com.google.gwt.i18n.I18N"/>
+	<inherits name="org.fusesource.restygwt.RestyGWT"/>
 	<!-- <inherits name="com.google.common.collect.Collect"/> -->
 	<!--  <inherits name="org.vectomatic.libgwtfile" />  -->
 
@@ -23,7 +24,7 @@
 	<set-property name="compiler.useSourceMaps" value="true" />
 
 	<source path='client' />
-	<source path='dto' />
+	<source path='common' />
 
 	<entry-point class='com.github.vvorks.builder.client.BuilderEntryPoint' />
 

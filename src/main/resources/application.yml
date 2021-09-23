@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:input.db
+    driver-class-name: org.sqlite.JDBC
+#   username: dbuser
+#   password: dbpass
+
+mybatis:
+  type-aliases-package: com.github.vvorks.builder.server.domain
+  type-handlers-package: com.github.vvorks.builder.server.handler
+  configuration:
+    default-fetch-size: 100
+    default-statement-timeout: 30
+
+logging:
+  level:
+    root: INFO
+    com.github.vvorks.builder: DEBUG
+
