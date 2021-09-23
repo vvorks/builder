@@ -97,11 +97,11 @@ public class ProjectDto {
 
 	private boolean equals(ProjectDto other) {
 		return
-			this.projectId == other.projectId && 
-			Objects.equals(this.projectName, other.projectName) && 
-			Objects.equals(this.title, other.title) && 
-			Objects.equals(this.description, other.description) && 
-			Objects.equals(this.note, other.note) && 
+			this.projectId == other.projectId &&
+			Objects.equals(this.projectName, other.projectName) &&
+			Objects.equals(this.title, other.title) &&
+			Objects.equals(this.description, other.description) &&
+			Objects.equals(this.note, other.note) &&
 			Objects.equals(this.copyrights, other.copyrights)
 			;
 	}
