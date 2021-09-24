@@ -1,7 +1,15 @@
+//
+// 基底ハンドラ
+//
+{{#java this "server/handler/" "EnumTypeHandler" ".java"}}
+{{#if global.project.copyrightLines}}
 /*
- * Apache License v2.0
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
  */
-package com.github.vvorks.builder.server.handler;
+{{/if}}
+package {{global.project.projectName}}.server.handler;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -76,3 +84,51 @@ public abstract class EnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler
 	public abstract E decodeInt(int str);
 
 }
+{{/java}}
+
+//
+// 各Enum用タイプハンドラ
+//
+{{#each this.enums}}
+{{#java this "server/handler/" enumName "TypeHandler" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.handler;
+
+import {{global.project.projectName}}.server.domain.{{enumName}};
+
+{{#if title}}
+/**
+ * {{title}}のタイプハンドラ
+ */
+{{/if}}
+public class {{enumName}}TypeHandler extends EnumTypeHandler<{{enumName}}> {
+
+	@Override
+	public String encodeString({{enumName}} obj) {
+		return obj.name();
+	}
+
+	@Override
+	public int encodeInt({{enumName}} obj) {
+		return obj.code();
+	}
+
+	@Override
+	public {{enumName}} decodeString(String value) {
+		return {{enumName}}.valueOf(value);
+	}
+
+	@Override
+	public {{enumName}} decodeInt(int value) {
+		return {{enumName}}.valueOf(value);
+	}
+
+}
+{{/java}}
+{{/each}}

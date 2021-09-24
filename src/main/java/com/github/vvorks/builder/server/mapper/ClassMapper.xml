@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.vvorks.builder.server.mapper.ClassMapper">
-
 	<insert id="insert" parameterType="ClassDto">
 		INSERT INTO T_CLASS (
 			F_CLASS_ID,
@@ -21,7 +18,6 @@
 			#{note}
 		)
 	</insert>
-
 	<update id="update" parameterType="ClassDto">
 		UPDATE T_CLASS SET
 			F_OWNER_PROJECT_ID = #{ownerProjectId},
@@ -32,13 +28,11 @@
 		WHERE
 			F_CLASS_ID = #{classId}
 	</update>
-
 	<delete id="delete" parameterType="ClassDto">
 		DELETE FROM T_CLASS
 		WHERE
 			F_CLASS_ID = #{classId}
 	</delete>
-
 	<select id="get" resultType="ClassDto">
 		SELECT
 			F_CLASS_ID         AS "classId",
@@ -52,7 +46,6 @@
 		WHERE
 			F_CLASS_ID = #{classId}
 	</select>
-
 	<select id="listFields" resultType="FieldDto">
 		SELECT
 			F_FIELD_ID       AS "fieldId",
@@ -79,7 +72,6 @@
 			OFFSET #{offset}
 		</if>
 	</select>
-
 	<select id="listPkFields" resultType="FieldDto">
 		SELECT
 			F_FIELD_ID       AS "fieldId",
@@ -100,5 +92,4 @@
 		WHERE
 			F_OWNER_CLASS_ID = #{c.classId} AND F_PK = 1
 	</select>
-
 </mapper>

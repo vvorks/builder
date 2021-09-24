@@ -1,7 +1,13 @@
+/*
+ * Apache License v2.0
+ */
 package com.github.vvorks.builder.server.handler;
 
 import com.github.vvorks.builder.server.domain.DataType;
 
+/**
+ * データ型のタイプハンドラ
+ */
 public class DataTypeTypeHandler extends EnumTypeHandler<DataType> {
 
 	@Override
