@@ -2,6 +2,8 @@ package com.github.vvorks.builder.server.extender;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Deque;
 import java.util.EnumMap;
@@ -11,6 +13,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.domain.ClassDto;
 import com.github.vvorks.builder.server.domain.DataType;
@@ -22,6 +25,8 @@ import com.github.vvorks.builder.server.mapper.FieldMapper;
 
 @Component
 public class FieldExtender {
+
+	public static final String COLUMN_PREFIX = "F_";
 
 	private static final EnumMap<DataType, Class<?>> TYPE_MAP = new EnumMap<>(DataType.class);
 	static {
@@ -46,61 +51,17 @@ public class FieldExtender {
 	private ClassMapper classMapper;
 
 	@Autowired
-	private EnumMapper enumMapper;
-
-	@Autowired
 	private FieldMapper fieldMapper;
 
+	@Autowired
+	private EnumMapper enumMapper;
 
-	public void extractKey(FieldDto fld, Deque<FieldDto> stack, List<FieldDto> into) {
-		DataType type = fld.getType();
-		if (type == DataType.FIELD_REF) {
-			FieldDto refField = fieldMapper.get(fld.getFrefFieldId());
-			ClassDto refClass = classMapper.get(refField.getOwnerClassId());
-			stack.push(fld);
-			for (FieldDto f : classMapper.listPkFields(refClass)) {
-				extractKey(f, stack, into);
-			}
-			stack.pop();
-		} else if (type == DataType.CLASS_REF) {
-			ClassDto refClass = classMapper.get(fld.getCrefClassId());
-			stack.push(fld);
-			for (FieldDto f : classMapper.listPkFields(refClass)) {
-				extractKey(f, stack, into);
-			}
-			stack.pop();
-		} else if (type != DataType.INVERT_REF) {
-			if (stack.isEmpty()) {
-				into.add(fld);
-			} else {
-				stack.push(fld);
-				FieldDto k = new FieldDto();
-				StringBuilder names = new StringBuilder();
-				StringBuilder titles = new StringBuilder();
-				Iterator<FieldDto> itr = stack.descendingIterator();
-				FieldDto e = itr.next();
-				names.append(e.getFieldName());
-				titles.append(e.getTitle());
-				while (itr.hasNext()) {
-					e = itr.next();
-					names.append(Strings.toFirstUpper(e.getFieldName()));
-					//TODO I18n
-					titles.append("の").append(e.getTitle());
-				}
-				k.setFieldName(names.toString());
-				k.setTitle(titles.toString());
-				k.setType(e.getType());
-				into.add(k);
-				stack.pop();
-			}
+	public String getTitleOrName(FieldDto fld) {
+		if (!Strings.isEmpty(fld.getTitle())) {
+			return fld.getTitle();
+		} else {
+			return fld.getFieldName();
 		}
-	}
-
-	private String concatCamel(String a, String b) {
-		if (a.isEmpty()) {
-			return b;
-		}
-		return a + Strings.toFirstUpper(b);
 	}
 
 	public String getJavaType(FieldDto fld) {
@@ -139,21 +100,140 @@ public class FieldExtender {
 		return (int)(Math.log(x) / Math.log(2));
 	}
 
+	public String getUpperName(FieldDto fld) {
+		return Strings.toFirstUpper(fld.getFieldName());
+	}
+
 	public String getGetterName(FieldDto fld) {
 		if (fld.getType() == DataType.BOOLEAN) {
-			return "is" + Strings.toFirstUpper(fld.getFieldName());
+			return "is" + getUpperName(fld);
 		} else {
-			return "get" + Strings.toFirstUpper(fld.getFieldName());
+			return "get" + getUpperName(fld);
 		}
 	}
 
 	public String getSetterName(FieldDto fld) {
-		return "set" + Strings.toFirstUpper(fld.getFieldName());
+		return "set" + getUpperName(fld);
 	}
 
 	public boolean isPrimitiveOrEnum(FieldDto fld) {
 		Class<?> cls = getJavaClass(fld);
 		return cls.isPrimitive() || cls.isInstance(Enum.class);
+	}
+
+	public String getColumnName(FieldDto fld) {
+		return COLUMN_PREFIX + Strings.toUpperSnake(fld.getFieldName());
+	}
+
+	public ClassDto getOwner(FieldDto fld) {
+		return classMapper.get(fld.getOwnerClassId());
+	}
+
+	public ClassDto getCref(FieldDto fld) {
+		return classMapper.get(fld.getCrefClassId());
+	}
+
+	public FieldDto getFref(FieldDto fld) {
+		return fieldMapper.get(fld.getFrefFieldId());
+	}
+
+	public List<FieldDto> getRefKeyFields(FieldDto fld) {
+		Asserts.require(fld.getType() == DataType.FIELD_REF);
+		List<FieldDto> props = new ArrayList<>();
+		Deque<FieldDto> stack = new ArrayDeque<>();
+		extractKey(fld, stack, props);
+		return props;
+	}
+
+	public String getRefKeyColumnName(FieldDto fld) {
+		return COLUMN_PREFIX + Strings.toUpperSnake((trimLeading(fld)));
+	}
+
+	public String getRefKeyFieldName(FieldDto fld) {
+		return fld.getFieldName();
+	}
+
+	private String trimLeading(FieldDto fld) {
+		ClassDto owner = getOwner(fld);
+		for (FieldDto leading : classMapper.listFields(owner, 0, 0)) {
+			if (isLeadingField(fld, leading)) {
+				return fld.getFieldName().substring(leading.getFieldName().length());
+			}
+		}
+		return fld.getFieldName();
+	}
+
+	private boolean isLeadingField(FieldDto field, FieldDto leading) {
+		String fieldName = field.getFieldName();
+		String leadingName = leading.getFieldName();
+		return	leading.getType() == DataType.FIELD_REF &&
+				fieldName.startsWith(leadingName) &&
+				Character.isUpperCase(fieldName.charAt(leadingName.length()));
+	}
+
+	public List<FieldDto> getInvKeyFields(FieldDto fld) {
+		Asserts.require(fld.getType() == DataType.INVERT_REF);
+		return getRefKeyFields(getFref(fld));
+	}
+
+	public String getInvKeyColumnName(FieldDto fld) {
+		return getColumnName(fld);
+	}
+
+	public String getInvKeyFieldName(FieldDto fld) {
+		return Strings.toFirstLower(trimLeading(fld));
+	}
+
+
+	public void extractKey(FieldDto fld, Deque<FieldDto> stack, List<FieldDto> into) {
+		DataType type = fld.getType();
+		if (type == DataType.FIELD_REF) {
+			FieldDto refField = fieldMapper.get(fld.getFrefFieldId());
+			ClassDto refClass = classMapper.get(refField.getOwnerClassId());
+			stack.push(fld);
+			for (FieldDto f : classMapper.listFields(refClass, 0, 0)) {
+				Boolean pk = f.isPk();
+				if (pk != null && pk) {
+					extractKey(f, stack, into);
+				}
+			}
+			stack.pop();
+		} else if (type == DataType.CLASS_REF) {
+			ClassDto refClass = classMapper.get(fld.getCrefClassId());
+			stack.push(fld);
+			for (FieldDto f : classMapper.listFields(refClass, 0, 0)) {
+				Boolean pk = f.isPk();
+				if (pk != null && pk) {
+					extractKey(f, stack, into);
+				}
+			}
+			stack.pop();
+		} else if (type != DataType.INVERT_REF) {
+			if (stack.isEmpty()) {
+				into.add(fld);
+			} else {
+				stack.push(fld);
+				StringBuilder names = new StringBuilder();
+				StringBuilder titles = new StringBuilder();
+				FieldDto k = new FieldDto();
+				Iterator<FieldDto> itr = stack.descendingIterator();
+				FieldDto e = itr.next();
+				names.append(e.getFieldName());
+				titles.append(e.getTitle());
+				k.setOwnerClassId(e.getOwnerClassId());
+				while (itr.hasNext()) {
+					e = itr.next();
+					names.append(Strings.toFirstUpper(e.getFieldName()));
+					//TODO I18n
+					titles.append("の").append(e.getTitle());
+				}
+				k.setFieldName(names.toString());
+				k.setTitle(titles.toString());
+				k.setType(e.getType());
+				into.add(k);
+				stack.pop();
+			}
+		}
 	}
 
 }

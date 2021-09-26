@@ -1,0 +1,213 @@
+{{#each this.classes}}
+//
+// 各クラスのMapperインターフェース(.java)
+//
+{{#java this "server/mapper/" className "Mapper" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import {{global.project.projectName}}.server.domain.*;
+
+@Mapper
+public interface {{className}}Mapper {
+
+	/**
+	 * {{title}}を挿入する
+	 *
+	 * @param dto 挿入する{{title}}
+	 * @return 処理成功の場合、真
+	 */
+	public boolean insert({{className}}Dto dto);
+
+	/**
+	 * {{title}}を更新する
+	 *
+	 * @param dto 更新する{{title}}
+	 * @return 処理成功の場合、真
+	 */
+	public boolean update({{className}}Dto dto);
+
+	/**
+	 * {{title}}を削除する
+	 *
+	 * @param dto 削除する{{title}}
+	 * @return 処理成功の場合、真
+	 */
+	public boolean delete({{className}}Dto dto);
+
+	/**
+	 * {{title}}を取得する
+	 *
+	{{#each keys}}
+	 * @param {{fieldName}} {{title}}
+	{{/each}}
+	 * @return 取得した{{title}}
+	 */
+	public {{className}}Dto get(
+		{{#each keys}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}}, {{/separator}}
+		{{/each}}
+	);
+
+	/**
+	 * 全ての{{title}}を取得する
+	 *
+	 * @return 取得した{{title}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{title}}のリスト
+	 */
+	public List<{{className}}Dto> listAll(
+		@Param("offset") int offset,
+		@Param("limit") int limit);
+	{{#each fieldRefs}}
+
+	{{#if title}}
+	/**
+	 * {{title}}を取得する
+	 *
+	 * @param dto {{../titleOrName}}
+	 * @return {{title}}
+	 */
+	{{/if}}
+	public {{fref.owner.className}}Dto get{{upperName}}({{../className}}Dto dto);
+	{{/each}}
+	{{#each invertRefs}}
+
+	{{#if title}}
+	/**
+	 * {{title}}を取得する
+	 *
+	 * @param dto {{../titleOrName}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{title}}
+	 */
+	{{/if}}
+	public List<{{fref.owner.className}}Dto> list{{upperName}}(
+		@Param("dto") {{../className}}Dto dto,
+		@Param("offset") int offset,
+		@Param("limit") int limit);
+	{{/each}}
+
+}
+{{/java}}
+
+//
+//各クラスのMapper XML(.xml)
+//
+{{#java this "server/mapper/" className "Mapper" ".xml"}}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="{{global.project.projectName}}.server.mapper.{{className}}Mapper">
+
+	<insert id="insert" parameterType="{{className}}Dto">
+		INSERT INTO {{tableName}} (
+			{{#each properties}}
+			{{columnName}}{{#separator}},{{/separator}}
+			{{/each}}
+		) VALUES (
+			{{#each properties}}
+			#{ {{fieldName}} }{{#separator}},{{/separator}}
+			{{/each}}
+		)
+	</insert>
+
+	<update id="update" parameterType="{{className}}Dto">
+		UPDATE {{tableName}} SET
+			{{#each notKeys}}
+			{{columnName}} = #{ {{fieldName}} }{{#separator}},{{/separator}}
+			{{/each}}
+		WHERE
+			{{#each keys}}
+			{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+	</update>
+
+	<delete id="delete" parameterType="{{className}}Dto">
+		DELETE FROM {{tableName}}
+		WHERE
+			{{#each keys}}
+			{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+	</delete>
+
+	<select id="get" resultType="{{className}}Dto">
+		SELECT
+			{{#each properties}}
+			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
+		FROM
+			{{tableName}}
+		WHERE
+			{{#each keys}}
+			{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+	</select>
+
+	<select id="listAll" resultType="{{className}}Dto">
+		SELECT
+			{{#each properties}}
+			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
+		FROM
+			{{tableName}}
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	{{#each fieldRefs}}
+
+	<select id="get{{upperName}}" resultType="{{fref.owner.className}}Dto">
+		SELECT
+			{{#each fref.owner.properties}}
+			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
+		FROM
+			{{fref.owner.tableName}}
+		WHERE
+			{{#each refKeyFields}}
+			{{refKeyColumnName}} = #{ {{refKeyFieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+	</select>
+	{{/each}}
+	{{#each invertRefs}}
+
+	<select id="list{{upperName}}" resultType="{{fref.owner.className}}Dto">
+		SELECT
+			{{#each fref.owner.properties}}
+			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
+		FROM
+			{{fref.owner.tableName}}
+		WHERE
+			{{#each invKeyFields}}
+			{{invKeyColumnName}} = #{ dto.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	{{/each}}
+
+</mapper>
+{{/java}}
+{{/each}}

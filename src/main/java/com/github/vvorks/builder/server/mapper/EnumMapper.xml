@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.github.vvorks.builder.server.mapper.EnumMapper">
 
@@ -13,63 +12,95 @@
 			F_DESCRIPTION,
 			F_NOTE
 		) VALUES (
-			#{enumId},
-			#{ownerProjectId},
-			#{enumName},
-			#{title},
-			#{description},
-			#{note}
+			#{ enumId },
+			#{ ownerProjectId },
+			#{ enumName },
+			#{ title },
+			#{ description },
+			#{ note }
 		)
 	</insert>
 
 	<update id="update" parameterType="EnumDto">
 		UPDATE T_ENUM SET
-			F_OWNER_PROJECT_ID = #{ownerProjectid},
-			F_ENUM_NAME        = #{enumName},
-			F_TITLE            = #{title},
-			F_DESCRIPTION      = #{description},
-			F_NOTE             = #{note}
+			F_OWNER_PROJECT_ID = #{ ownerProjectId },
+			F_ENUM_NAME = #{ enumName },
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
+			F_NOTE = #{ note }
 		WHERE
-			F_ENUM_ID = #{enumId}
+			F_ENUM_ID = #{ enumId }
 	</update>
 
 	<delete id="delete" parameterType="EnumDto">
 		DELETE FROM T_ENUM
 		WHERE
-			F_ENUM_ID = #{enumId}
+			F_ENUM_ID = #{ enumId }
 	</delete>
 
 	<select id="get" resultType="EnumDto">
 		SELECT
-			F_ENUM_ID          AS "enumId",
+			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_ENUM_NAME        AS "enumName",
-			F_TITLE            AS "title",
-			F_DESCRIPTION      AS "description",
-			F_NOTE             AS "note"
+			F_ENUM_NAME AS "enumName",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
 		FROM
 			T_ENUM
 		WHERE
-			F_ENUM_ID = #{enumId}
+			F_ENUM_ID = #{ enumId }
+	</select>
+
+	<select id="listAll" resultType="EnumDto">
+		SELECT
+			F_ENUM_ID AS "enumId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_ENUM_NAME AS "enumName",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_ENUM
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="getOwner" resultType="ProjectDto">
+		SELECT
+			F_PROJECT_ID AS "projectId",
+			F_PROJECT_NAME AS "projectName",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note",
+			F_COPYRIGHTS AS "copyrights"
+		FROM
+			T_PROJECT
+		WHERE
+			F_PROJECT_ID = #{ ownerProjectId }
 	</select>
 
 	<select id="listValues" resultType="EnumValueDto">
 		SELECT
-			F_VALUE_ID      AS "valueId",
+			F_VALUE_ID AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
-			F_CODE          AS "code",
-			F_TITLE         AS "title",
-			F_DESCRIPTION   AS "description",
-			F_NOTE          AS "note"
+			F_CODE AS "code",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
 		FROM
 			T_ENUM_VALUE
 		WHERE
-			F_OWNER_ENUM_ID = #{e.enumId}
-		<if test="limit != 0">
+			F_OWNER_ENUM_ID = #{ dto.enumId }
+		<if test="limit &gt; 0">
 			LIMIT #{limit}
-		</if>
-		<if test="offset != 0">
+		<if test="offset &gt;= 0">
 			OFFSET #{offset}
+		</if>
 		</if>
 	</select>
 

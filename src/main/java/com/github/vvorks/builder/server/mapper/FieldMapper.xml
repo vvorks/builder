@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.github.vvorks.builder.server.mapper.FieldMapper">
 
@@ -20,65 +19,104 @@
 			F_DESCRIPTION,
 			F_NOTE
 		) VALUES (
-			#{fieldId},
-			#{ownerClassId},
-			#{fieldName},
-			#{type},
-			#{width},
-			#{scale},
-			#{crefClassId},
-			#{erefEnumId},
-			#{frefFieldId},
-			#{pk},
-			#{title},
-			#{description},
-			#{note}
+			#{ fieldId },
+			#{ ownerClassId },
+			#{ fieldName },
+			#{ type },
+			#{ width },
+			#{ scale },
+			#{ crefClassId },
+			#{ erefEnumId },
+			#{ frefFieldId },
+			#{ pk },
+			#{ title },
+			#{ description },
+			#{ note }
 		)
 	</insert>
 
 	<update id="update" parameterType="FieldDto">
 		UPDATE T_FIELD SET
-			F_OWNER_CLASS_ID = #{ownerClassId},
-			F_FIELD_NAME = #{fieldName},
-			F_TYPE = #{type},
-			F_WIDTH = #{width},
-			F_SCALE = #{scale},
-			F_CREF_CLASS_ID = #{crefClassId},
-			F_EREF_ENUM_ID = #{erefEnumId},
-			F_FREF_FIELD_ID = #{frefFieldId},
-			F_PK = #{pk},
-			F_TITLE = #{title},
-			F_DESCRIPTION = #{description},
-			F_NOTE = #{note}
+			F_OWNER_CLASS_ID = #{ ownerClassId },
+			F_FIELD_NAME = #{ fieldName },
+			F_TYPE = #{ type },
+			F_WIDTH = #{ width },
+			F_SCALE = #{ scale },
+			F_CREF_CLASS_ID = #{ crefClassId },
+			F_EREF_ENUM_ID = #{ erefEnumId },
+			F_FREF_FIELD_ID = #{ frefFieldId },
+			F_PK = #{ pk },
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
+			F_NOTE = #{ note }
 		WHERE
-			F_FIELD_ID = #{fieldId}
+			F_FIELD_ID = #{ fieldId }
 	</update>
 
 	<delete id="delete" parameterType="FieldDto">
 		DELETE FROM T_FIELD
 		WHERE
-			F_FIELD_ID = #{fieldId}
+			F_FIELD_ID = #{ fieldId }
 	</delete>
 
 	<select id="get" resultType="FieldDto">
 		SELECT
-			F_FIELD_ID       AS "fieldId",
+			F_FIELD_ID AS "fieldId",
 			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_FIELD_NAME     AS "fieldName",
-			F_TYPE           AS "type",
-			F_WIDTH          AS "width",
-			F_SCALE          AS "scale",
-			F_CREF_CLASS_ID  AS "crefClassId",
-			F_EREF_ENUM_ID   AS "erefEnumId",
-			F_FREF_FIELD_ID  AS "frefFieldId",
-			F_PK             AS "pk",
-			F_TITLE          AS "title",
-			F_DESCRIPTION    AS "description",
-			F_NOTE           AS "note"
+			F_FIELD_NAME AS "fieldName",
+			F_TYPE AS "type",
+			F_WIDTH AS "width",
+			F_SCALE AS "scale",
+			F_CREF_CLASS_ID AS "crefClassId",
+			F_EREF_ENUM_ID AS "erefEnumId",
+			F_FREF_FIELD_ID AS "frefFieldId",
+			F_PK AS "pk",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
 		FROM
 			T_FIELD
 		WHERE
-			F_FIELD_ID = #{fieldId}
+			F_FIELD_ID = #{ fieldId }
+	</select>
+
+	<select id="listAll" resultType="FieldDto">
+		SELECT
+			F_FIELD_ID AS "fieldId",
+			F_OWNER_CLASS_ID AS "ownerClassId",
+			F_FIELD_NAME AS "fieldName",
+			F_TYPE AS "type",
+			F_WIDTH AS "width",
+			F_SCALE AS "scale",
+			F_CREF_CLASS_ID AS "crefClassId",
+			F_EREF_ENUM_ID AS "erefEnumId",
+			F_FREF_FIELD_ID AS "frefFieldId",
+			F_PK AS "pk",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_FIELD
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="getOwner" resultType="ClassDto">
+		SELECT
+			F_CLASS_ID AS "classId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_CLASS_NAME AS "className",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_CLASS
+		WHERE
+			F_CLASS_ID = #{ ownerClassId }
 	</select>
 
 </mapper>

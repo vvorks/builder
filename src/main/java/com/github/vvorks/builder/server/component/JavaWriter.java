@@ -73,7 +73,7 @@ public class JavaWriter {
 		File projectDir = new File("out/" + now + "/"); ////TODO for Debug
 		File javaRootDir = new File(projectDir, SRC_TOP);
 		File resRootDir = new File(projectDir, RES_TOP);
-		List<ProjectDto> projects = projectMapper.list(0, 0);
+		List<ProjectDto> projects = projectMapper.listAll(0, 0);
 		Writer writer = new LoggerWriter(LOGGER);
 		TemplateLoader loader = new ClassPathTemplateLoader(HBS_RES);
 		//HBSリソースの取得

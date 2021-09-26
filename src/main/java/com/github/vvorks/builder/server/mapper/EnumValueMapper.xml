@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.vvorks.builder.server.mapper.EnumValueMapper">
+
+	<insert id="insert" parameterType="EnumValueDto">
+		INSERT INTO T_ENUM_VALUE (
+			F_VALUE_ID,
+			F_OWNER_ENUM_ID,
+			F_CODE,
+			F_TITLE,
+			F_DESCRIPTION,
+			F_NOTE
+		) VALUES (
+			#{ valueId },
+			#{ ownerEnumId },
+			#{ code },
+			#{ title },
+			#{ description },
+			#{ note }
+		)
+	</insert>
+
+	<update id="update" parameterType="EnumValueDto">
+		UPDATE T_ENUM_VALUE SET
+			F_CODE = #{ code },
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
+			F_NOTE = #{ note }
+		WHERE
+			F_VALUE_ID = #{ valueId } AND 
+			F_OWNER_ENUM_ID = #{ ownerEnumId }
+	</update>
+
+	<delete id="delete" parameterType="EnumValueDto">
+		DELETE FROM T_ENUM_VALUE
+		WHERE
+			F_VALUE_ID = #{ valueId } AND 
+			F_OWNER_ENUM_ID = #{ ownerEnumId }
+	</delete>
+
+	<select id="get" resultType="EnumValueDto">
+		SELECT
+			F_VALUE_ID AS "valueId",
+			F_OWNER_ENUM_ID AS "ownerEnumId",
+			F_CODE AS "code",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_ENUM_VALUE
+		WHERE
+			F_VALUE_ID = #{ valueId } AND 
+			F_OWNER_ENUM_ID = #{ ownerEnumId }
+	</select>
+
+	<select id="listAll" resultType="EnumValueDto">
+		SELECT
+			F_VALUE_ID AS "valueId",
+			F_OWNER_ENUM_ID AS "ownerEnumId",
+			F_CODE AS "code",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_ENUM_VALUE
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="getOwner" resultType="EnumDto">
+		SELECT
+			F_ENUM_ID AS "enumId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_ENUM_NAME AS "enumName",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_ENUM
+		WHERE
+			F_ENUM_ID = #{ ownerEnumId }
+	</select>
+
+</mapper>

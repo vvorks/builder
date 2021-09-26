@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.github.vvorks.builder.server.mapper.ProjectMapper">
 
@@ -13,110 +12,101 @@
 			F_NOTE,
 			F_COPYRIGHTS
 		) VALUES (
-			#{projectId},
-			#{projectName},
-			#{title},
-			#{description},
-			#{note},
-			#{copyrights}
+			#{ projectId },
+			#{ projectName },
+			#{ title },
+			#{ description },
+			#{ note },
+			#{ copyrights }
 		)
 	</insert>
 
 	<update id="update" parameterType="ProjectDto">
 		UPDATE T_PROJECT SET
-			F_PROJECT_NAME = #{projectName}
-			F_TITLE = #{title},
-			F_DESCRIPTION = #{description},
-			F_NOTE = #{note},
-			F_COPYRIGHTS = #{copyrights}
+			F_PROJECT_NAME = #{ projectName },
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
+			F_NOTE = #{ note },
+			F_COPYRIGHTS = #{ copyrights }
 		WHERE
-			F_PROJECT_ID = #{projectId}
+			F_PROJECT_ID = #{ projectId }
 	</update>
 
 	<delete id="delete" parameterType="ProjectDto">
 		DELETE FROM T_PROJECT
 		WHERE
-			F_PROJECT_ID = #{projectId}
+			F_PROJECT_ID = #{ projectId }
 	</delete>
 
-	<resultMap id="mapProjectDto" type="ProjectDto">
-		<id     property="projectId"   column="F_PROJECT_ID"   />
-		<result property="projectName" column="F_PROJECT_NAME" />
-		<result property="title"       column="F_TITLE"        />
-		<result property="description" column="F_DESCRIPTION"  />
-		<result property="note"        column="F_NOTE"         />
-		<result property="copyrights"  column="F_COPYRIGHTS"   />
-	</resultMap>
-
-	<select id="get" parameterType="Integer" resultType="ProjectDto">
+	<select id="get" resultType="ProjectDto">
 		SELECT
-			F_PROJECT_ID   AS "projectId",
+			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
-			F_TITLE        AS "title",
-			F_DESCRIPTION  AS "description",
-			F_NOTE         AS "note",
-			F_COPYRIGHTS   AS "copyrights"
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note",
+			F_COPYRIGHTS AS "copyrights"
 		FROM
 			T_PROJECT
 		WHERE
-			F_PROJECT_ID = #{projectId}
+			F_PROJECT_ID = #{ projectId }
 	</select>
 
-	<select id="list" resultType="ProjectDto">
+	<select id="listAll" resultType="ProjectDto">
 		SELECT
-			F_PROJECT_ID   AS "projectId",
+			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
-			F_TITLE        AS "title",
-			F_DESCRIPTION  AS "description",
-			F_NOTE         AS "note",
-			F_COPYRIGHTS   AS "copyrights"
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note",
+			F_COPYRIGHTS AS "copyrights"
 		FROM
 			T_PROJECT
-		<if test="limit != 0">
+		<if test="limit &gt; 0">
 			LIMIT #{limit}
-		</if>
-		<if test="offset != 0">
+		<if test="offset &gt;= 0">
 			OFFSET #{offset}
+		</if>
 		</if>
 	</select>
 
 	<select id="listClasses" resultType="ClassDto">
 		SELECT
-			F_CLASS_ID         AS "classId",
+			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_CLASS_NAME       AS "className",
-			F_TITLE            AS "title",
-			F_DESCRIPTION      AS "description",
-			F_NOTE             AS "note"
+			F_CLASS_NAME AS "className",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
 		FROM
 			T_CLASS
 		WHERE
-			F_OWNER_PROJECT_ID = #{project.projectId}
-		<if test="limit != 0">
+			F_OWNER_PROJECT_ID = #{ dto.projectId }
+		<if test="limit &gt; 0">
 			LIMIT #{limit}
-		</if>
-		<if test="offset != 0">
+		<if test="offset &gt;= 0">
 			OFFSET #{offset}
+		</if>
 		</if>
 	</select>
 
 	<select id="listEnums" resultType="EnumDto">
 		SELECT
-			F_ENUM_ID          AS "enumId",
+			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_ENUM_NAME        AS "enumName",
-			F_TITLE            AS "title",
-			F_DESCRIPTION      AS "description",
-			F_NOTE             AS "note"
+			F_ENUM_NAME AS "enumName",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
 		FROM
 			T_ENUM
 		WHERE
-			F_OWNER_PROJECT_ID = #{project.projectId}
-		<if test="limit != 0">
+			F_OWNER_PROJECT_ID = #{ dto.projectId }
+		<if test="limit &gt; 0">
 			LIMIT #{limit}
-		</if>
-		<if test="offset != 0">
+		<if test="offset &gt;= 0">
 			OFFSET #{offset}
+		</if>
 		</if>
 	</select>
 

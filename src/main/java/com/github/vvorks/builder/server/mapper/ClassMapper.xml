@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.github.vvorks.builder.server.mapper.ClassMapper">
+
 	<insert id="insert" parameterType="ClassDto">
 		INSERT INTO T_CLASS (
 			F_CLASS_ID,
@@ -10,86 +12,103 @@
 			F_DESCRIPTION,
 			F_NOTE
 		) VALUES (
-			#{classId},
-			#{ownerProjectId},
-			#{className},
-			#{title},
-			#{description},
-			#{note}
+			#{ classId },
+			#{ ownerProjectId },
+			#{ className },
+			#{ title },
+			#{ description },
+			#{ note }
 		)
 	</insert>
+
 	<update id="update" parameterType="ClassDto">
 		UPDATE T_CLASS SET
-			F_OWNER_PROJECT_ID = #{ownerProjectId},
-			F_CLASS_NAME = #{className}
-			F_TITLE = #{title},
-			F_DESCRIPTION = #{description},
-			F_NOTE = #{note}
+			F_OWNER_PROJECT_ID = #{ ownerProjectId },
+			F_CLASS_NAME = #{ className },
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
+			F_NOTE = #{ note }
 		WHERE
-			F_CLASS_ID = #{classId}
+			F_CLASS_ID = #{ classId }
 	</update>
+
 	<delete id="delete" parameterType="ClassDto">
 		DELETE FROM T_CLASS
 		WHERE
-			F_CLASS_ID = #{classId}
+			F_CLASS_ID = #{ classId }
 	</delete>
+
 	<select id="get" resultType="ClassDto">
 		SELECT
-			F_CLASS_ID         AS "classId",
+			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_CLASS_NAME       AS "className",
-			F_TITLE            AS "title",
-			F_DESCRIPTION      AS "description",
-			F_NOTE             AS "note"
+			F_CLASS_NAME AS "className",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
 		FROM
 			T_CLASS
 		WHERE
-			F_CLASS_ID = #{classId}
+			F_CLASS_ID = #{ classId }
 	</select>
-	<select id="listFields" resultType="FieldDto">
+
+	<select id="listAll" resultType="ClassDto">
 		SELECT
-			F_FIELD_ID       AS "fieldId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_FIELD_NAME     AS "fieldName",
-			F_TYPE           AS "type",
-			F_WIDTH          AS "width",
-			F_SCALE          AS "scale",
-			F_CREF_CLASS_ID  AS "crefClassId",
-			F_EREF_ENUM_ID   AS "erefEnumId",
-			F_FREF_FIELD_ID  AS "frefFieldId",
-			F_PK             AS "pk",
-			F_TITLE          AS "title",
-			F_DESCRIPTION    AS "description",
-			F_NOTE           AS "note"
+			F_CLASS_ID AS "classId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_CLASS_NAME AS "className",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
 		FROM
-			T_FIELD
-		WHERE
-			F_OWNER_CLASS_ID = #{c.classId}
-		<if test="limit != 0">
+			T_CLASS
+		<if test="limit &gt; 0">
 			LIMIT #{limit}
-		</if>
-		<if test="offset != 0">
+		<if test="offset &gt;= 0">
 			OFFSET #{offset}
 		</if>
+		</if>
 	</select>
-	<select id="listPkFields" resultType="FieldDto">
+
+	<select id="getOwner" resultType="ProjectDto">
 		SELECT
-			F_FIELD_ID       AS "fieldId",
+			F_PROJECT_ID AS "projectId",
+			F_PROJECT_NAME AS "projectName",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note",
+			F_COPYRIGHTS AS "copyrights"
+		FROM
+			T_PROJECT
+		WHERE
+			F_PROJECT_ID = #{ ownerProjectId }
+	</select>
+
+	<select id="listFields" resultType="FieldDto">
+		SELECT
+			F_FIELD_ID AS "fieldId",
 			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_FIELD_NAME     AS "fieldName",
-			F_TYPE           AS "type",
-			F_WIDTH          AS "width",
-			F_SCALE          AS "scale",
-			F_CREF_CLASS_ID  AS "crefClassId",
-			F_EREF_ENUM_ID   AS "erefEnumId",
-			F_FREF_FIELD_ID  AS "frefFieldId",
-			F_PK             AS "pk",
-			F_TITLE          AS "title",
-			F_DESCRIPTION    AS "description",
-			F_NOTE           AS "note"
+			F_FIELD_NAME AS "fieldName",
+			F_TYPE AS "type",
+			F_WIDTH AS "width",
+			F_SCALE AS "scale",
+			F_CREF_CLASS_ID AS "crefClassId",
+			F_EREF_ENUM_ID AS "erefEnumId",
+			F_FREF_FIELD_ID AS "frefFieldId",
+			F_PK AS "pk",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
 		FROM
 			T_FIELD
 		WHERE
-			F_OWNER_CLASS_ID = #{c.classId} AND F_PK = 1
+			F_OWNER_CLASS_ID = #{ dto.classId }
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
 	</select>
+
 </mapper>

@@ -25,6 +25,8 @@ import com.github.vvorks.builder.common.util.Logger;
 import com.github.vvorks.builder.server.common.io.Ios;
 import com.github.vvorks.builder.server.common.poi.Cells;
 import com.github.vvorks.builder.server.domain.DataType;
+import com.github.vvorks.builder.server.extender.ClassExtender;
+import com.github.vvorks.builder.server.extender.FieldExtender;
 
 @Component
 public class XlsxLoader {
@@ -33,10 +35,6 @@ public class XlsxLoader {
 	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
 
 	private static final String EOL = "\n";
-
-	private static final String TABLE_PREFIX = "T_";
-
-	private static final String COLUMN_PREFIX = "F_";
 
 	private static final Map<DataType, String> SQLITE_TYPES = new EnumMap<>(DataType.class);
 	static {
@@ -70,7 +68,7 @@ public class XlsxLoader {
 			this.type = type;
 		}
 		public String sqliteName() {
-			return COLUMN_PREFIX + Strings.toUpperSnake(name);
+			return FieldExtender.COLUMN_PREFIX + Strings.toUpperSnake(name);
 		}
 		public String sqliteType() {
 			return SQLITE_TYPES.get(type);
@@ -120,7 +118,7 @@ public class XlsxLoader {
 			cols.add(new ColInfo(name, type));
 		}
 		//テーブル作成
-		String tableName = TABLE_PREFIX + Strings.toUpperSnake(sheet.getSheetName());
+		String tableName = ClassExtender.TABLE_PREFIX + Strings.toUpperSnake(sheet.getSheetName());
 		StringBuilder sql = new StringBuilder();
 		//CreateTable文
 		sql.append("CREATE TABLE ").append(tableName).append("(").append(EOL);
