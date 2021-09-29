@@ -113,16 +113,16 @@ public class GwtWebSocket implements WebSocket {
 		var ws = new WebSocket(url);
 		var self = this;
 		ws.onopen = function(evt) {
-			self.@com.github.vvorks.builder.client.net.GwtWebSocket::onOpen()();
+			self.@com.github.vvorks.builder.client.common.net.GwtWebSocket::onOpen()();
 		};
 		ws.onclose = function(evt) {
-			self.@com.github.vvorks.builder.client.net.GwtWebSocket::onClose()();
+			self.@com.github.vvorks.builder.client.common.net.GwtWebSocket::onClose()();
 		};
 		ws.onmessage = function(evt) {
-			self.@com.github.vvorks.builder.client.net.GwtWebSocket::onMessage(Ljava/lang/String;)(evt.data);
+			self.@com.github.vvorks.builder.client.common.net.GwtWebSocket::onMessage(Ljava/lang/String;)(evt.data);
 		};
 		ws.onerror = function(evt) {
-			self.@com.github.vvorks.builder.client.net.GwtWebSocket::onError()();
+			self.@com.github.vvorks.builder.client.common.net.GwtWebSocket::onError()();
 		}
 		return ws;
 	}-*/;

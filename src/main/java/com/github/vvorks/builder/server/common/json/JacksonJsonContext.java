@@ -152,7 +152,7 @@ public class JacksonJsonContext extends AbstractJsonContext<JsonNode> {
 	@Override
 	protected void setNativeValue(String key, JsonNode value) {
 		ObjectNode parent = getParentObject(key);
-		parent.put(key, value);
+		parent.set(key, value);
 	}
 
 	@Override
