@@ -1,0 +1,398 @@
+/**
+ * SETTINGS
+ */
+options {
+	/* jjtree options */
+	NODE_CLASS = "com.github.vvorks.builder.server.grammar.ExprNode";
+	TRACK_TOKENS = true;
+	/* javacc options */
+	DEBUG_PARSER = false;
+	JAVA_UNICODE_ESCAPE = true;
+	STATIC = false;
+	TOKEN_FACTORY = "ExprParser";
+}
+
+/*
+ * JAVA CODE BLOCK
+ */
+PARSER_BEGIN(ExprParser)
+package com.github.vvorks.builder.server.grammar;
+import java.io.StringReader;
+
+public class ExprParser {
+
+	public static final Token newToken(int ofKind, String tokenImage) {
+		return new ExprToken(ofKind, tokenImage);
+	}
+
+	public ExprParser() {
+		this(System.in);
+	}
+
+	public ExprNode parse(String code) throws ParseException {
+		this.ReInit(new StringReader(code));
+		return this.Main();
+	}
+
+	private boolean matchAfterRepeat(int rept, int term) {
+		int k = 0;
+		for (int i = 1; (k = getToken(i).kind) == rept; i++);
+		return k == term;
+	}
+
+}
+
+PARSER_END(ExprParser)
+
+/*
+ * LEX BLOCK
+ */
+
+/* white space */
+SKIP : {
+	" " | "\t" | "\n" | "\r" | "\f"
+}
+
+/* comments */
+MORE : {
+	<"/**" ~["/"]> { input_stream.backup(1); } : IN_FORMAL_COMMENT |
+	"/*" : IN_MULTI_LINE_COMMENT
+}
+
+SPECIAL_TOKEN : {
+	<SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")?>
+}
+
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN : {
+	<FORMAL_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN : {
+	<MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE : {
+  < ~[] >
+}
+
+/* reserved words */
+TOKEN : {
+	<NULL: "null" > |
+	<TRUE: "true" > | <FALSE: "false" > |
+	<THIS: "this" > |
+	<AND: "and"> | <OR: "or"> | <XOR: "xor"> | <NOT: "not"> |
+	<IF:"if"> | <THEN:"then"> | <ELSEIF:"elseif"> | <ELSE:"else"> | <ENDIF: "endif">
+}
+
+/* literals */
+TOKEN : {
+	<INTEGER_LITERAL:
+		<DECIMAL_LITERAL> (["l","L"])? |
+		<HEX_LITERAL> (["l","L"])? |
+		<OCTAL_LITERAL> (["l","L"])?
+	> |
+	<#DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* > |
+	<#HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ > |
+	<#OCTAL_LITERAL: "0" (["0"-"7"])* > |
+	<FLOATING_POINT_LITERAL:
+		<DECIMAL_FLOATING_POINT_LITERAL> |	<HEXADECIMAL_FLOATING_POINT_LITERAL>
+	> |
+	<#DECIMAL_FLOATING_POINT_LITERAL:
+		(["0"-"9"])+ "." (["0"-"9"])* (<DECIMAL_EXPONENT>)? (["f","F","d","D","n","N"])? |
+		"." (["0"-"9"])+ (<DECIMAL_EXPONENT>)? (["f","F","d","D","n","N"])? |
+		(["0"-"9"])+ <DECIMAL_EXPONENT> (["f","F","d","D","n","N"])? |
+		(["0"-"9"])+ (<DECIMAL_EXPONENT>)? ["f","F","d","D","n","N"]
+	> |
+	<#DECIMAL_EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ > |
+	<#HEXADECIMAL_FLOATING_POINT_LITERAL:
+		"0" ["x", "X"] (["0"-"9","a"-"f","A"-"F"])+ (".")? <HEXADECIMAL_EXPONENT> (["f","F","d","D","n","N"])? |
+		"0" ["x", "X"] (["0"-"9","a"-"f","A"-"F"])* "." (["0"-"9","a"-"f","A"-"F"])+ <HEXADECIMAL_EXPONENT> (["f","F","d","D","n","N"])?
+	> |
+	<#HEXADECIMAL_EXPONENT: ["p","P"] (["+","-"])? (["0"-"9"])+ > |
+	<SINGLE_STRING_LITERAL:
+		"'"
+		(
+			(~["'","\\","\n","\r"]) |
+			(
+				"\\"
+				(
+					["n","t","b","r","f","\\","'","\""] |
+					["0"-"7"] ( ["0"-"7"] )? |
+					["0"-"3"] ["0"-"7"] ["0"-"7"]
+				)
+			)
+		)*
+		"'" (["t","T"])?
+	> |
+	<DOUBLE_STRING_LITERAL:
+		"\""
+		(
+			(~["\"","\\","\n","\r"]) |
+			(
+				"\\"
+				(
+ 					["n","t","b","r","f","\\","'","\""] |
+ 					["0"-"7"] ( ["0"-"7"] )? |
+ 					["0"-"3"] ["0"-"7"] ["0"-"7"]
+				)
+			)
+		)*
+		"\""
+	>
+}
+
+/* identifiers */
+TOKEN : {
+	< IDENTIFIER: <LETTER> (<PART_LETTER>)* > |
+	< #LETTER: ["A"-"Z", "_", "a"-"z"]> |
+	< #PART_LETTER: ["0"-"9", "A"-"Z", "_", "a"-"z"] >
+}
+
+/* separators */
+TOKEN : {
+	< LPAREN: "(" >		| < RPAREN: ")" >	|
+	< LBRACE: "{" >		| < RBRACE: "}" >	|
+	< LBRACKET: "[" >	| < RBRACKET: "]" >	|
+	< SEMICOLON: ";" >	| < COMMA: "," >	|
+	< DOT: "." >		| < AT: "@" >
+}
+
+/* operators */
+TOKEN : {
+	< ASSIGN: "=" >		| < LT: "<" >		| < BANG: "!" >		| < TILDE: "~" > |
+	< HOOK: "?" >		| < COLON: ":" >	|
+	< EQ: "==" >		| < LE: "<=" >		| < GE: ">=" >		| < NE: "!=" >	|
+	< LTGT: "<>" >		|
+	< SC_OR: "||" >		| < SC_AND: "&&" >	|
+	< PLUS: "+" >		| < MINUS: "-" >	| < STAR: "*" >		| < SLASH: "/" > |
+	< BIT_AND: "&" >	| < BIT_OR: "|" >	| < BIT_XOR: "^" >	| < REM: "%" > |
+	< LSHIFT: "<<" >	|
+	< TO: "..">			| < ELLIPSIS: "..." >
+}
+
+/* >'s need special attention due to generics syntax. */
+TOKEN : {
+	< RUNSIGNEDSHIFT: ">>>" > 	{
+		matchedToken.kind = GT;
+		((ExprToken)matchedToken).realKind = RUNSIGNEDSHIFT;
+		input_stream.backup(2);
+		matchedToken.image = ">";
+	} |
+	< RSIGNEDSHIFT: ">>" > 	{
+		matchedToken.kind = GT;
+		((ExprToken)matchedToken).realKind = RSIGNEDSHIFT;
+		input_stream.backup(1);
+		matchedToken.image = ">";
+	} |
+	< GT: ">" >
+}
+
+/*
+ * PARSER BLOCK(Expression)
+ */
+ExprNode Main(): {} {
+	Expression()
+	<EOF>
+	{
+		return jjtThis;
+	}
+}
+
+void Expression() #void: {} {
+	OrExpression()
+}
+
+void OrExpression() #BinaryExpression(>1) : {} {
+	AndExpression() ( OrOperator() AndExpression() )*
+}
+
+void OrOperator() #BinaryOperator : {} {
+	<OR> | "||" | "|"
+}
+
+void AndExpression() #BinaryExpression(>1) : {} {
+	XorExpression() ( AndOperator() XorExpression() )*
+}
+
+void AndOperator() #BinaryOperator : {} {
+	<AND> | "&&" | "&"
+}
+
+void XorExpression() #BinaryExpression(>1) : {} {
+	EqualityExpression() ( XorOperator() EqualityExpression() )*
+}
+
+void XorOperator() #BinaryOperator : {} {
+	<XOR> | "^"
+}
+
+void EqualityExpression() #BinaryExpression(>1) : {} {
+	RelationalExpression() ( EqualityOperator() RelationalExpression() )*
+}
+
+void EqualityOperator() #BinaryOperator : {} {
+	"==" | "!=" | "<>"
+}
+
+void RelationalExpression() #BinaryExpression(>1) : {} {
+	ShiftExpression() ( RelationalOperator() ShiftExpression() )*
+}
+
+void RelationalOperator() #BinaryOperator : {} {
+	"<" | ">" | "<=" | ">="
+}
+
+void ShiftExpression() #BinaryExpression(>1) : {} {
+  AdditiveExpression() ( ShiftOperator() AdditiveExpression() )*
+}
+
+void ShiftOperator() #BinaryOperator : {} {
+	"<<" | RSIGNEDSHIFT() | RUNSIGNEDSHIFT()
+}
+
+void RUNSIGNEDSHIFT() #void : {} {
+	(
+		LOOKAHEAD({ getToken(1).kind == GT && ((ExprToken)getToken(1)).realKind == RUNSIGNEDSHIFT} )
+		">" ">" ">"
+	)
+}
+
+void RSIGNEDSHIFT() #void : {} {
+	(
+		LOOKAHEAD({ getToken(1).kind == GT && ((ExprToken)getToken(1)).realKind == RSIGNEDSHIFT} )
+		">" ">"
+	)
+}
+
+void AdditiveExpression() #BinaryExpression(>1) : {} {
+	MultiplicativeExpression() ( AdditiveOperator() MultiplicativeExpression() )*
+}
+
+void AdditiveOperator() #BinaryOperator : {} {
+	"+" | "-"
+}
+
+void MultiplicativeExpression() #BinaryExpression(>1) : {} {
+	UnaryExpression() ( MultiplicativeOperator() UnaryExpression() )*
+}
+
+void MultiplicativeOperator() #BinaryOperator : {} {
+	"*" | "/" | "%"
+}
+
+void UnaryExpression() #UnaryExpression(>1) : {} {
+	( SignOperator() ) UnaryExpression() |
+	UnaryExpressionNotPlusMinus()
+}
+
+void SignOperator() #UnaryOperator : {} {
+	"+" | "-"
+}
+
+void UnaryExpressionNotPlusMinus() #UnaryExpression(>1) : {} {
+	( UnaryOperator() ) UnaryExpression() |
+	PrimaryExpression()
+}
+
+void UnaryOperator() #UnaryOperator : {} {
+	<NOT> | "~" | "!"
+}
+
+void PrimaryExpression() : {} {
+	PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+}
+
+void PrimaryPrefix() #void : {} {
+	Literal() |
+	This() |
+	ParenExpression() |
+	IfExpression() |
+	BlockExpression() |
+	Identifier()
+}
+
+void PrimarySuffix() #void : {} {
+	Arguments() |
+	ArrayAccess() |
+	"." Identifier()
+}
+
+void This(): {} {
+	"this"
+}
+
+void ParenExpression(): {} {
+	"(" Expression() ")"
+}
+
+void IfExpression(): {} {
+	"if" Expression() "then" Expression()
+	( "elseif" Expression() "then" Expression() )*
+	[ "else" Expression() ]
+	"endif"
+}
+
+void BlockExpression(): {} {
+	"{"
+		(";")*
+		Expression()
+		(
+			LOOKAHEAD({!matchAfterRepeat(SEMICOLON, RBRACE)})
+			(";")+
+			Expression()
+		)*
+		(";")*
+	"}"
+}
+
+//void Name(): {} {
+//	Identifier() ( LOOKAHEAD(2) "." Identifier() )*
+//}
+
+void Identifier(): {} {
+	<IDENTIFIER>
+}
+
+void ArrayAccess(): {} {
+	"[" Expression() "]"
+}
+
+void Arguments(): {} {
+	"("
+		[
+			Expression() ( "," Expression() )*
+		]
+	")"
+}
+
+void Literal() #void : {} {
+	IntLiteral() |
+	RealLiteral() |
+	StringLiteral() |
+	BooleanLiteral() |
+	NullLiteral()
+}
+
+void IntLiteral(): {} {
+	<INTEGER_LITERAL>
+}
+
+void RealLiteral(): {} {
+	<FLOATING_POINT_LITERAL>
+}
+
+void StringLiteral(): {} {
+	<SINGLE_STRING_LITERAL> | <DOUBLE_STRING_LITERAL>
+}
+
+void BooleanLiteral(): {} {
+	"true" | "false"
+}
+
+void NullLiteral(): {} {
+	"null"
+}
+
