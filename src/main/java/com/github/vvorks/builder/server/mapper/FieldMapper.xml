@@ -15,6 +15,7 @@
 			F_EREF_ENUM_ID,
 			F_FREF_FIELD_ID,
 			F_PK,
+			F_NULLABLE,
 			F_TITLE,
 			F_DESCRIPTION,
 			F_NOTE
@@ -29,6 +30,7 @@
 			#{ erefEnumId },
 			#{ frefFieldId },
 			#{ pk },
+			#{ nullable },
 			#{ title },
 			#{ description },
 			#{ note }
@@ -46,6 +48,7 @@
 			F_EREF_ENUM_ID = #{ erefEnumId },
 			F_FREF_FIELD_ID = #{ frefFieldId },
 			F_PK = #{ pk },
+			F_NULLABLE = #{ nullable },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note }
@@ -71,6 +74,7 @@
 			F_EREF_ENUM_ID AS "erefEnumId",
 			F_FREF_FIELD_ID AS "frefFieldId",
 			F_PK AS "pk",
+			F_NULLABLE AS "nullable",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
@@ -80,7 +84,7 @@
 			F_FIELD_ID = #{ fieldId }
 	</select>
 
-	<select id="listAll" resultType="FieldDto">
+	<select id="list" resultType="FieldDto">
 		SELECT
 			F_FIELD_ID AS "fieldId",
 			F_OWNER_CLASS_ID AS "ownerClassId",
@@ -92,11 +96,61 @@
 			F_EREF_ENUM_ID AS "erefEnumId",
 			F_FREF_FIELD_ID AS "frefFieldId",
 			F_PK AS "pk",
+			F_NULLABLE AS "nullable",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
 		FROM
 			T_FIELD
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="find" resultType="FieldDto">
+		SELECT
+			F_FIELD_ID AS "fieldId",
+			F_OWNER_CLASS_ID AS "ownerClassId",
+			F_FIELD_NAME AS "fieldName",
+			F_TYPE AS "type",
+			F_WIDTH AS "width",
+			F_SCALE AS "scale",
+			F_CREF_CLASS_ID AS "crefClassId",
+			F_EREF_ENUM_ID AS "erefEnumId",
+			F_FREF_FIELD_ID AS "frefFieldId",
+			F_PK AS "pk",
+			F_NULLABLE AS "nullable",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_FIELD
+		<where>
+			<if test="fieldName != null">
+				AND F_FIELD_NAME = #{ fieldName }
+			</if>
+			<if test="type != null">
+				AND F_TYPE = #{ type }
+			</if>
+			<if test="width != null">
+				AND F_WIDTH = #{ width }
+			</if>
+			<if test="scale != null">
+				AND F_SCALE = #{ scale }
+			</if>
+			<if test="pk != null">
+				AND F_PK = #{ pk }
+			</if>
+			<if test="nullable != null">
+				AND F_NULLABLE = #{ nullable }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

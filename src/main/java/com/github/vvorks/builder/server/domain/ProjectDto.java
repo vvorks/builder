@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * プロジェクト型
@@ -22,11 +23,13 @@ public class ProjectDto {
 	 *
 	 * ベースパッケージ名を兼ねる
 	 */
+	@NotNull
 	private String projectName;
 
 	/**
 	 * タイトル
 	 */
+	@NotNull
 	private String title;
 
 	/**

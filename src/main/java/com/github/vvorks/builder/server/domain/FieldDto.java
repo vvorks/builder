@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * フィールド
@@ -25,22 +26,24 @@ public class FieldDto {
 	/**
 	 * フィールド名
 	 */
+	@NotNull
 	private String fieldName;
 
 	/**
 	 * フィールド型
 	 */
+	@NotNull
 	private DataType type;
 
 	/**
 	 * フィールド型の幅
 	 */
-	private Integer width;
+	private int width;
 
 	/**
 	 * フィールド型精度
 	 */
-	private Integer scale;
+	private int scale;
 
 	/**
 	 * クラス参照先のクラスID
@@ -60,11 +63,17 @@ public class FieldDto {
 	/**
 	 * プライマリキー
 	 */
-	private Boolean pk;
+	private boolean pk;
+
+	/**
+	 * NULL許容
+	 */
+	private boolean nullable;
 
 	/**
 	 * タイトル
 	 */
+	@NotNull
 	private String title;
 
 	/**
@@ -154,7 +163,7 @@ public class FieldDto {
 	 *
 	 * @return フィールド型の幅
 	 */
-	public Integer getWidth() {
+	public int getWidth() {
 		return this.width;
 	}
 
@@ -163,7 +172,7 @@ public class FieldDto {
 	 *
 	 * @param width 設定するフィールド型の幅
 	 */
-	public void setWidth(Integer width) {
+	public void setWidth(int width) {
 		this.width = width;
 	}
 
@@ -172,7 +181,7 @@ public class FieldDto {
 	 *
 	 * @return フィールド型精度
 	 */
-	public Integer getScale() {
+	public int getScale() {
 		return this.scale;
 	}
 
@@ -181,7 +190,7 @@ public class FieldDto {
 	 *
 	 * @param scale 設定するフィールド型精度
 	 */
-	public void setScale(Integer scale) {
+	public void setScale(int scale) {
 		this.scale = scale;
 	}
 
@@ -244,7 +253,7 @@ public class FieldDto {
 	 *
 	 * @return プライマリキー
 	 */
-	public Boolean isPk() {
+	public boolean isPk() {
 		return this.pk;
 	}
 
@@ -253,8 +262,26 @@ public class FieldDto {
 	 *
 	 * @param pk 設定するプライマリキー
 	 */
-	public void setPk(Boolean pk) {
+	public void setPk(boolean pk) {
 		this.pk = pk;
+	}
+
+	/**
+	 * NULL許容を取得する
+	 *
+	 * @return NULL許容
+	 */
+	public boolean isNullable() {
+		return this.nullable;
+	}
+
+	/**
+	 * NULL許容を設定する
+	 *
+	 * @param nullable 設定するNULL許容
+	 */
+	public void setNullable(boolean nullable) {
+		this.nullable = nullable;
 	}
 
 	/**
@@ -324,6 +351,7 @@ public class FieldDto {
 			erefEnumId,
 			frefFieldId,
 			pk,
+			nullable,
 			title,
 			description,
 			note
@@ -349,12 +377,13 @@ public class FieldDto {
 			this.ownerClassId == other.ownerClassId && 
 			Objects.equals(this.fieldName, other.fieldName) && 
 			Objects.equals(this.type, other.type) && 
-			Objects.equals(this.width, other.width) && 
-			Objects.equals(this.scale, other.scale) && 
+			this.width == other.width && 
+			this.scale == other.scale && 
 			this.crefClassId == other.crefClassId && 
 			this.erefEnumId == other.erefEnumId && 
 			this.frefFieldId == other.frefFieldId && 
-			Objects.equals(this.pk, other.pk) && 
+			this.pk == other.pk && 
+			this.nullable == other.nullable && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note)
@@ -375,6 +404,7 @@ public class FieldDto {
 		sb.append("erefEnumId=").append(erefEnumId).append(", ");
 		sb.append("frefFieldId=").append(frefFieldId).append(", ");
 		sb.append("pk=").append(pk).append(", ");
+		sb.append("nullable=").append(nullable).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note);

@@ -52,7 +52,7 @@
 			F_CLASS_ID = #{ classId }
 	</select>
 
-	<select id="listAll" resultType="ClassDto">
+	<select id="list" resultType="ClassDto">
 		SELECT
 			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -62,6 +62,32 @@
 			F_NOTE AS "note"
 		FROM
 			T_CLASS
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="find" resultType="ClassDto">
+		SELECT
+			F_CLASS_ID AS "classId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_CLASS_NAME AS "className",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_CLASS
+		<where>
+			<if test="className != null">
+				AND F_CLASS_NAME = #{ className }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -96,6 +122,7 @@
 			F_EREF_ENUM_ID AS "erefEnumId",
 			F_FREF_FIELD_ID AS "frefFieldId",
 			F_PK AS "pk",
+			F_NULLABLE AS "nullable",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
@@ -103,6 +130,55 @@
 			T_FIELD
 		WHERE
 			F_OWNER_CLASS_ID = #{ dto.classId }
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="findFields" resultType="FieldDto">
+		SELECT
+			F_FIELD_ID AS "fieldId",
+			F_OWNER_CLASS_ID AS "ownerClassId",
+			F_FIELD_NAME AS "fieldName",
+			F_TYPE AS "type",
+			F_WIDTH AS "width",
+			F_SCALE AS "scale",
+			F_CREF_CLASS_ID AS "crefClassId",
+			F_EREF_ENUM_ID AS "erefEnumId",
+			F_FREF_FIELD_ID AS "frefFieldId",
+			F_PK AS "pk",
+			F_NULLABLE AS "nullable",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_FIELD
+		WHERE
+			F_OWNER_CLASS_ID = #{ dto.classId }
+			<if test="fieldName != null">
+				AND F_FIELD_NAME = #{ fieldName }
+			</if>
+			<if test="type != null">
+				AND F_TYPE = #{ type }
+			</if>
+			<if test="width != null">
+				AND F_WIDTH = #{ width }
+			</if>
+			<if test="scale != null">
+				AND F_SCALE = #{ scale }
+			</if>
+			<if test="pk != null">
+				AND F_PK = #{ pk }
+			</if>
+			<if test="nullable != null">
+				AND F_NULLABLE = #{ nullable }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

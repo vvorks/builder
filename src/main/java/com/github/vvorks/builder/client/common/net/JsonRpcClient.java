@@ -298,8 +298,8 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 		}
 		String method = b.getString(KEY_METHOD, UNKNOWN_METHOD);
 		int id = b.getInt(KEY_ID, NOTIFY_ID);
-		JsonValue result = b.getValue(KEY_RESULT);
-		JsonValue error = b.getValue(KEY_ERROR);
+		JsonValue result = b.getValue(KEY_RESULT, null);
+		JsonValue error = b.getValue(KEY_ERROR, null);
 		if (!method.equals(UNKNOWN_METHOD)) {
 			//要求又は通知メッセージ。
 			JsonValue params = b.getValue(KEY_PARAMS);
@@ -323,7 +323,7 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 			RequestInfo req = removeWaiting(id);
 			if (req != null) {
 				method = req.method;
-				if (!result.isUndefined()) {
+				if (result != null) {
 					LOGGER.info("RPC: RECV RSP %s with %s", getShortName(method, id), result);
 					try {
 						req.callback.onDone(new Result<>(result));
@@ -331,7 +331,7 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 						LOGGER.error(err, "RPC: CALLBACK ERROR");
 					}
 				} else {
-					String errMsg = error.isUndefined() ? "" : error.toJsonString();
+					String errMsg = error == null ? "" : error.toJsonString();
 					LOGGER.error("RPC: RECV RSP %s error %s", getShortName(method, id), errMsg);
 					try {
 						req.callback.onDone(new Result<>(new JsonRpcException(errMsg)));

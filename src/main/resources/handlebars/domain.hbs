@@ -13,6 +13,7 @@
 package {{global.project.projectName}}.server.domain;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 {{#if title}}
 /**
@@ -28,6 +29,7 @@ import java.util.Objects;
  */
 {{/if}}
 public class {{className}}Dto {
+
 	{{#each properties}}
 
 	{{#if title}}
@@ -43,8 +45,12 @@ public class {{className}}Dto {
 	{{/if}}
 	 */
 	{{/if}}
+	{{#if notNullObject}}
+	@NotNull
+	{{/if}}
 	private {{javaType}} {{fieldName}};
 	{{/each}}
+
 	{{#each properties}}
 
 	{{#if title}}
@@ -147,6 +153,7 @@ package {{global.project.projectName}}.server.domain;
  */
 {{/if}}
 public enum {{enumName}} {
+
 	{{#each enumValues}}
 
 	{{#if title}}

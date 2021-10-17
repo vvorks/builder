@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * クラス
@@ -25,11 +26,13 @@ public class ClassDto {
 	/**
 	 * クラス名
 	 */
+	@NotNull
 	private String className;
 
 	/**
 	 * タイトル
 	 */
+	@NotNull
 	private String title;
 
 	/**

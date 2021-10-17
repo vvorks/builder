@@ -43,10 +43,6 @@ public class FieldExtender {
 		TYPE_MAP.put(DataType.STRING, String.class);
 	}
 
-	private static final Class<?>[] INTEGER_TYPES = {
-		Byte.class, Short.class, Integer.class, Long.class
-	};
-
 	@Autowired
 	private ClassMapper classMapper;
 
@@ -64,9 +60,17 @@ public class FieldExtender {
 		}
 	}
 
+	public String getWrapperType(FieldDto fld) {
+		return getJavaType(fld, true);
+	}
+
 	public String getJavaType(FieldDto fld) {
+		return getJavaType(fld, fld.isNullable());
+	}
+
+	public String getJavaType(FieldDto fld, boolean nullable) {
 		String javaType;
-		Class<?> cls = getJavaClass(fld);
+		Class<?> cls = getJavaClass(fld, nullable);
 		if (cls == Enum.class) {
 			EnumDto e = enumMapper.get(fld.getErefEnumId());
 			javaType = e.getEnumName();
@@ -78,26 +82,48 @@ public class FieldExtender {
 		return javaType;
 	}
 
-	public Class<?> getJavaClass(FieldDto fld) {
+	public Class<?> getJavaClass(FieldDto fld, boolean nullable) {
 		Class<?> cls = TYPE_MAP.get(fld.getType());
 		if (cls == null) {
 			cls = Object.class;
+		} else if (cls == Boolean.class) {
+			cls = nullable ? Boolean.class : Boolean.TYPE;
 		} else if (cls == Integer.class) {
-			Integer width = fld.getWidth();
-			if (width != null && (width == 1 || width == 2 || width == 4 || width == 8)) {
-				cls = INTEGER_TYPES[log2(width)];
-			}
+			cls = getIntegerClass(fld, nullable);
 		} else if (cls == Double.class) {
-			Integer width = fld.getWidth();
-			if (width != null && width == 4) {
-				cls = Float.class;
-			}
+			cls = getRealClass(fld, nullable);
 		}
 		return cls;
 	}
 
-	public static int log2(int x) {
-		return (int)(Math.log(x) / Math.log(2));
+	private Class<?> getIntegerClass(FieldDto fld, boolean nullable) {
+		Class<?> cls;
+		int width = fld.getWidth();
+		if (width == 0) {
+			cls = nullable ? Integer.class : Integer.TYPE;
+		} else if (width <= 8) {
+			cls = nullable ? Byte.class : Byte.TYPE;
+		} else if (width <= 16) {
+			cls = nullable ? Short.class : Short.TYPE;
+		} else if (width <= 32) {
+			cls = nullable ? Integer.class : Integer.TYPE;
+		} else {
+			cls = nullable ? Long.class : Long.TYPE;
+		}
+		return cls;
+	}
+
+	private Class<?> getRealClass(FieldDto fld, boolean nullable) {
+		Class<?> cls;
+		int width = fld.getWidth();
+		if (width == 0) {
+			cls = nullable ? Double.class : Double.TYPE;
+		} else if (width <= 32) {
+			cls = nullable ? Float.class : Float.TYPE;
+		} else {
+			cls = nullable ? Double.class : Double.TYPE;
+		}
+		return cls;
 	}
 
 	public String getUpperName(FieldDto fld) {
@@ -117,8 +143,12 @@ public class FieldExtender {
 	}
 
 	public boolean isPrimitiveOrEnum(FieldDto fld) {
-		Class<?> cls = getJavaClass(fld);
+		Class<?> cls = getJavaClass(fld, fld.isNullable());
 		return cls.isPrimitive() || cls.isInstance(Enum.class);
+	}
+
+	public boolean isNotNullObject(FieldDto fld) {
+		return !fld.isNullable() && !getJavaClass(fld, false).isPrimitive();
 	}
 
 	public String getColumnName(FieldDto fld) {

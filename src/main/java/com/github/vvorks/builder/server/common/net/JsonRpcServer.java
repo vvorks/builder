@@ -163,9 +163,12 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 				}
 				res.set(KEY_RESULT, toJsonNode(ret));
 			} catch (IOException err) {
+				LOGGER.error(err);
 				setError(res, INVALID_PARAMS, err);
 			} catch (RuntimeException err) {
-				setError(res, INTERNAL_ERROR, err.getCause());
+				Throwable cause = err.getCause() != null ? err.getCause() : err;
+				LOGGER.error(cause);
+				setError(res, INTERNAL_ERROR, cause);
 			}
 		}
 		try {

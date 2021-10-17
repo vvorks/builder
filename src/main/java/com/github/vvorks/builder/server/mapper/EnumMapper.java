@@ -50,12 +50,26 @@ public interface EnumMapper {
 	/**
 	 * 全ての列挙を取得する
 	 *
-	 * @return 取得した列挙
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙のリスト
 	 */
-	public List<EnumDto> listAll(
+	public List<EnumDto> list(
+		@Param("offset") int offset,
+		@Param("limit") int limit);
+
+	/**
+	 * 指定した条件に合致する列挙を取得する
+	 *
+	 * @param enumName 列挙名
+	 * @param title タイトル
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 列挙のリスト
+	 */
+	public List<EnumDto> find(
+		@Param("enumName") String enumName,
+		@Param("title") String title,
 		@Param("offset") int offset,
 		@Param("limit") int limit);
 
@@ -77,6 +91,23 @@ public interface EnumMapper {
 	 */
 	public List<EnumValueDto> listValues(
 		@Param("dto") EnumDto dto,
+		@Param("offset") int offset,
+		@Param("limit") int limit);
+
+	/**
+	 * 指定した条件に合致する列挙値一覧を取得する
+	 *
+	 * @param dto 列挙
+	 * @param code 列挙コード
+	 * @param title タイトル
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 列挙値一覧
+	 */
+	public List<EnumValueDto> findValues(
+		@Param("dto") EnumDto dto,
+		@Param("code") Integer code,
+		@Param("title") String title,
 		@Param("offset") int offset,
 		@Param("limit") int limit);
 

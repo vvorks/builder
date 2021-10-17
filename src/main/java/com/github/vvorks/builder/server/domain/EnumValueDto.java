@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * 列挙値
@@ -13,6 +14,7 @@ public class EnumValueDto {
 	/**
 	 * 列挙名
 	 */
+	@NotNull
 	private String valueId;
 
 	/**
@@ -23,11 +25,12 @@ public class EnumValueDto {
 	/**
 	 * 列挙コード
 	 */
-	private Integer code;
+	private int code;
 
 	/**
 	 * タイトル
 	 */
+	@NotNull
 	private String title;
 
 	/**
@@ -81,7 +84,7 @@ public class EnumValueDto {
 	 *
 	 * @return 列挙コード
 	 */
-	public Integer getCode() {
+	public int getCode() {
 		return this.code;
 	}
 
@@ -90,7 +93,7 @@ public class EnumValueDto {
 	 *
 	 * @param code 設定する列挙コード
 	 */
-	public void setCode(Integer code) {
+	public void setCode(int code) {
 		this.code = code;
 	}
 
@@ -177,7 +180,7 @@ public class EnumValueDto {
 		return
 			Objects.equals(this.valueId, other.valueId) && 
 			this.ownerEnumId == other.ownerEnumId && 
-			Objects.equals(this.code, other.code) && 
+			this.code == other.code && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note)

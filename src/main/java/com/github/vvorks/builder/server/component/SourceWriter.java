@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.server.component;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,9 +35,9 @@ import com.github.vvorks.builder.server.extender.ProjectExtender;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 
 @Component
-public class JavaWriter {
+public class SourceWriter {
 
-	private static final Class<?> THIS = JavaWriter.class;
+	private static final Class<?> THIS = SourceWriter.class;
 	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
 
 	@Autowired
@@ -68,41 +69,44 @@ public class JavaWriter {
 
 	private static final String HBS_EXT = ".hbs";
 
-	public void process() throws Exception {
+	public void process() throws IOException {
 		String now = String.format("%tY%<tm%<td_%<tH%<tM%<tS", new Date());
 		File projectDir = new File("out/" + now + "/"); ////TODO for Debug
 		File javaRootDir = new File(projectDir, SRC_TOP);
 		File resRootDir = new File(projectDir, RES_TOP);
-		List<ProjectDto> projects = projectMapper.listAll(0, 0);
-		Writer writer = new LoggerWriter(LOGGER);
-		TemplateLoader loader = new ClassPathTemplateLoader(HBS_RES);
-		//HBSリソースの取得
-		List<String> hbsFiles = Ios.getResoureNames(this, HBS_RES, f -> f.endsWith(HBS_EXT));
-		for (ProjectDto prj : projects) {
-			File javaCodeDir = new File(javaRootDir, prj.getProjectName().replace('.', '/'));
-			Handlebars hbs = new Handlebars(loader)
-					.prettyPrint(true)
-					.registerHelper("separator", new SeparatorHelper())
-					.registerHelper("java", new SourceHelper(javaCodeDir))
-					.registerHelper("resources", new SourceHelper(resRootDir));
-			Map<String, Object> globalMap = new HashMap<>();
-			globalMap.put("project", prj);
-			Context context = Context.newBuilder(prj)
-					.resolver(
-							new GlobalResolver("global", globalMap),
-							MapValueResolver.INSTANCE,
-							JavaBeanValueResolver.INSTANCE,
-							new ExtenderResolver(
-									projectExtender,
-									classExtender,
-									fieldExtender,
-									enumExtender,
-									enumValueExtender))
-					.build();
-			//とりあえず全部適用
-			for (String s : hbsFiles) {
-				Template t = hbs.compile(s.substring(0, s.lastIndexOf('.')));
-				t.apply(context, writer);
+		List<ProjectDto> projects = projectMapper.list(0, 0);
+		try (
+			Writer writer = new LoggerWriter(LOGGER)
+		) {
+			TemplateLoader loader = new ClassPathTemplateLoader(HBS_RES);
+			//HBSリソースの取得
+			List<String> hbsFiles = Ios.getResoureNames(this, HBS_RES, f -> f.endsWith(HBS_EXT));
+			for (ProjectDto prj : projects) {
+				File javaCodeDir = new File(javaRootDir, prj.getProjectName().replace('.', '/'));
+				Handlebars hbs = new Handlebars(loader)
+						.prettyPrint(true)
+						.registerHelper("separator", new SeparatorHelper())
+						.registerHelper("java", new SourceHelper(javaCodeDir))
+						.registerHelper("resources", new SourceHelper(resRootDir));
+				Map<String, Object> globalMap = new HashMap<>();
+				globalMap.put("project", prj);
+				Context context = Context.newBuilder(prj)
+						.resolver(
+								new GlobalResolver("global", globalMap),
+								MapValueResolver.INSTANCE,
+								JavaBeanValueResolver.INSTANCE,
+								new ExtenderResolver(
+										projectExtender,
+										classExtender,
+										fieldExtender,
+										enumExtender,
+										enumValueExtender))
+						.build();
+				//とりあえず全部適用
+				for (String s : hbsFiles) {
+					Template t = hbs.compile(s.substring(0, s.lastIndexOf('.')));
+					t.apply(context, writer);
+				}
 			}
 		}
 	}

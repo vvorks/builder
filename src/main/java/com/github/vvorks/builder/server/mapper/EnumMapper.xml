@@ -52,7 +52,7 @@
 			F_ENUM_ID = #{ enumId }
 	</select>
 
-	<select id="listAll" resultType="EnumDto">
+	<select id="list" resultType="EnumDto">
 		SELECT
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -62,6 +62,32 @@
 			F_NOTE AS "note"
 		FROM
 			T_ENUM
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="find" resultType="EnumDto">
+		SELECT
+			F_ENUM_ID AS "enumId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_ENUM_NAME AS "enumName",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_ENUM
+		<where>
+			<if test="enumName != null">
+				AND F_ENUM_NAME = #{ enumName }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -96,6 +122,32 @@
 			T_ENUM_VALUE
 		WHERE
 			F_OWNER_ENUM_ID = #{ dto.enumId }
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="findValues" resultType="EnumValueDto">
+		SELECT
+			F_VALUE_ID AS "valueId",
+			F_OWNER_ENUM_ID AS "ownerEnumId",
+			F_CODE AS "code",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_ENUM_VALUE
+		WHERE
+			F_OWNER_ENUM_ID = #{ dto.enumId }
+			<if test="code != null">
+				AND F_CODE = #{ code }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

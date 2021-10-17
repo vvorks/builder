@@ -52,7 +52,7 @@
 			F_PROJECT_ID = #{ projectId }
 	</select>
 
-	<select id="listAll" resultType="ProjectDto">
+	<select id="list" resultType="ProjectDto">
 		SELECT
 			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
@@ -62,6 +62,32 @@
 			F_COPYRIGHTS AS "copyrights"
 		FROM
 			T_PROJECT
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="find" resultType="ProjectDto">
+		SELECT
+			F_PROJECT_ID AS "projectId",
+			F_PROJECT_NAME AS "projectName",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note",
+			F_COPYRIGHTS AS "copyrights"
+		FROM
+			T_PROJECT
+		<where>
+			<if test="projectName != null">
+				AND F_PROJECT_NAME = #{ projectName }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -90,6 +116,32 @@
 		</if>
 	</select>
 
+	<select id="findClasses" resultType="ClassDto">
+		SELECT
+			F_CLASS_ID AS "classId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_CLASS_NAME AS "className",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_CLASS
+		WHERE
+			F_OWNER_PROJECT_ID = #{ dto.projectId }
+			<if test="className != null">
+				AND F_CLASS_NAME = #{ className }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
 	<select id="listEnums" resultType="EnumDto">
 		SELECT
 			F_ENUM_ID AS "enumId",
@@ -102,6 +154,32 @@
 			T_ENUM
 		WHERE
 			F_OWNER_PROJECT_ID = #{ dto.projectId }
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="findEnums" resultType="EnumDto">
+		SELECT
+			F_ENUM_ID AS "enumId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_ENUM_NAME AS "enumName",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_ENUM
+		WHERE
+			F_OWNER_PROJECT_ID = #{ dto.projectId }
+			<if test="enumName != null">
+				AND F_ENUM_NAME = #{ enumName }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

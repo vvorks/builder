@@ -5,6 +5,11 @@ options {
 	/* jjtree options */
 	NODE_CLASS = "com.github.vvorks.builder.server.grammar.ExprNode";
 	TRACK_TOKENS = true;
+	MULTI = true;
+	VISITOR = true;
+	VISITOR_DATA_TYPE = "com.github.vvorks.builder.server.expression.Expression";
+	VISITOR_RETURN_TYPE = "com.github.vvorks.builder.server.expression.Expression";
+	VISITOR_EXCEPTION = "ParseException";
 	/* javacc options */
 	DEBUG_PARSER = false;
 	JAVA_UNICODE_ESCAPE = true;
@@ -18,7 +23,10 @@ options {
 PARSER_BEGIN(ExprParser)
 package com.github.vvorks.builder.server.grammar;
 import java.io.StringReader;
+import org.springframework.stereotype.Component;
 
+@SuppressWarnings("all")
+@Component
 public class ExprParser {
 
 	public static final Token newToken(int ofKind, String tokenImage) {
@@ -78,19 +86,10 @@ MORE : {
   < ~[] >
 }
 
-/* reserved words */
-TOKEN : {
-	<NULL: "null" > |
-	<TRUE: "true" > | <FALSE: "false" > |
-	<THIS: "this" > |
-	<AND: "and"> | <OR: "or"> | <XOR: "xor"> | <NOT: "not"> |
-	<IF:"if"> | <THEN:"then"> | <ELSEIF:"elseif"> | <ELSE:"else"> | <ENDIF: "endif">
-}
-
 /* literals */
 TOKEN : {
 	<INTEGER_LITERAL:
-		<DECIMAL_LITERAL> (["l","L"])? |
+		<DECIMAL_LITERAL> (["l","L","n","N"])? |
 		<HEX_LITERAL> (["l","L"])? |
 		<OCTAL_LITERAL> (["l","L"])?
 	> |
@@ -144,6 +143,15 @@ TOKEN : {
 	>
 }
 
+/* reserved words */
+TOKEN : {
+	<NULL: "null" > |
+	<TRUE: "true" > | <FALSE: "false" > |
+	<THIS: "this" > |
+	<AND: "and"> | <OR: "or"> | <XOR: "xor"> | <NOT: "not"> |
+	<IF:"if"> | <THEN:"then"> | <ELSEIF:"elseif"> | <ELSE:"else"> | <ENDIF: "endif">
+}
+
 /* identifiers */
 TOKEN : {
 	< IDENTIFIER: <LETTER> (<PART_LETTER>)* > |
@@ -162,32 +170,14 @@ TOKEN : {
 
 /* operators */
 TOKEN : {
-	< ASSIGN: "=" >		| < LT: "<" >		| < BANG: "!" >		| < TILDE: "~" > |
-	< HOOK: "?" >		| < COLON: ":" >	|
-	< EQ: "==" >		| < LE: "<=" >		| < GE: ">=" >		| < NE: "!=" >	|
-	< LTGT: "<>" >		|
+	< HOOK: "?" >		| < COLON: ":" >	| < ASSIGN: "=" >	|
+	< BANG: "!" >		| < TILDE: "~" >	|
+	< EQ: "==" >		| < NE: "!=" >		| < LTGT: "<>" >	|
+	< LT: "<" >			| < LE: "<=" >		| < GT: ">" >		| < GE: ">=" > |
 	< SC_OR: "||" >		| < SC_AND: "&&" >	|
 	< PLUS: "+" >		| < MINUS: "-" >	| < STAR: "*" >		| < SLASH: "/" > |
 	< BIT_AND: "&" >	| < BIT_OR: "|" >	| < BIT_XOR: "^" >	| < REM: "%" > |
-	< LSHIFT: "<<" >	|
 	< TO: "..">			| < ELLIPSIS: "..." >
-}
-
-/* >'s need special attention due to generics syntax. */
-TOKEN : {
-	< RUNSIGNEDSHIFT: ">>>" > 	{
-		matchedToken.kind = GT;
-		((ExprToken)matchedToken).realKind = RUNSIGNEDSHIFT;
-		input_stream.backup(2);
-		matchedToken.image = ">";
-	} |
-	< RSIGNEDSHIFT: ">>" > 	{
-		matchedToken.kind = GT;
-		((ExprToken)matchedToken).realKind = RSIGNEDSHIFT;
-		input_stream.backup(1);
-		matchedToken.image = ">";
-	} |
-	< GT: ">" >
 }
 
 /*
@@ -210,7 +200,7 @@ void OrExpression() #BinaryExpression(>1) : {} {
 }
 
 void OrOperator() #BinaryOperator : {} {
-	<OR> | "||" | "|"
+	<OR> | "||" //| "|"
 }
 
 void AndExpression() #BinaryExpression(>1) : {} {
@@ -218,7 +208,7 @@ void AndExpression() #BinaryExpression(>1) : {} {
 }
 
 void AndOperator() #BinaryOperator : {} {
-	<AND> | "&&" | "&"
+	<AND> | "&&" //| "&"
 }
 
 void XorExpression() #BinaryExpression(>1) : {} {
@@ -238,33 +228,11 @@ void EqualityOperator() #BinaryOperator : {} {
 }
 
 void RelationalExpression() #BinaryExpression(>1) : {} {
-	ShiftExpression() ( RelationalOperator() ShiftExpression() )*
+	AdditiveExpression() ( RelationalOperator() AdditiveExpression() )*
 }
 
 void RelationalOperator() #BinaryOperator : {} {
 	"<" | ">" | "<=" | ">="
-}
-
-void ShiftExpression() #BinaryExpression(>1) : {} {
-  AdditiveExpression() ( ShiftOperator() AdditiveExpression() )*
-}
-
-void ShiftOperator() #BinaryOperator : {} {
-	"<<" | RSIGNEDSHIFT() | RUNSIGNEDSHIFT()
-}
-
-void RUNSIGNEDSHIFT() #void : {} {
-	(
-		LOOKAHEAD({ getToken(1).kind == GT && ((ExprToken)getToken(1)).realKind == RUNSIGNEDSHIFT} )
-		">" ">" ">"
-	)
-}
-
-void RSIGNEDSHIFT() #void : {} {
-	(
-		LOOKAHEAD({ getToken(1).kind == GT && ((ExprToken)getToken(1)).realKind == RSIGNEDSHIFT} )
-		">" ">"
-	)
 }
 
 void AdditiveExpression() #BinaryExpression(>1) : {} {
@@ -298,7 +266,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression(>1) : {} {
 }
 
 void UnaryOperator() #UnaryOperator : {} {
-	<NOT> | "~" | "!"
+	<NOT> | "!" //| "~"
 }
 
 void PrimaryExpression() : {} {
@@ -307,21 +275,15 @@ void PrimaryExpression() : {} {
 
 void PrimaryPrefix() #void : {} {
 	Literal() |
-	This() |
 	ParenExpression() |
 	IfExpression() |
 	BlockExpression() |
-	Identifier()
+	PropertyOrInvocation()
 }
 
 void PrimarySuffix() #void : {} {
-	Arguments() |
 	ArrayAccess() |
-	"." Identifier()
-}
-
-void This(): {} {
-	"this"
+	"." PropertyOrInvocation()
 }
 
 void ParenExpression(): {} {
@@ -348,24 +310,22 @@ void BlockExpression(): {} {
 	"}"
 }
 
-//void Name(): {} {
-//	Identifier() ( LOOKAHEAD(2) "." Identifier() )*
-//}
+void PropertyOrInvocation() #void : {} {
+	LOOKAHEAD(2) Invocation() | Property()
+}
 
-void Identifier(): {} {
+void Property(): {} {
 	<IDENTIFIER>
+}
+
+void Invocation(): {} {
+	<IDENTIFIER> "("
+	[ Expression() ( "," Expression() )* ]
+	")"
 }
 
 void ArrayAccess(): {} {
 	"[" Expression() "]"
-}
-
-void Arguments(): {} {
-	"("
-		[
-			Expression() ( "," Expression() )*
-		]
-	")"
 }
 
 void Literal() #void : {} {

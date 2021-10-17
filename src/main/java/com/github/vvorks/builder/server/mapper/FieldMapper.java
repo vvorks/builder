@@ -50,12 +50,36 @@ public interface FieldMapper {
 	/**
 	 * 全てのフィールドを取得する
 	 *
-	 * @return 取得したフィールド
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return フィールドのリスト
 	 */
-	public List<FieldDto> listAll(
+	public List<FieldDto> list(
+		@Param("offset") int offset,
+		@Param("limit") int limit);
+
+	/**
+	 * 指定した条件に合致するフィールドを取得する
+	 *
+	 * @param fieldName フィールド名
+	 * @param type フィールド型
+	 * @param width フィールド型の幅
+	 * @param scale フィールド型精度
+	 * @param pk プライマリキー
+	 * @param nullable NULL許容
+	 * @param title タイトル
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return フィールドのリスト
+	 */
+	public List<FieldDto> find(
+		@Param("fieldName") String fieldName,
+		@Param("type") DataType type,
+		@Param("width") Integer width,
+		@Param("scale") Integer scale,
+		@Param("pk") Boolean pk,
+		@Param("nullable") Boolean nullable,
+		@Param("title") String title,
 		@Param("offset") int offset,
 		@Param("limit") int limit);
 

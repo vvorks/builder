@@ -1,19 +1,35 @@
 package com.github.vvorks.builder.server.controller;
 
-import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.util.Logger;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
+import com.github.vvorks.builder.server.component.DebugWriter;
+import com.github.vvorks.builder.server.component.JavaTextWriter;
+import com.github.vvorks.builder.server.domain.ClassDto;
+import com.github.vvorks.builder.server.domain.ProjectDto;
+import com.github.vvorks.builder.server.expression.Expression;
 import com.github.vvorks.builder.server.grammar.ExprNode;
 import com.github.vvorks.builder.server.grammar.ExprParser;
+import com.github.vvorks.builder.server.grammar.ExpressionBuilder;
 import com.github.vvorks.builder.server.grammar.ParseException;
+import com.github.vvorks.builder.server.mapper.ProjectMapper;
 
 @JsonRpcController("/rpc")
 public class RpcController {
 
-	private static final Class<?> THIS = RpcController.class;
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	@Autowired
+	private ExprParser parser;
+
+	@Autowired
+	private ExpressionBuilder builder;
+
+	@Autowired
+	private ProjectMapper projectMapper;
 
 //	@Autowired
 //	private JsonRpcServer server;
@@ -25,16 +41,22 @@ public class RpcController {
 
 	@JsonRpcMethod("parse")
 	public String parse(@JsonRpcParam("code") String code) {
-		ExprParser parser = new ExprParser();
-		String result;
 		try {
-			ExprNode node = parser.parse(code);
-			result = node.dump("\t", 0);
+			ExprNode result = parser.parse(code);
+			//test
+			ProjectDto prj = projectMapper.find("com.github.vvorks.builder", null, 0, 0).get(0);
+			ClassDto cls = projectMapper.findClasses(prj, "Field", null, 0, 0).get(0);
+			Expression exp = builder.build(result, prj, cls);
+			//test
+			String r = exp.accept(new JavaTextWriter(), null);
+			String d = exp.accept(new DebugWriter(), 0);
+			return r + "\n\n" + d + "\n\n" + result.dump(" ", 0);
 		} catch (ParseException err) {
-			LOGGER.error(err);
-			result = err.getLocalizedMessage();
+			StringWriter out = new StringWriter();
+			PrintWriter writer = new PrintWriter(out);
+			err.printStackTrace(writer);
+			return out.toString();
 		}
-		return result;
 	}
 
 }

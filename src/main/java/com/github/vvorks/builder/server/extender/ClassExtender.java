@@ -3,6 +3,7 @@ package com.github.vvorks.builder.server.extender;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -19,6 +20,11 @@ import com.github.vvorks.builder.server.mapper.ClassMapper;
 public class ClassExtender {
 
 	public static final String TABLE_PREFIX = "T_";
+
+	private static EnumSet<DataType> FIND_TYPES = EnumSet.of(
+			DataType.BOOLEAN,
+			DataType.INTEGER, DataType.REAL, DataType.NUMERIC,
+			DataType.DATE, DataType.STRING, DataType.ENUM_REF);
 
 	@Autowired
 	private ClassMapper classMapper;
@@ -38,20 +44,16 @@ public class ClassExtender {
 		return TABLE_PREFIX + Strings.toUpperSnake(cls.getClassName());
 	}
 
-	public List<FieldDto> getFields(ClassDto cls) {
-		return classMapper.listFields(cls, 0, 0);
-	}
-
 	public List<FieldDto> getProperties(ClassDto cls) {
 		return getProperties(cls, (fld) -> true);
 	}
 
 	public List<FieldDto> getKeys(ClassDto cls) {
-		return getProperties(cls, (fld) ->  (fld.isPk() != null && fld.isPk()));
+		return getProperties(cls, (fld) ->  fld.isPk());
 	}
 
 	public List<FieldDto> getNotKeys(ClassDto cls) {
-		return getProperties(cls, (fld) -> !(fld.isPk() != null && fld.isPk()));
+		return getProperties(cls, (fld) -> !fld.isPk());
 	}
 
 	private List<FieldDto> getProperties(ClassDto cls, Predicate<FieldDto> filter) {
@@ -66,23 +68,30 @@ public class ClassExtender {
 	}
 
 	public List<FieldDto> getFieldRefs(ClassDto cls) {
+		return getFields(cls, fld -> fld.getType() == DataType.FIELD_REF);
+	}
+
+	public List<FieldDto> getInvertRefs(ClassDto cls) {
+		return getFields(cls, fld -> fld.getType() == DataType.INVERT_REF);
+	}
+
+	public List<FieldDto> getFindConditions(ClassDto cls) {
+		return getFields(cls, (fld) ->
+				!fld.isPk() && !fld.isNullable() && FIND_TYPES.contains(fld.getType()));
+	}
+
+	public List<FieldDto> getFields(ClassDto cls, Predicate<FieldDto> filter) {
 		List<FieldDto> result = new ArrayList<>();
 		for (FieldDto field : getFields(cls)) {
-			if (field.getType() == DataType.FIELD_REF) {
+			if (filter.test(field)) {
 				result.add(field);
 			}
 		}
 		return result;
 	}
 
-	public List<FieldDto> getInvertRefs(ClassDto cls) {
-		List<FieldDto> result = new ArrayList<>();
-		for (FieldDto field : getFields(cls)) {
-			if (field.getType() == DataType.INVERT_REF) {
-				result.add(field);
-			}
-		}
-		return result;
+	public List<FieldDto> getFields(ClassDto cls) {
+		return classMapper.listFields(cls, 0, 0);
 	}
 
 }

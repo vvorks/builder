@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * 列挙
@@ -25,11 +26,13 @@ public class EnumDto {
 	/**
 	 * 列挙名
 	 */
+	@NotNull
 	private String enumName;
 
 	/**
 	 * タイトル
 	 */
+	@NotNull
 	private String title;
 
 	/**

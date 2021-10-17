@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.vvorks.builder.BuilderApplication;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.util.Logger;
-import com.github.vvorks.builder.server.component.JavaWriter;
+import com.github.vvorks.builder.server.component.SourceWriter;
 import com.github.vvorks.builder.server.component.XlsxLoader;
 
 
@@ -27,7 +27,7 @@ public class ApiController {
 	private XlsxLoader loader;
 
 	@Autowired
-	private JavaWriter writer;
+	private SourceWriter writer;
 
 	@GetMapping("/load")
 	public String load(@RequestParam(value = "name", defaultValue = "input") String name) {

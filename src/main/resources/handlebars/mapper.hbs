@@ -63,14 +63,33 @@ public interface {{className}}Mapper {
 	/**
 	 * 全ての{{title}}を取得する
 	 *
-	 * @return 取得した{{title}}
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return {{title}}のリスト
 	 */
-	public List<{{className}}Dto> listAll(
+	public List<{{className}}Dto> list(
 		@Param("offset") int offset,
 		@Param("limit") int limit);
+
+	{{#if findConditions}}
+	/**
+	 * 指定した条件に合致する{{title}}を取得する
+	 *
+	{{#each findConditions}}
+	 * @param {{fieldName}} {{title}}
+	{{/each}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{title}}のリスト
+	 */
+	public List<{{className}}Dto> find(
+		{{#each findConditions}}
+		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}},
+		{{/each}}
+		@Param("offset") int offset,
+		@Param("limit") int limit);
+	{{/if}}
+
 	{{#each fieldRefs}}
 
 	{{#if title}}
@@ -83,6 +102,7 @@ public interface {{className}}Mapper {
 	{{/if}}
 	public {{fref.owner.className}}Dto get{{upperName}}({{../className}}Dto dto);
 	{{/each}}
+
 	{{#each invertRefs}}
 
 	{{#if title}}
@@ -99,6 +119,29 @@ public interface {{className}}Mapper {
 		@Param("dto") {{../className}}Dto dto,
 		@Param("offset") int offset,
 		@Param("limit") int limit);
+
+	{{#if fref.owner.findConditions}}
+	{{#if title}}
+	/**
+	 * 指定した条件に合致する{{title}}を取得する
+	 *
+	 * @param dto {{../titleOrName}}
+	{{#each fref.owner.findConditions}}
+	 * @param {{fieldName}} {{title}}
+	{{/each}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{title}}
+	 */
+	{{/if}}
+	public List<{{fref.owner.className}}Dto> find{{upperName}}(
+		@Param("dto") {{../className}}Dto dto,
+		{{#each fref.owner.findConditions}}
+		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}},
+		{{/each}}
+		@Param("offset") int offset,
+		@Param("limit") int limit);
+	{{/if}}
 	{{/each}}
 
 }
@@ -157,7 +200,7 @@ public interface {{className}}Mapper {
 			{{/each}}
 	</select>
 
-	<select id="listAll" resultType="{{className}}Dto">
+	<select id="list" resultType="{{className}}Dto">
 		SELECT
 			{{#each properties}}
 			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
@@ -171,6 +214,31 @@ public interface {{className}}Mapper {
 		</if>
 		</if>
 	</select>
+
+	{{#if findConditions}}
+	<select id="find" resultType="{{className}}Dto">
+		SELECT
+			{{#each properties}}
+			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
+		FROM
+			{{tableName}}
+		<where>
+			{{#each findConditions}}
+			<if test="{{fieldName}} != null">
+				AND {{columnName}} = #{ {{fieldName}} }
+			</if>
+			{{/each}}
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	{{/if}}
+
 	{{#each fieldRefs}}
 
 	<select id="get{{upperName}}" resultType="{{fref.owner.className}}Dto">
@@ -186,6 +254,7 @@ public interface {{className}}Mapper {
 			{{/each}}
 	</select>
 	{{/each}}
+
 	{{#each invertRefs}}
 
 	<select id="list{{upperName}}" resultType="{{fref.owner.className}}Dto">
@@ -206,6 +275,37 @@ public interface {{className}}Mapper {
 		</if>
 		</if>
 	</select>
+
+	{{#if fref.owner.findConditions}}
+	<select id="find{{upperName}}" resultType="{{fref.owner.className}}Dto">
+		SELECT
+			{{#each fref.owner.properties}}
+			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
+		FROM
+			{{fref.owner.tableName}}
+		WHERE
+			{{#each invKeyFields}}
+			{{invKeyColumnName}} = #{ dto.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+			{{#each fref.owner.findConditions}}
+			<if test="{{fieldName}} != null">
+				AND {{columnName}} = #{ {{fieldName}} }
+			</if>
+			{{/each}}
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	{{/if}}
+
+
+
+
+
 	{{/each}}
 
 </mapper>
