@@ -61,6 +61,7 @@ public interface ClassMapper {
 	/**
 	 * 指定した条件に合致するクラスを取得する
 	 *
+	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
 	 * @param className クラス名
 	 * @param title タイトル
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -68,6 +69,7 @@ public interface ClassMapper {
 	 * @return クラスのリスト
 	 */
 	public List<ClassDto> find(
+		@Param("ownerProjectId") Integer ownerProjectId,
 		@Param("className") String className,
 		@Param("title") String title,
 		@Param("offset") int offset,
@@ -98,10 +100,14 @@ public interface ClassMapper {
 	 * 指定した条件に合致するフィールド一覧を取得する
 	 *
 	 * @param dto クラス
+	 * @param ownerClassId 所属クラスのクラスID
 	 * @param fieldName フィールド名
 	 * @param type フィールド型
 	 * @param width フィールド型の幅
 	 * @param scale フィールド型精度
+	 * @param crefClassId クラス参照先のクラスID
+	 * @param erefEnumId 列挙参照先の列挙ID
+	 * @param frefFieldId フィールド参照先のフィールドID
 	 * @param pk プライマリキー
 	 * @param nullable NULL許容
 	 * @param title タイトル
@@ -111,10 +117,14 @@ public interface ClassMapper {
 	 */
 	public List<FieldDto> findFields(
 		@Param("dto") ClassDto dto,
+		@Param("ownerClassId") Integer ownerClassId,
 		@Param("fieldName") String fieldName,
 		@Param("type") DataType type,
 		@Param("width") Integer width,
 		@Param("scale") Integer scale,
+		@Param("crefClassId") Integer crefClassId,
+		@Param("erefEnumId") Integer erefEnumId,
+		@Param("frefFieldId") Integer frefFieldId,
 		@Param("pk") Boolean pk,
 		@Param("nullable") Boolean nullable,
 		@Param("title") String title,

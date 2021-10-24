@@ -76,18 +76,16 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	}
 
 	private FieldDto getField(String name, ClassDto cls) {
-		List<FieldDto> fields = classMapper.findFields(cls, name, null, null, null, null, null, null, 0, 0);
+		List<FieldDto> fields = classMapper.findFields(cls, null, name, null, null, null, null, null, null, null, null, null, 0, 0);
 		return (fields.size() == 1) ? fields.get(0) : null;
 	}
 
 	private ClassDto getReturnClass(FieldDto fld) {
-		FieldDto resultField = fieldMapper.get(fld.getFrefFieldId());
-		ClassDto returnClass = classMapper.get(resultField.getOwnerClassId());
-		return returnClass;
+		return fieldMapper.getCref(fld);
 	}
 
 	private EnumDto getEnum(String name, ProjectDto prj) {
-		List<EnumDto> enums = projectMapper.findEnums(prj, name, null, 0, 0);
+		List<EnumDto> enums = projectMapper.findEnums(prj, null, name, null, null, 0, 0);
 		return (enums.size() == 1) ? enums.get(0) : null;
 	}
 
@@ -119,13 +117,23 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		int n = node.size();
 		int i = 0;
 		Expression lValue = node.getChild(i++).jjtAccept(this, unused);
-		ExprNode operator = node.getChild(i++);
+		ExprNode opNode = node.getChild(i++);
 		Expression rValue = node.getChild(i++).jjtAccept(this, unused);
-		lValue = newBinaryOperation(lValue, operator, rValue);
+		Operation op1 = newBinaryOperation(lValue, opNode, rValue);
+		lValue = op1;
 		while (i < n) {
-			operator = node.getChild(i++);
+			opNode = node.getChild(i++);
 			rValue = node.getChild(i++).jjtAccept(this, unused);
-			lValue = newBinaryOperation(lValue, operator, rValue);
+			Operation op2 = newBinaryOperation(lValue, opNode, rValue);
+			if (op1.getCode() == op2.getCode()) {
+				op1.addOperand(rValue);
+				op1.setType(op2.getType());
+				op1.setWidth(op2.getWidth());
+				op1.setScale(op2.getScale());
+			} else {
+				op1 = op2;
+				lValue = op1;
+			}
 		}
 		return lValue;
 	}
@@ -278,8 +286,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 
 	private Operation.Code getBinaryOperator(ExprNode node) {
 		ExprToken t = (ExprToken) node.firstToken;
-		int kind = (t.kind == ExprParserConstants.GT) ? t.realKind : t.kind;
-		return BINARY_OP_MAP.get(kind);
+		return BINARY_OP_MAP.get(t.kind);
 	}
 
 	private static final EnumSet<DataType> NUMBER_TYPES =
@@ -354,9 +361,13 @@ public class ExpressionBuilder implements ExprParserVisitor {
 			FieldDto fld;
 			EnumDto enm;
 			if ((fld = getField(name, context)) != null) {
-				lValue = new FieldRef(fld);
+				Operation op = new Operation(Operation.Code.GET);
+				op.addOperandWithType(new FieldRef(fld));
+				lValue = op;
 			} else if ((enm = getEnum(name, project)) != null) {
-				lValue = new EnumRef(enm);
+				Operation op = new Operation(Operation.Code.GET);
+				op.addOperandWithType(new EnumRef(enm));
+				lValue = op;
 			} else {
 				throw new SemanticException(UNDEFINED_PROPERTY, child);
 			}
@@ -366,16 +377,17 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		default:
 			break;
 		}
-		Expression last = lValue;
 		while (i < n) {
 			child = node.getChild(i++);
 			Expression rValue = child.jjtAccept(this, unused);
+			Operation op = (Operation) lValue;
+			Expression last = op.getLastOperand();
 			if (last instanceof FieldRef) {
 				switch (child.id) {
 				case ExprParserTreeConstants.JJTPROPERTY:
 					String rName = ((UnresolvedProperty)rValue).getName();
 					FieldDto fld = ((FieldRef) last).getDto();
-					if (fld.getType() != DataType.FIELD_REF) {
+					if (fld.getType() != DataType.REF) {
 						throw new SemanticException(TYPE_UNMATCH, child);
 					}
 					ClassDto retCls = getReturnClass(fld);
@@ -384,8 +396,11 @@ public class ExpressionBuilder implements ExprParserVisitor {
 					} else {
 						throw new SemanticException(UNDEFINED_PROPERTY, child);
 					}
-					lValue = newPrimaryOperation(lValue, Operation.Code.GET, rValue);
-					last = rValue;
+					if (op.getCode() == Operation.Code.GET) {
+						op.addOperandWithType(rValue);
+					} else {
+						lValue = newPrimaryOperation(lValue, Operation.Code.GET, rValue);
+					}
 					break;
 				case ExprParserTreeConstants.JJTARRAYACCESS:
 				case ExprParserTreeConstants.JJTINVOCATION:
@@ -398,13 +413,17 @@ public class ExpressionBuilder implements ExprParserVisitor {
 				case ExprParserTreeConstants.JJTPROPERTY:
 					String rName = ((UnresolvedProperty)rValue).getName();
 					EnumDto enm = ((EnumRef) last).getDto();
-					EnumValueDto ev = getEnumValue(rName, enm);
-					if (ev == null) {
+					EnumValueDto ev;
+					if ((ev = getEnumValue(rName, enm)) != null) {
+						rValue = new EnumValueRef(ev);
+					} else {
 						throw new SemanticException(UNDEFINED_PROPERTY, child);
 					}
-					rValue = new EnumValueRef(ev);
-					lValue = newPrimaryOperation(lValue, Operation.Code.GET, rValue);
-					last = rValue;
+					if (op.getCode() == Operation.Code.GET) {
+						op.addOperandWithType(rValue);
+					} else {
+						lValue = newPrimaryOperation(lValue, Operation.Code.GET, rValue);
+					}
 					break;
 				case ExprParserTreeConstants.JJTARRAYACCESS:
 				case ExprParserTreeConstants.JJTINVOCATION:
@@ -423,8 +442,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		Operation result;
 		result = new Operation(code);
 		result.addOperand(lValue);
-		result.addOperand(rValue);
-		result.setType(rValue.getType());
+		result.addOperandWithType(rValue);
 		return result;
 	}
 
@@ -433,8 +451,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		ExprNode child = node.getChild(0);
 		Expression childExpr = child.jjtAccept(this, unused);
 		Operation op = new Operation(Operation.Code.PAREN);
-		op.setType(childExpr.getType());
-		op.addOperand(childExpr);
+		op.addOperandWithType(childExpr);
 		return op;
 	}
 

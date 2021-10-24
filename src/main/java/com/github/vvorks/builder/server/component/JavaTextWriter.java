@@ -21,30 +21,6 @@ import com.github.vvorks.builder.server.expression.StringLiteral;
 
 public class JavaTextWriter implements Expression.Visitor<Object, String> {
 
-//	private void write0(Expression exp, PrintWriter writer, int depth) {
-//		writer.print(Strings.repeat("    ", depth));
-//		writer.print(exp.getClass().getSimpleName());
-//		writer.print(":");
-//		writer.print(exp.getType());
-//		writer.print("(");
-//		writer.print(exp.getWidth());
-//		writer.print(",");
-//		writer.print(exp.getScale());
-//		writer.print(")");
-//		writer.print("  ");
-//		if (exp instanceof Operation) {
-//			Operation op = (Operation) exp;
-//			writer.print(op.getCode());
-//			writer.println();
-//			for (Expression se : op.getOperands()) {
-//				write0(se, writer, depth + 1);
-//			}
-//		} else {
-//			writer.print(exp.getJavaText());
-//			writer.println();
-//		}
-//	}
-
 	private static final EnumMap<Operation.Code, String> SYMBOL_MAP = new EnumMap<>(Operation.Code.class);
 	static {
 		SYMBOL_MAP.put(Operation.Code.OR, "||");
@@ -85,19 +61,15 @@ public class JavaTextWriter implements Expression.Visitor<Object, String> {
 			sb.append(")");
 		} else if (operands.size() == 1) {
 			String symbol = SYMBOL_MAP.get(code);
-			sb.append("(");
 			sb.append(symbol);
 			sb.append(operands.get(0).accept(this, option));
-			sb.append(")");
 		} else {
 			String symbol = SYMBOL_MAP.get(code);
-			sb.append("(");
 			sb.append(operands.get(0).accept(this, option));
 			for (int i = 1; i < operands.size(); i++) {
 				sb.append(symbol);
 				sb.append(operands.get(i).accept(this, option));
 			}
-			sb.append(")");
 		}
 		return sb.toString();
 	}

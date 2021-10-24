@@ -103,6 +103,7 @@
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_ENUM_NAME AS "enumName",
+			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"

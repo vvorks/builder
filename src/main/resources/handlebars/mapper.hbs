@@ -90,7 +90,7 @@ public interface {{className}}Mapper {
 		@Param("limit") int limit);
 	{{/if}}
 
-	{{#each fieldRefs}}
+	{{#each refs}}
 
 	{{#if title}}
 	/**
@@ -100,10 +100,10 @@ public interface {{className}}Mapper {
 	 * @return {{title}}
 	 */
 	{{/if}}
-	public {{fref.owner.className}}Dto get{{upperName}}({{../className}}Dto dto);
+	public {{cref.className}}Dto get{{upperName}}({{../className}}Dto dto);
 	{{/each}}
 
-	{{#each invertRefs}}
+	{{#each sets}}
 
 	{{#if title}}
 	/**
@@ -239,15 +239,15 @@ public interface {{className}}Mapper {
 	</select>
 	{{/if}}
 
-	{{#each fieldRefs}}
+	{{#each refs}}
 
-	<select id="get{{upperName}}" resultType="{{fref.owner.className}}Dto">
+	<select id="get{{upperName}}" resultType="{{cref.className}}Dto">
 		SELECT
-			{{#each fref.owner.properties}}
+			{{#each cref.properties}}
 			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
 			{{/each}}
 		FROM
-			{{fref.owner.tableName}}
+			{{cref.tableName}}
 		WHERE
 			{{#each refKeyFields}}
 			{{refKeyColumnName}} = #{ {{refKeyFieldName}} }{{#separator}} AND {{/separator}}
@@ -255,7 +255,7 @@ public interface {{className}}Mapper {
 	</select>
 	{{/each}}
 
-	{{#each invertRefs}}
+	{{#each sets}}
 
 	<select id="list{{upperName}}" resultType="{{fref.owner.className}}Dto">
 		SELECT
@@ -301,11 +301,6 @@ public interface {{className}}Mapper {
 		</if>
 	</select>
 	{{/if}}
-
-
-
-
-
 	{{/each}}
 
 </mapper>

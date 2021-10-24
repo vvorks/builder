@@ -45,7 +45,7 @@ public class RpcController {
 			ExprNode result = parser.parse(code);
 			//test
 			ProjectDto prj = projectMapper.find("com.github.vvorks.builder", null, 0, 0).get(0);
-			ClassDto cls = projectMapper.findClasses(prj, "Field", null, 0, 0).get(0);
+			ClassDto cls = projectMapper.findClasses(prj, null, "Field", null, 0, 0).get(0);
 			Expression exp = builder.build(result, prj, cls);
 			//test
 			String r = exp.accept(new JavaTextWriter(), null);

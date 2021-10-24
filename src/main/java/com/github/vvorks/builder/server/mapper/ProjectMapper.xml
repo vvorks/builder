@@ -128,6 +128,9 @@
 			T_CLASS
 		WHERE
 			F_OWNER_PROJECT_ID = #{ dto.projectId }
+			<if test="ownerProjectId != null">
+				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
+			</if>
 			<if test="className != null">
 				AND F_CLASS_NAME = #{ className }
 			</if>
@@ -147,6 +150,7 @@
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_ENUM_NAME AS "enumName",
+			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
@@ -167,6 +171,7 @@
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_ENUM_NAME AS "enumName",
+			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
@@ -174,8 +179,14 @@
 			T_ENUM
 		WHERE
 			F_OWNER_PROJECT_ID = #{ dto.projectId }
+			<if test="ownerProjectId != null">
+				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
+			</if>
 			<if test="enumName != null">
 				AND F_ENUM_NAME = #{ enumName }
+			</if>
+			<if test="encodeString != null">
+				AND F_ENCODE_STRING = #{ encodeString }
 			</if>
 			<if test="title != null">
 				AND F_TITLE = #{ title }

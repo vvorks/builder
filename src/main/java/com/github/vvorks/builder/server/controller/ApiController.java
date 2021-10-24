@@ -3,7 +3,6 @@ package com.github.vvorks.builder.server.controller;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +31,10 @@ public class ApiController {
 	@GetMapping("/load")
 	public String load(@RequestParam(value = "name", defaultValue = "input") String name) {
 		try {
+			long t1 = System.currentTimeMillis();
 			loader.process(new File(name + ".xlsx"));
-			return done();
+			long t2 = System.currentTimeMillis();
+			return done("load", t1, t2);
 		} catch (Exception err) {
 			LOGGER.error(err, "ERROR");
 			StringWriter w = new StringWriter();
@@ -45,8 +46,10 @@ public class ApiController {
 	@GetMapping("/write")
 	public String write(@RequestParam(value = "name", defaultValue = "input") String name) {
 		try {
+			long t1 = System.currentTimeMillis();
 			writer.process();
-			return done();
+			long t2 = System.currentTimeMillis();
+			return done("write", t1, t2);
 		} catch (Exception err) {
 			LOGGER.error(err, "ERROR");
 			StringWriter w = new StringWriter();
@@ -65,7 +68,7 @@ public class ApiController {
 	@GetMapping(path="/system/restart")
 	public String restart() {
 		BuilderApplication.restart();
-		return done();
+		return "restart ok";
 	}
 
 	/**
@@ -78,11 +81,15 @@ public class ApiController {
 	@GetMapping(path="/system/stop")
 	public String stop() {
 		BuilderApplication.stop();
-		return done();
+		return "stop ok";
 	}
 
-	private String done() {
-		return String.format("done at %tY/%<tm/%<td %<tH:%<tM:%<tS", new Date());
+	private String done(String name, long t1, long t2) {
+		return String.format("%s: %tY/%<tm/%<td %<tH:%<tM:%<tS - %tY/%<tm/%<td %<tH:%<tM:%<tS (%d msec)",
+				name,
+				t1,
+				t2,
+				t2 - t1);
 	}
 
 }

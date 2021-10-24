@@ -3,7 +3,6 @@ package com.github.vvorks.builder.server.extender;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -20,11 +19,6 @@ import com.github.vvorks.builder.server.mapper.ClassMapper;
 public class ClassExtender {
 
 	public static final String TABLE_PREFIX = "T_";
-
-	private static EnumSet<DataType> FIND_TYPES = EnumSet.of(
-			DataType.BOOLEAN,
-			DataType.INTEGER, DataType.REAL, DataType.NUMERIC,
-			DataType.DATE, DataType.STRING, DataType.ENUM_REF);
 
 	@Autowired
 	private ClassMapper classMapper;
@@ -67,17 +61,16 @@ public class ClassExtender {
 		return props;
 	}
 
-	public List<FieldDto> getFieldRefs(ClassDto cls) {
-		return getFields(cls, fld -> fld.getType() == DataType.FIELD_REF);
+	public List<FieldDto> getRefs(ClassDto cls) {
+		return getFields(cls, fld -> fld.getType() == DataType.REF);
 	}
 
-	public List<FieldDto> getInvertRefs(ClassDto cls) {
-		return getFields(cls, fld -> fld.getType() == DataType.INVERT_REF);
+	public List<FieldDto> getSets(ClassDto cls) {
+		return getFields(cls, fld -> fld.getType() == DataType.SET);
 	}
 
 	public List<FieldDto> getFindConditions(ClassDto cls) {
-		return getFields(cls, (fld) ->
-				!fld.isPk() && !fld.isNullable() && FIND_TYPES.contains(fld.getType()));
+		return getProperties(cls, (fld) -> !fld.isPk() && !fld.isNullable());
 	}
 
 	public List<FieldDto> getFields(ClassDto cls, Predicate<FieldDto> filter) {

@@ -3,31 +3,39 @@
  */
 package com.github.vvorks.builder.server.handler;
 
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.apache.ibatis.type.BaseTypeHandler;
+import org.apache.ibatis.type.JdbcType;
+
 import com.github.vvorks.builder.server.domain.DataType;
 
 /**
  * データ型のタイプハンドラ
  */
-public class DataTypeTypeHandler extends EnumTypeHandler<DataType> {
+public class DataTypeTypeHandler extends BaseTypeHandler<DataType> {
 
 	@Override
-	public String encodeString(DataType obj) {
-		return obj.name();
+	public void setNonNullParameter(PreparedStatement ps, int index, DataType parameter, JdbcType jdbcType) throws SQLException {
+		ps.setString(index, parameter.name());
 	}
 
 	@Override
-	public int encodeInt(DataType obj) {
-		return obj.code();
+	public DataType getNullableResult(ResultSet rs, String columnName) throws SQLException {
+		return getNullableResult(rs, rs.findColumn(columnName));
 	}
 
 	@Override
-	public DataType decodeString(String value) {
-		return DataType.valueOf(value);
+	public DataType getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+		return DataType.valueOf(rs.getString(columnIndex));
 	}
 
 	@Override
-	public DataType decodeInt(int value) {
-		return DataType.valueOf(value);
+	public DataType getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+		return DataType.valueOf(cs.getString(columnIndex));
 	}
 
 }

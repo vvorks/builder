@@ -61,14 +61,18 @@ public interface EnumMapper {
 	/**
 	 * 指定した条件に合致する列挙を取得する
 	 *
+	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
 	 * @param enumName 列挙名
+	 * @param encodeString 文字列エンコード
 	 * @param title タイトル
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙のリスト
 	 */
 	public List<EnumDto> find(
+		@Param("ownerProjectId") Integer ownerProjectId,
 		@Param("enumName") String enumName,
+		@Param("encodeString") Boolean encodeString,
 		@Param("title") String title,
 		@Param("offset") int offset,
 		@Param("limit") int limit);

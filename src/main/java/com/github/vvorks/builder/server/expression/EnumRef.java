@@ -11,7 +11,7 @@ public class EnumRef extends DtoRef<EnumDto> {
 
 	@Override
 	public DataType getType() {
-		return DataType.ENUM_REF;
+		return DataType.ENUM;
 	}
 
 	@Override

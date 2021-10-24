@@ -30,6 +30,13 @@ public class EnumDto {
 	private String enumName;
 
 	/**
+	 * 文字列エンコード
+	 *
+	 * 文字列エンコードする場合、真
+	 */
+	private boolean encodeString;
+
+	/**
 	 * タイトル
 	 */
 	@NotNull
@@ -100,6 +107,24 @@ public class EnumDto {
 	}
 
 	/**
+	 * 文字列エンコードを取得する
+	 *
+	 * @return 文字列エンコード
+	 */
+	public boolean isEncodeString() {
+		return this.encodeString;
+	}
+
+	/**
+	 * 文字列エンコードを設定する
+	 *
+	 * @param encodeString 設定する文字列エンコード
+	 */
+	public void setEncodeString(boolean encodeString) {
+		this.encodeString = encodeString;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
@@ -159,6 +184,7 @@ public class EnumDto {
 			enumId,
 			ownerProjectId,
 			enumName,
+			encodeString,
 			title,
 			description,
 			note
@@ -183,6 +209,7 @@ public class EnumDto {
 			this.enumId == other.enumId && 
 			this.ownerProjectId == other.ownerProjectId && 
 			Objects.equals(this.enumName, other.enumName) && 
+			this.encodeString == other.encodeString && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note)
@@ -196,6 +223,7 @@ public class EnumDto {
 		sb.append("enumId=").append(enumId).append(", ");
 		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
 		sb.append("enumName=").append(enumName).append(", ");
+		sb.append("encodeString=").append(encodeString).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note);

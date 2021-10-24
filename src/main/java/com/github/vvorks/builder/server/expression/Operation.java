@@ -49,6 +49,13 @@ public class Operation extends Expression {
 		this.operands.add(operand);
 	}
 
+	public void addOperandWithType(Expression operand) {
+		this.operands.add(operand);
+		this.type = operand.getType();
+		this.width = operand.getWidth();
+		this.scale = operand.getScale();
+	}
+
 	@Override
 	public int getWidth() {
 		return width;
@@ -73,6 +80,10 @@ public class Operation extends Expression {
 
 	public List<Expression> getOperands() {
 		return Collections.unmodifiableList(operands);
+	}
+
+	public Expression getLastOperand() {
+		return operands.get(operands.size() - 1);
 	}
 
 	@Override

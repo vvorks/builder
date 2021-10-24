@@ -90,6 +90,7 @@ public interface ProjectMapper {
 	 * 指定した条件に合致するクラス一覧を取得する
 	 *
 	 * @param dto プロジェクト型
+	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
 	 * @param className クラス名
 	 * @param title タイトル
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -98,6 +99,7 @@ public interface ProjectMapper {
 	 */
 	public List<ClassDto> findClasses(
 		@Param("dto") ProjectDto dto,
+		@Param("ownerProjectId") Integer ownerProjectId,
 		@Param("className") String className,
 		@Param("title") String title,
 		@Param("offset") int offset,
@@ -120,7 +122,9 @@ public interface ProjectMapper {
 	 * 指定した条件に合致する列挙一覧を取得する
 	 *
 	 * @param dto プロジェクト型
+	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
 	 * @param enumName 列挙名
+	 * @param encodeString 文字列エンコード
 	 * @param title タイトル
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
@@ -128,7 +132,9 @@ public interface ProjectMapper {
 	 */
 	public List<EnumDto> findEnums(
 		@Param("dto") ProjectDto dto,
+		@Param("ownerProjectId") Integer ownerProjectId,
 		@Param("enumName") String enumName,
+		@Param("encodeString") Boolean encodeString,
 		@Param("title") String title,
 		@Param("offset") int offset,
 		@Param("limit") int limit);

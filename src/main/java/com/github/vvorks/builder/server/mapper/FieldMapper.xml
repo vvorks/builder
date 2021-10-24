@@ -129,6 +129,9 @@
 		FROM
 			T_FIELD
 		<where>
+			<if test="ownerClassId != null">
+				AND F_OWNER_CLASS_ID = #{ ownerClassId }
+			</if>
 			<if test="fieldName != null">
 				AND F_FIELD_NAME = #{ fieldName }
 			</if>
@@ -140,6 +143,15 @@
 			</if>
 			<if test="scale != null">
 				AND F_SCALE = #{ scale }
+			</if>
+			<if test="crefClassId != null">
+				AND F_CREF_CLASS_ID = #{ crefClassId }
+			</if>
+			<if test="erefEnumId != null">
+				AND F_EREF_ENUM_ID = #{ erefEnumId }
+			</if>
+			<if test="frefFieldId != null">
+				AND F_FREF_FIELD_ID = #{ frefFieldId }
 			</if>
 			<if test="pk != null">
 				AND F_PK = #{ pk }
@@ -171,6 +183,57 @@
 			T_CLASS
 		WHERE
 			F_CLASS_ID = #{ ownerClassId }
+	</select>
+
+	<select id="getCref" resultType="ClassDto">
+		SELECT
+			F_CLASS_ID AS "classId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_CLASS_NAME AS "className",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_CLASS
+		WHERE
+			F_CLASS_ID = #{ crefClassId }
+	</select>
+
+	<select id="getEref" resultType="EnumDto">
+		SELECT
+			F_ENUM_ID AS "enumId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_ENUM_NAME AS "enumName",
+			F_ENCODE_STRING AS "encodeString",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_ENUM
+		WHERE
+			F_ENUM_ID = #{ erefEnumId }
+	</select>
+
+	<select id="getFref" resultType="FieldDto">
+		SELECT
+			F_FIELD_ID AS "fieldId",
+			F_OWNER_CLASS_ID AS "ownerClassId",
+			F_FIELD_NAME AS "fieldName",
+			F_TYPE AS "type",
+			F_WIDTH AS "width",
+			F_SCALE AS "scale",
+			F_CREF_CLASS_ID AS "crefClassId",
+			F_EREF_ENUM_ID AS "erefEnumId",
+			F_FREF_FIELD_ID AS "frefFieldId",
+			F_PK AS "pk",
+			F_NULLABLE AS "nullable",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_FIELD
+		WHERE
+			F_FIELD_ID = #{ frefFieldId }
 	</select>
 
 </mapper>

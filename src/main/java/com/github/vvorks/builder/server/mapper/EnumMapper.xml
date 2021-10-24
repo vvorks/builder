@@ -8,6 +8,7 @@
 			F_ENUM_ID,
 			F_OWNER_PROJECT_ID,
 			F_ENUM_NAME,
+			F_ENCODE_STRING,
 			F_TITLE,
 			F_DESCRIPTION,
 			F_NOTE
@@ -15,6 +16,7 @@
 			#{ enumId },
 			#{ ownerProjectId },
 			#{ enumName },
+			#{ encodeString },
 			#{ title },
 			#{ description },
 			#{ note }
@@ -25,6 +27,7 @@
 		UPDATE T_ENUM SET
 			F_OWNER_PROJECT_ID = #{ ownerProjectId },
 			F_ENUM_NAME = #{ enumName },
+			F_ENCODE_STRING = #{ encodeString },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note }
@@ -43,6 +46,7 @@
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_ENUM_NAME AS "enumName",
+			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
@@ -57,6 +61,7 @@
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_ENUM_NAME AS "enumName",
+			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
@@ -75,14 +80,21 @@
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_ENUM_NAME AS "enumName",
+			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
 		FROM
 			T_ENUM
 		<where>
+			<if test="ownerProjectId != null">
+				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
+			</if>
 			<if test="enumName != null">
 				AND F_ENUM_NAME = #{ enumName }
+			</if>
+			<if test="encodeString != null">
+				AND F_ENCODE_STRING = #{ encodeString }
 			</if>
 			<if test="title != null">
 				AND F_TITLE = #{ title }

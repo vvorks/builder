@@ -11,7 +11,7 @@ public class ClassRef extends DtoRef<ClassDto> {
 
 	@Override
 	public DataType getType() {
-		return DataType.CLASS_REF;
+		return DataType.REF;
 	}
 
 	@Override

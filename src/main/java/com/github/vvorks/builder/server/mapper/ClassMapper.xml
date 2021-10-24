@@ -81,6 +81,9 @@
 		FROM
 			T_CLASS
 		<where>
+			<if test="ownerProjectId != null">
+				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
+			</if>
 			<if test="className != null">
 				AND F_CLASS_NAME = #{ className }
 			</if>
@@ -158,6 +161,9 @@
 			T_FIELD
 		WHERE
 			F_OWNER_CLASS_ID = #{ dto.classId }
+			<if test="ownerClassId != null">
+				AND F_OWNER_CLASS_ID = #{ ownerClassId }
+			</if>
 			<if test="fieldName != null">
 				AND F_FIELD_NAME = #{ fieldName }
 			</if>
@@ -169,6 +175,15 @@
 			</if>
 			<if test="scale != null">
 				AND F_SCALE = #{ scale }
+			</if>
+			<if test="crefClassId != null">
+				AND F_CREF_CLASS_ID = #{ crefClassId }
+			</if>
+			<if test="erefEnumId != null">
+				AND F_EREF_ENUM_ID = #{ erefEnumId }
+			</if>
+			<if test="frefFieldId != null">
+				AND F_FREF_FIELD_ID = #{ frefFieldId }
 			</if>
 			<if test="pk != null">
 				AND F_PK = #{ pk }

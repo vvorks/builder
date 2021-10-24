@@ -1,6 +1,5 @@
 package com.github.vvorks.builder.server.extender;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -31,10 +30,9 @@ public class FieldExtender {
 	private static final EnumMap<DataType, Class<?>> TYPE_MAP = new EnumMap<>(DataType.class);
 	static {
 		TYPE_MAP.put(DataType.KEY, Integer.TYPE);
-		TYPE_MAP.put(DataType.CLASS_REF, Class.class);
-		TYPE_MAP.put(DataType.ENUM_REF, Enum.class);
-		TYPE_MAP.put(DataType.FIELD_REF, Field.class);
-		TYPE_MAP.put(DataType.INVERT_REF, Void.class);
+		TYPE_MAP.put(DataType.REF, Class.class);
+		TYPE_MAP.put(DataType.ENUM, Enum.class);
+		TYPE_MAP.put(DataType.SET, Void.class);
 		TYPE_MAP.put(DataType.BOOLEAN, Boolean.class);
 		TYPE_MAP.put(DataType.INTEGER, Integer.class);
 		TYPE_MAP.put(DataType.REAL, Double.class);
@@ -86,10 +84,12 @@ public class FieldExtender {
 		Class<?> cls = TYPE_MAP.get(fld.getType());
 		if (cls == null) {
 			cls = Object.class;
-		} else if (cls == Boolean.class) {
+		} else if (cls == Boolean.class || cls == Boolean.TYPE) {
 			cls = nullable ? Boolean.class : Boolean.TYPE;
 		} else if (cls == Integer.class) {
 			cls = getIntegerClass(fld, nullable);
+		} else if (cls == Integer.TYPE) {
+			cls = nullable ? Integer.class : Integer.TYPE;
 		} else if (cls == Double.class) {
 			cls = getRealClass(fld, nullable);
 		}
@@ -160,32 +160,32 @@ public class FieldExtender {
 	}
 
 	public ClassDto getCref(FieldDto fld) {
-		return classMapper.get(fld.getCrefClassId());
+		return fieldMapper.getCref(fld);
 	}
 
 	public FieldDto getFref(FieldDto fld) {
-		return fieldMapper.get(fld.getFrefFieldId());
+		return fieldMapper.getFref(fld);
 	}
 
 	public List<FieldDto> getRefKeyFields(FieldDto fld) {
-		Asserts.require(fld.getType() == DataType.FIELD_REF);
+		Asserts.require(fld.getType() == DataType.REF);
 		List<FieldDto> props = new ArrayList<>();
 		Deque<FieldDto> stack = new ArrayDeque<>();
 		extractKey(fld, stack, props);
 		return props;
 	}
 
-	public String getRefKeyColumnName(FieldDto fld) {
-		return COLUMN_PREFIX + Strings.toUpperSnake((trimLeading(fld)));
-	}
-
 	public String getRefKeyFieldName(FieldDto fld) {
 		return fld.getFieldName();
 	}
 
+	public String getRefKeyColumnName(FieldDto fld) {
+		return COLUMN_PREFIX + Strings.toUpperSnake((trimLeading(fld)));
+	}
+
 	private String trimLeading(FieldDto fld) {
-		ClassDto owner = getOwner(fld);
-		for (FieldDto leading : classMapper.listFields(owner, 0, 0)) {
+		ClassDto cls = getOwner(fld);
+		for (FieldDto leading : classMapper.listFields(cls, 0, 0)) {
 			if (isLeadingField(fld, leading)) {
 				return fld.getFieldName().substring(leading.getFieldName().length());
 			}
@@ -196,13 +196,12 @@ public class FieldExtender {
 	private boolean isLeadingField(FieldDto field, FieldDto leading) {
 		String fieldName = field.getFieldName();
 		String leadingName = leading.getFieldName();
-		return	leading.getType() == DataType.FIELD_REF &&
-				fieldName.startsWith(leadingName) &&
+		return	fieldName.startsWith(leadingName) &&
 				Character.isUpperCase(fieldName.charAt(leadingName.length()));
 	}
 
 	public List<FieldDto> getInvKeyFields(FieldDto fld) {
-		Asserts.require(fld.getType() == DataType.INVERT_REF);
+		Asserts.require(fld.getType() == DataType.SET);
 		return getRefKeyFields(getFref(fld));
 	}
 
@@ -214,31 +213,22 @@ public class FieldExtender {
 		return Strings.toFirstLower(trimLeading(fld));
 	}
 
-
 	public void extractKey(FieldDto fld, Deque<FieldDto> stack, List<FieldDto> into) {
 		DataType type = fld.getType();
-		if (type == DataType.FIELD_REF) {
-			FieldDto refField = fieldMapper.get(fld.getFrefFieldId());
-			ClassDto refClass = classMapper.get(refField.getOwnerClassId());
-			stack.push(fld);
-			for (FieldDto f : classMapper.listFields(refClass, 0, 0)) {
-				Boolean pk = f.isPk();
-				if (pk != null && pk) {
-					extractKey(f, stack, into);
-				}
-			}
-			stack.pop();
-		} else if (type == DataType.CLASS_REF) {
+		switch (type) {
+		case SET:
+			break;
+		case REF:
 			ClassDto refClass = classMapper.get(fld.getCrefClassId());
 			stack.push(fld);
 			for (FieldDto f : classMapper.listFields(refClass, 0, 0)) {
-				Boolean pk = f.isPk();
-				if (pk != null && pk) {
+				if (f.isPk()) {
 					extractKey(f, stack, into);
 				}
 			}
 			stack.pop();
-		} else if (type != DataType.INVERT_REF) {
+			break;
+		default:
 			if (stack.isEmpty()) {
 				into.add(fld);
 			} else {
@@ -249,20 +239,22 @@ public class FieldExtender {
 				Iterator<FieldDto> itr = stack.descendingIterator();
 				FieldDto e = itr.next();
 				names.append(e.getFieldName());
-				titles.append(e.getTitle());
+				titles.append(getTitleOrName(e));
 				k.setOwnerClassId(e.getOwnerClassId());
 				while (itr.hasNext()) {
 					e = itr.next();
 					names.append(Strings.toFirstUpper(e.getFieldName()));
-					//TODO I18n
-					titles.append("の").append(e.getTitle());
+					titles.append("の").append(getTitleOrName(e)); //TODO I18n
 				}
 				k.setFieldName(names.toString());
 				k.setTitle(titles.toString());
 				k.setType(e.getType());
+				k.setWidth(e.getWidth());
+				k.setScale(e.getScale());
 				into.add(k);
 				stack.pop();
 			}
+			break;
 		}
 	}
 
