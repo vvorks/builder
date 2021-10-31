@@ -14,18 +14,16 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.server.domain.ClassDto;
+import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
-import com.github.vvorks.builder.server.domain.EnumDto;
-import com.github.vvorks.builder.server.domain.FieldDto;
+import com.github.vvorks.builder.server.domain.EnumContent;
+import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
 
 @Component
 public class FieldExtender {
-
-	public static final String COLUMN_PREFIX = "F_";
 
 	private static final EnumMap<DataType, Class<?>> TYPE_MAP = new EnumMap<>(DataType.class);
 	static {
@@ -50,7 +48,7 @@ public class FieldExtender {
 	@Autowired
 	private EnumMapper enumMapper;
 
-	public String getTitleOrName(FieldDto fld) {
+	public String getTitleOrName(FieldContent fld) {
 		if (!Strings.isEmpty(fld.getTitle())) {
 			return fld.getTitle();
 		} else {
@@ -58,19 +56,19 @@ public class FieldExtender {
 		}
 	}
 
-	public String getWrapperType(FieldDto fld) {
+	public String getWrapperType(FieldContent fld) {
 		return getJavaType(fld, true);
 	}
 
-	public String getJavaType(FieldDto fld) {
+	public String getJavaType(FieldContent fld) {
 		return getJavaType(fld, fld.isNullable());
 	}
 
-	public String getJavaType(FieldDto fld, boolean nullable) {
+	private String getJavaType(FieldContent fld, boolean nullable) {
 		String javaType;
 		Class<?> cls = getJavaClass(fld, nullable);
 		if (cls == Enum.class) {
-			EnumDto e = enumMapper.get(fld.getErefEnumId());
+			EnumContent e = enumMapper.get(fld.getErefEnumId());
 			javaType = e.getEnumName();
 		} else if (cls.getPackage() == Object.class.getPackage()) {
 			javaType = cls.getSimpleName();
@@ -80,7 +78,7 @@ public class FieldExtender {
 		return javaType;
 	}
 
-	public Class<?> getJavaClass(FieldDto fld, boolean nullable) {
+	private Class<?> getJavaClass(FieldContent fld, boolean nullable) {
 		Class<?> cls = TYPE_MAP.get(fld.getType());
 		if (cls == null) {
 			cls = Object.class;
@@ -96,7 +94,7 @@ public class FieldExtender {
 		return cls;
 	}
 
-	private Class<?> getIntegerClass(FieldDto fld, boolean nullable) {
+	private Class<?> getIntegerClass(FieldContent fld, boolean nullable) {
 		Class<?> cls;
 		int width = fld.getWidth();
 		if (width == 0) {
@@ -113,7 +111,7 @@ public class FieldExtender {
 		return cls;
 	}
 
-	private Class<?> getRealClass(FieldDto fld, boolean nullable) {
+	private Class<?> getRealClass(FieldContent fld, boolean nullable) {
 		Class<?> cls;
 		int width = fld.getWidth();
 		if (width == 0) {
@@ -126,11 +124,25 @@ public class FieldExtender {
 		return cls;
 	}
 
-	public String getUpperName(FieldDto fld) {
+	public String getCalcuratedType(FieldContent fld) {
+		Class<?> cls = getJavaClass(fld, false);
+		if (cls == Byte.TYPE || cls == Short.TYPE) {
+			cls = Integer.TYPE;
+		}
+		String javaType;
+		if (cls.getPackage() == Object.class.getPackage()) {
+			javaType = cls.getSimpleName();
+		} else {
+			javaType = cls.getName();
+		}
+		return javaType;
+	}
+
+	public String getUpperName(FieldContent fld) {
 		return Strings.toFirstUpper(fld.getFieldName());
 	}
 
-	public String getGetterName(FieldDto fld) {
+	public String getGetterName(FieldContent fld) {
 		if (fld.getType() == DataType.BOOLEAN) {
 			return "is" + getUpperName(fld);
 		} else {
@@ -138,54 +150,54 @@ public class FieldExtender {
 		}
 	}
 
-	public String getSetterName(FieldDto fld) {
+	public String getSetterName(FieldContent fld) {
 		return "set" + getUpperName(fld);
 	}
 
-	public boolean isPrimitiveOrEnum(FieldDto fld) {
+	public boolean isPrimitiveOrEnum(FieldContent fld) {
 		Class<?> cls = getJavaClass(fld, fld.isNullable());
 		return cls.isPrimitive() || cls.isInstance(Enum.class);
 	}
 
-	public boolean isNotNullObject(FieldDto fld) {
+	public boolean isNotNullObject(FieldContent fld) {
 		return !fld.isNullable() && !getJavaClass(fld, false).isPrimitive();
 	}
 
-	public String getColumnName(FieldDto fld) {
-		return COLUMN_PREFIX + Strings.toUpperSnake(fld.getFieldName());
+	public String getColumnName(FieldContent fld) {
+		return SqlWriter.COLUMN_PREFIX + Strings.toUpperSnake(fld.getFieldName());
 	}
 
-	public ClassDto getOwner(FieldDto fld) {
+	public ClassContent getOwner(FieldContent fld) {
 		return classMapper.get(fld.getOwnerClassId());
 	}
 
-	public ClassDto getCref(FieldDto fld) {
+	public ClassContent getCref(FieldContent fld) {
 		return fieldMapper.getCref(fld);
 	}
 
-	public FieldDto getFref(FieldDto fld) {
+	public FieldContent getFref(FieldContent fld) {
 		return fieldMapper.getFref(fld);
 	}
 
-	public List<FieldDto> getRefKeyFields(FieldDto fld) {
+	public List<FieldContent> getRefKeyFields(FieldContent fld) {
 		Asserts.require(fld.getType() == DataType.REF);
-		List<FieldDto> props = new ArrayList<>();
-		Deque<FieldDto> stack = new ArrayDeque<>();
+		List<FieldContent> props = new ArrayList<>();
+		Deque<FieldContent> stack = new ArrayDeque<>();
 		extractKey(fld, stack, props);
 		return props;
 	}
 
-	public String getRefKeyFieldName(FieldDto fld) {
+	public String getRefKeyFieldName(FieldContent fld) {
 		return fld.getFieldName();
 	}
 
-	public String getRefKeyColumnName(FieldDto fld) {
-		return COLUMN_PREFIX + Strings.toUpperSnake((trimLeading(fld)));
+	public String getRefKeyColumnName(FieldContent fld) {
+		return SqlWriter.COLUMN_PREFIX + Strings.toUpperSnake((trimLeading(fld)));
 	}
 
-	private String trimLeading(FieldDto fld) {
-		ClassDto cls = getOwner(fld);
-		for (FieldDto leading : classMapper.listFields(cls, 0, 0)) {
+	private String trimLeading(FieldContent fld) {
+		ClassContent cls = getOwner(fld);
+		for (FieldContent leading : classMapper.listFieldsContent(cls, 0, 0)) {
 			if (isLeadingField(fld, leading)) {
 				return fld.getFieldName().substring(leading.getFieldName().length());
 			}
@@ -193,35 +205,35 @@ public class FieldExtender {
 		return fld.getFieldName();
 	}
 
-	private boolean isLeadingField(FieldDto field, FieldDto leading) {
+	private boolean isLeadingField(FieldContent field, FieldContent leading) {
 		String fieldName = field.getFieldName();
 		String leadingName = leading.getFieldName();
 		return	fieldName.startsWith(leadingName) &&
 				Character.isUpperCase(fieldName.charAt(leadingName.length()));
 	}
 
-	public List<FieldDto> getInvKeyFields(FieldDto fld) {
+	public List<FieldContent> getInvKeyFields(FieldContent fld) {
 		Asserts.require(fld.getType() == DataType.SET);
 		return getRefKeyFields(getFref(fld));
 	}
 
-	public String getInvKeyColumnName(FieldDto fld) {
+	public String getInvKeyColumnName(FieldContent fld) {
 		return getColumnName(fld);
 	}
 
-	public String getInvKeyFieldName(FieldDto fld) {
+	public String getInvKeyFieldName(FieldContent fld) {
 		return Strings.toFirstLower(trimLeading(fld));
 	}
 
-	public void extractKey(FieldDto fld, Deque<FieldDto> stack, List<FieldDto> into) {
+	public void extractKey(FieldContent fld, Deque<FieldContent> stack, List<FieldContent> into) {
 		DataType type = fld.getType();
 		switch (type) {
 		case SET:
 			break;
 		case REF:
-			ClassDto refClass = classMapper.get(fld.getCrefClassId());
+			ClassContent refClass = classMapper.get(fld.getCrefClassId());
 			stack.push(fld);
-			for (FieldDto f : classMapper.listFields(refClass, 0, 0)) {
+			for (FieldContent f : classMapper.listFieldsContent(refClass, 0, 0)) {
 				if (f.isPk()) {
 					extractKey(f, stack, into);
 				}
@@ -235,9 +247,9 @@ public class FieldExtender {
 				stack.push(fld);
 				StringBuilder names = new StringBuilder();
 				StringBuilder titles = new StringBuilder();
-				FieldDto k = new FieldDto();
-				Iterator<FieldDto> itr = stack.descendingIterator();
-				FieldDto e = itr.next();
+				FieldContent k = new FieldContent();
+				Iterator<FieldContent> itr = stack.descendingIterator();
+				FieldContent e = itr.next();
 				names.append(e.getFieldName());
 				titles.append(getTitleOrName(e));
 				k.setOwnerClassId(e.getOwnerClassId());

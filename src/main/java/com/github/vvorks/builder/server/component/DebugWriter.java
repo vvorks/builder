@@ -45,22 +45,22 @@ public class DebugWriter implements Expression.Visitor<Integer, String> {
 
 	@Override
 	public String visit(ClassRef exp, Integer depth) {
-		return toString(exp, exp.getDto().getClassName(), depth);
+		return toString(exp, exp.getContent().getClassName(), depth);
 	}
 
 	@Override
 	public String visit(FieldRef exp, Integer depth) {
-		return toString(exp, exp.getDto().getFieldName(), depth);
+		return toString(exp, exp.getContent().getFieldName(), depth);
 	}
 
 	@Override
 	public String visit(EnumRef exp, Integer depth) {
-		return toString(exp, exp.getDto().getEnumName(), depth);
+		return toString(exp, exp.getContent().getEnumName(), depth);
 	}
 
 	@Override
 	public String visit(EnumValueRef exp, Integer depth) {
-		return toString(exp, exp.getDto().getValueId(), depth);
+		return toString(exp, exp.getContent().getValueId(), depth);
 	}
 
 	@Override

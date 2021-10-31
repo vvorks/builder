@@ -7,16 +7,16 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 /**
- * 列挙
+ * クラス
  */
-public class EnumDto {
+public class ClassContent {
 
 	/**
-	 * 列挙ID
+	 * クラスID
 	 *
 	 * （代理キー）
 	 */
-	private int enumId;
+	private int classId;
 
 	/**
 	 * 所属プロジェクトのプロジェクトID
@@ -24,17 +24,10 @@ public class EnumDto {
 	private int ownerProjectId;
 
 	/**
-	 * 列挙名
+	 * クラス名
 	 */
 	@NotNull
-	private String enumName;
-
-	/**
-	 * 文字列エンコード
-	 *
-	 * 文字列エンコードする場合、真
-	 */
-	private boolean encodeString;
+	private String className;
 
 	/**
 	 * タイトル
@@ -53,21 +46,21 @@ public class EnumDto {
 	private String note;
 
 	/**
-	 * 列挙IDを取得する
+	 * クラスIDを取得する
 	 *
-	 * @return 列挙ID
+	 * @return クラスID
 	 */
-	public int getEnumId() {
-		return this.enumId;
+	public int getClassId() {
+		return this.classId;
 	}
 
 	/**
-	 * 列挙IDを設定する
+	 * クラスIDを設定する
 	 *
-	 * @param enumId 設定する列挙ID
+	 * @param classId 設定するクラスID
 	 */
-	public void setEnumId(int enumId) {
-		this.enumId = enumId;
+	public void setClassId(int classId) {
+		this.classId = classId;
 	}
 
 	/**
@@ -89,39 +82,21 @@ public class EnumDto {
 	}
 
 	/**
-	 * 列挙名を取得する
+	 * クラス名を取得する
 	 *
-	 * @return 列挙名
+	 * @return クラス名
 	 */
-	public String getEnumName() {
-		return this.enumName;
+	public String getClassName() {
+		return this.className;
 	}
 
 	/**
-	 * 列挙名を設定する
+	 * クラス名を設定する
 	 *
-	 * @param enumName 設定する列挙名
+	 * @param className 設定するクラス名
 	 */
-	public void setEnumName(String enumName) {
-		this.enumName = enumName;
-	}
-
-	/**
-	 * 文字列エンコードを取得する
-	 *
-	 * @return 文字列エンコード
-	 */
-	public boolean isEncodeString() {
-		return this.encodeString;
-	}
-
-	/**
-	 * 文字列エンコードを設定する
-	 *
-	 * @param encodeString 設定する文字列エンコード
-	 */
-	public void setEncodeString(boolean encodeString) {
-		this.encodeString = encodeString;
+	public void setClassName(String className) {
+		this.className = className;
 	}
 
 	/**
@@ -181,10 +156,9 @@ public class EnumDto {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			enumId,
+			classId,
 			ownerProjectId,
-			enumName,
-			encodeString,
+			className,
 			title,
 			description,
 			note
@@ -200,16 +174,15 @@ public class EnumDto {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((EnumDto) obj);
+			return equals((ClassContent) obj);
 		}
 	}
 
-	private boolean equals(EnumDto other) {
+	private boolean equals(ClassContent other) {
 		return
-			this.enumId == other.enumId && 
+			this.classId == other.classId && 
 			this.ownerProjectId == other.ownerProjectId && 
-			Objects.equals(this.enumName, other.enumName) && 
-			this.encodeString == other.encodeString && 
+			Objects.equals(this.className, other.className) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note)
@@ -219,11 +192,10 @@ public class EnumDto {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("EnumDto [");
-		sb.append("enumId=").append(enumId).append(", ");
+		sb.append("ClassContent [");
+		sb.append("classId=").append(classId).append(", ");
 		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
-		sb.append("enumName=").append(enumName).append(", ");
-		sb.append("encodeString=").append(encodeString).append(", ");
+		sb.append("className=").append(className).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note);

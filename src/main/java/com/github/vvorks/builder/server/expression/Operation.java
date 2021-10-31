@@ -13,12 +13,14 @@ public class Operation extends Expression {
 		AND,
 		XOR,
 		EQ, NE,
+		LIKE, MATCH,
 		LT, GT, LE, GE,
 		ADD, SUB, CONCAT,
 		MUL, DIV, MOD,
 		PLUS, MINUS,
-		NOT, INV,
-		GET, CALL, PAREN, BLOCK, IF;
+		NOT,
+		GET, CONST, CALL,
+		PAREN, BLOCK, IF;
 	}
 
 	private final Code code;
@@ -28,6 +30,8 @@ public class Operation extends Expression {
 	private int width;
 
 	private int scale;
+
+	private int joinNo;
 
 	private final List<Expression> operands;
 
@@ -77,6 +81,20 @@ public class Operation extends Expression {
 	public Code getCode() {
 		return code;
 	}
+
+	public int getJoinNo() {
+		return joinNo;
+	}
+
+	public void setJoinNo(int joinNo) {
+		this.joinNo = joinNo;
+	}
+
+	@Override
+	public Iterable<? extends Expression> getChildren() {
+		return getOperands();
+	}
+
 
 	public List<Expression> getOperands() {
 		return Collections.unmodifiableList(operands);

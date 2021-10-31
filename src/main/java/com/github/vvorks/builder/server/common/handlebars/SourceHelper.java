@@ -14,7 +14,6 @@ import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.util.Logger;
 import com.github.vvorks.builder.server.common.io.Ios;
-import com.github.vvorks.builder.server.common.io.JavaFormatter;
 
 public class SourceHelper implements Helper<Object> {
 
@@ -23,11 +22,11 @@ public class SourceHelper implements Helper<Object> {
 
 	private final File outDir;
 
-	private final JavaFormatter javaFormatter;
+	//private final JavaFormatter javaFormatter;
 
 	public SourceHelper(File outDir) {
 		this.outDir = outDir;
-		this.javaFormatter = new JavaFormatter();
+		//this.javaFormatter = new JavaFormatter();
 	}
 
 	@Override

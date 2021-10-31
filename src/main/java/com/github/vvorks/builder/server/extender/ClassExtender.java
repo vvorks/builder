@@ -10,15 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.server.domain.ClassDto;
+import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
-import com.github.vvorks.builder.server.domain.FieldDto;
+import com.github.vvorks.builder.server.domain.FieldContent;
+import com.github.vvorks.builder.server.domain.QueryContent;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 
 @Component
 public class ClassExtender {
-
-	public static final String TABLE_PREFIX = "T_";
 
 	@Autowired
 	private ClassMapper classMapper;
@@ -26,7 +25,7 @@ public class ClassExtender {
 	@Autowired
 	private FieldExtender fieldExtender;
 
-	public String getTitleOrName(ClassDto cls) {
+	public String getTitleOrName(ClassContent cls) {
 		if (!Strings.isEmpty(cls.getTitle())) {
 			return cls.getTitle();
 		} else {
@@ -34,26 +33,26 @@ public class ClassExtender {
 		}
 	}
 
-	public String getTableName(ClassDto cls) {
-		return TABLE_PREFIX + Strings.toUpperSnake(cls.getClassName());
+	public String getTableName(ClassContent cls) {
+		return SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(cls.getClassName());
 	}
 
-	public List<FieldDto> getProperties(ClassDto cls) {
-		return getProperties(cls, (fld) -> true);
+	public List<FieldContent> getProperties(ClassContent cls) {
+		return getProperties(cls, fld -> true);
 	}
 
-	public List<FieldDto> getKeys(ClassDto cls) {
-		return getProperties(cls, (fld) ->  fld.isPk());
+	public List<FieldContent> getKeys(ClassContent cls) {
+		return getProperties(cls, fld ->  fld.isPk());
 	}
 
-	public List<FieldDto> getNotKeys(ClassDto cls) {
-		return getProperties(cls, (fld) -> !fld.isPk());
+	public List<FieldContent> getNotKeys(ClassContent cls) {
+		return getProperties(cls, fld -> !fld.isPk());
 	}
 
-	private List<FieldDto> getProperties(ClassDto cls, Predicate<FieldDto> filter) {
-		List<FieldDto> props = new ArrayList<>();
-		Deque<FieldDto> stack = new ArrayDeque<>();
-		for (FieldDto field : getFields(cls)) {
+	private List<FieldContent> getProperties(ClassContent cls, Predicate<FieldContent> filter) {
+		List<FieldContent> props = new ArrayList<>();
+		Deque<FieldContent> stack = new ArrayDeque<>();
+		for (FieldContent field : getFields(cls)) {
 			if (filter.test(field)) {
 				fieldExtender.extractKey(field, stack, props);
 			}
@@ -61,21 +60,21 @@ public class ClassExtender {
 		return props;
 	}
 
-	public List<FieldDto> getRefs(ClassDto cls) {
+	public List<FieldContent> getRefs(ClassContent cls) {
 		return getFields(cls, fld -> fld.getType() == DataType.REF);
 	}
 
-	public List<FieldDto> getSets(ClassDto cls) {
+	public List<FieldContent> getSets(ClassContent cls) {
 		return getFields(cls, fld -> fld.getType() == DataType.SET);
 	}
 
-	public List<FieldDto> getFindConditions(ClassDto cls) {
-		return getProperties(cls, (fld) -> !fld.isPk() && !fld.isNullable());
+	public List<FieldContent> getFindConditions(ClassContent cls) {
+		return getProperties(cls, fld -> !fld.isPk() && !fld.isNullable());
 	}
 
-	public List<FieldDto> getFields(ClassDto cls, Predicate<FieldDto> filter) {
-		List<FieldDto> result = new ArrayList<>();
-		for (FieldDto field : getFields(cls)) {
+	public List<FieldContent> getFields(ClassContent cls, Predicate<FieldContent> filter) {
+		List<FieldContent> result = new ArrayList<>();
+		for (FieldContent field : getFields(cls)) {
 			if (filter.test(field)) {
 				result.add(field);
 			}
@@ -83,8 +82,12 @@ public class ClassExtender {
 		return result;
 	}
 
-	public List<FieldDto> getFields(ClassDto cls) {
-		return classMapper.listFields(cls, 0, 0);
+	public List<FieldContent> getFields(ClassContent cls) {
+		return classMapper.listFieldsContent(cls, 0, 0);
+	}
+
+	public List<QueryContent> getQueries(ClassContent cls) {
+		return classMapper.listQueriesContent(cls, 0, 0);
 	}
 
 }

@@ -23,124 +23,218 @@ import {{global.project.projectName}}.server.domain.*;
 public interface {{className}}Mapper {
 
 	/**
-	 * {{title}}を挿入する
+	 * {{titleOrName}}を挿入する
 	 *
-	 * @param dto 挿入する{{title}}
+	 * @param content 挿入する{{titleOrName}}
 	 * @return 処理成功の場合、真
 	 */
-	public boolean insert({{className}}Dto dto);
+	public boolean insert({{className}}Content content);
 
 	/**
-	 * {{title}}を更新する
+	 * {{titleOrName}}を更新する
 	 *
-	 * @param dto 更新する{{title}}
+	 * @param content 更新する{{titleOrName}}
 	 * @return 処理成功の場合、真
 	 */
-	public boolean update({{className}}Dto dto);
+	public boolean update({{className}}Content content);
 
 	/**
-	 * {{title}}を削除する
+	 * {{titleOrName}}を削除する
 	 *
-	 * @param dto 削除する{{title}}
+	 * @param content 削除する{{titleOrName}}
 	 * @return 処理成功の場合、真
 	 */
-	public boolean delete({{className}}Dto dto);
+	public boolean delete({{className}}Content content);
 
 	/**
-	 * {{title}}を取得する
+	 * {{titleOrName}}を取得する
 	 *
 	{{#each keys}}
-	 * @param {{fieldName}} {{title}}
+	 * @param {{fieldName}} {{titleOrName}}
 	{{/each}}
-	 * @return 取得した{{title}}
+	 * @return 取得した{{titleOrName}}
 	 */
-	public {{className}}Dto get(
+	public {{className}}Content get(
 		{{#each keys}}
 		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}}, {{/separator}}
 		{{/each}}
 	);
 
 	/**
-	 * 全ての{{title}}を取得する
+	 * 全ての{{titleOrName}}のサマリーを取得する
+	 *
+	 * @return {{titleOrName}}のサマリー
+	 */
+	public {{className}}Summary listSummary();
+
+	/**
+	 * 全ての{{titleOrName}}を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{title}}のリスト
+	 * @return {{titleOrName}}のリスト
 	 */
-	public List<{{className}}Dto> list(
+	public List<{{className}}Content> listContent(
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
+
+	{{#each queries}}
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}のサマリーを取得する
+	 *
+	 * @return {{../titleOrName}}のサマリー
+	 */
+	public {{../className}}Summary listIf{{upperName}}Summary();
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{../titleOrName}}のリスト
+	 */
+	public List<{{../className}}Content> listIf{{upperName}}Content(
+		//TODO 条件引数の追加
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+	{{/each}}
 
 	{{#if findConditions}}
 	/**
-	 * 指定した条件に合致する{{title}}を取得する
+	 * 指定した条件に合致する{{titleOrName}}のサマリーを取得する
 	 *
 	{{#each findConditions}}
-	 * @param {{fieldName}} {{title}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @return {{titleOrName}}のサマリー
+	 */
+	public {{className}}Summary findSummary(
+		{{#each findConditions}}
+		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}}{{#separator}}, {{/separator}}
+		{{/each}}
+	);
+
+	/**
+	 * 指定した条件に合致する{{titleOrName}}を取得する
+	 *
+	{{#each findConditions}}
+	 * @param {{fieldName}} {{titleOrName}}
 	{{/each}}
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{title}}のリスト
+	 * @return {{titleOrName}}のリスト
 	 */
-	public List<{{className}}Dto> find(
+	public List<{{className}}Content> findContent(
 		{{#each findConditions}}
 		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}},
 		{{/each}}
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
 	{{/if}}
 
 	{{#each refs}}
 
-	{{#if title}}
 	/**
-	 * {{title}}を取得する
+	 * {{titleOrName}}を取得する
 	 *
-	 * @param dto {{../titleOrName}}
-	 * @return {{title}}
+	 * @param content {{../titleOrName}}
+	 * @return {{titleOrName}}
 	 */
-	{{/if}}
-	public {{cref.className}}Dto get{{upperName}}({{../className}}Dto dto);
+	public {{cref.className}}Content get{{upperName}}({{../className}}Content content);
 	{{/each}}
 
 	{{#each sets}}
 
-	{{#if title}}
 	/**
-	 * {{title}}を取得する
+	 * {{titleOrName}}のサマリーを取得する
 	 *
-	 * @param dto {{../titleOrName}}
+	 * @param content {{../titleOrName}}
+	 * @return {{titleOrName}}のサマリー
+	 */
+	public {{fref.owner.className}}Summary list{{upperName}}Summary(
+		@Param("content") {{../className}}Content content
+	);
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @param content {{../titleOrName}}
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{title}}
+	 * @return {{titleOrName}}
 	 */
-	{{/if}}
-	public List<{{fref.owner.className}}Dto> list{{upperName}}(
-		@Param("dto") {{../className}}Dto dto,
+	public List<{{fref.owner.className}}Content> list{{upperName}}Content(
+		@Param("content") {{../className}}Content content,
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
+
+	{{#each fref.owner.queries}}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}のサマリーを取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @return {{../titleOrName}}のサマリー
+	 */
+	public {{../fref.owner.className}}Summary list{{../upperName}}If{{upperName}}Summary(
+		@Param("content") {{../../className}}Content content
+	);
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{../titleOrName}}
+	 */
+	public List<{{../fref.owner.className}}Content> list{{../upperName}}If{{upperName}}Content(
+		@Param("content") {{../../className}}Content content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+	{{/each}}
 
 	{{#if fref.owner.findConditions}}
-	{{#if title}}
 	/**
-	 * 指定した条件に合致する{{title}}を取得する
+	 * 指定した条件に合致する{{titleOrName}}のサマリーを取得する
 	 *
-	 * @param dto {{../titleOrName}}
+	 * @param content {{../titleOrName}}
 	{{#each fref.owner.findConditions}}
-	 * @param {{fieldName}} {{title}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @return {{titleOrName}}のサマリー
+	 */
+	public {{fref.owner.className}}Summary find{{upperName}}Summary(
+		@Param("content") {{../className}}Content content,
+		{{#each fref.owner.findConditions}}
+		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}}{{#separator}}, {{/separator}}
+		{{/each}}
+	);
+
+	/**
+	 * 指定した条件に合致する{{titleOrName}}を取得する
+	 *
+	 * @param content {{../titleOrName}}
+	{{#each fref.owner.findConditions}}
+	 * @param {{fieldName}} {{titleOrName}}
 	{{/each}}
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{title}}
+	 * @return {{titleOrName}}
 	 */
-	{{/if}}
-	public List<{{fref.owner.className}}Dto> find{{upperName}}(
-		@Param("dto") {{../className}}Dto dto,
+	public List<{{fref.owner.className}}Content> find{{upperName}}Content(
+		@Param("content") {{../className}}Content content,
 		{{#each fref.owner.findConditions}}
 		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}},
 		{{/each}}
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
 	{{/if}}
 	{{/each}}
 
@@ -156,7 +250,7 @@ public interface {{className}}Mapper {
 
 <mapper namespace="{{global.project.projectName}}.server.mapper.{{className}}Mapper">
 
-	<insert id="insert" parameterType="{{className}}Dto">
+	<insert id="insert" parameterType="{{className}}Content">
 		INSERT INTO {{tableName}} (
 			{{#each properties}}
 			{{columnName}}{{#separator}},{{/separator}}
@@ -168,7 +262,7 @@ public interface {{className}}Mapper {
 		)
 	</insert>
 
-	<update id="update" parameterType="{{className}}Dto">
+	<update id="update" parameterType="{{className}}Content">
 		UPDATE {{tableName}} SET
 			{{#each notKeys}}
 			{{columnName}} = #{ {{fieldName}} }{{#separator}},{{/separator}}
@@ -179,7 +273,7 @@ public interface {{className}}Mapper {
 			{{/each}}
 	</update>
 
-	<delete id="delete" parameterType="{{className}}Dto">
+	<delete id="delete" parameterType="{{className}}Content">
 		DELETE FROM {{tableName}}
 		WHERE
 			{{#each keys}}
@@ -187,7 +281,7 @@ public interface {{className}}Mapper {
 			{{/each}}
 	</delete>
 
-	<select id="get" resultType="{{className}}Dto">
+	<select id="get" resultType="{{className}}Content">
 		SELECT
 			{{#each properties}}
 			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
@@ -200,7 +294,28 @@ public interface {{className}}Mapper {
 			{{/each}}
 	</select>
 
-	<select id="list" resultType="{{className}}Dto">
+	<select id="listSummary" resultType="{{className}}Summary">
+		SELECT
+			{{#each properties}}
+			{{#if needsSum}}
+			SUM({{columnName}}) AS "sum{{upperName}}",
+			{{/if}}
+			{{#if needsAvg}}
+			AVG({{columnName}}) AS "avg{{upperName}}",
+			{{/if}}
+			{{#if needsMax}}
+			MAX({{columnName}}) AS "max{{upperName}}",
+			{{/if}}
+			{{#if needsMin}}
+			MIN({{columnName}}) AS "min{{upperName}}",
+			{{/if}}
+			{{/each}}
+			COUNT(*) AS "count"
+		FROM
+			{{tableName}}
+	</select>
+
+	<select id="listContent" resultType="{{className}}Content">
 		SELECT
 			{{#each properties}}
 			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
@@ -215,8 +330,95 @@ public interface {{className}}Mapper {
 		</if>
 	</select>
 
+	{{#each queries}}
+
+	<select id="listIf{{upperName}}Summary" resultType="{{../className}}Summary">
+		SELECT
+			{{#each ../properties}}
+			{{#if needsSum}}
+			SUM(T1.{{columnName}}) AS "sum{{upperName}}",
+			{{/if}}
+			{{#if needsAvg}}
+			AVG(T1.{{columnName}}) AS "avg{{upperName}}",
+			{{/if}}
+			{{#if needsMax}}
+			MAX(T1.{{columnName}}) AS "max{{upperName}}",
+			{{/if}}
+			{{#if needsMin}}
+			MIN(T1.{{columnName}}) AS "min{{upperName}}",
+			{{/if}}
+			{{/each}}
+			COUNT(*) AS "count"
+		FROM
+			{{../tableName}} T1
+			{{#each joins}}
+			LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+				{{#each lastField.refKeyFields}}
+				T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+				{{/each}}
+			{{/each}}
+		WHERE
+			<![CDATA[
+			{{sqlExpr}}
+			]]>
+	</select>
+
+	<select id="listIf{{upperName}}Content" resultType="{{../className}}Content">
+		SELECT
+			{{#each ../properties}}
+			T1.{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
+		FROM
+			{{../tableName}} T1
+			{{#each joins}}
+			LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+				{{#each lastField.refKeyFields}}
+				T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+				{{/each}}
+			{{/each}}
+		WHERE
+			<![CDATA[
+			{{sqlExpr}}
+			]]>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	{{/each}}
+
 	{{#if findConditions}}
-	<select id="find" resultType="{{className}}Dto">
+	<select id="findSummary" resultType="{{className}}Summary">
+		SELECT
+			{{#each properties}}
+			{{#if needsSum}}
+			SUM({{columnName}}) AS "sum{{upperName}}",
+			{{/if}}
+			{{#if needsAvg}}
+			AVG({{columnName}}) AS "avg{{upperName}}",
+			{{/if}}
+			{{#if needsMax}}
+			MAX({{columnName}}) AS "max{{upperName}}",
+			{{/if}}
+			{{#if needsMin}}
+			MIN({{columnName}}) AS "min{{upperName}}",
+			{{/if}}
+			{{/each}}
+			COUNT(*) AS "count"
+		FROM
+			{{tableName}}
+		<where>
+			{{#each findConditions}}
+			<if test="{{fieldName}} != null">
+				AND {{columnName}} = #{ {{fieldName}} }
+			</if>
+			{{/each}}
+		</where>
+	</select>
+
+	<select id="findContent" resultType="{{className}}Content">
 		SELECT
 			{{#each properties}}
 			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
@@ -241,7 +443,7 @@ public interface {{className}}Mapper {
 
 	{{#each refs}}
 
-	<select id="get{{upperName}}" resultType="{{cref.className}}Dto">
+	<select id="get{{upperName}}" resultType="{{cref.className}}Content">
 		SELECT
 			{{#each cref.properties}}
 			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
@@ -257,7 +459,32 @@ public interface {{className}}Mapper {
 
 	{{#each sets}}
 
-	<select id="list{{upperName}}" resultType="{{fref.owner.className}}Dto">
+	<select id="list{{upperName}}Summary" resultType="{{fref.owner.className}}Summary">
+		SELECT
+			{{#each fref.owner.properties}}
+			{{#if needsSum}}
+			SUM({{columnName}}) AS "sum{{upperName}}",
+			{{/if}}
+			{{#if needsAvg}}
+			AVG({{columnName}}) AS "avg{{upperName}}",
+			{{/if}}
+			{{#if needsMax}}
+			MAX({{columnName}}) AS "max{{upperName}}",
+			{{/if}}
+			{{#if needsMin}}
+			MIN({{columnName}}) AS "min{{upperName}}",
+			{{/if}}
+			{{/each}}
+			COUNT(*) AS "count"
+		FROM
+			{{fref.owner.tableName}}
+		WHERE
+			{{#each invKeyFields}}
+			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+	</select>
+
+	<select id="list{{upperName}}Content" resultType="{{fref.owner.className}}Content">
 		SELECT
 			{{#each fref.owner.properties}}
 			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
@@ -266,7 +493,7 @@ public interface {{className}}Mapper {
 			{{fref.owner.tableName}}
 		WHERE
 			{{#each invKeyFields}}
-			{{invKeyColumnName}} = #{ dto.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
+			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
@@ -276,8 +503,103 @@ public interface {{className}}Mapper {
 		</if>
 	</select>
 
+	{{#each fref.owner.queries}}
+
+	<select id="list{{../upperName}}If{{upperName}}Summary" resultType="{{../fref.owner.className}}Summary">
+		SELECT
+			{{#each ../fref.owner.properties}}
+			{{#if needsSum}}
+			SUM(T1.{{columnName}}) AS "sum{{upperName}}",
+			{{/if}}
+			{{#if needsAvg}}
+			AVG(T1.{{columnName}}) AS "avg{{upperName}}",
+			{{/if}}
+			{{#if needsMax}}
+			MAX(T1.{{columnName}}) AS "max{{upperName}}",
+			{{/if}}
+			{{#if needsMin}}
+			MIN(T1.{{columnName}}) AS "min{{upperName}}",
+			{{/if}}
+			{{/each}}
+			COUNT(*) AS "count"
+		FROM
+			{{../fref.owner.tableName}} T1
+			{{#each joins}}
+			LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+				{{#each lastField.refKeyFields}}
+				T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+				{{/each}}
+			{{/each}}
+		WHERE
+			{{#each ../invKeyFields}}
+			T1.{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+			<![CDATA[
+			AND {{sqlExpr}}
+			]]>
+	</select>
+
+	<select id="list{{../upperName}}If{{upperName}}Content" resultType="{{../fref.owner.className}}Content">
+		SELECT
+			{{#each ../fref.owner.properties}}
+			T1.{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
+		FROM
+			{{../fref.owner.tableName}} T1
+			{{#each joins}}
+			LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+				{{#each lastField.refKeyFields}}
+				T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+				{{/each}}
+			{{/each}}
+		WHERE
+			{{#each ../invKeyFields}}
+			T1.{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+			<![CDATA[
+			AND {{sqlExpr}}
+			]]>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	{{/each}}
+
 	{{#if fref.owner.findConditions}}
-	<select id="find{{upperName}}" resultType="{{fref.owner.className}}Dto">
+	<select id="find{{upperName}}Summary" resultType="{{fref.owner.className}}Summary">
+		SELECT
+			{{#each fref.owner.properties}}
+			{{#if needsSum}}
+			SUM({{columnName}}) AS "sum{{upperName}}",
+			{{/if}}
+			{{#if needsAvg}}
+			AVG({{columnName}}) AS "avg{{upperName}}",
+			{{/if}}
+			{{#if needsMax}}
+			MAX({{columnName}}) AS "max{{upperName}}",
+			{{/if}}
+			{{#if needsMin}}
+			MIN({{columnName}}) AS "min{{upperName}}",
+			{{/if}}
+			{{/each}}
+			COUNT(*) AS "count"
+		FROM
+			{{fref.owner.tableName}}
+		WHERE
+			{{#each invKeyFields}}
+			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+			{{#each fref.owner.findConditions}}
+			<if test="{{fieldName}} != null">
+				AND {{columnName}} = #{ {{fieldName}} }
+			</if>
+			{{/each}}
+	</select>
+
+	<select id="find{{upperName}}Content" resultType="{{fref.owner.className}}Content">
 		SELECT
 			{{#each fref.owner.properties}}
 			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
@@ -286,7 +608,7 @@ public interface {{className}}Mapper {
 			{{fref.owner.tableName}}
 		WHERE
 			{{#each invKeyFields}}
-			{{invKeyColumnName}} = #{ dto.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
+			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
 			{{#each fref.owner.findConditions}}
 			<if test="{{fieldName}} != null">

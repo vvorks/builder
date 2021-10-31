@@ -16,26 +16,26 @@ public interface ProjectMapper {
 	/**
 	 * プロジェクト型を挿入する
 	 *
-	 * @param dto 挿入するプロジェクト型
+	 * @param content 挿入するプロジェクト型
 	 * @return 処理成功の場合、真
 	 */
-	public boolean insert(ProjectDto dto);
+	public boolean insert(ProjectContent content);
 
 	/**
 	 * プロジェクト型を更新する
 	 *
-	 * @param dto 更新するプロジェクト型
+	 * @param content 更新するプロジェクト型
 	 * @return 処理成功の場合、真
 	 */
-	public boolean update(ProjectDto dto);
+	public boolean update(ProjectContent content);
 
 	/**
 	 * プロジェクト型を削除する
 	 *
-	 * @param dto 削除するプロジェクト型
+	 * @param content 削除するプロジェクト型
 	 * @return 処理成功の場合、真
 	 */
-	public boolean delete(ProjectDto dto);
+	public boolean delete(ProjectContent content);
 
 	/**
 	 * プロジェクト型を取得する
@@ -43,9 +43,16 @@ public interface ProjectMapper {
 	 * @param projectId プロジェクトID
 	 * @return 取得したプロジェクト型
 	 */
-	public ProjectDto get(
+	public ProjectContent get(
 		@Param("projectId") int projectId
 	);
+
+	/**
+	 * 全てのプロジェクト型のサマリーを取得する
+	 *
+	 * @return プロジェクト型のサマリー
+	 */
+	public ProjectSummary listSummary();
 
 	/**
 	 * 全てのプロジェクト型を取得する
@@ -54,9 +61,22 @@ public interface ProjectMapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return プロジェクト型のリスト
 	 */
-	public List<ProjectDto> list(
+	public List<ProjectContent> listContent(
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
+
+	/**
+	 * 指定した条件に合致するプロジェクト型のサマリーを取得する
+	 *
+	 * @param projectName プロジェクト名
+	 * @param title タイトル
+	 * @return プロジェクト型のサマリー
+	 */
+	public ProjectSummary findSummary(
+		@Param("projectName") String projectName, 
+		@Param("title") String title
+	);
 
 	/**
 	 * 指定した条件に合致するプロジェクト型を取得する
@@ -67,29 +87,57 @@ public interface ProjectMapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return プロジェクト型のリスト
 	 */
-	public List<ProjectDto> find(
+	public List<ProjectContent> findContent(
 		@Param("projectName") String projectName,
 		@Param("title") String title,
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
+
+	/**
+	 * クラス一覧のサマリーを取得する
+	 *
+	 * @param content プロジェクト型
+	 * @return クラス一覧のサマリー
+	 */
+	public ClassSummary listClassesSummary(
+		@Param("content") ProjectContent content
+	);
 
 	/**
 	 * クラス一覧を取得する
 	 *
-	 * @param dto プロジェクト型
+	 * @param content プロジェクト型
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラス一覧
 	 */
-	public List<ClassDto> listClasses(
-		@Param("dto") ProjectDto dto,
+	public List<ClassContent> listClassesContent(
+		@Param("content") ProjectContent content,
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
+
+	/**
+	 * 指定した条件に合致するクラス一覧のサマリーを取得する
+	 *
+	 * @param content プロジェクト型
+	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
+	 * @param className クラス名
+	 * @param title タイトル
+	 * @return クラス一覧のサマリー
+	 */
+	public ClassSummary findClassesSummary(
+		@Param("content") ProjectContent content,
+		@Param("ownerProjectId") Integer ownerProjectId, 
+		@Param("className") String className, 
+		@Param("title") String title
+	);
 
 	/**
 	 * 指定した条件に合致するクラス一覧を取得する
 	 *
-	 * @param dto プロジェクト型
+	 * @param content プロジェクト型
 	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
 	 * @param className クラス名
 	 * @param title タイトル
@@ -97,31 +145,61 @@ public interface ProjectMapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラス一覧
 	 */
-	public List<ClassDto> findClasses(
-		@Param("dto") ProjectDto dto,
+	public List<ClassContent> findClassesContent(
+		@Param("content") ProjectContent content,
 		@Param("ownerProjectId") Integer ownerProjectId,
 		@Param("className") String className,
 		@Param("title") String title,
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
+
+	/**
+	 * 列挙一覧のサマリーを取得する
+	 *
+	 * @param content プロジェクト型
+	 * @return 列挙一覧のサマリー
+	 */
+	public EnumSummary listEnumsSummary(
+		@Param("content") ProjectContent content
+	);
 
 	/**
 	 * 列挙一覧を取得する
 	 *
-	 * @param dto プロジェクト型
+	 * @param content プロジェクト型
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙一覧
 	 */
-	public List<EnumDto> listEnums(
-		@Param("dto") ProjectDto dto,
+	public List<EnumContent> listEnumsContent(
+		@Param("content") ProjectContent content,
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
+
+	/**
+	 * 指定した条件に合致する列挙一覧のサマリーを取得する
+	 *
+	 * @param content プロジェクト型
+	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
+	 * @param enumName 列挙名
+	 * @param encodeString 文字列エンコード
+	 * @param title タイトル
+	 * @return 列挙一覧のサマリー
+	 */
+	public EnumSummary findEnumsSummary(
+		@Param("content") ProjectContent content,
+		@Param("ownerProjectId") Integer ownerProjectId, 
+		@Param("enumName") String enumName, 
+		@Param("encodeString") Boolean encodeString, 
+		@Param("title") String title
+	);
 
 	/**
 	 * 指定した条件に合致する列挙一覧を取得する
 	 *
-	 * @param dto プロジェクト型
+	 * @param content プロジェクト型
 	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
 	 * @param enumName 列挙名
 	 * @param encodeString 文字列エンコード
@@ -130,13 +208,14 @@ public interface ProjectMapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙一覧
 	 */
-	public List<EnumDto> findEnums(
-		@Param("dto") ProjectDto dto,
+	public List<EnumContent> findEnumsContent(
+		@Param("content") ProjectContent content,
 		@Param("ownerProjectId") Integer ownerProjectId,
 		@Param("enumName") String enumName,
 		@Param("encodeString") Boolean encodeString,
 		@Param("title") String title,
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
 
 }

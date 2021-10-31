@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
@@ -26,12 +27,13 @@ import com.github.vvorks.builder.server.common.handlebars.SeparatorHelper;
 import com.github.vvorks.builder.server.common.handlebars.SourceHelper;
 import com.github.vvorks.builder.server.common.io.Ios;
 import com.github.vvorks.builder.server.common.io.LoggerWriter;
-import com.github.vvorks.builder.server.domain.ProjectDto;
+import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.extender.ClassExtender;
 import com.github.vvorks.builder.server.extender.EnumExtender;
 import com.github.vvorks.builder.server.extender.EnumValueExtender;
 import com.github.vvorks.builder.server.extender.FieldExtender;
 import com.github.vvorks.builder.server.extender.ProjectExtender;
+import com.github.vvorks.builder.server.extender.QueryExtender;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 
 @Component
@@ -51,6 +53,9 @@ public class SourceWriter {
 
 	@Autowired
 	private FieldExtender fieldExtender;
+
+	@Autowired
+	private QueryExtender queryExtender;
 
 	@Autowired
 	private EnumExtender enumExtender;
@@ -74,16 +79,17 @@ public class SourceWriter {
 		File projectDir = new File("out/" + now + "/"); ////TODO for Debug
 		File javaRootDir = new File(projectDir, SRC_TOP);
 		File resRootDir = new File(projectDir, RES_TOP);
-		List<ProjectDto> projects = projectMapper.list(0, 0);
+		List<ProjectContent> projects = projectMapper.listContent(0, 0);
 		try (
 			Writer writer = new LoggerWriter(LOGGER)
 		) {
 			TemplateLoader loader = new ClassPathTemplateLoader(HBS_RES);
 			//HBSリソースの取得
 			List<String> hbsFiles = Ios.getResoureNames(this, HBS_RES, f -> f.endsWith(HBS_EXT));
-			for (ProjectDto prj : projects) {
+			for (ProjectContent prj : projects) {
 				File javaCodeDir = new File(javaRootDir, prj.getProjectName().replace('.', '/'));
 				Handlebars hbs = new Handlebars(loader)
+						.with(EscapingStrategy.NOOP)
 						.prettyPrint(true)
 						.registerHelper("separator", new SeparatorHelper())
 						.registerHelper("java", new SourceHelper(javaCodeDir))
@@ -99,6 +105,7 @@ public class SourceWriter {
 										projectExtender,
 										classExtender,
 										fieldExtender,
+										queryExtender,
 										enumExtender,
 										enumValueExtender))
 						.build();
@@ -108,6 +115,9 @@ public class SourceWriter {
 					t.apply(context, writer);
 				}
 			}
+		} catch (Exception err) {
+			Ios.deleteAll(projectDir);
+			throw err;
 		}
 	}
 

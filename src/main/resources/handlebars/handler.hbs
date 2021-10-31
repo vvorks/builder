@@ -22,11 +22,9 @@ import org.apache.ibatis.type.JdbcType;
 
 import {{global.project.projectName}}.server.domain.{{enumName}};
 
-{{#if title}}
 /**
- * {{title}}のタイプハンドラ
+ * {{titleOrName}}のタイプハンドラ
  */
-{{/if}}
 public class {{enumName}}TypeHandler extends BaseTypeHandler<{{enumName}}> {
 
 	@Override

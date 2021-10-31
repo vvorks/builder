@@ -3,7 +3,7 @@
 
 <mapper namespace="com.github.vvorks.builder.server.mapper.FieldMapper">
 
-	<insert id="insert" parameterType="FieldDto">
+	<insert id="insert" parameterType="FieldContent">
 		INSERT INTO T_FIELD (
 			F_FIELD_ID,
 			F_OWNER_CLASS_ID,
@@ -16,6 +16,10 @@
 			F_FREF_FIELD_ID,
 			F_PK,
 			F_NULLABLE,
+			F_NEEDS_SUM,
+			F_NEEDS_AVG,
+			F_NEEDS_MAX,
+			F_NEEDS_MIN,
 			F_TITLE,
 			F_DESCRIPTION,
 			F_NOTE
@@ -31,13 +35,17 @@
 			#{ frefFieldId },
 			#{ pk },
 			#{ nullable },
+			#{ needsSum },
+			#{ needsAvg },
+			#{ needsMax },
+			#{ needsMin },
 			#{ title },
 			#{ description },
 			#{ note }
 		)
 	</insert>
 
-	<update id="update" parameterType="FieldDto">
+	<update id="update" parameterType="FieldContent">
 		UPDATE T_FIELD SET
 			F_OWNER_CLASS_ID = #{ ownerClassId },
 			F_FIELD_NAME = #{ fieldName },
@@ -49,6 +57,10 @@
 			F_FREF_FIELD_ID = #{ frefFieldId },
 			F_PK = #{ pk },
 			F_NULLABLE = #{ nullable },
+			F_NEEDS_SUM = #{ needsSum },
+			F_NEEDS_AVG = #{ needsAvg },
+			F_NEEDS_MAX = #{ needsMax },
+			F_NEEDS_MIN = #{ needsMin },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note }
@@ -56,13 +68,13 @@
 			F_FIELD_ID = #{ fieldId }
 	</update>
 
-	<delete id="delete" parameterType="FieldDto">
+	<delete id="delete" parameterType="FieldContent">
 		DELETE FROM T_FIELD
 		WHERE
 			F_FIELD_ID = #{ fieldId }
 	</delete>
 
-	<select id="get" resultType="FieldDto">
+	<select id="get" resultType="FieldContent">
 		SELECT
 			F_FIELD_ID AS "fieldId",
 			F_OWNER_CLASS_ID AS "ownerClassId",
@@ -75,6 +87,10 @@
 			F_FREF_FIELD_ID AS "frefFieldId",
 			F_PK AS "pk",
 			F_NULLABLE AS "nullable",
+			F_NEEDS_SUM AS "needsSum",
+			F_NEEDS_AVG AS "needsAvg",
+			F_NEEDS_MAX AS "needsMax",
+			F_NEEDS_MIN AS "needsMin",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
@@ -84,7 +100,14 @@
 			F_FIELD_ID = #{ fieldId }
 	</select>
 
-	<select id="list" resultType="FieldDto">
+	<select id="listSummary" resultType="FieldSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_FIELD
+	</select>
+
+	<select id="listContent" resultType="FieldContent">
 		SELECT
 			F_FIELD_ID AS "fieldId",
 			F_OWNER_CLASS_ID AS "ownerClassId",
@@ -97,6 +120,10 @@
 			F_FREF_FIELD_ID AS "frefFieldId",
 			F_PK AS "pk",
 			F_NULLABLE AS "nullable",
+			F_NEEDS_SUM AS "needsSum",
+			F_NEEDS_AVG AS "needsAvg",
+			F_NEEDS_MAX AS "needsMax",
+			F_NEEDS_MIN AS "needsMin",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
@@ -110,7 +137,106 @@
 		</if>
 	</select>
 
-	<select id="find" resultType="FieldDto">
+	<select id="listIfIsPkSummary" resultType="FieldSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_FIELD T1
+		WHERE
+			<![CDATA[
+			(T1.F_PK == 1)
+			]]>
+	</select>
+
+	<select id="listIfIsPkContent" resultType="FieldContent">
+		SELECT
+			T1.F_FIELD_ID AS "fieldId",
+			T1.F_OWNER_CLASS_ID AS "ownerClassId",
+			T1.F_FIELD_NAME AS "fieldName",
+			T1.F_TYPE AS "type",
+			T1.F_WIDTH AS "width",
+			T1.F_SCALE AS "scale",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_PK AS "pk",
+			T1.F_NULLABLE AS "nullable",
+			T1.F_NEEDS_SUM AS "needsSum",
+			T1.F_NEEDS_AVG AS "needsAvg",
+			T1.F_NEEDS_MAX AS "needsMax",
+			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note"
+		FROM
+			T_FIELD T1
+		WHERE
+			<![CDATA[
+			(T1.F_PK == 1)
+			]]>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="findSummary" resultType="FieldSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_FIELD
+		<where>
+			<if test="ownerClassId != null">
+				AND F_OWNER_CLASS_ID = #{ ownerClassId }
+			</if>
+			<if test="fieldName != null">
+				AND F_FIELD_NAME = #{ fieldName }
+			</if>
+			<if test="type != null">
+				AND F_TYPE = #{ type }
+			</if>
+			<if test="width != null">
+				AND F_WIDTH = #{ width }
+			</if>
+			<if test="scale != null">
+				AND F_SCALE = #{ scale }
+			</if>
+			<if test="crefClassId != null">
+				AND F_CREF_CLASS_ID = #{ crefClassId }
+			</if>
+			<if test="erefEnumId != null">
+				AND F_EREF_ENUM_ID = #{ erefEnumId }
+			</if>
+			<if test="frefFieldId != null">
+				AND F_FREF_FIELD_ID = #{ frefFieldId }
+			</if>
+			<if test="pk != null">
+				AND F_PK = #{ pk }
+			</if>
+			<if test="nullable != null">
+				AND F_NULLABLE = #{ nullable }
+			</if>
+			<if test="needsSum != null">
+				AND F_NEEDS_SUM = #{ needsSum }
+			</if>
+			<if test="needsAvg != null">
+				AND F_NEEDS_AVG = #{ needsAvg }
+			</if>
+			<if test="needsMax != null">
+				AND F_NEEDS_MAX = #{ needsMax }
+			</if>
+			<if test="needsMin != null">
+				AND F_NEEDS_MIN = #{ needsMin }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
+	</select>
+
+	<select id="findContent" resultType="FieldContent">
 		SELECT
 			F_FIELD_ID AS "fieldId",
 			F_OWNER_CLASS_ID AS "ownerClassId",
@@ -123,6 +249,10 @@
 			F_FREF_FIELD_ID AS "frefFieldId",
 			F_PK AS "pk",
 			F_NULLABLE AS "nullable",
+			F_NEEDS_SUM AS "needsSum",
+			F_NEEDS_AVG AS "needsAvg",
+			F_NEEDS_MAX AS "needsMax",
+			F_NEEDS_MIN AS "needsMin",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"
@@ -159,6 +289,18 @@
 			<if test="nullable != null">
 				AND F_NULLABLE = #{ nullable }
 			</if>
+			<if test="needsSum != null">
+				AND F_NEEDS_SUM = #{ needsSum }
+			</if>
+			<if test="needsAvg != null">
+				AND F_NEEDS_AVG = #{ needsAvg }
+			</if>
+			<if test="needsMax != null">
+				AND F_NEEDS_MAX = #{ needsMax }
+			</if>
+			<if test="needsMin != null">
+				AND F_NEEDS_MIN = #{ needsMin }
+			</if>
 			<if test="title != null">
 				AND F_TITLE = #{ title }
 			</if>
@@ -171,7 +313,7 @@
 		</if>
 	</select>
 
-	<select id="getOwner" resultType="ClassDto">
+	<select id="getOwner" resultType="ClassContent">
 		SELECT
 			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -185,7 +327,7 @@
 			F_CLASS_ID = #{ ownerClassId }
 	</select>
 
-	<select id="getCref" resultType="ClassDto">
+	<select id="getCref" resultType="ClassContent">
 		SELECT
 			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -199,7 +341,7 @@
 			F_CLASS_ID = #{ crefClassId }
 	</select>
 
-	<select id="getEref" resultType="EnumDto">
+	<select id="getEref" resultType="EnumContent">
 		SELECT
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -214,7 +356,7 @@
 			F_ENUM_ID = #{ erefEnumId }
 	</select>
 
-	<select id="getFref" resultType="FieldDto">
+	<select id="getFref" resultType="FieldContent">
 		SELECT
 			F_FIELD_ID AS "fieldId",
 			F_OWNER_CLASS_ID AS "ownerClassId",
@@ -227,6 +369,10 @@
 			F_FREF_FIELD_ID AS "frefFieldId",
 			F_PK AS "pk",
 			F_NULLABLE AS "nullable",
+			F_NEEDS_SUM AS "needsSum",
+			F_NEEDS_AVG AS "needsAvg",
+			F_NEEDS_MAX AS "needsMax",
+			F_NEEDS_MIN AS "needsMin",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note"

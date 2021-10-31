@@ -16,26 +16,26 @@ public interface EnumValueMapper {
 	/**
 	 * 列挙値を挿入する
 	 *
-	 * @param dto 挿入する列挙値
+	 * @param content 挿入する列挙値
 	 * @return 処理成功の場合、真
 	 */
-	public boolean insert(EnumValueDto dto);
+	public boolean insert(EnumValueContent content);
 
 	/**
 	 * 列挙値を更新する
 	 *
-	 * @param dto 更新する列挙値
+	 * @param content 更新する列挙値
 	 * @return 処理成功の場合、真
 	 */
-	public boolean update(EnumValueDto dto);
+	public boolean update(EnumValueContent content);
 
 	/**
 	 * 列挙値を削除する
 	 *
-	 * @param dto 削除する列挙値
+	 * @param content 削除する列挙値
 	 * @return 処理成功の場合、真
 	 */
-	public boolean delete(EnumValueDto dto);
+	public boolean delete(EnumValueContent content);
 
 	/**
 	 * 列挙値を取得する
@@ -44,10 +44,17 @@ public interface EnumValueMapper {
 	 * @param ownerEnumId 所属列挙の列挙ID
 	 * @return 取得した列挙値
 	 */
-	public EnumValueDto get(
+	public EnumValueContent get(
 		@Param("valueId") String valueId, 
 		@Param("ownerEnumId") int ownerEnumId
 	);
+
+	/**
+	 * 全ての列挙値のサマリーを取得する
+	 *
+	 * @return 列挙値のサマリー
+	 */
+	public EnumValueSummary listSummary();
 
 	/**
 	 * 全ての列挙値を取得する
@@ -56,9 +63,22 @@ public interface EnumValueMapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙値のリスト
 	 */
-	public List<EnumValueDto> list(
+	public List<EnumValueContent> listContent(
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
+
+	/**
+	 * 指定した条件に合致する列挙値のサマリーを取得する
+	 *
+	 * @param code 列挙コード
+	 * @param title タイトル
+	 * @return 列挙値のサマリー
+	 */
+	public EnumValueSummary findSummary(
+		@Param("code") Integer code, 
+		@Param("title") String title
+	);
 
 	/**
 	 * 指定した条件に合致する列挙値を取得する
@@ -69,18 +89,19 @@ public interface EnumValueMapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙値のリスト
 	 */
-	public List<EnumValueDto> find(
+	public List<EnumValueContent> findContent(
 		@Param("code") Integer code,
 		@Param("title") String title,
 		@Param("offset") int offset,
-		@Param("limit") int limit);
+		@Param("limit") int limit
+	);
 
 	/**
 	 * 所属列挙を取得する
 	 *
-	 * @param dto 列挙値
+	 * @param content 列挙値
 	 * @return 所属列挙
 	 */
-	public EnumDto getOwner(EnumValueDto dto);
+	public EnumContent getOwner(EnumValueContent content);
 
 }

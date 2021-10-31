@@ -3,7 +3,7 @@
 
 <mapper namespace="com.github.vvorks.builder.server.mapper.EnumValueMapper">
 
-	<insert id="insert" parameterType="EnumValueDto">
+	<insert id="insert" parameterType="EnumValueContent">
 		INSERT INTO T_ENUM_VALUE (
 			F_VALUE_ID,
 			F_OWNER_ENUM_ID,
@@ -21,7 +21,7 @@
 		)
 	</insert>
 
-	<update id="update" parameterType="EnumValueDto">
+	<update id="update" parameterType="EnumValueContent">
 		UPDATE T_ENUM_VALUE SET
 			F_CODE = #{ code },
 			F_TITLE = #{ title },
@@ -32,14 +32,14 @@
 			F_OWNER_ENUM_ID = #{ ownerEnumId }
 	</update>
 
-	<delete id="delete" parameterType="EnumValueDto">
+	<delete id="delete" parameterType="EnumValueContent">
 		DELETE FROM T_ENUM_VALUE
 		WHERE
 			F_VALUE_ID = #{ valueId } AND 
 			F_OWNER_ENUM_ID = #{ ownerEnumId }
 	</delete>
 
-	<select id="get" resultType="EnumValueDto">
+	<select id="get" resultType="EnumValueContent">
 		SELECT
 			F_VALUE_ID AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
@@ -54,7 +54,14 @@
 			F_OWNER_ENUM_ID = #{ ownerEnumId }
 	</select>
 
-	<select id="list" resultType="EnumValueDto">
+	<select id="listSummary" resultType="EnumValueSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_ENUM_VALUE
+	</select>
+
+	<select id="listContent" resultType="EnumValueContent">
 		SELECT
 			F_VALUE_ID AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
@@ -72,7 +79,22 @@
 		</if>
 	</select>
 
-	<select id="find" resultType="EnumValueDto">
+	<select id="findSummary" resultType="EnumValueSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_ENUM_VALUE
+		<where>
+			<if test="code != null">
+				AND F_CODE = #{ code }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
+	</select>
+
+	<select id="findContent" resultType="EnumValueContent">
 		SELECT
 			F_VALUE_ID AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
@@ -98,7 +120,7 @@
 		</if>
 	</select>
 
-	<select id="getOwner" resultType="EnumDto">
+	<select id="getOwner" resultType="EnumContent">
 		SELECT
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",

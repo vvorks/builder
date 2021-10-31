@@ -173,10 +173,11 @@ TOKEN : {
 	< HOOK: "?" >		| < COLON: ":" >	| < ASSIGN: "=" >	|
 	< BANG: "!" >		| < TILDE: "~" >	|
 	< EQ: "==" >		| < NE: "!=" >		| < LTGT: "<>" >	|
-	< LT: "<" >			| < LE: "<=" >		| < GT: ">" >		| < GE: ">=" > |
+	< LIKE: "=%" >		| < MATCH: "=~" >	|
+	< LT: "<" >			| < LE: "<=" >		| < GT: ">" >		| < GE: ">=" >		|
 	< SC_OR: "||" >		| < SC_AND: "&&" >	|
-	< PLUS: "+" >		| < MINUS: "-" >	| < STAR: "*" >		| < SLASH: "/" > |
-	< BIT_AND: "&" >	| < BIT_OR: "|" >	| < BIT_XOR: "^" >	| < REM: "%" > |
+	< PLUS: "+" >		| < MINUS: "-" >	| < STAR: "*" >		| < SLASH: "/" >	|
+	< BIT_AND: "&" >	| < BIT_OR: "|" >	| < BIT_XOR: "^" >	| < REM: "%" >		|
 	< TO: "..">			| < ELLIPSIS: "..." >
 }
 
@@ -200,7 +201,7 @@ void OrExpression() #BinaryExpression(>1) : {} {
 }
 
 void OrOperator() #BinaryOperator : {} {
-	<OR> | "||" //| "|"
+	<OR> | "||"
 }
 
 void AndExpression() #BinaryExpression(>1) : {} {
@@ -208,7 +209,7 @@ void AndExpression() #BinaryExpression(>1) : {} {
 }
 
 void AndOperator() #BinaryOperator : {} {
-	<AND> | "&&" //| "&"
+	<AND> | "&&"
 }
 
 void XorExpression() #BinaryExpression(>1) : {} {
@@ -224,7 +225,7 @@ void EqualityExpression() #BinaryExpression(>1) : {} {
 }
 
 void EqualityOperator() #BinaryOperator : {} {
-	"==" | "!=" | "<>"
+	"==" | "!=" | "<>" | "=%" | "=~"
 }
 
 void RelationalExpression() #BinaryExpression(>1) : {} {
@@ -266,7 +267,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression(>1) : {} {
 }
 
 void UnaryOperator() #UnaryOperator : {} {
-	<NOT> | "!" //| "~"
+	<NOT> | "!" | "~"
 }
 
 void PrimaryExpression() : {} {

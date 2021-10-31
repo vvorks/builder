@@ -7,27 +7,25 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 /**
- * クラス
+ * 列挙値
  */
-public class ClassDto {
+public class EnumValueContent {
 
 	/**
-	 * クラスID
-	 *
-	 * （代理キー）
-	 */
-	private int classId;
-
-	/**
-	 * 所属プロジェクトのプロジェクトID
-	 */
-	private int ownerProjectId;
-
-	/**
-	 * クラス名
+	 * 列挙名
 	 */
 	@NotNull
-	private String className;
+	private String valueId;
+
+	/**
+	 * 所属列挙の列挙ID
+	 */
+	private int ownerEnumId;
+
+	/**
+	 * 列挙コード
+	 */
+	private int code;
 
 	/**
 	 * タイトル
@@ -46,57 +44,57 @@ public class ClassDto {
 	private String note;
 
 	/**
-	 * クラスIDを取得する
+	 * 列挙名を取得する
 	 *
-	 * @return クラスID
+	 * @return 列挙名
 	 */
-	public int getClassId() {
-		return this.classId;
+	public String getValueId() {
+		return this.valueId;
 	}
 
 	/**
-	 * クラスIDを設定する
+	 * 列挙名を設定する
 	 *
-	 * @param classId 設定するクラスID
+	 * @param valueId 設定する列挙名
 	 */
-	public void setClassId(int classId) {
-		this.classId = classId;
+	public void setValueId(String valueId) {
+		this.valueId = valueId;
 	}
 
 	/**
-	 * 所属プロジェクトのプロジェクトIDを取得する
+	 * 所属列挙の列挙IDを取得する
 	 *
-	 * @return 所属プロジェクトのプロジェクトID
+	 * @return 所属列挙の列挙ID
 	 */
-	public int getOwnerProjectId() {
-		return this.ownerProjectId;
+	public int getOwnerEnumId() {
+		return this.ownerEnumId;
 	}
 
 	/**
-	 * 所属プロジェクトのプロジェクトIDを設定する
+	 * 所属列挙の列挙IDを設定する
 	 *
-	 * @param ownerProjectId 設定する所属プロジェクトのプロジェクトID
+	 * @param ownerEnumId 設定する所属列挙の列挙ID
 	 */
-	public void setOwnerProjectId(int ownerProjectId) {
-		this.ownerProjectId = ownerProjectId;
+	public void setOwnerEnumId(int ownerEnumId) {
+		this.ownerEnumId = ownerEnumId;
 	}
 
 	/**
-	 * クラス名を取得する
+	 * 列挙コードを取得する
 	 *
-	 * @return クラス名
+	 * @return 列挙コード
 	 */
-	public String getClassName() {
-		return this.className;
+	public int getCode() {
+		return this.code;
 	}
 
 	/**
-	 * クラス名を設定する
+	 * 列挙コードを設定する
 	 *
-	 * @param className 設定するクラス名
+	 * @param code 設定する列挙コード
 	 */
-	public void setClassName(String className) {
-		this.className = className;
+	public void setCode(int code) {
+		this.code = code;
 	}
 
 	/**
@@ -156,9 +154,9 @@ public class ClassDto {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			classId,
-			ownerProjectId,
-			className,
+			valueId,
+			ownerEnumId,
+			code,
 			title,
 			description,
 			note
@@ -174,15 +172,15 @@ public class ClassDto {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((ClassDto) obj);
+			return equals((EnumValueContent) obj);
 		}
 	}
 
-	private boolean equals(ClassDto other) {
+	private boolean equals(EnumValueContent other) {
 		return
-			this.classId == other.classId && 
-			this.ownerProjectId == other.ownerProjectId && 
-			Objects.equals(this.className, other.className) && 
+			Objects.equals(this.valueId, other.valueId) && 
+			this.ownerEnumId == other.ownerEnumId && 
+			this.code == other.code && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note)
@@ -192,10 +190,10 @@ public class ClassDto {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("ClassDto [");
-		sb.append("classId=").append(classId).append(", ");
-		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
-		sb.append("className=").append(className).append(", ");
+		sb.append("EnumValueContent [");
+		sb.append("valueId=").append(valueId).append(", ");
+		sb.append("ownerEnumId=").append(ownerEnumId).append(", ");
+		sb.append("code=").append(code).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note);

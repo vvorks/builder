@@ -1,27 +1,27 @@
 package com.github.vvorks.builder.server.expression;
 
 import com.github.vvorks.builder.server.domain.DataType;
-import com.github.vvorks.builder.server.domain.FieldDto;
+import com.github.vvorks.builder.server.domain.FieldContent;
 
-public class FieldRef extends DtoRef<FieldDto> {
+public class FieldRef extends ContentRef<FieldContent> {
 
-	public FieldRef(FieldDto fieldDto) {
-		super(fieldDto);
+	public FieldRef(FieldContent content) {
+		super(content);
 	}
 
 	@Override
 	public DataType getType() {
-		return dto.getType();
+		return content.getType();
 	}
 
 	@Override
 	public int getWidth() {
-		return dto.getWidth();
+		return content.getWidth();
 	}
 
 	@Override
 	public int getScale() {
-		return dto.getScale();
+		return content.getScale();
 	}
 
 	@Override

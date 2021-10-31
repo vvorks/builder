@@ -25,8 +25,7 @@ import com.github.vvorks.builder.common.util.Logger;
 import com.github.vvorks.builder.server.common.io.Ios;
 import com.github.vvorks.builder.server.common.poi.Cells;
 import com.github.vvorks.builder.server.domain.DataType;
-import com.github.vvorks.builder.server.extender.ClassExtender;
-import com.github.vvorks.builder.server.extender.FieldExtender;
+import com.github.vvorks.builder.server.extender.SqlWriter;
 
 @Component
 public class XlsxLoader {
@@ -68,7 +67,7 @@ public class XlsxLoader {
 			this.type = type;
 		}
 		public String sqliteName() {
-			return FieldExtender.COLUMN_PREFIX + Strings.toUpperSnake(name);
+			return SqlWriter.COLUMN_PREFIX + Strings.toUpperSnake(name);
 		}
 		public String sqliteType() {
 			return SQLITE_TYPES.get(type);
@@ -118,7 +117,7 @@ public class XlsxLoader {
 			cols.add(new ColInfo(name, type));
 		}
 		//テーブル作成
-		String tableName = ClassExtender.TABLE_PREFIX + Strings.toUpperSnake(sheet.getSheetName());
+		String tableName = SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(sheet.getSheetName());
 		StringBuilder sql = new StringBuilder();
 		//CreateTable文
 		sql.append("CREATE TABLE ").append(tableName).append("(").append(EOL);

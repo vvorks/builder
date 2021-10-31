@@ -3,7 +3,7 @@
 
 <mapper namespace="com.github.vvorks.builder.server.mapper.ProjectMapper">
 
-	<insert id="insert" parameterType="ProjectDto">
+	<insert id="insert" parameterType="ProjectContent">
 		INSERT INTO T_PROJECT (
 			F_PROJECT_ID,
 			F_PROJECT_NAME,
@@ -21,7 +21,7 @@
 		)
 	</insert>
 
-	<update id="update" parameterType="ProjectDto">
+	<update id="update" parameterType="ProjectContent">
 		UPDATE T_PROJECT SET
 			F_PROJECT_NAME = #{ projectName },
 			F_TITLE = #{ title },
@@ -32,13 +32,13 @@
 			F_PROJECT_ID = #{ projectId }
 	</update>
 
-	<delete id="delete" parameterType="ProjectDto">
+	<delete id="delete" parameterType="ProjectContent">
 		DELETE FROM T_PROJECT
 		WHERE
 			F_PROJECT_ID = #{ projectId }
 	</delete>
 
-	<select id="get" resultType="ProjectDto">
+	<select id="get" resultType="ProjectContent">
 		SELECT
 			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
@@ -52,7 +52,14 @@
 			F_PROJECT_ID = #{ projectId }
 	</select>
 
-	<select id="list" resultType="ProjectDto">
+	<select id="listSummary" resultType="ProjectSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_PROJECT
+	</select>
+
+	<select id="listContent" resultType="ProjectContent">
 		SELECT
 			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
@@ -70,7 +77,22 @@
 		</if>
 	</select>
 
-	<select id="find" resultType="ProjectDto">
+	<select id="findSummary" resultType="ProjectSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_PROJECT
+		<where>
+			<if test="projectName != null">
+				AND F_PROJECT_NAME = #{ projectName }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
+	</select>
+
+	<select id="findContent" resultType="ProjectContent">
 		SELECT
 			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
@@ -96,7 +118,16 @@
 		</if>
 	</select>
 
-	<select id="listClasses" resultType="ClassDto">
+	<select id="listClassesSummary" resultType="ClassSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_CLASS
+		WHERE
+			F_OWNER_PROJECT_ID = #{ content.projectId }
+	</select>
+
+	<select id="listClassesContent" resultType="ClassContent">
 		SELECT
 			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -107,7 +138,7 @@
 		FROM
 			T_CLASS
 		WHERE
-			F_OWNER_PROJECT_ID = #{ dto.projectId }
+			F_OWNER_PROJECT_ID = #{ content.projectId }
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -116,7 +147,25 @@
 		</if>
 	</select>
 
-	<select id="findClasses" resultType="ClassDto">
+	<select id="findClassesSummary" resultType="ClassSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_CLASS
+		WHERE
+			F_OWNER_PROJECT_ID = #{ content.projectId }
+			<if test="ownerProjectId != null">
+				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
+			</if>
+			<if test="className != null">
+				AND F_CLASS_NAME = #{ className }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+	</select>
+
+	<select id="findClassesContent" resultType="ClassContent">
 		SELECT
 			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -127,7 +176,7 @@
 		FROM
 			T_CLASS
 		WHERE
-			F_OWNER_PROJECT_ID = #{ dto.projectId }
+			F_OWNER_PROJECT_ID = #{ content.projectId }
 			<if test="ownerProjectId != null">
 				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
 			</if>
@@ -145,7 +194,16 @@
 		</if>
 	</select>
 
-	<select id="listEnums" resultType="EnumDto">
+	<select id="listEnumsSummary" resultType="EnumSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_ENUM
+		WHERE
+			F_OWNER_PROJECT_ID = #{ content.projectId }
+	</select>
+
+	<select id="listEnumsContent" resultType="EnumContent">
 		SELECT
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -157,7 +215,7 @@
 		FROM
 			T_ENUM
 		WHERE
-			F_OWNER_PROJECT_ID = #{ dto.projectId }
+			F_OWNER_PROJECT_ID = #{ content.projectId }
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -166,7 +224,28 @@
 		</if>
 	</select>
 
-	<select id="findEnums" resultType="EnumDto">
+	<select id="findEnumsSummary" resultType="EnumSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_ENUM
+		WHERE
+			F_OWNER_PROJECT_ID = #{ content.projectId }
+			<if test="ownerProjectId != null">
+				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
+			</if>
+			<if test="enumName != null">
+				AND F_ENUM_NAME = #{ enumName }
+			</if>
+			<if test="encodeString != null">
+				AND F_ENCODE_STRING = #{ encodeString }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+	</select>
+
+	<select id="findEnumsContent" resultType="EnumContent">
 		SELECT
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -178,7 +257,7 @@
 		FROM
 			T_ENUM
 		WHERE
-			F_OWNER_PROJECT_ID = #{ dto.projectId }
+			F_OWNER_PROJECT_ID = #{ content.projectId }
 			<if test="ownerProjectId != null">
 				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
 			</if>

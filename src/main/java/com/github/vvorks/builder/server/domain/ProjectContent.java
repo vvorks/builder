@@ -7,25 +7,24 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 /**
- * 列挙値
+ * プロジェクト型
  */
-public class EnumValueDto {
+public class ProjectContent {
 
 	/**
-	 * 列挙名
+	 * プロジェクトID
+	 *
+	 * （代理キー）
+	 */
+	private int projectId;
+
+	/**
+	 * プロジェクト名
+	 *
+	 * ベースパッケージ名を兼ねる
 	 */
 	@NotNull
-	private String valueId;
-
-	/**
-	 * 所属列挙の列挙ID
-	 */
-	private int ownerEnumId;
-
-	/**
-	 * 列挙コード
-	 */
-	private int code;
+	private String projectName;
 
 	/**
 	 * タイトル
@@ -44,57 +43,44 @@ public class EnumValueDto {
 	private String note;
 
 	/**
-	 * 列挙名を取得する
-	 *
-	 * @return 列挙名
+	 * 著作権
 	 */
-	public String getValueId() {
-		return this.valueId;
+	private String copyrights;
+
+	/**
+	 * プロジェクトIDを取得する
+	 *
+	 * @return プロジェクトID
+	 */
+	public int getProjectId() {
+		return this.projectId;
 	}
 
 	/**
-	 * 列挙名を設定する
+	 * プロジェクトIDを設定する
 	 *
-	 * @param valueId 設定する列挙名
+	 * @param projectId 設定するプロジェクトID
 	 */
-	public void setValueId(String valueId) {
-		this.valueId = valueId;
+	public void setProjectId(int projectId) {
+		this.projectId = projectId;
 	}
 
 	/**
-	 * 所属列挙の列挙IDを取得する
+	 * プロジェクト名を取得する
 	 *
-	 * @return 所属列挙の列挙ID
+	 * @return プロジェクト名
 	 */
-	public int getOwnerEnumId() {
-		return this.ownerEnumId;
+	public String getProjectName() {
+		return this.projectName;
 	}
 
 	/**
-	 * 所属列挙の列挙IDを設定する
+	 * プロジェクト名を設定する
 	 *
-	 * @param ownerEnumId 設定する所属列挙の列挙ID
+	 * @param projectName 設定するプロジェクト名
 	 */
-	public void setOwnerEnumId(int ownerEnumId) {
-		this.ownerEnumId = ownerEnumId;
-	}
-
-	/**
-	 * 列挙コードを取得する
-	 *
-	 * @return 列挙コード
-	 */
-	public int getCode() {
-		return this.code;
-	}
-
-	/**
-	 * 列挙コードを設定する
-	 *
-	 * @param code 設定する列挙コード
-	 */
-	public void setCode(int code) {
-		this.code = code;
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 	/**
@@ -151,15 +137,33 @@ public class EnumValueDto {
 		this.note = note;
 	}
 
+	/**
+	 * 著作権を取得する
+	 *
+	 * @return 著作権
+	 */
+	public String getCopyrights() {
+		return this.copyrights;
+	}
+
+	/**
+	 * 著作権を設定する
+	 *
+	 * @param copyrights 設定する著作権
+	 */
+	public void setCopyrights(String copyrights) {
+		this.copyrights = copyrights;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			valueId,
-			ownerEnumId,
-			code,
+			projectId,
+			projectName,
 			title,
 			description,
-			note
+			note,
+			copyrights
 			);
 	}
 
@@ -172,31 +176,31 @@ public class EnumValueDto {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((EnumValueDto) obj);
+			return equals((ProjectContent) obj);
 		}
 	}
 
-	private boolean equals(EnumValueDto other) {
+	private boolean equals(ProjectContent other) {
 		return
-			Objects.equals(this.valueId, other.valueId) && 
-			this.ownerEnumId == other.ownerEnumId && 
-			this.code == other.code && 
+			this.projectId == other.projectId && 
+			Objects.equals(this.projectName, other.projectName) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
-			Objects.equals(this.note, other.note)
+			Objects.equals(this.note, other.note) && 
+			Objects.equals(this.copyrights, other.copyrights)
 			;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("EnumValueDto [");
-		sb.append("valueId=").append(valueId).append(", ");
-		sb.append("ownerEnumId=").append(ownerEnumId).append(", ");
-		sb.append("code=").append(code).append(", ");
+		sb.append("ProjectContent [");
+		sb.append("projectId=").append(projectId).append(", ");
+		sb.append("projectName=").append(projectName).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
-		sb.append("note=").append(note);
+		sb.append("note=").append(note).append(", ");
+		sb.append("copyrights=").append(copyrights);
 		sb.append("]");
 		return sb.toString();
 	}

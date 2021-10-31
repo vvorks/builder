@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.util.Logger;
-import com.github.vvorks.builder.server.domain.ClassDto;
+import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
-import com.github.vvorks.builder.server.domain.EnumDto;
-import com.github.vvorks.builder.server.domain.EnumValueDto;
-import com.github.vvorks.builder.server.domain.FieldDto;
-import com.github.vvorks.builder.server.domain.ProjectDto;
+import com.github.vvorks.builder.server.domain.EnumContent;
+import com.github.vvorks.builder.server.domain.EnumValueContent;
+import com.github.vvorks.builder.server.domain.FieldContent;
+import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.expression.BooleanLiteral;
 import com.github.vvorks.builder.server.expression.DateLiteral;
 import com.github.vvorks.builder.server.expression.DoubleLiteral;
@@ -49,6 +49,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	private static final String UNDER_CONSTRUCTION = "under construction";
 	private static final String TYPE_UNMATCH = "type unmatch";
 	private static final String UNDEFINED_PROPERTY = "undefined property";
+	private static final String MUST_BE_CONST = "pattern must be a string literal";
 
 	@Autowired
 	private ExprParser parser;
@@ -65,31 +66,39 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	@Autowired
 	private EnumValueMapper enumValueMapper;
 
-	private ProjectDto project;
+	private ProjectContent project;
 
-	private ClassDto context;
+	private ClassContent context;
 
-	public Expression build(ExprNode main, ProjectDto project, ClassDto context) throws ParseException {
+	public Expression build(ExprNode main, ProjectContent project, ClassContent context) throws ParseException {
 		this.project = project;
 		this.context = context;
 		return main.jjtAccept(this, null);
 	}
 
-	private FieldDto getField(String name, ClassDto cls) {
-		List<FieldDto> fields = classMapper.findFields(cls, null, name, null, null, null, null, null, null, null, null, null, 0, 0);
+	private FieldContent getField(String name, ClassContent cls) {
+		List<FieldContent> fields = classMapper.findFieldsContent(
+				cls,	null,	name,	null,
+				null,	null,	null,	null,
+				null,	null,	null,	null,
+				null,	null,	null,	null,
+				0, 0);
 		return (fields.size() == 1) ? fields.get(0) : null;
 	}
 
-	private ClassDto getReturnClass(FieldDto fld) {
+	private ClassContent getReturnClass(FieldContent fld) {
 		return fieldMapper.getCref(fld);
 	}
 
-	private EnumDto getEnum(String name, ProjectDto prj) {
-		List<EnumDto> enums = projectMapper.findEnums(prj, null, name, null, null, 0, 0);
+	private EnumContent getEnum(String name, ProjectContent prj) {
+		List<EnumContent> enums = projectMapper.findEnumsContent(
+				prj,	null,	name,	null,
+				null,
+				0, 0);
 		return (enums.size() == 1) ? enums.get(0) : null;
 	}
 
-	private EnumValueDto getEnumValue(String rName, EnumDto enm) {
+	private EnumValueContent getEnumValue(String rName, EnumContent enm) {
 		return enumValueMapper.get(rName, enm.getEnumId());
 	}
 
@@ -116,14 +125,17 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	public Expression visit(ASTBinaryExpression node, Expression unused) throws ParseException {
 		int n = node.size();
 		int i = 0;
-		Expression lValue = node.getChild(i++).jjtAccept(this, unused);
+		ExprNode lNode = node.getChild(i++);
 		ExprNode opNode = node.getChild(i++);
-		Expression rValue = node.getChild(i++).jjtAccept(this, unused);
+		ExprNode rNode = node.getChild(i++);
+		Expression lValue = lNode.jjtAccept(this, unused);
+		Expression rValue = rNode.jjtAccept(this, unused);
 		Operation op1 = newBinaryOperation(lValue, opNode, rValue);
 		lValue = op1;
 		while (i < n) {
 			opNode = node.getChild(i++);
-			rValue = node.getChild(i++).jjtAccept(this, unused);
+			rNode = node.getChild(i++);
+			rValue = rNode.jjtAccept(this, unused);
 			Operation op2 = newBinaryOperation(lValue, opNode, rValue);
 			if (op1.getCode() == op2.getCode()) {
 				op1.addOperand(rValue);
@@ -146,43 +158,55 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	private Operation newBinaryOperation(
 			Expression lValue, ExprNode node, Expression rValue) throws ParseException {
 		Operation.Code operator = getBinaryOperator(node);
+		Operation result;
 		switch (operator) {
 		case ADD:
 			if (isEitherString(lValue, rValue)) {
-				return newStringOperation(lValue, Operation.Code.CONCAT, rValue);
-			} else if (isBothNumber(lValue, rValue)) {
-				return newArithmeticOperation(lValue, operator, rValue);
+				result = newStringOperation(lValue, Operation.Code.CONCAT, rValue);
+				break;
 			}
-			throw new SemanticException(TYPE_UNMATCH, node);
+			//fallthrough
 		case SUB:
 		case MUL:
 		case DIV:
 		case MOD:
-			if (isBothNumber(lValue, rValue)) {
-				return newArithmeticOperation(lValue, operator, rValue);
+			if (!isBothNumber(lValue, rValue)) {
+				throw new SemanticException(TYPE_UNMATCH, node);
 			}
-			throw new SemanticException(TYPE_UNMATCH, node);
+			result = newArithmeticOperation(lValue, operator, rValue);
+			break;
 		case GE: case GT:
 		case LE: case LT:
-			if (isBothNumber(lValue, rValue) || isBothString(lValue, rValue) || isBothDate(lValue, rValue)) {
-				return newBooleanOperation(lValue, operator, rValue);
+			if (!(isBothNumber(lValue, rValue) || isBothString(lValue, rValue) || isBothDate(lValue, rValue))) {
+				throw new SemanticException(TYPE_UNMATCH, node);
 			}
-			throw new SemanticException(TYPE_UNMATCH, node);
+			result = newBooleanOperation(lValue, operator, rValue);
+			break;
 		case EQ: case NE:
-			if (isBothNumber(lValue, rValue) || isSameType(lValue, rValue)) {
-				return newBooleanOperation(lValue, operator, rValue);
+			if (!(isBothNumber(lValue, rValue) || isSameType(lValue, rValue))) {
+				throw new SemanticException(TYPE_UNMATCH, node);
 			}
-			throw new SemanticException(TYPE_UNMATCH, node);
+			result = newBooleanOperation(lValue, operator, rValue);
+			break;
+		case LIKE:
+		case MATCH:
+			if (!isBothString(lValue, rValue)) {
+				throw new SemanticException(TYPE_UNMATCH, node);
+			}
+			result = newBooleanOperation(lValue, operator, rValue);
+			break;
 		case AND:
 		case OR:
 		case XOR:
-			if (isBothBoolean(lValue, rValue)) {
-				return newBooleanOperation(lValue, operator, rValue);
+			if (!isBothBoolean(lValue, rValue)) {
+				throw new SemanticException(TYPE_UNMATCH, node);
 			}
-			throw new SemanticException(TYPE_UNMATCH, node);
+			result = newBooleanOperation(lValue, operator, rValue);
+			break;
 		default:
 			throw new InternalError();
 		}
+		return result;
 	}
 
 	private boolean isBothNumber(Expression lValue, Expression rValue) {
@@ -264,14 +288,14 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	static {
 		BINARY_OP_MAP.put(ExprParserConstants.OR, Operation.Code.OR);
 		BINARY_OP_MAP.put(ExprParserConstants.SC_OR, Operation.Code.OR);
-		BINARY_OP_MAP.put(ExprParserConstants.BIT_OR, Operation.Code.OR);
 		BINARY_OP_MAP.put(ExprParserConstants.AND, Operation.Code.AND);
 		BINARY_OP_MAP.put(ExprParserConstants.SC_AND, Operation.Code.AND);
-		BINARY_OP_MAP.put(ExprParserConstants.BIT_AND, Operation.Code.AND);
 		BINARY_OP_MAP.put(ExprParserConstants.XOR, Operation.Code.XOR);
 		BINARY_OP_MAP.put(ExprParserConstants.BIT_XOR, Operation.Code.XOR);
 		BINARY_OP_MAP.put(ExprParserConstants.EQ, Operation.Code.EQ);
 		BINARY_OP_MAP.put(ExprParserConstants.NE, Operation.Code.NE);
+		BINARY_OP_MAP.put(ExprParserConstants.LIKE, Operation.Code.LIKE);
+		BINARY_OP_MAP.put(ExprParserConstants.MATCH, Operation.Code.MATCH);
 		BINARY_OP_MAP.put(ExprParserConstants.LTGT, Operation.Code.NE);
 		BINARY_OP_MAP.put(ExprParserConstants.LT, Operation.Code.LT);
 		BINARY_OP_MAP.put(ExprParserConstants.GT, Operation.Code.GT);
@@ -347,6 +371,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		UNARY_OP_MAP.put(ExprParserConstants.MINUS, Operation.Code.MINUS);
 		UNARY_OP_MAP.put(ExprParserConstants.NOT, Operation.Code.NOT);
 		UNARY_OP_MAP.put(ExprParserConstants.BANG, Operation.Code.NOT);
+		UNARY_OP_MAP.put(ExprParserConstants.TILDE, Operation.Code.NOT);
 	}
 
 	@Override
@@ -358,14 +383,14 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		switch (child.id) {
 		case ExprParserTreeConstants.JJTPROPERTY:
 			String name = ((UnresolvedProperty)lValue).getName();
-			FieldDto fld;
-			EnumDto enm;
+			FieldContent fld;
+			EnumContent enm;
 			if ((fld = getField(name, context)) != null) {
 				Operation op = new Operation(Operation.Code.GET);
 				op.addOperandWithType(new FieldRef(fld));
 				lValue = op;
 			} else if ((enm = getEnum(name, project)) != null) {
-				Operation op = new Operation(Operation.Code.GET);
+				Operation op = new Operation(Operation.Code.CONST);
 				op.addOperandWithType(new EnumRef(enm));
 				lValue = op;
 			} else {
@@ -386,11 +411,11 @@ public class ExpressionBuilder implements ExprParserVisitor {
 				switch (child.id) {
 				case ExprParserTreeConstants.JJTPROPERTY:
 					String rName = ((UnresolvedProperty)rValue).getName();
-					FieldDto fld = ((FieldRef) last).getDto();
+					FieldContent fld = ((FieldRef) last).getContent();
 					if (fld.getType() != DataType.REF) {
 						throw new SemanticException(TYPE_UNMATCH, child);
 					}
-					ClassDto retCls = getReturnClass(fld);
+					ClassContent retCls = getReturnClass(fld);
 					if ((fld = getField(rName, retCls)) != null) {
 						rValue = new FieldRef(fld);
 					} else {
@@ -412,17 +437,17 @@ public class ExpressionBuilder implements ExprParserVisitor {
 				switch (child.id) {
 				case ExprParserTreeConstants.JJTPROPERTY:
 					String rName = ((UnresolvedProperty)rValue).getName();
-					EnumDto enm = ((EnumRef) last).getDto();
-					EnumValueDto ev;
+					EnumContent enm = ((EnumRef) last).getContent();
+					EnumValueContent ev;
 					if ((ev = getEnumValue(rName, enm)) != null) {
 						rValue = new EnumValueRef(ev);
 					} else {
 						throw new SemanticException(UNDEFINED_PROPERTY, child);
 					}
-					if (op.getCode() == Operation.Code.GET) {
+					if (op.getCode() == Operation.Code.CONST) {
 						op.addOperandWithType(rValue);
 					} else {
-						lValue = newPrimaryOperation(lValue, Operation.Code.GET, rValue);
+						lValue = newPrimaryOperation(lValue, Operation.Code.CONST, rValue);
 					}
 					break;
 				case ExprParserTreeConstants.JJTARRAYACCESS:

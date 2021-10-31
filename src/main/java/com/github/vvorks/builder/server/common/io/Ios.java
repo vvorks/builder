@@ -38,10 +38,8 @@ public class Ios {
 	}
 
 	public static void mkdirs(File dir) throws IOException {
-		if (!dir.exists()) {
-			if (!dir.mkdirs()) {
-				throw new IOException();
-			}
+		if (dir != null && !dir.exists() && !dir.mkdirs()) {
+			throw new IOException();
 		}
 	}
 
@@ -65,6 +63,21 @@ public class Ios {
 
 	public static PrintWriter newWriter(OutputStream out) {
 		return new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
+	}
+
+	public static void deleteAll(File fileOrDir) throws IOException {
+		if (fileOrDir.isDirectory()) {
+			for (File child : fileOrDir.listFiles()) {
+				deleteAll(child);
+			}
+			if (!fileOrDir.delete()) {
+				throw new IOException("DELETE FAILED " + fileOrDir);
+			}
+		} else {
+			if (fileOrDir.exists() && !fileOrDir.delete()) {
+				throw new IOException("DELETE FAILED " + fileOrDir);
+			}
+		}
 	}
 
 }

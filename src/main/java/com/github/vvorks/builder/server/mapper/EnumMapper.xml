@@ -3,7 +3,7 @@
 
 <mapper namespace="com.github.vvorks.builder.server.mapper.EnumMapper">
 
-	<insert id="insert" parameterType="EnumDto">
+	<insert id="insert" parameterType="EnumContent">
 		INSERT INTO T_ENUM (
 			F_ENUM_ID,
 			F_OWNER_PROJECT_ID,
@@ -23,7 +23,7 @@
 		)
 	</insert>
 
-	<update id="update" parameterType="EnumDto">
+	<update id="update" parameterType="EnumContent">
 		UPDATE T_ENUM SET
 			F_OWNER_PROJECT_ID = #{ ownerProjectId },
 			F_ENUM_NAME = #{ enumName },
@@ -35,13 +35,13 @@
 			F_ENUM_ID = #{ enumId }
 	</update>
 
-	<delete id="delete" parameterType="EnumDto">
+	<delete id="delete" parameterType="EnumContent">
 		DELETE FROM T_ENUM
 		WHERE
 			F_ENUM_ID = #{ enumId }
 	</delete>
 
-	<select id="get" resultType="EnumDto">
+	<select id="get" resultType="EnumContent">
 		SELECT
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -56,7 +56,14 @@
 			F_ENUM_ID = #{ enumId }
 	</select>
 
-	<select id="list" resultType="EnumDto">
+	<select id="listSummary" resultType="EnumSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_ENUM
+	</select>
+
+	<select id="listContent" resultType="EnumContent">
 		SELECT
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -75,7 +82,28 @@
 		</if>
 	</select>
 
-	<select id="find" resultType="EnumDto">
+	<select id="findSummary" resultType="EnumSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_ENUM
+		<where>
+			<if test="ownerProjectId != null">
+				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
+			</if>
+			<if test="enumName != null">
+				AND F_ENUM_NAME = #{ enumName }
+			</if>
+			<if test="encodeString != null">
+				AND F_ENCODE_STRING = #{ encodeString }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
+	</select>
+
+	<select id="findContent" resultType="EnumContent">
 		SELECT
 			F_ENUM_ID AS "enumId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -108,7 +136,7 @@
 		</if>
 	</select>
 
-	<select id="getOwner" resultType="ProjectDto">
+	<select id="getOwner" resultType="ProjectContent">
 		SELECT
 			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
@@ -122,7 +150,16 @@
 			F_PROJECT_ID = #{ ownerProjectId }
 	</select>
 
-	<select id="listValues" resultType="EnumValueDto">
+	<select id="listValuesSummary" resultType="EnumValueSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_ENUM_VALUE
+		WHERE
+			F_OWNER_ENUM_ID = #{ content.enumId }
+	</select>
+
+	<select id="listValuesContent" resultType="EnumValueContent">
 		SELECT
 			F_VALUE_ID AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
@@ -133,7 +170,7 @@
 		FROM
 			T_ENUM_VALUE
 		WHERE
-			F_OWNER_ENUM_ID = #{ dto.enumId }
+			F_OWNER_ENUM_ID = #{ content.enumId }
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -142,7 +179,22 @@
 		</if>
 	</select>
 
-	<select id="findValues" resultType="EnumValueDto">
+	<select id="findValuesSummary" resultType="EnumValueSummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_ENUM_VALUE
+		WHERE
+			F_OWNER_ENUM_ID = #{ content.enumId }
+			<if test="code != null">
+				AND F_CODE = #{ code }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+	</select>
+
+	<select id="findValuesContent" resultType="EnumValueContent">
 		SELECT
 			F_VALUE_ID AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
@@ -153,7 +205,7 @@
 		FROM
 			T_ENUM_VALUE
 		WHERE
-			F_OWNER_ENUM_ID = #{ dto.enumId }
+			F_OWNER_ENUM_ID = #{ content.enumId }
 			<if test="code != null">
 				AND F_CODE = #{ code }
 			</if>

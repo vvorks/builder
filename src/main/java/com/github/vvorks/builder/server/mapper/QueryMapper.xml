@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.vvorks.builder.server.mapper.QueryMapper">
+
+	<insert id="insert" parameterType="QueryContent">
+		INSERT INTO T_QUERY (
+			F_QUERY_ID,
+			F_OWNER_CLASS_ID,
+			F_QUERY_NAME,
+			F_FILTER,
+			F_ORDER,
+			F_TITLE,
+			F_DESCRIPTION,
+			F_NOTE
+		) VALUES (
+			#{ queryId },
+			#{ ownerClassId },
+			#{ queryName },
+			#{ filter },
+			#{ order },
+			#{ title },
+			#{ description },
+			#{ note }
+		)
+	</insert>
+
+	<update id="update" parameterType="QueryContent">
+		UPDATE T_QUERY SET
+			F_OWNER_CLASS_ID = #{ ownerClassId },
+			F_QUERY_NAME = #{ queryName },
+			F_FILTER = #{ filter },
+			F_ORDER = #{ order },
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
+			F_NOTE = #{ note }
+		WHERE
+			F_QUERY_ID = #{ queryId }
+	</update>
+
+	<delete id="delete" parameterType="QueryContent">
+		DELETE FROM T_QUERY
+		WHERE
+			F_QUERY_ID = #{ queryId }
+	</delete>
+
+	<select id="get" resultType="QueryContent">
+		SELECT
+			F_QUERY_ID AS "queryId",
+			F_OWNER_CLASS_ID AS "ownerClassId",
+			F_QUERY_NAME AS "queryName",
+			F_FILTER AS "filter",
+			F_ORDER AS "order",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_QUERY
+		WHERE
+			F_QUERY_ID = #{ queryId }
+	</select>
+
+	<select id="listSummary" resultType="QuerySummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_QUERY
+	</select>
+
+	<select id="listContent" resultType="QueryContent">
+		SELECT
+			F_QUERY_ID AS "queryId",
+			F_OWNER_CLASS_ID AS "ownerClassId",
+			F_QUERY_NAME AS "queryName",
+			F_FILTER AS "filter",
+			F_ORDER AS "order",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_QUERY
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="findSummary" resultType="QuerySummary">
+		SELECT
+			COUNT(*) AS "count"
+		FROM
+			T_QUERY
+		<where>
+			<if test="ownerClassId != null">
+				AND F_OWNER_CLASS_ID = #{ ownerClassId }
+			</if>
+			<if test="queryName != null">
+				AND F_QUERY_NAME = #{ queryName }
+			</if>
+			<if test="filter != null">
+				AND F_FILTER = #{ filter }
+			</if>
+			<if test="order != null">
+				AND F_ORDER = #{ order }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
+	</select>
+
+	<select id="findContent" resultType="QueryContent">
+		SELECT
+			F_QUERY_ID AS "queryId",
+			F_OWNER_CLASS_ID AS "ownerClassId",
+			F_QUERY_NAME AS "queryName",
+			F_FILTER AS "filter",
+			F_ORDER AS "order",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_QUERY
+		<where>
+			<if test="ownerClassId != null">
+				AND F_OWNER_CLASS_ID = #{ ownerClassId }
+			</if>
+			<if test="queryName != null">
+				AND F_QUERY_NAME = #{ queryName }
+			</if>
+			<if test="filter != null">
+				AND F_FILTER = #{ filter }
+			</if>
+			<if test="order != null">
+				AND F_ORDER = #{ order }
+			</if>
+			<if test="title != null">
+				AND F_TITLE = #{ title }
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="getOwner" resultType="ClassContent">
+		SELECT
+			F_CLASS_ID AS "classId",
+			F_OWNER_PROJECT_ID AS "ownerProjectId",
+			F_CLASS_NAME AS "className",
+			F_TITLE AS "title",
+			F_DESCRIPTION AS "description",
+			F_NOTE AS "note"
+		FROM
+			T_CLASS
+		WHERE
+			F_CLASS_ID = #{ ownerClassId }
+	</select>
+
+</mapper>

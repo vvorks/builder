@@ -10,8 +10,8 @@ import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
 import com.github.vvorks.builder.server.component.DebugWriter;
 import com.github.vvorks.builder.server.component.JavaTextWriter;
-import com.github.vvorks.builder.server.domain.ClassDto;
-import com.github.vvorks.builder.server.domain.ProjectDto;
+import com.github.vvorks.builder.server.domain.ClassContent;
+import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.expression.Expression;
 import com.github.vvorks.builder.server.grammar.ExprNode;
 import com.github.vvorks.builder.server.grammar.ExprParser;
@@ -44,8 +44,8 @@ public class RpcController {
 		try {
 			ExprNode result = parser.parse(code);
 			//test
-			ProjectDto prj = projectMapper.find("com.github.vvorks.builder", null, 0, 0).get(0);
-			ClassDto cls = projectMapper.findClasses(prj, null, "Field", null, 0, 0).get(0);
+			ProjectContent prj = projectMapper.findContent("com.github.vvorks.builder", null, 0, 0).get(0);
+			ClassContent cls = projectMapper.findClassesContent(prj, null, "Field", null, 0, 0).get(0);
 			Expression exp = builder.build(result, prj, cls);
 			//test
 			String r = exp.accept(new JavaTextWriter(), null);

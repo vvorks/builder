@@ -1,12 +1,12 @@
 package com.github.vvorks.builder.server.expression;
 
-import com.github.vvorks.builder.server.domain.ClassDto;
+import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
 
-public class ClassRef extends DtoRef<ClassDto> {
+public class ClassRef extends ContentRef<ClassContent> {
 
-	public ClassRef(ClassDto classDto) {
-		super(classDto);
+	public ClassRef(ClassContent content) {
+		super(content);
 	}
 
 	@Override

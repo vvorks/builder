@@ -1,12 +1,12 @@
 package com.github.vvorks.builder.server.expression;
 
 import com.github.vvorks.builder.server.domain.DataType;
-import com.github.vvorks.builder.server.domain.EnumDto;
+import com.github.vvorks.builder.server.domain.EnumContent;
 
-public class EnumRef extends DtoRef<EnumDto> {
+public class EnumRef extends ContentRef<EnumContent> {
 
-	public EnumRef(EnumDto enumDto) {
-		super(enumDto);
+	public EnumRef(EnumContent conent) {
+		super(conent);
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 /**
  * フィールド
  */
-public class FieldDto {
+public class FieldContent {
 
 	/**
 	 * フィールドID
@@ -69,6 +69,26 @@ public class FieldDto {
 	 * NULL許容
 	 */
 	private boolean nullable;
+
+	/**
+	 * needsSum
+	 */
+	private boolean needsSum;
+
+	/**
+	 * needsAvg
+	 */
+	private boolean needsAvg;
+
+	/**
+	 * needsMax
+	 */
+	private boolean needsMax;
+
+	/**
+	 * needsMin
+	 */
+	private boolean needsMin;
 
 	/**
 	 * タイトル
@@ -285,6 +305,78 @@ public class FieldDto {
 	}
 
 	/**
+	 * needsSumを取得する
+	 *
+	 * @return needsSum
+	 */
+	public boolean isNeedsSum() {
+		return this.needsSum;
+	}
+
+	/**
+	 * needsSumを設定する
+	 *
+	 * @param needsSum 設定するneedsSum
+	 */
+	public void setNeedsSum(boolean needsSum) {
+		this.needsSum = needsSum;
+	}
+
+	/**
+	 * needsAvgを取得する
+	 *
+	 * @return needsAvg
+	 */
+	public boolean isNeedsAvg() {
+		return this.needsAvg;
+	}
+
+	/**
+	 * needsAvgを設定する
+	 *
+	 * @param needsAvg 設定するneedsAvg
+	 */
+	public void setNeedsAvg(boolean needsAvg) {
+		this.needsAvg = needsAvg;
+	}
+
+	/**
+	 * needsMaxを取得する
+	 *
+	 * @return needsMax
+	 */
+	public boolean isNeedsMax() {
+		return this.needsMax;
+	}
+
+	/**
+	 * needsMaxを設定する
+	 *
+	 * @param needsMax 設定するneedsMax
+	 */
+	public void setNeedsMax(boolean needsMax) {
+		this.needsMax = needsMax;
+	}
+
+	/**
+	 * needsMinを取得する
+	 *
+	 * @return needsMin
+	 */
+	public boolean isNeedsMin() {
+		return this.needsMin;
+	}
+
+	/**
+	 * needsMinを設定する
+	 *
+	 * @param needsMin 設定するneedsMin
+	 */
+	public void setNeedsMin(boolean needsMin) {
+		this.needsMin = needsMin;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
@@ -352,6 +444,10 @@ public class FieldDto {
 			frefFieldId,
 			pk,
 			nullable,
+			needsSum,
+			needsAvg,
+			needsMax,
+			needsMin,
 			title,
 			description,
 			note
@@ -367,11 +463,11 @@ public class FieldDto {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((FieldDto) obj);
+			return equals((FieldContent) obj);
 		}
 	}
 
-	private boolean equals(FieldDto other) {
+	private boolean equals(FieldContent other) {
 		return
 			this.fieldId == other.fieldId && 
 			this.ownerClassId == other.ownerClassId && 
@@ -384,6 +480,10 @@ public class FieldDto {
 			this.frefFieldId == other.frefFieldId && 
 			this.pk == other.pk && 
 			this.nullable == other.nullable && 
+			this.needsSum == other.needsSum && 
+			this.needsAvg == other.needsAvg && 
+			this.needsMax == other.needsMax && 
+			this.needsMin == other.needsMin && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note)
@@ -393,7 +493,7 @@ public class FieldDto {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("FieldDto [");
+		sb.append("FieldContent [");
 		sb.append("fieldId=").append(fieldId).append(", ");
 		sb.append("ownerClassId=").append(ownerClassId).append(", ");
 		sb.append("fieldName=").append(fieldName).append(", ");
@@ -405,6 +505,10 @@ public class FieldDto {
 		sb.append("frefFieldId=").append(frefFieldId).append(", ");
 		sb.append("pk=").append(pk).append(", ");
 		sb.append("nullable=").append(nullable).append(", ");
+		sb.append("needsSum=").append(needsSum).append(", ");
+		sb.append("needsAvg=").append(needsAvg).append(", ");
+		sb.append("needsMax=").append(needsMax).append(", ");
+		sb.append("needsMin=").append(needsMin).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note);

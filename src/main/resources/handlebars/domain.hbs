@@ -1,8 +1,8 @@
 //
-// Dtoクラステンプレート
+// Contentクラステンプレート
 //
 {{#each this.classes}}
-{{#java this "server/domain/" className "Dto" ".java"}}
+{{#java this "server/domain/" className "Content" ".java"}}
 {{#if global.project.copyrightLines}}
 /*
 {{#each global.project.copyrightLines}}
@@ -15,9 +15,8 @@ package {{global.project.projectName}}.server.domain;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
-{{#if title}}
 /**
- * {{title}}
+ * {{titleOrName}}
 {{#if description}}
  *
  * {{description}}
@@ -27,14 +26,12 @@ import javax.validation.constraints.NotNull;
  * {{note}}
 {{/if}}
  */
-{{/if}}
-public class {{className}}Dto {
+public class {{className}}Content {
 
 	{{#each properties}}
 
-	{{#if title}}
 	/**
-	 * {{title}}
+	 * {{titleOrName}}
 	{{#if description}}
 	 *
 	 * {{description}}
@@ -44,7 +41,6 @@ public class {{className}}Dto {
 	 * {{note}}
 	{{/if}}
 	 */
-	{{/if}}
 	{{#if notNullObject}}
 	@NotNull
 	{{/if}}
@@ -53,24 +49,20 @@ public class {{className}}Dto {
 
 	{{#each properties}}
 
-	{{#if title}}
 	/**
-	 * {{title}}を取得する
+	 * {{titleOrName}}を取得する
 	 *
-	 * @return {{title}}
+	 * @return {{titleOrName}}
 	 */
-	{{/if}}
 	public {{javaType}} {{getterName}}() {
 		return this.{{fieldName}};
 	}
 
-	{{#if title}}
 	/**
-	 * {{title}}を設定する
+	 * {{titleOrName}}を設定する
 	 *
-	 * @param {{fieldName}} 設定する{{title}}
+	 * @param {{fieldName}} 設定する{{titleOrName}}
 	 */
-	{{/if}}
 	public void {{setterName}}({{javaType}} {{fieldName}}) {
 		this.{{fieldName}} = {{fieldName}};
 	}
@@ -94,11 +86,11 @@ public class {{className}}Dto {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals(({{className}}Dto) obj);
+			return equals(({{className}}Content) obj);
 		}
 	}
 
-	private boolean equals({{className}}Dto other) {
+	private boolean equals({{className}}Content other) {
 		return
 			{{#each properties}}
 			{{#if primitiveOrEnum}}
@@ -113,10 +105,237 @@ public class {{className}}Dto {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{{className}}Dto [");
+		sb.append("{{className}}Content [");
 		{{#each properties}}
 		sb.append("{{fieldName}}=").append({{fieldName}}){{#separator}}.append(", "){{/separator}};
 		{{/each}}
+		sb.append("]");
+		return sb.toString();
+	}
+
+}
+{{/java}}
+{{/each}}
+
+//
+// Summaryクラステンプレート
+//
+{{#each this.classes}}
+{{#java this "server/domain/" className "Summary" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+import java.util.Objects;
+
+/**
+ * {{titleOrName}}のサマリー情報
+ */
+public class {{className}}Summary {
+
+	{{#each properties}}
+
+	{{#if needsSum}}
+	/** {{titleOrName}}の合計値 */
+	private {{calcuratedType}} sum{{upperName}};
+	{{/if}}
+
+	{{#if needsAvg}}
+	/** {{titleOrName}}の平均値 */
+	private {{calcuratedType}} avg{{upperName}};
+	{{/if}}
+
+	{{#if needsMax}}
+	/** {{titleOrName}}の最大値 */
+	private {{calcuratedType}} max{{upperName}};
+	{{/if}}
+
+	{{#if needsMin}}
+	/** {{titleOrName}}の最小値 */
+	private {{calcuratedType}} min{{upperName}};
+	{{/if}}
+	{{/each}}
+
+	/** 件数 */
+	private int count;
+
+	{{#each properties}}
+
+	{{#if needsSum}}
+	/**
+	 * {{titleOrName}}の合計値を取得する
+	 *
+	 * @return {{titleOrName}}の合計値
+	 */
+	public {{calcuratedType}} getSum{{upperName}}() {
+		return sum{{upperName}};
+	}
+
+	/**
+	 * {{titleOrName}}の合計値を設定する
+	 *
+	 * @param sum{{upperName}} {{titleOrName}}の合計値
+	 */
+	public void setSum{{upperName}}({{calcuratedType}} sum{{upperName}}) {
+		this.sum{{upperName}} = sum{{upperName}};
+	}
+	{{/if}}
+
+	{{#if needsAvg}}
+	/**
+	 * {{titleOrName}}の平均値を取得する
+	 *
+	 * @return {{titleOrName}}の平均値
+	 */
+	public {{calcuratedType}} getAvg{{upperName}}() {
+		return avg{{upperName}};
+	}
+
+	/**
+	 * {{titleOrName}}の平均値を設定する
+	 *
+	 * @param avg{{upperName}} {{titleOrName}}の平均値
+	 */
+	public void setAvg{{upperName}}({{calcuratedType}} avg{{upperName}}) {
+		this.avg{{upperName}} = avg{{upperName}};
+	}
+	{{/if}}
+
+	{{#if needsMax}}
+	/**
+	 * {{titleOrName}}の最大値を取得する
+	 *
+	 * @return {{titleOrName}}の最大値
+	 */
+	public {{calcuratedType}} getMax{{upperName}}() {
+		return max{{upperName}};
+	}
+
+	/**
+	 * {{titleOrName}}の最大値を設定する
+	 *
+	 * @param max{{upperName}} {{titleOrName}}の最大値
+	 */
+	public void setMax{{upperName}}({{calcuratedType}} max{{upperName}}) {
+		this.max{{upperName}} = max{{upperName}};
+	}
+	{{/if}}
+
+	{{#if needsMin}}
+	/**
+	 * {{titleOrName}}の最小値を取得する
+	 *
+	 * @return {{titleOrName}}の最小値
+	 */
+	public {{calcuratedType}} getMin{{upperName}}() {
+		return min{{upperName}};
+	}
+
+	/**
+	 * {{titleOrName}}の最小値を設定する
+	 *
+	 * @param min{{upperName}} {{titleOrName}}の最小値
+	 */
+	public void setMin{{upperName}}({{calcuratedType}} min{{upperName}}) {
+		this.min{{upperName}} = min{{upperName}};
+	}
+	{{/if}}
+	{{/each}}
+
+	/**
+	 * 件数を取得する
+	 *
+	 * @return 件数
+	 */
+	public int getCount() {
+		return count;
+	}
+
+	/**
+	 * 件数を設定する
+	 *
+	 * @param count 件数
+	 */
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(
+			{{#each properties}}
+			{{#if needsSum}}
+			sum{{upperName}},
+			{{/if}}
+			{{#if needsAvg}}
+			avg{{upperName}},
+			{{/if}}
+			{{#if needsMax}}
+			max{{upperName}},
+			{{/if}}
+			{{#if needsMin}}
+			min{{upperName}},
+			{{/if}}
+			{{/each}}
+			count);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			return equals(({{className}}Summary) obj);
+		}
+	}
+
+	private boolean equals({{className}}Summary other) {
+		return
+			{{#each properties}}
+			{{#if needsSum}}
+			this.sum{{upperName}} == other.sum{{upperName}} &&
+			{{/if}}
+			{{#if needsAvg}}
+			this.avg{{upperName}} == other.avg{{upperName}} &&
+			{{/if}}
+			{{#if needsMax}}
+			this.max{{upperName}} == other.max{{upperName}} &&
+			{{/if}}
+			{{#if needsMin}}
+			this.min{{upperName}} == other.min{{upperName}} &&
+			{{/if}}
+			{{/each}}
+			this.count == other.count;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{className}}Content [");
+		{{#each properties}}
+		{{#if needsSum}}
+		sb.append("sum{{upperName}}=").append(sum{{upperName}}).append(", ");
+		{{/if}}
+		{{#if needsAvg}}
+		sb.append("avg{{upperName}}=").append(avg{{upperName}}).append(", ");
+		{{/if}}
+		{{#if needsMax}}
+		sb.append("max{{upperName}}=").append(max{{upperName}}).append(", ");
+		{{/if}}
+		{{#if needsMin}}
+		sb.append("min{{upperName}}=").append(min{{upperName}}).append(", ");
+		{{/if}}
+		{{/each}}
+		sb.append("count=").append(count);
 		sb.append("]");
 		return sb.toString();
 	}
@@ -139,9 +358,8 @@ public class {{className}}Dto {
 {{/if}}
 package {{global.project.projectName}}.server.domain;
 
-{{#if title}}
 /**
- * {{title}}
+ * {{titleOrName}}
 {{#if description}}
  *
  * {{description}}
@@ -151,14 +369,12 @@ package {{global.project.projectName}}.server.domain;
  * {{note}}
 {{/if}}
  */
-{{/if}}
 public enum {{enumName}} {
 
 	{{#each enumValues}}
 
-	{{#if title}}
 	/**
-	 * {{title}}
+	 * {{titleOrName}}
 	{{#if description}}
 	 *
 	 * {{description}}
@@ -168,7 +384,6 @@ public enum {{enumName}} {
 	 * {{note}}
 	{{/if}}
 	 */
-	{{/if}}
 	{{valueId}}({{code}}){{#separator}},{{/separator}}
 	{{/each}}
 	;

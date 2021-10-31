@@ -53,4 +53,16 @@ public class Asserts {
 		}
 	}
 
+	public static void check(boolean cond) {
+		if (!cond) {
+			throw new AssertionError();
+		}
+	}
+
+	public static void check(boolean cond, String errorMessage) {
+		if (!cond) {
+			throw new AssertionError(errorMessage);
+		}
+	}
+
 }

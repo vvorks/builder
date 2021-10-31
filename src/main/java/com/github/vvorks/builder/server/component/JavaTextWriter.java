@@ -41,7 +41,7 @@ public class JavaTextWriter implements Expression.Visitor<Object, String> {
 		SYMBOL_MAP.put(Operation.Code.PLUS, "+");
 		SYMBOL_MAP.put(Operation.Code.MINUS, "-");
 		SYMBOL_MAP.put(Operation.Code.NOT, "!");
-		SYMBOL_MAP.put(Operation.Code.INV, "~");
+		//SYMBOL_MAP.put(Operation.Code.NOT, "~");
 		SYMBOL_MAP.put(Operation.Code.GET, ".");
 		SYMBOL_MAP.put(Operation.Code.CALL, ".");
 	}
@@ -76,22 +76,22 @@ public class JavaTextWriter implements Expression.Visitor<Object, String> {
 
 	@Override
 	public String visit(ClassRef exp, Object option) {
-		return exp.getDto().getClassName();
+		return exp.getContent().getClassName();
 	}
 
 	@Override
 	public String visit(FieldRef exp, Object option) {
-		return exp.getDto().getFieldName();
+		return exp.getContent().getFieldName();
 	}
 
 	@Override
 	public String visit(EnumRef exp, Object option) {
-		return exp.getDto().getEnumName();
+		return exp.getContent().getEnumName();
 	}
 
 	@Override
 	public String visit(EnumValueRef exp, Object option) {
-		return exp.getDto().getValueId();
+		return exp.getContent().getValueId();
 	}
 
 	@Override
