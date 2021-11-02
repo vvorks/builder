@@ -67,37 +67,23 @@ public interface EnumMapper {
 	);
 
 	/**
-	 * 指定した条件に合致する列挙のサマリーを取得する
+	 * nameIsに合致する列挙のサマリーを取得する
 	 *
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
-	 * @param enumName 列挙名
-	 * @param encodeString 文字列エンコード
-	 * @param title タイトル
 	 * @return 列挙のサマリー
 	 */
-	public EnumSummary findSummary(
-		@Param("ownerProjectId") Integer ownerProjectId, 
-		@Param("enumName") String enumName, 
-		@Param("encodeString") Boolean encodeString, 
-		@Param("title") String title
+	public EnumSummary listIfNameIsSummary(
+		@Param("name") String name
 	);
 
 	/**
-	 * 指定した条件に合致する列挙を取得する
+	 * nameIsに合致する列挙を取得する
 	 *
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
-	 * @param enumName 列挙名
-	 * @param encodeString 文字列エンコード
-	 * @param title タイトル
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙のリスト
 	 */
-	public List<EnumContent> findContent(
-		@Param("ownerProjectId") Integer ownerProjectId,
-		@Param("enumName") String enumName,
-		@Param("encodeString") Boolean encodeString,
-		@Param("title") String title,
+	public List<EnumContent> listIfNameIsContent(
+		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);
@@ -130,38 +116,6 @@ public interface EnumMapper {
 	 */
 	public List<EnumValueContent> listValuesContent(
 		@Param("content") EnumContent content,
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-
-	/**
-	 * 指定した条件に合致する列挙値一覧のサマリーを取得する
-	 *
-	 * @param content 列挙
-	 * @param code 列挙コード
-	 * @param title タイトル
-	 * @return 列挙値一覧のサマリー
-	 */
-	public EnumValueSummary findValuesSummary(
-		@Param("content") EnumContent content,
-		@Param("code") Integer code, 
-		@Param("title") String title
-	);
-
-	/**
-	 * 指定した条件に合致する列挙値一覧を取得する
-	 *
-	 * @param content 列挙
-	 * @param code 列挙コード
-	 * @param title タイトル
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return 列挙値一覧
-	 */
-	public List<EnumValueContent> findValuesContent(
-		@Param("content") EnumContent content,
-		@Param("code") Integer code,
-		@Param("title") String title,
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);

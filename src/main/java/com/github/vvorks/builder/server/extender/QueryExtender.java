@@ -18,6 +18,7 @@ import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.QueryContent;
+import com.github.vvorks.builder.server.expression.Argument;
 import com.github.vvorks.builder.server.expression.Expression;
 import com.github.vvorks.builder.server.expression.FieldRef;
 import com.github.vvorks.builder.server.expression.Operation;
@@ -64,9 +65,11 @@ public class QueryExtender {
 	public static class FilterInfo {
 		private final Expression expr;
 		private final Map<List<FieldContent>, Integer> joins;
+		private final List<FieldContent> arguments;
 		public FilterInfo(Expression expr) {
 			this.expr = expr;
 			this.joins = new LinkedHashMap<>();
+			this.arguments = new ArrayList<>();
 		}
 	}
 
@@ -101,6 +104,11 @@ public class QueryExtender {
 		return Strings.toFirstUpper(q.getQueryName());
 	}
 
+	public List<FieldContent> getArguments(QueryContent q) {
+		FilterInfo item = referFilterInfo(q);
+		return item.arguments;
+	}
+
 	public List<JoinInfo> getJoins(QueryContent q) {
 		FilterInfo item = referFilterInfo(q);
 		List<JoinInfo> result = new ArrayList<>();
@@ -121,7 +129,7 @@ public class QueryExtender {
 			FilterInfo item = cache.get(q.getQueryId());
 			if (item == null) {
 				item = createFilterInfo(q);
-				cache.put(null, item);
+				cache.put(q.getQueryId(), item);
 			}
 			return item;
 		} catch (ParseException err) {
@@ -136,7 +144,7 @@ public class QueryExtender {
 		ProjectContent prj = classMapper.getOwner(cls);
 		Expression expr = builder.build(exprNode, prj, cls);
 		FilterInfo item = new FilterInfo(expr);
-		expr.accept(e -> numberJoin(e, item));
+		expr.accept(e -> visitExpr(e, item));
 		return item;
 	}
 
@@ -150,38 +158,48 @@ public class QueryExtender {
 			DataType.DATE,
 			DataType.STRING);
 
-	private void numberJoin(Expression expr, FilterInfo info) {
-		//Operation以外は無視
-		if (!(expr instanceof Operation)) {
-			return;
-		}
-		Operation op = (Operation) expr;
-		//フィールド参照Operation以外は無視
-		List<Expression> operands = op.getOperands();
-		for (Expression c : operands) {
-			if (!(c instanceof FieldRef)) {
+	private void visitExpr(Expression expr, FilterInfo info) {
+		if (expr instanceof Operation) {
+			Operation op = (Operation) expr;
+			//フィールド参照Operation以外は無視
+			List<Expression> operands = op.getOperands();
+			for (Expression c : operands) {
+				if (!(c instanceof FieldRef)) {
+					return;
+				}
+			}
+			int n = operands.size();
+			FieldRef last = (FieldRef) operands.get(n - 1);
+			if (!SCALER_TYPES.contains(last.getType())) {
 				return;
 			}
-		}
-		int n = operands.size();
-		FieldRef last = (FieldRef) operands.get(n - 1);
-		if (!SCALER_TYPES.contains(last.getType())) {
-			return;
-		}
-		//join エントリーを作成
-		List<FieldContent> flds = new ArrayList<>();
-		Integer no = 1;
-		for (int i = 0; i < n - 1; i++) {
-			FieldContent fld = ((FieldRef)operands.get(i)).getContent();
-			flds.add(fld);
-			List<FieldContent> subList = flds.subList(0, i+1);
-			no = info.joins.get(subList);
-			if (no == null) {
-				no = info.joins.size() + 2;
-				info.joins.put(subList, no);
+			//join エントリーを作成
+			List<FieldContent> flds = new ArrayList<>();
+			Integer no = 1;
+			for (int i = 0; i < n - 1; i++) {
+				FieldContent fld = ((FieldRef)operands.get(i)).getContent();
+				flds.add(fld);
+				List<FieldContent> subList = flds.subList(0, i+1);
+				no = info.joins.get(subList);
+				if (no == null) {
+					no = info.joins.size() + 2;
+					info.joins.put(subList, no);
+				}
 			}
+			op.setJoinNo(no);
+		} else if (expr instanceof Argument) {
+			//引数を疑似フィールドとして格納
+			Argument arg = (Argument) expr;
+			FieldContent fld = new FieldContent();
+			fld.setFieldName(arg.getName());
+			fld.setType(arg.getType());
+			fld.setWidth(arg.getWidth());
+			fld.setScale(arg.getScale());
+			if (fld.getType() == DataType.ENUM) {
+				fld.setErefEnumId(arg.getErefId());
+			}
+			info.arguments.add(fld);
 		}
-		op.setJoinNo(no);
 	}
 
 	public String getSqlExpr(QueryContent q) {

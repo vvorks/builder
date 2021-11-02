@@ -82,52 +82,32 @@
 		</if>
 	</select>
 
-	<select id="findSummary" resultType="EnumSummary">
+	<select id="listIfNameIsSummary" resultType="EnumSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
-			T_ENUM
-		<where>
-			<if test="ownerProjectId != null">
-				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
-			</if>
-			<if test="enumName != null">
-				AND F_ENUM_NAME = #{ enumName }
-			</if>
-			<if test="encodeString != null">
-				AND F_ENCODE_STRING = #{ encodeString }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
+			T_ENUM T1
+		WHERE
+			<![CDATA[
+			T1.F_ENUM_NAME = #{name}
+			]]>
 	</select>
 
-	<select id="findContent" resultType="EnumContent">
+	<select id="listIfNameIsContent" resultType="EnumContent">
 		SELECT
-			F_ENUM_ID AS "enumId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_ENUM_NAME AS "enumName",
-			F_ENCODE_STRING AS "encodeString",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_ENUM_NAME AS "enumName",
+			T1.F_ENCODE_STRING AS "encodeString",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note"
 		FROM
-			T_ENUM
-		<where>
-			<if test="ownerProjectId != null">
-				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
-			</if>
-			<if test="enumName != null">
-				AND F_ENUM_NAME = #{ enumName }
-			</if>
-			<if test="encodeString != null">
-				AND F_ENCODE_STRING = #{ encodeString }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
+			T_ENUM T1
+		WHERE
+			<![CDATA[
+			T1.F_ENUM_NAME = #{name}
+			]]>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -171,47 +151,6 @@
 			T_ENUM_VALUE
 		WHERE
 			F_OWNER_ENUM_ID = #{ content.enumId }
-		<if test="limit &gt; 0">
-			LIMIT #{limit}
-		<if test="offset &gt;= 0">
-			OFFSET #{offset}
-		</if>
-		</if>
-	</select>
-
-	<select id="findValuesSummary" resultType="EnumValueSummary">
-		SELECT
-			COUNT(*) AS "count"
-		FROM
-			T_ENUM_VALUE
-		WHERE
-			F_OWNER_ENUM_ID = #{ content.enumId }
-			<if test="code != null">
-				AND F_CODE = #{ code }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-	</select>
-
-	<select id="findValuesContent" resultType="EnumValueContent">
-		SELECT
-			F_VALUE_ID AS "valueId",
-			F_OWNER_ENUM_ID AS "ownerEnumId",
-			F_CODE AS "code",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
-		FROM
-			T_ENUM_VALUE
-		WHERE
-			F_OWNER_ENUM_ID = #{ content.enumId }
-			<if test="code != null">
-				AND F_CODE = #{ code }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

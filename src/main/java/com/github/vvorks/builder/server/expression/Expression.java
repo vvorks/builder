@@ -23,6 +23,7 @@ public abstract class Expression {
 		public R visit(DateLiteral exp, A option);
 		public R visit(StringLiteral exp, A option);
 		public R visit(NullLiteral exp, A option);
+		public R visit(Argument exp, A option);
 
 	}
 

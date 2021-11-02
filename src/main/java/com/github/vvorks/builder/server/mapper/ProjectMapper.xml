@@ -77,39 +77,31 @@
 		</if>
 	</select>
 
-	<select id="findSummary" resultType="ProjectSummary">
+	<select id="listIfNameIsSummary" resultType="ProjectSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
-			T_PROJECT
-		<where>
-			<if test="projectName != null">
-				AND F_PROJECT_NAME = #{ projectName }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
+			T_PROJECT T1
+		WHERE
+			<![CDATA[
+			T1.F_PROJECT_NAME = #{name}
+			]]>
 	</select>
 
-	<select id="findContent" resultType="ProjectContent">
+	<select id="listIfNameIsContent" resultType="ProjectContent">
 		SELECT
-			F_PROJECT_ID AS "projectId",
-			F_PROJECT_NAME AS "projectName",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F_COPYRIGHTS AS "copyrights"
+			T1.F_PROJECT_ID AS "projectId",
+			T1.F_PROJECT_NAME AS "projectName",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F_COPYRIGHTS AS "copyrights"
 		FROM
-			T_PROJECT
-		<where>
-			<if test="projectName != null">
-				AND F_PROJECT_NAME = #{ projectName }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
+			T_PROJECT T1
+		WHERE
+			<![CDATA[
+			T1.F_PROJECT_NAME = #{name}
+			]]>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -147,45 +139,33 @@
 		</if>
 	</select>
 
-	<select id="findClassesSummary" resultType="ClassSummary">
+	<select id="listClassesIfNameIsSummary" resultType="ClassSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
-			T_CLASS
+			T_CLASS T1
 		WHERE
-			F_OWNER_PROJECT_ID = #{ content.projectId }
-			<if test="ownerProjectId != null">
-				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
-			</if>
-			<if test="className != null">
-				AND F_CLASS_NAME = #{ className }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
+			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
+			<![CDATA[
+			AND T1.F_CLASS_NAME = #{name}
+			]]>
 	</select>
 
-	<select id="findClassesContent" resultType="ClassContent">
+	<select id="listClassesIfNameIsContent" resultType="ClassContent">
 		SELECT
-			F_CLASS_ID AS "classId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_CLASS_NAME AS "className",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			T1.F_CLASS_ID AS "classId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_CLASS_NAME AS "className",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note"
 		FROM
-			T_CLASS
+			T_CLASS T1
 		WHERE
-			F_OWNER_PROJECT_ID = #{ content.projectId }
-			<if test="ownerProjectId != null">
-				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
-			</if>
-			<if test="className != null">
-				AND F_CLASS_NAME = #{ className }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
+			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
+			<![CDATA[
+			AND T1.F_CLASS_NAME = #{name}
+			]]>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -224,52 +204,34 @@
 		</if>
 	</select>
 
-	<select id="findEnumsSummary" resultType="EnumSummary">
+	<select id="listEnumsIfNameIsSummary" resultType="EnumSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
-			T_ENUM
+			T_ENUM T1
 		WHERE
-			F_OWNER_PROJECT_ID = #{ content.projectId }
-			<if test="ownerProjectId != null">
-				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
-			</if>
-			<if test="enumName != null">
-				AND F_ENUM_NAME = #{ enumName }
-			</if>
-			<if test="encodeString != null">
-				AND F_ENCODE_STRING = #{ encodeString }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
+			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
+			<![CDATA[
+			AND T1.F_ENUM_NAME = #{name}
+			]]>
 	</select>
 
-	<select id="findEnumsContent" resultType="EnumContent">
+	<select id="listEnumsIfNameIsContent" resultType="EnumContent">
 		SELECT
-			F_ENUM_ID AS "enumId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_ENUM_NAME AS "enumName",
-			F_ENCODE_STRING AS "encodeString",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_ENUM_NAME AS "enumName",
+			T1.F_ENCODE_STRING AS "encodeString",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note"
 		FROM
-			T_ENUM
+			T_ENUM T1
 		WHERE
-			F_OWNER_PROJECT_ID = #{ content.projectId }
-			<if test="ownerProjectId != null">
-				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
-			</if>
-			<if test="enumName != null">
-				AND F_ENUM_NAME = #{ enumName }
-			</if>
-			<if test="encodeString != null">
-				AND F_ENCODE_STRING = #{ encodeString }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
+			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
+			<![CDATA[
+			AND T1.F_ENUM_NAME = #{name}
+			]]>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

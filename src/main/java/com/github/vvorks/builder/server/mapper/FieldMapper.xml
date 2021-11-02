@@ -137,18 +137,18 @@
 		</if>
 	</select>
 
-	<select id="listIfIsPkSummary" resultType="FieldSummary">
+	<select id="listIfNameIsSummary" resultType="FieldSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
 			T_FIELD T1
 		WHERE
 			<![CDATA[
-			(T1.F_PK == 1)
+			T1.F_FIELD_NAME = #{name}
 			]]>
 	</select>
 
-	<select id="listIfIsPkContent" resultType="FieldContent">
+	<select id="listIfNameIsContent" resultType="FieldContent">
 		SELECT
 			T1.F_FIELD_ID AS "fieldId",
 			T1.F_OWNER_CLASS_ID AS "ownerClassId",
@@ -172,139 +172,8 @@
 			T_FIELD T1
 		WHERE
 			<![CDATA[
-			(T1.F_PK == 1)
+			T1.F_FIELD_NAME = #{name}
 			]]>
-		<if test="limit &gt; 0">
-			LIMIT #{limit}
-		<if test="offset &gt;= 0">
-			OFFSET #{offset}
-		</if>
-		</if>
-	</select>
-
-	<select id="findSummary" resultType="FieldSummary">
-		SELECT
-			COUNT(*) AS "count"
-		FROM
-			T_FIELD
-		<where>
-			<if test="ownerClassId != null">
-				AND F_OWNER_CLASS_ID = #{ ownerClassId }
-			</if>
-			<if test="fieldName != null">
-				AND F_FIELD_NAME = #{ fieldName }
-			</if>
-			<if test="type != null">
-				AND F_TYPE = #{ type }
-			</if>
-			<if test="width != null">
-				AND F_WIDTH = #{ width }
-			</if>
-			<if test="scale != null">
-				AND F_SCALE = #{ scale }
-			</if>
-			<if test="crefClassId != null">
-				AND F_CREF_CLASS_ID = #{ crefClassId }
-			</if>
-			<if test="erefEnumId != null">
-				AND F_EREF_ENUM_ID = #{ erefEnumId }
-			</if>
-			<if test="frefFieldId != null">
-				AND F_FREF_FIELD_ID = #{ frefFieldId }
-			</if>
-			<if test="pk != null">
-				AND F_PK = #{ pk }
-			</if>
-			<if test="nullable != null">
-				AND F_NULLABLE = #{ nullable }
-			</if>
-			<if test="needsSum != null">
-				AND F_NEEDS_SUM = #{ needsSum }
-			</if>
-			<if test="needsAvg != null">
-				AND F_NEEDS_AVG = #{ needsAvg }
-			</if>
-			<if test="needsMax != null">
-				AND F_NEEDS_MAX = #{ needsMax }
-			</if>
-			<if test="needsMin != null">
-				AND F_NEEDS_MIN = #{ needsMin }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
-	</select>
-
-	<select id="findContent" resultType="FieldContent">
-		SELECT
-			F_FIELD_ID AS "fieldId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_FIELD_NAME AS "fieldName",
-			F_TYPE AS "type",
-			F_WIDTH AS "width",
-			F_SCALE AS "scale",
-			F_CREF_CLASS_ID AS "crefClassId",
-			F_EREF_ENUM_ID AS "erefEnumId",
-			F_FREF_FIELD_ID AS "frefFieldId",
-			F_PK AS "pk",
-			F_NULLABLE AS "nullable",
-			F_NEEDS_SUM AS "needsSum",
-			F_NEEDS_AVG AS "needsAvg",
-			F_NEEDS_MAX AS "needsMax",
-			F_NEEDS_MIN AS "needsMin",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
-		FROM
-			T_FIELD
-		<where>
-			<if test="ownerClassId != null">
-				AND F_OWNER_CLASS_ID = #{ ownerClassId }
-			</if>
-			<if test="fieldName != null">
-				AND F_FIELD_NAME = #{ fieldName }
-			</if>
-			<if test="type != null">
-				AND F_TYPE = #{ type }
-			</if>
-			<if test="width != null">
-				AND F_WIDTH = #{ width }
-			</if>
-			<if test="scale != null">
-				AND F_SCALE = #{ scale }
-			</if>
-			<if test="crefClassId != null">
-				AND F_CREF_CLASS_ID = #{ crefClassId }
-			</if>
-			<if test="erefEnumId != null">
-				AND F_EREF_ENUM_ID = #{ erefEnumId }
-			</if>
-			<if test="frefFieldId != null">
-				AND F_FREF_FIELD_ID = #{ frefFieldId }
-			</if>
-			<if test="pk != null">
-				AND F_PK = #{ pk }
-			</if>
-			<if test="nullable != null">
-				AND F_NULLABLE = #{ nullable }
-			</if>
-			<if test="needsSum != null">
-				AND F_NEEDS_SUM = #{ needsSum }
-			</if>
-			<if test="needsAvg != null">
-				AND F_NEEDS_AVG = #{ needsAvg }
-			</if>
-			<if test="needsMax != null">
-				AND F_NEEDS_MAX = #{ needsMax }
-			</if>
-			<if test="needsMin != null">
-				AND F_NEEDS_MIN = #{ needsMin }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

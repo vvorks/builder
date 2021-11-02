@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.server.component;
 
 import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.server.expression.Argument;
 import com.github.vvorks.builder.server.expression.BooleanLiteral;
 import com.github.vvorks.builder.server.expression.ClassRef;
 import com.github.vvorks.builder.server.expression.DateLiteral;
@@ -106,6 +107,11 @@ public class DebugWriter implements Expression.Visitor<Integer, String> {
 	@Override
 	public String visit(NullLiteral exp, Integer depth) {
 		return toString(exp, "null", depth);
+	}
+
+	@Override
+	public String visit(Argument exp, Integer depth) {
+		return toString(exp, "$" + exp.getName(), depth);
 	}
 
 }

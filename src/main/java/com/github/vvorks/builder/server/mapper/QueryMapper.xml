@@ -87,67 +87,6 @@
 		</if>
 	</select>
 
-	<select id="findSummary" resultType="QuerySummary">
-		SELECT
-			COUNT(*) AS "count"
-		FROM
-			T_QUERY
-		<where>
-			<if test="ownerClassId != null">
-				AND F_OWNER_CLASS_ID = #{ ownerClassId }
-			</if>
-			<if test="queryName != null">
-				AND F_QUERY_NAME = #{ queryName }
-			</if>
-			<if test="filter != null">
-				AND F_FILTER = #{ filter }
-			</if>
-			<if test="order != null">
-				AND F_ORDER = #{ order }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
-	</select>
-
-	<select id="findContent" resultType="QueryContent">
-		SELECT
-			F_QUERY_ID AS "queryId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_QUERY_NAME AS "queryName",
-			F_FILTER AS "filter",
-			F_ORDER AS "order",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
-		FROM
-			T_QUERY
-		<where>
-			<if test="ownerClassId != null">
-				AND F_OWNER_CLASS_ID = #{ ownerClassId }
-			</if>
-			<if test="queryName != null">
-				AND F_QUERY_NAME = #{ queryName }
-			</if>
-			<if test="filter != null">
-				AND F_FILTER = #{ filter }
-			</if>
-			<if test="order != null">
-				AND F_ORDER = #{ order }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
-		<if test="limit &gt; 0">
-			LIMIT #{limit}
-		<if test="offset &gt;= 0">
-			OFFSET #{offset}
-		</if>
-		</if>
-	</select>
-
 	<select id="getOwner" resultType="ClassContent">
 		SELECT
 			F_CLASS_ID AS "classId",

@@ -85,7 +85,11 @@ public interface {{className}}Mapper {
 	 *
 	 * @return {{../titleOrName}}のサマリー
 	 */
-	public {{../className}}Summary listIf{{upperName}}Summary();
+	public {{../className}}Summary listIf{{upperName}}Summary(
+		{{#each arguments}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
+	);
 
 	/**
 	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
@@ -95,45 +99,13 @@ public interface {{className}}Mapper {
 	 * @return {{../titleOrName}}のリスト
 	 */
 	public List<{{../className}}Content> listIf{{upperName}}Content(
-		//TODO 条件引数の追加
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-	{{/each}}
-
-	{{#if findConditions}}
-	/**
-	 * 指定した条件に合致する{{titleOrName}}のサマリーを取得する
-	 *
-	{{#each findConditions}}
-	 * @param {{fieldName}} {{titleOrName}}
-	{{/each}}
-	 * @return {{titleOrName}}のサマリー
-	 */
-	public {{className}}Summary findSummary(
-		{{#each findConditions}}
-		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}}{{#separator}}, {{/separator}}
-		{{/each}}
-	);
-
-	/**
-	 * 指定した条件に合致する{{titleOrName}}を取得する
-	 *
-	{{#each findConditions}}
-	 * @param {{fieldName}} {{titleOrName}}
-	{{/each}}
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{titleOrName}}のリスト
-	 */
-	public List<{{className}}Content> findContent(
-		{{#each findConditions}}
-		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}},
+		{{#each arguments}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}},
 		{{/each}}
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);
-	{{/if}}
+	{{/each}}
 
 	{{#each refs}}
 
@@ -181,7 +153,10 @@ public interface {{className}}Mapper {
 	 * @return {{../titleOrName}}のサマリー
 	 */
 	public {{../fref.owner.className}}Summary list{{../upperName}}If{{upperName}}Summary(
-		@Param("content") {{../../className}}Content content
+		@Param("content") {{../../className}}Content content,
+		{{#each arguments}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
 	);
 
 	/**
@@ -194,48 +169,14 @@ public interface {{className}}Mapper {
 	 */
 	public List<{{../fref.owner.className}}Content> list{{../upperName}}If{{upperName}}Content(
 		@Param("content") {{../../className}}Content content,
+		{{#each arguments}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);
 	{{/each}}
 
-	{{#if fref.owner.findConditions}}
-	/**
-	 * 指定した条件に合致する{{titleOrName}}のサマリーを取得する
-	 *
-	 * @param content {{../titleOrName}}
-	{{#each fref.owner.findConditions}}
-	 * @param {{fieldName}} {{titleOrName}}
-	{{/each}}
-	 * @return {{titleOrName}}のサマリー
-	 */
-	public {{fref.owner.className}}Summary find{{upperName}}Summary(
-		@Param("content") {{../className}}Content content,
-		{{#each fref.owner.findConditions}}
-		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}}{{#separator}}, {{/separator}}
-		{{/each}}
-	);
-
-	/**
-	 * 指定した条件に合致する{{titleOrName}}を取得する
-	 *
-	 * @param content {{../titleOrName}}
-	{{#each fref.owner.findConditions}}
-	 * @param {{fieldName}} {{titleOrName}}
-	{{/each}}
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{titleOrName}}
-	 */
-	public List<{{fref.owner.className}}Content> find{{upperName}}Content(
-		@Param("content") {{../className}}Content content,
-		{{#each fref.owner.findConditions}}
-		@Param("{{fieldName}}") {{wrapperType}} {{fieldName}},
-		{{/each}}
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-	{{/if}}
 	{{/each}}
 
 }
@@ -389,58 +330,6 @@ public interface {{className}}Mapper {
 	</select>
 	{{/each}}
 
-	{{#if findConditions}}
-	<select id="findSummary" resultType="{{className}}Summary">
-		SELECT
-			{{#each properties}}
-			{{#if needsSum}}
-			SUM({{columnName}}) AS "sum{{upperName}}",
-			{{/if}}
-			{{#if needsAvg}}
-			AVG({{columnName}}) AS "avg{{upperName}}",
-			{{/if}}
-			{{#if needsMax}}
-			MAX({{columnName}}) AS "max{{upperName}}",
-			{{/if}}
-			{{#if needsMin}}
-			MIN({{columnName}}) AS "min{{upperName}}",
-			{{/if}}
-			{{/each}}
-			COUNT(*) AS "count"
-		FROM
-			{{tableName}}
-		<where>
-			{{#each findConditions}}
-			<if test="{{fieldName}} != null">
-				AND {{columnName}} = #{ {{fieldName}} }
-			</if>
-			{{/each}}
-		</where>
-	</select>
-
-	<select id="findContent" resultType="{{className}}Content">
-		SELECT
-			{{#each properties}}
-			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
-			{{/each}}
-		FROM
-			{{tableName}}
-		<where>
-			{{#each findConditions}}
-			<if test="{{fieldName}} != null">
-				AND {{columnName}} = #{ {{fieldName}} }
-			</if>
-			{{/each}}
-		</where>
-		<if test="limit &gt; 0">
-			LIMIT #{limit}
-		<if test="offset &gt;= 0">
-			OFFSET #{offset}
-		</if>
-		</if>
-	</select>
-	{{/if}}
-
 	{{#each refs}}
 
 	<select id="get{{upperName}}" resultType="{{cref.className}}Content">
@@ -568,61 +457,6 @@ public interface {{className}}Mapper {
 	</select>
 	{{/each}}
 
-	{{#if fref.owner.findConditions}}
-	<select id="find{{upperName}}Summary" resultType="{{fref.owner.className}}Summary">
-		SELECT
-			{{#each fref.owner.properties}}
-			{{#if needsSum}}
-			SUM({{columnName}}) AS "sum{{upperName}}",
-			{{/if}}
-			{{#if needsAvg}}
-			AVG({{columnName}}) AS "avg{{upperName}}",
-			{{/if}}
-			{{#if needsMax}}
-			MAX({{columnName}}) AS "max{{upperName}}",
-			{{/if}}
-			{{#if needsMin}}
-			MIN({{columnName}}) AS "min{{upperName}}",
-			{{/if}}
-			{{/each}}
-			COUNT(*) AS "count"
-		FROM
-			{{fref.owner.tableName}}
-		WHERE
-			{{#each invKeyFields}}
-			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
-			{{/each}}
-			{{#each fref.owner.findConditions}}
-			<if test="{{fieldName}} != null">
-				AND {{columnName}} = #{ {{fieldName}} }
-			</if>
-			{{/each}}
-	</select>
-
-	<select id="find{{upperName}}Content" resultType="{{fref.owner.className}}Content">
-		SELECT
-			{{#each fref.owner.properties}}
-			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
-			{{/each}}
-		FROM
-			{{fref.owner.tableName}}
-		WHERE
-			{{#each invKeyFields}}
-			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
-			{{/each}}
-			{{#each fref.owner.findConditions}}
-			<if test="{{fieldName}} != null">
-				AND {{columnName}} = #{ {{fieldName}} }
-			</if>
-			{{/each}}
-		<if test="limit &gt; 0">
-			LIMIT #{limit}
-		<if test="offset &gt;= 0">
-			OFFSET #{offset}
-		</if>
-		</if>
-	</select>
-	{{/if}}
 	{{/each}}
 
 </mapper>

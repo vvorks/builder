@@ -7,8 +7,11 @@ public class UnresolvedProperty extends Expression {
 
 	private final String name;
 
-	public UnresolvedProperty(String name) {
+	private final boolean argument;
+
+	public UnresolvedProperty(String name, boolean argument) {
 		this.name = name;
+		this.argument = argument;
 	}
 
 	public String getName() {
@@ -18,6 +21,10 @@ public class UnresolvedProperty extends Expression {
 	@Override
 	public DataType getType() {
 		return null;
+	}
+
+	public boolean isArgument() {
+		return argument;
 	}
 
 }

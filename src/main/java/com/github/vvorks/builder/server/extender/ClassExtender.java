@@ -68,10 +68,6 @@ public class ClassExtender {
 		return getFields(cls, fld -> fld.getType() == DataType.SET);
 	}
 
-	public List<FieldContent> getFindConditions(ClassContent cls) {
-		return getProperties(cls, fld -> !fld.isPk() && !fld.isNullable());
-	}
-
 	public List<FieldContent> getFields(ClassContent cls, Predicate<FieldContent> filter) {
 		List<FieldContent> result = new ArrayList<>();
 		for (FieldContent field : getFields(cls)) {

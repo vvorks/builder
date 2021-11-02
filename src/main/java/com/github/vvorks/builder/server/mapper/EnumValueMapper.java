@@ -69,34 +69,6 @@ public interface EnumValueMapper {
 	);
 
 	/**
-	 * 指定した条件に合致する列挙値のサマリーを取得する
-	 *
-	 * @param code 列挙コード
-	 * @param title タイトル
-	 * @return 列挙値のサマリー
-	 */
-	public EnumValueSummary findSummary(
-		@Param("code") Integer code, 
-		@Param("title") String title
-	);
-
-	/**
-	 * 指定した条件に合致する列挙値を取得する
-	 *
-	 * @param code 列挙コード
-	 * @param title タイトル
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return 列挙値のリスト
-	 */
-	public List<EnumValueContent> findContent(
-		@Param("code") Integer code,
-		@Param("title") String title,
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-
-	/**
 	 * 所属列挙を取得する
 	 *
 	 * @param content 列挙値

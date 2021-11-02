@@ -77,45 +77,31 @@
 		</if>
 	</select>
 
-	<select id="findSummary" resultType="ClassSummary">
+	<select id="listIfNameIsSummary" resultType="ClassSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
-			T_CLASS
-		<where>
-			<if test="ownerProjectId != null">
-				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
-			</if>
-			<if test="className != null">
-				AND F_CLASS_NAME = #{ className }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
+			T_CLASS T1
+		WHERE
+			<![CDATA[
+			T1.F_CLASS_NAME = #{name}
+			]]>
 	</select>
 
-	<select id="findContent" resultType="ClassContent">
+	<select id="listIfNameIsContent" resultType="ClassContent">
 		SELECT
-			F_CLASS_ID AS "classId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_CLASS_NAME AS "className",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			T1.F_CLASS_ID AS "classId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_CLASS_NAME AS "className",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note"
 		FROM
-			T_CLASS
-		<where>
-			<if test="ownerProjectId != null">
-				AND F_OWNER_PROJECT_ID = #{ ownerProjectId }
-			</if>
-			<if test="className != null">
-				AND F_CLASS_NAME = #{ className }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
+			T_CLASS T1
+		WHERE
+			<![CDATA[
+			T1.F_CLASS_NAME = #{name}
+			]]>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -179,7 +165,7 @@
 		</if>
 	</select>
 
-	<select id="listFieldsIfIsPkSummary" resultType="FieldSummary">
+	<select id="listFieldsIfNameIsSummary" resultType="FieldSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
@@ -187,11 +173,11 @@
 		WHERE
 			T1.F_OWNER_CLASS_ID = #{ content.classId }
 			<![CDATA[
-			AND (T1.F_PK == 1)
+			AND T1.F_FIELD_NAME = #{name}
 			]]>
 	</select>
 
-	<select id="listFieldsIfIsPkContent" resultType="FieldContent">
+	<select id="listFieldsIfNameIsContent" resultType="FieldContent">
 		SELECT
 			T1.F_FIELD_ID AS "fieldId",
 			T1.F_OWNER_CLASS_ID AS "ownerClassId",
@@ -216,139 +202,8 @@
 		WHERE
 			T1.F_OWNER_CLASS_ID = #{ content.classId }
 			<![CDATA[
-			AND (T1.F_PK == 1)
+			AND T1.F_FIELD_NAME = #{name}
 			]]>
-		<if test="limit &gt; 0">
-			LIMIT #{limit}
-		<if test="offset &gt;= 0">
-			OFFSET #{offset}
-		</if>
-		</if>
-	</select>
-
-	<select id="findFieldsSummary" resultType="FieldSummary">
-		SELECT
-			COUNT(*) AS "count"
-		FROM
-			T_FIELD
-		WHERE
-			F_OWNER_CLASS_ID = #{ content.classId }
-			<if test="ownerClassId != null">
-				AND F_OWNER_CLASS_ID = #{ ownerClassId }
-			</if>
-			<if test="fieldName != null">
-				AND F_FIELD_NAME = #{ fieldName }
-			</if>
-			<if test="type != null">
-				AND F_TYPE = #{ type }
-			</if>
-			<if test="width != null">
-				AND F_WIDTH = #{ width }
-			</if>
-			<if test="scale != null">
-				AND F_SCALE = #{ scale }
-			</if>
-			<if test="crefClassId != null">
-				AND F_CREF_CLASS_ID = #{ crefClassId }
-			</if>
-			<if test="erefEnumId != null">
-				AND F_EREF_ENUM_ID = #{ erefEnumId }
-			</if>
-			<if test="frefFieldId != null">
-				AND F_FREF_FIELD_ID = #{ frefFieldId }
-			</if>
-			<if test="pk != null">
-				AND F_PK = #{ pk }
-			</if>
-			<if test="nullable != null">
-				AND F_NULLABLE = #{ nullable }
-			</if>
-			<if test="needsSum != null">
-				AND F_NEEDS_SUM = #{ needsSum }
-			</if>
-			<if test="needsAvg != null">
-				AND F_NEEDS_AVG = #{ needsAvg }
-			</if>
-			<if test="needsMax != null">
-				AND F_NEEDS_MAX = #{ needsMax }
-			</if>
-			<if test="needsMin != null">
-				AND F_NEEDS_MIN = #{ needsMin }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-	</select>
-
-	<select id="findFieldsContent" resultType="FieldContent">
-		SELECT
-			F_FIELD_ID AS "fieldId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_FIELD_NAME AS "fieldName",
-			F_TYPE AS "type",
-			F_WIDTH AS "width",
-			F_SCALE AS "scale",
-			F_CREF_CLASS_ID AS "crefClassId",
-			F_EREF_ENUM_ID AS "erefEnumId",
-			F_FREF_FIELD_ID AS "frefFieldId",
-			F_PK AS "pk",
-			F_NULLABLE AS "nullable",
-			F_NEEDS_SUM AS "needsSum",
-			F_NEEDS_AVG AS "needsAvg",
-			F_NEEDS_MAX AS "needsMax",
-			F_NEEDS_MIN AS "needsMin",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
-		FROM
-			T_FIELD
-		WHERE
-			F_OWNER_CLASS_ID = #{ content.classId }
-			<if test="ownerClassId != null">
-				AND F_OWNER_CLASS_ID = #{ ownerClassId }
-			</if>
-			<if test="fieldName != null">
-				AND F_FIELD_NAME = #{ fieldName }
-			</if>
-			<if test="type != null">
-				AND F_TYPE = #{ type }
-			</if>
-			<if test="width != null">
-				AND F_WIDTH = #{ width }
-			</if>
-			<if test="scale != null">
-				AND F_SCALE = #{ scale }
-			</if>
-			<if test="crefClassId != null">
-				AND F_CREF_CLASS_ID = #{ crefClassId }
-			</if>
-			<if test="erefEnumId != null">
-				AND F_EREF_ENUM_ID = #{ erefEnumId }
-			</if>
-			<if test="frefFieldId != null">
-				AND F_FREF_FIELD_ID = #{ frefFieldId }
-			</if>
-			<if test="pk != null">
-				AND F_PK = #{ pk }
-			</if>
-			<if test="nullable != null">
-				AND F_NULLABLE = #{ nullable }
-			</if>
-			<if test="needsSum != null">
-				AND F_NEEDS_SUM = #{ needsSum }
-			</if>
-			<if test="needsAvg != null">
-				AND F_NEEDS_AVG = #{ needsAvg }
-			</if>
-			<if test="needsMax != null">
-				AND F_NEEDS_MAX = #{ needsMax }
-			</if>
-			<if test="needsMin != null">
-				AND F_NEEDS_MIN = #{ needsMin }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -380,67 +235,6 @@
 			T_QUERY
 		WHERE
 			F_OWNER_CLASS_ID = #{ content.classId }
-		<if test="limit &gt; 0">
-			LIMIT #{limit}
-		<if test="offset &gt;= 0">
-			OFFSET #{offset}
-		</if>
-		</if>
-	</select>
-
-	<select id="findQueriesSummary" resultType="QuerySummary">
-		SELECT
-			COUNT(*) AS "count"
-		FROM
-			T_QUERY
-		WHERE
-			F_OWNER_CLASS_ID = #{ content.classId }
-			<if test="ownerClassId != null">
-				AND F_OWNER_CLASS_ID = #{ ownerClassId }
-			</if>
-			<if test="queryName != null">
-				AND F_QUERY_NAME = #{ queryName }
-			</if>
-			<if test="filter != null">
-				AND F_FILTER = #{ filter }
-			</if>
-			<if test="order != null">
-				AND F_ORDER = #{ order }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-	</select>
-
-	<select id="findQueriesContent" resultType="QueryContent">
-		SELECT
-			F_QUERY_ID AS "queryId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_QUERY_NAME AS "queryName",
-			F_FILTER AS "filter",
-			F_ORDER AS "order",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
-		FROM
-			T_QUERY
-		WHERE
-			F_OWNER_CLASS_ID = #{ content.classId }
-			<if test="ownerClassId != null">
-				AND F_OWNER_CLASS_ID = #{ ownerClassId }
-			</if>
-			<if test="queryName != null">
-				AND F_QUERY_NAME = #{ queryName }
-			</if>
-			<if test="filter != null">
-				AND F_FILTER = #{ filter }
-			</if>
-			<if test="order != null">
-				AND F_ORDER = #{ order }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

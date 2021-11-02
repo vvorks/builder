@@ -11,6 +11,7 @@ import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
 import com.github.vvorks.builder.server.domain.FieldContent;
+import com.github.vvorks.builder.server.expression.Argument;
 import com.github.vvorks.builder.server.expression.BooleanLiteral;
 import com.github.vvorks.builder.server.expression.ClassRef;
 import com.github.vvorks.builder.server.expression.DateLiteral;
@@ -129,7 +130,7 @@ public class SqliteWriter extends SqlWriter {
 		EnumContent ec = ((EnumRef) operands.get(0)).getContent();
 		EnumValueContent ev = ((EnumValueRef) operands.get(1)).getContent();
 		if (ec.isEncodeString()) {
-			return ev.getValueId();
+			return "'" + ev.getValueId() +"'";
 		} else {
 			return String.valueOf(ev.getCode());
 		}
@@ -327,6 +328,11 @@ public class SqliteWriter extends SqlWriter {
 	@Override
 	public String visit(NullLiteral exp, Object option) {
 		return CONST_NULL;
+	}
+
+	@Override
+	public String visit(Argument exp, Object option) {
+		return "#{" + exp.getName() + "}";
 	}
 
 }

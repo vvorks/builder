@@ -21,6 +21,7 @@ import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
+import com.github.vvorks.builder.server.expression.Argument;
 import com.github.vvorks.builder.server.expression.BooleanLiteral;
 import com.github.vvorks.builder.server.expression.DateLiteral;
 import com.github.vvorks.builder.server.expression.DoubleLiteral;
@@ -77,12 +78,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	}
 
 	private FieldContent getField(String name, ClassContent cls) {
-		List<FieldContent> fields = classMapper.findFieldsContent(
-				cls,	null,	name,	null,
-				null,	null,	null,	null,
-				null,	null,	null,	null,
-				null,	null,	null,	null,
-				0, 0);
+		List<FieldContent> fields = classMapper.listFieldsIfNameIsContent(cls, name, 0, 0);
 		return (fields.size() == 1) ? fields.get(0) : null;
 	}
 
@@ -91,10 +87,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	}
 
 	private EnumContent getEnum(String name, ProjectContent prj) {
-		List<EnumContent> enums = projectMapper.findEnumsContent(
-				prj,	null,	name,	null,
-				null,
-				0, 0);
+		List<EnumContent> enums = projectMapper.listEnumsIfNameIsContent(prj, name, 0, 0);
 		return (enums.size() == 1) ? enums.get(0) : null;
 	}
 
@@ -162,6 +155,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		switch (operator) {
 		case ADD:
 			if (isEitherString(lValue, rValue)) {
+				adjustArgumentType(lValue, rValue, DataType.STRING, 0, 0);
 				result = newStringOperation(lValue, Operation.Code.CONCAT, rValue);
 				break;
 			}
@@ -170,6 +164,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		case MUL:
 		case DIV:
 		case MOD:
+			adjustArgumentType(lValue, rValue, DataType.INTEGER, 32, 0);
 			if (!isBothNumber(lValue, rValue)) {
 				throw new SemanticException(TYPE_UNMATCH, node);
 			}
@@ -177,19 +172,22 @@ public class ExpressionBuilder implements ExprParserVisitor {
 			break;
 		case GE: case GT:
 		case LE: case LT:
+			adjustArgumentType(lValue, rValue, DataType.INTEGER, 32, 0);
 			if (!(isBothNumber(lValue, rValue) || isBothString(lValue, rValue) || isBothDate(lValue, rValue))) {
 				throw new SemanticException(TYPE_UNMATCH, node);
 			}
 			result = newBooleanOperation(lValue, operator, rValue);
 			break;
 		case EQ: case NE:
-			if (!(isBothNumber(lValue, rValue) || isSameType(lValue, rValue))) {
+			adjustArgumentType(lValue, rValue, DataType.INTEGER, 32, 0);
+			if (!(isBothNumber(lValue, rValue) || isSameType(lValue, rValue) || isEnumComparation(lValue, rValue))) {
 				throw new SemanticException(TYPE_UNMATCH, node);
 			}
 			result = newBooleanOperation(lValue, operator, rValue);
 			break;
 		case LIKE:
 		case MATCH:
+			adjustArgumentType(lValue, rValue, DataType.STRING, 0, 0);
 			if (!isBothString(lValue, rValue)) {
 				throw new SemanticException(TYPE_UNMATCH, node);
 			}
@@ -198,6 +196,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		case AND:
 		case OR:
 		case XOR:
+			adjustArgumentType(lValue, rValue, DataType.BOOLEAN, 0, 0);
 			if (!isBothBoolean(lValue, rValue)) {
 				throw new SemanticException(TYPE_UNMATCH, node);
 			}
@@ -207,6 +206,35 @@ public class ExpressionBuilder implements ExprParserVisitor {
 			throw new InternalError();
 		}
 		return result;
+	}
+
+	private void adjustArgumentType(Expression lValue, Expression rValue, DataType hint, int width, int scale) {
+		if (lValue instanceof Argument && lValue.getType() == null) {
+			if (rValue instanceof Argument && rValue.getType() == null) {
+				//hintを使ってrValueを補正
+				Argument rArg = (Argument) rValue;
+				rArg.setType(hint);
+				rArg.setWidth(width);
+				rArg.setScale(scale);
+			}
+			//rValueからlValueへの型情報コピー
+			Argument lArg = (Argument) lValue;
+			lArg.setType(rValue.getType());
+			lArg.setWidth(rValue.getWidth());
+			lArg.setScale(rValue.getScale());
+		} else if (rValue instanceof Argument && rValue.getType() == null) {
+			//lValueからrValueへの型情報コピー
+			Argument rArg = (Argument) rValue;
+			rArg.setType(lValue.getType());
+			rArg.setWidth(lValue.getWidth());
+			rArg.setScale(lValue.getScale());
+			if (rArg.getType() == DataType.ENUM) {
+				Operation op = (Operation) lValue;
+				FieldRef ref = (FieldRef) op.getLastOperand();
+				FieldContent fld = ref.getContent();
+				rArg.setErefId(fld.getErefEnumId());
+			}
+		}
 	}
 
 	private boolean isBothNumber(Expression lValue, Expression rValue) {
@@ -231,6 +259,11 @@ public class ExpressionBuilder implements ExprParserVisitor {
 
 	private boolean isSameType(Expression lValue, Expression rValue) {
 		return lValue.getType() == rValue.getType();
+	}
+
+	private boolean isEnumComparation(Expression lValue, Expression rValue) {
+		return	(lValue.getType() == DataType.ENUM && rValue.getType() == DataType.ENUM_VALUE) ||
+				(rValue.getType() == DataType.ENUM && lValue.getType() == DataType.ENUM_VALUE)  ;
 	}
 
 	private Operation newStringOperation(Expression lValue, Operation.Code code, Expression rValue) {
@@ -376,92 +409,206 @@ public class ExpressionBuilder implements ExprParserVisitor {
 
 	@Override
 	public Expression visit(ASTPrimaryExpression node, Expression unused) throws ParseException {
-		int n = node.size();
-		int i = 0;
-		ExprNode child = node.getChild(i++);
-		Expression lValue = child.jjtAccept(this, unused);
+		ExprNode child = node.getChild(0);
+		Expression result;
 		switch (child.id) {
 		case ExprParserTreeConstants.JJTPROPERTY:
-			String name = ((UnresolvedProperty)lValue).getName();
-			FieldContent fld;
-			EnumContent enm;
-			if ((fld = getField(name, context)) != null) {
-				Operation op = new Operation(Operation.Code.GET);
-				op.addOperandWithType(new FieldRef(fld));
-				lValue = op;
-			} else if ((enm = getEnum(name, project)) != null) {
-				Operation op = new Operation(Operation.Code.CONST);
-				op.addOperandWithType(new EnumRef(enm));
-				lValue = op;
-			} else {
-				throw new SemanticException(UNDEFINED_PROPERTY, child);
-			}
+			result = visitProperty(node, unused);
+			break;
+		case ExprParserTreeConstants.JJTARGUMENT:
+			result = visitArgument(node, unused);
 			break;
 		case ExprParserTreeConstants.JJTINVOCATION:
 			throw new SemanticException(UNDER_CONSTRUCTION, child);
 		default:
+			result = child.jjtAccept(this, unused);
 			break;
 		}
+		return result;
+	}
+
+	private Expression visitProperty(ASTPrimaryExpression node, Expression unused) throws ParseException {
+		ExprNode child = node.getChild(0);
+		Expression lValue = child.jjtAccept(this, unused);
+		String name = ((UnresolvedProperty)lValue).getName();
+		FieldContent fld;
+		EnumContent enm;
+		if ((fld = getField(name, context)) != null) {
+			lValue = makeGetOperation(node, fld, unused);
+		} else if ((enm = getEnum(name, project)) != null) {
+			lValue = makeConstOperation(node, enm, unused);
+		} else {
+			throw new SemanticException(UNDEFINED_PROPERTY, child);
+		}
+		return lValue;
+	}
+
+	private Expression makeGetOperation(ASTPrimaryExpression node, FieldContent fld, Expression unused) throws ParseException {
+		Operation op = new Operation(Operation.Code.GET);
+		op.addOperandWithType(new FieldRef(fld));
+		Expression lValue = op;
+		int n = node.size();
+		int i = 1;
 		while (i < n) {
-			child = node.getChild(i++);
+			ExprNode child = node.getChild(i++);
 			Expression rValue = child.jjtAccept(this, unused);
-			Operation op = (Operation) lValue;
 			Expression last = op.getLastOperand();
-			if (last instanceof FieldRef) {
-				switch (child.id) {
-				case ExprParserTreeConstants.JJTPROPERTY:
-					String rName = ((UnresolvedProperty)rValue).getName();
-					FieldContent fld = ((FieldRef) last).getContent();
-					if (fld.getType() != DataType.REF) {
-						throw new SemanticException(TYPE_UNMATCH, child);
-					}
-					ClassContent retCls = getReturnClass(fld);
-					if ((fld = getField(rName, retCls)) != null) {
-						rValue = new FieldRef(fld);
-					} else {
-						throw new SemanticException(UNDEFINED_PROPERTY, child);
-					}
-					if (op.getCode() == Operation.Code.GET) {
-						op.addOperandWithType(rValue);
-					} else {
-						lValue = newPrimaryOperation(lValue, Operation.Code.GET, rValue);
-					}
-					break;
-				case ExprParserTreeConstants.JJTARRAYACCESS:
-				case ExprParserTreeConstants.JJTINVOCATION:
-					throw new SemanticException(UNDER_CONSTRUCTION, child);
-				default:
-					throw new InternalError();
-				}
-			} else if (last instanceof EnumRef) {
-				switch (child.id) {
-				case ExprParserTreeConstants.JJTPROPERTY:
-					String rName = ((UnresolvedProperty)rValue).getName();
-					EnumContent enm = ((EnumRef) last).getContent();
-					EnumValueContent ev;
-					if ((ev = getEnumValue(rName, enm)) != null) {
-						rValue = new EnumValueRef(ev);
-					} else {
-						throw new SemanticException(UNDEFINED_PROPERTY, child);
-					}
-					if (op.getCode() == Operation.Code.CONST) {
-						op.addOperandWithType(rValue);
-					} else {
-						lValue = newPrimaryOperation(lValue, Operation.Code.CONST, rValue);
-					}
-					break;
-				case ExprParserTreeConstants.JJTARRAYACCESS:
-				case ExprParserTreeConstants.JJTINVOCATION:
-					throw new SemanticException(UNDER_CONSTRUCTION, child);
-				default:
-					throw new InternalError();
-				}
-			} else {
+			if (!(last instanceof FieldRef)) {
 				throw new SemanticException(TYPE_UNMATCH, child);
+			}
+			if (child.id != ExprParserTreeConstants.JJTPROPERTY) {
+				throw new SemanticException(TYPE_UNMATCH, child);
+			}
+			String rName = ((UnresolvedProperty)rValue).getName();
+			fld = ((FieldRef) last).getContent();
+			if (fld.getType() != DataType.REF) {
+				throw new SemanticException(TYPE_UNMATCH, child);
+			}
+			ClassContent retCls = getReturnClass(fld);
+			if ((fld = getField(rName, retCls)) != null) {
+				rValue = new FieldRef(fld);
+			} else {
+				throw new SemanticException(UNDEFINED_PROPERTY, child);
+			}
+			if (op.getCode() == Operation.Code.GET) {
+				op.addOperandWithType(rValue);
+			} else {
+				lValue = op = newPrimaryOperation(lValue, Operation.Code.GET, rValue);
 			}
 		}
 		return lValue;
 	}
+
+	private Expression makeConstOperation(ASTPrimaryExpression node, EnumContent enm, Expression unused) throws ParseException {
+		Operation op = new Operation(Operation.Code.CONST);
+		op.addOperandWithType(new EnumRef(enm));
+		Expression lValue = op;
+		int n = node.size();
+		int i = 1;
+		while (i < n) {
+			ExprNode child = node.getChild(i++);
+			Expression rValue = child.jjtAccept(this, unused);
+			Expression last = op.getLastOperand();
+			if (!(last instanceof EnumRef)) {
+				throw new SemanticException(TYPE_UNMATCH, child);
+			}
+			if (child.id != ExprParserTreeConstants.JJTPROPERTY) {
+				throw new SemanticException(TYPE_UNMATCH, child);
+			}
+			String rName = ((UnresolvedProperty)rValue).getName();
+			enm = ((EnumRef) last).getContent();
+			EnumValueContent ev;
+			if ((ev = getEnumValue(rName, enm)) != null) {
+				rValue = new EnumValueRef(ev);
+			} else {
+				throw new SemanticException(UNDEFINED_PROPERTY, child);
+			}
+			if (op.getCode() == Operation.Code.CONST) {
+				op.addOperandWithType(rValue);
+			} else {
+				lValue = op = newPrimaryOperation(lValue, Operation.Code.CONST, rValue);
+			}
+		}
+		return lValue;
+	}
+
+	private Expression visitArgument(ASTPrimaryExpression node, Expression unused) throws ParseException {
+		ExprNode child = node.getChild(0);
+		Expression lValue = child.jjtAccept(this, unused);
+		String name = ((UnresolvedProperty)lValue).getName();
+		return new Argument(name);
+	}
+
+//	@Override
+//	public Expression visit(ASTPrimaryExpression node, Expression unused) throws ParseException {
+//		int n = node.size();
+//		int i = 0;
+//		ExprNode child = node.getChild(i++);
+//		Expression lValue = child.jjtAccept(this, unused);
+//		switch (child.id) {
+//		case ExprParserTreeConstants.JJTPROPERTY:
+//			String name = ((UnresolvedProperty)lValue).getName();
+//			FieldContent fld;
+//			EnumContent enm;
+//			if ((fld = getField(name, context)) != null) {
+//				Operation op = new Operation(Operation.Code.GET);
+//				op.addOperandWithType(new FieldRef(fld));
+//				lValue = op;
+//			} else if ((enm = getEnum(name, project)) != null) {
+//				Operation op = new Operation(Operation.Code.CONST);
+//				op.addOperandWithType(new EnumRef(enm));
+//				lValue = op;
+//			} else {
+//				throw new SemanticException(UNDEFINED_PROPERTY, child);
+//			}
+//			break;
+//		case ExprParserTreeConstants.JJTARGUMENT:
+//
+//		case ExprParserTreeConstants.JJTINVOCATION:
+//			throw new SemanticException(UNDER_CONSTRUCTION, child);
+//		default:
+//			break;
+//		}
+//		while (i < n) {
+//			child = node.getChild(i++);
+//			Expression rValue = child.jjtAccept(this, unused);
+//			Operation op = (Operation) lValue;
+//			Expression last = op.getLastOperand();
+//			if (last instanceof FieldRef) {
+//				switch (child.id) {
+//				case ExprParserTreeConstants.JJTPROPERTY:
+//					String rName = ((UnresolvedProperty)rValue).getName();
+//					FieldContent fld = ((FieldRef) last).getContent();
+//					if (fld.getType() != DataType.REF) {
+//						throw new SemanticException(TYPE_UNMATCH, child);
+//					}
+//					ClassContent retCls = getReturnClass(fld);
+//					if ((fld = getField(rName, retCls)) != null) {
+//						rValue = new FieldRef(fld);
+//					} else {
+//						throw new SemanticException(UNDEFINED_PROPERTY, child);
+//					}
+//					if (op.getCode() == Operation.Code.GET) {
+//						op.addOperandWithType(rValue);
+//					} else {
+//						lValue = newPrimaryOperation(lValue, Operation.Code.GET, rValue);
+//					}
+//					break;
+//				case ExprParserTreeConstants.JJTARRAYACCESS:
+//				case ExprParserTreeConstants.JJTINVOCATION:
+//					throw new SemanticException(UNDER_CONSTRUCTION, child);
+//				default:
+//					throw new InternalError();
+//				}
+//			} else if (last instanceof EnumRef) {
+//				switch (child.id) {
+//				case ExprParserTreeConstants.JJTPROPERTY:
+//					String rName = ((UnresolvedProperty)rValue).getName();
+//					EnumContent enm = ((EnumRef) last).getContent();
+//					EnumValueContent ev;
+//					if ((ev = getEnumValue(rName, enm)) != null) {
+//						rValue = new EnumValueRef(ev);
+//					} else {
+//						throw new SemanticException(UNDEFINED_PROPERTY, child);
+//					}
+//					if (op.getCode() == Operation.Code.CONST) {
+//						op.addOperandWithType(rValue);
+//					} else {
+//						lValue = newPrimaryOperation(lValue, Operation.Code.CONST, rValue);
+//					}
+//					break;
+//				case ExprParserTreeConstants.JJTARRAYACCESS:
+//				case ExprParserTreeConstants.JJTINVOCATION:
+//					throw new SemanticException(UNDER_CONSTRUCTION, child);
+//				default:
+//					throw new InternalError();
+//				}
+//			} else {
+//				throw new SemanticException(TYPE_UNMATCH, child);
+//			}
+//		}
+//		return lValue;
+//	}
 
 	private Operation newPrimaryOperation(Expression lValue, Operation.Code code, Expression rValue) {
 		Operation result;
@@ -492,7 +639,12 @@ public class ExpressionBuilder implements ExprParserVisitor {
 
 	@Override
 	public Expression visit(ASTProperty node, Expression unused) throws ParseException {
-		return new UnresolvedProperty(node.firstToken.image);
+		return new UnresolvedProperty(node.firstToken.image, false);
+	}
+
+	@Override
+	public Expression visit(ASTArgument node, Expression unused) throws ParseException {
+		return new UnresolvedProperty(node.firstToken.next.image, true);
 	}
 
 	@Override

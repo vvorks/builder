@@ -3,6 +3,7 @@ package com.github.vvorks.builder.server.component;
 import java.util.EnumMap;
 import java.util.List;
 
+import com.github.vvorks.builder.server.expression.Argument;
 import com.github.vvorks.builder.server.expression.BooleanLiteral;
 import com.github.vvorks.builder.server.expression.ClassRef;
 import com.github.vvorks.builder.server.expression.DateLiteral;
@@ -189,6 +190,11 @@ public class JavaTextWriter implements Expression.Visitor<Object, String> {
 	@Override
 	public String visit(NullLiteral exp, Object option) {
 		return "null";
+	}
+
+	@Override
+	public String visit(Argument exp, Object option) {
+		return "$" + exp.getName();
 	}
 
 }

@@ -67,46 +67,6 @@ public interface QueryMapper {
 	);
 
 	/**
-	 * 指定した条件に合致するクエリーのサマリーを取得する
-	 *
-	 * @param ownerClassId 所属クラスのクラスID
-	 * @param queryName クエリー名
-	 * @param filter 抽出条件
-	 * @param order ソート条件
-	 * @param title タイトル
-	 * @return クエリーのサマリー
-	 */
-	public QuerySummary findSummary(
-		@Param("ownerClassId") Integer ownerClassId, 
-		@Param("queryName") String queryName, 
-		@Param("filter") String filter, 
-		@Param("order") String order, 
-		@Param("title") String title
-	);
-
-	/**
-	 * 指定した条件に合致するクエリーを取得する
-	 *
-	 * @param ownerClassId 所属クラスのクラスID
-	 * @param queryName クエリー名
-	 * @param filter 抽出条件
-	 * @param order ソート条件
-	 * @param title タイトル
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return クエリーのリスト
-	 */
-	public List<QueryContent> findContent(
-		@Param("ownerClassId") Integer ownerClassId,
-		@Param("queryName") String queryName,
-		@Param("filter") String filter,
-		@Param("order") String order,
-		@Param("title") String title,
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-
-	/**
 	 * 所属クラスを取得する
 	 *
 	 * @param content クエリー

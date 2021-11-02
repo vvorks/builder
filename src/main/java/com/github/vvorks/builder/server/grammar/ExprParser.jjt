@@ -170,6 +170,7 @@ TOKEN : {
 
 /* operators */
 TOKEN : {
+	< DOLLER: "$" >		|
 	< HOOK: "?" >		| < COLON: ":" >	| < ASSIGN: "=" >	|
 	< BANG: "!" >		| < TILDE: "~" >	|
 	< EQ: "==" >		| < NE: "!=" >		| < LTGT: "<>" >	|
@@ -279,12 +280,17 @@ void PrimaryPrefix() #void : {} {
 	ParenExpression() |
 	IfExpression() |
 	BlockExpression() |
-	PropertyOrInvocation()
+	LOOKAHEAD(2) Invocation() |
+	Argument() |
+	Property()
 }
 
 void PrimarySuffix() #void : {} {
 	ArrayAccess() |
-	"." PropertyOrInvocation()
+	"." (
+		LOOKAHEAD(2) Invocation() |
+		Property()
+	)
 }
 
 void ParenExpression(): {} {
@@ -311,8 +317,8 @@ void BlockExpression(): {} {
 	"}"
 }
 
-void PropertyOrInvocation() #void : {} {
-	LOOKAHEAD(2) Invocation() | Property()
+void Argument(): {} {
+	"$" <IDENTIFIER>
 }
 
 void Property(): {} {

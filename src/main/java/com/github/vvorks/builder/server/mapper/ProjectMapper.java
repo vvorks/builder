@@ -67,29 +67,23 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * 指定した条件に合致するプロジェクト型のサマリーを取得する
+	 * nameIsに合致するプロジェクト型のサマリーを取得する
 	 *
-	 * @param projectName プロジェクト名
-	 * @param title タイトル
 	 * @return プロジェクト型のサマリー
 	 */
-	public ProjectSummary findSummary(
-		@Param("projectName") String projectName, 
-		@Param("title") String title
+	public ProjectSummary listIfNameIsSummary(
+		@Param("name") String name
 	);
 
 	/**
-	 * 指定した条件に合致するプロジェクト型を取得する
+	 * nameIsに合致するプロジェクト型を取得する
 	 *
-	 * @param projectName プロジェクト名
-	 * @param title タイトル
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return プロジェクト型のリスト
 	 */
-	public List<ProjectContent> findContent(
-		@Param("projectName") String projectName,
-		@Param("title") String title,
+	public List<ProjectContent> listIfNameIsContent(
+		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);
@@ -119,37 +113,27 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * 指定した条件に合致するクラス一覧のサマリーを取得する
+	 * nameIsに合致するクラス一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト型
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
-	 * @param className クラス名
-	 * @param title タイトル
 	 * @return クラス一覧のサマリー
 	 */
-	public ClassSummary findClassesSummary(
+	public ClassSummary listClassesIfNameIsSummary(
 		@Param("content") ProjectContent content,
-		@Param("ownerProjectId") Integer ownerProjectId, 
-		@Param("className") String className, 
-		@Param("title") String title
+		@Param("name") String name
 	);
 
 	/**
-	 * 指定した条件に合致するクラス一覧を取得する
+	 * nameIsに合致するクラス一覧を取得する
 	 *
 	 * @param content プロジェクト型
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
-	 * @param className クラス名
-	 * @param title タイトル
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラス一覧
 	 */
-	public List<ClassContent> findClassesContent(
+	public List<ClassContent> listClassesIfNameIsContent(
 		@Param("content") ProjectContent content,
-		@Param("ownerProjectId") Integer ownerProjectId,
-		@Param("className") String className,
-		@Param("title") String title,
+		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);
@@ -179,41 +163,27 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * 指定した条件に合致する列挙一覧のサマリーを取得する
+	 * nameIsに合致する列挙一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト型
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
-	 * @param enumName 列挙名
-	 * @param encodeString 文字列エンコード
-	 * @param title タイトル
 	 * @return 列挙一覧のサマリー
 	 */
-	public EnumSummary findEnumsSummary(
+	public EnumSummary listEnumsIfNameIsSummary(
 		@Param("content") ProjectContent content,
-		@Param("ownerProjectId") Integer ownerProjectId, 
-		@Param("enumName") String enumName, 
-		@Param("encodeString") Boolean encodeString, 
-		@Param("title") String title
+		@Param("name") String name
 	);
 
 	/**
-	 * 指定した条件に合致する列挙一覧を取得する
+	 * nameIsに合致する列挙一覧を取得する
 	 *
 	 * @param content プロジェクト型
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
-	 * @param enumName 列挙名
-	 * @param encodeString 文字列エンコード
-	 * @param title タイトル
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙一覧
 	 */
-	public List<EnumContent> findEnumsContent(
+	public List<EnumContent> listEnumsIfNameIsContent(
 		@Param("content") ProjectContent content,
-		@Param("ownerProjectId") Integer ownerProjectId,
-		@Param("enumName") String enumName,
-		@Param("encodeString") Boolean encodeString,
-		@Param("title") String title,
+		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);

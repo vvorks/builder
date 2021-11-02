@@ -67,33 +67,23 @@ public interface ClassMapper {
 	);
 
 	/**
-	 * 指定した条件に合致するクラスのサマリーを取得する
+	 * nameIsに合致するクラスのサマリーを取得する
 	 *
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
-	 * @param className クラス名
-	 * @param title タイトル
 	 * @return クラスのサマリー
 	 */
-	public ClassSummary findSummary(
-		@Param("ownerProjectId") Integer ownerProjectId, 
-		@Param("className") String className, 
-		@Param("title") String title
+	public ClassSummary listIfNameIsSummary(
+		@Param("name") String name
 	);
 
 	/**
-	 * 指定した条件に合致するクラスを取得する
+	 * nameIsに合致するクラスを取得する
 	 *
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
-	 * @param className クラス名
-	 * @param title タイトル
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラスのリスト
 	 */
-	public List<ClassContent> findContent(
-		@Param("ownerProjectId") Integer ownerProjectId,
-		@Param("className") String className,
-		@Param("title") String title,
+	public List<ClassContent> listIfNameIsContent(
+		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);
@@ -131,109 +121,27 @@ public interface ClassMapper {
 	);
 
 	/**
-	 * isPkに合致するフィールド一覧のサマリーを取得する
+	 * nameIsに合致するフィールド一覧のサマリーを取得する
 	 *
 	 * @param content クラス
 	 * @return フィールド一覧のサマリー
 	 */
-	public FieldSummary listFieldsIfIsPkSummary(
-		@Param("content") ClassContent content
+	public FieldSummary listFieldsIfNameIsSummary(
+		@Param("content") ClassContent content,
+		@Param("name") String name
 	);
 
 	/**
-	 * isPkに合致するフィールド一覧を取得する
+	 * nameIsに合致するフィールド一覧を取得する
 	 *
 	 * @param content クラス
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return フィールド一覧
 	 */
-	public List<FieldContent> listFieldsIfIsPkContent(
+	public List<FieldContent> listFieldsIfNameIsContent(
 		@Param("content") ClassContent content,
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-
-	/**
-	 * 指定した条件に合致するフィールド一覧のサマリーを取得する
-	 *
-	 * @param content クラス
-	 * @param ownerClassId 所属クラスのクラスID
-	 * @param fieldName フィールド名
-	 * @param type フィールド型
-	 * @param width フィールド型の幅
-	 * @param scale フィールド型精度
-	 * @param crefClassId クラス参照先のクラスID
-	 * @param erefEnumId 列挙参照先の列挙ID
-	 * @param frefFieldId フィールド参照先のフィールドID
-	 * @param pk プライマリキー
-	 * @param nullable NULL許容
-	 * @param needsSum needsSum
-	 * @param needsAvg needsAvg
-	 * @param needsMax needsMax
-	 * @param needsMin needsMin
-	 * @param title タイトル
-	 * @return フィールド一覧のサマリー
-	 */
-	public FieldSummary findFieldsSummary(
-		@Param("content") ClassContent content,
-		@Param("ownerClassId") Integer ownerClassId, 
-		@Param("fieldName") String fieldName, 
-		@Param("type") DataType type, 
-		@Param("width") Integer width, 
-		@Param("scale") Integer scale, 
-		@Param("crefClassId") Integer crefClassId, 
-		@Param("erefEnumId") Integer erefEnumId, 
-		@Param("frefFieldId") Integer frefFieldId, 
-		@Param("pk") Boolean pk, 
-		@Param("nullable") Boolean nullable, 
-		@Param("needsSum") Boolean needsSum, 
-		@Param("needsAvg") Boolean needsAvg, 
-		@Param("needsMax") Boolean needsMax, 
-		@Param("needsMin") Boolean needsMin, 
-		@Param("title") String title
-	);
-
-	/**
-	 * 指定した条件に合致するフィールド一覧を取得する
-	 *
-	 * @param content クラス
-	 * @param ownerClassId 所属クラスのクラスID
-	 * @param fieldName フィールド名
-	 * @param type フィールド型
-	 * @param width フィールド型の幅
-	 * @param scale フィールド型精度
-	 * @param crefClassId クラス参照先のクラスID
-	 * @param erefEnumId 列挙参照先の列挙ID
-	 * @param frefFieldId フィールド参照先のフィールドID
-	 * @param pk プライマリキー
-	 * @param nullable NULL許容
-	 * @param needsSum needsSum
-	 * @param needsAvg needsAvg
-	 * @param needsMax needsMax
-	 * @param needsMin needsMin
-	 * @param title タイトル
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return フィールド一覧
-	 */
-	public List<FieldContent> findFieldsContent(
-		@Param("content") ClassContent content,
-		@Param("ownerClassId") Integer ownerClassId,
-		@Param("fieldName") String fieldName,
-		@Param("type") DataType type,
-		@Param("width") Integer width,
-		@Param("scale") Integer scale,
-		@Param("crefClassId") Integer crefClassId,
-		@Param("erefEnumId") Integer erefEnumId,
-		@Param("frefFieldId") Integer frefFieldId,
-		@Param("pk") Boolean pk,
-		@Param("nullable") Boolean nullable,
-		@Param("needsSum") Boolean needsSum,
-		@Param("needsAvg") Boolean needsAvg,
-		@Param("needsMax") Boolean needsMax,
-		@Param("needsMin") Boolean needsMin,
-		@Param("title") String title,
+		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);
@@ -258,50 +166,6 @@ public interface ClassMapper {
 	 */
 	public List<QueryContent> listQueriesContent(
 		@Param("content") ClassContent content,
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-
-	/**
-	 * 指定した条件に合致するqueriesのサマリーを取得する
-	 *
-	 * @param content クラス
-	 * @param ownerClassId 所属クラスのクラスID
-	 * @param queryName クエリー名
-	 * @param filter 抽出条件
-	 * @param order ソート条件
-	 * @param title タイトル
-	 * @return queriesのサマリー
-	 */
-	public QuerySummary findQueriesSummary(
-		@Param("content") ClassContent content,
-		@Param("ownerClassId") Integer ownerClassId, 
-		@Param("queryName") String queryName, 
-		@Param("filter") String filter, 
-		@Param("order") String order, 
-		@Param("title") String title
-	);
-
-	/**
-	 * 指定した条件に合致するqueriesを取得する
-	 *
-	 * @param content クラス
-	 * @param ownerClassId 所属クラスのクラスID
-	 * @param queryName クエリー名
-	 * @param filter 抽出条件
-	 * @param order ソート条件
-	 * @param title タイトル
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return queries
-	 */
-	public List<QueryContent> findQueriesContent(
-		@Param("content") ClassContent content,
-		@Param("ownerClassId") Integer ownerClassId,
-		@Param("queryName") String queryName,
-		@Param("filter") String filter,
-		@Param("order") String order,
-		@Param("title") String title,
 		@Param("offset") int offset,
 		@Param("limit") int limit
 	);

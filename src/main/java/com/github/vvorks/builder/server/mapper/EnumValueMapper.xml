@@ -79,47 +79,6 @@
 		</if>
 	</select>
 
-	<select id="findSummary" resultType="EnumValueSummary">
-		SELECT
-			COUNT(*) AS "count"
-		FROM
-			T_ENUM_VALUE
-		<where>
-			<if test="code != null">
-				AND F_CODE = #{ code }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
-	</select>
-
-	<select id="findContent" resultType="EnumValueContent">
-		SELECT
-			F_VALUE_ID AS "valueId",
-			F_OWNER_ENUM_ID AS "ownerEnumId",
-			F_CODE AS "code",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
-		FROM
-			T_ENUM_VALUE
-		<where>
-			<if test="code != null">
-				AND F_CODE = #{ code }
-			</if>
-			<if test="title != null">
-				AND F_TITLE = #{ title }
-			</if>
-		</where>
-		<if test="limit &gt; 0">
-			LIMIT #{limit}
-		<if test="offset &gt;= 0">
-			OFFSET #{offset}
-		</if>
-		</if>
-	</select>
-
 	<select id="getOwner" resultType="EnumContent">
 		SELECT
 			F_ENUM_ID AS "enumId",
