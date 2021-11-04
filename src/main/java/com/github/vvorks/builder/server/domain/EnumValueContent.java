@@ -44,6 +44,26 @@ public class EnumValueContent {
 	private String note;
 
 	/**
+	 * 空の列挙値を作成する
+	 */
+	public EnumValueContent() {
+	}
+
+	/**
+	 * 指定のキー項目を持つ列挙値を作成する
+	 *
+	 * @param valueId 列挙名
+	 * @param ownerEnumId 所属列挙の列挙ID
+	 */
+	public EnumValueContent(
+		String valueId,
+		int ownerEnumId
+	) {
+		this.valueId = valueId;
+		this.ownerEnumId = ownerEnumId;
+	}
+
+	/**
 	 * 列挙名を取得する
 	 *
 	 * @return 列挙名

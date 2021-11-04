@@ -69,20 +69,22 @@ public interface FieldMapper {
 	/**
 	 * nameIsに合致するフィールドのサマリーを取得する
 	 *
+	 * @param name name
 	 * @return フィールドのサマリー
 	 */
-	public FieldSummary listIfNameIsSummary(
+	public FieldSummary listSummaryIfNameIs(
 		@Param("name") String name
 	);
 
 	/**
 	 * nameIsに合致するフィールドを取得する
 	 *
+	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return フィールドのリスト
 	 */
-	public List<FieldContent> listIfNameIsContent(
+	public List<FieldContent> listContentIfNameIs(
 		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit

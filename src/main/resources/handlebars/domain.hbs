@@ -47,6 +47,29 @@ public class {{className}}Content {
 	private {{javaType}} {{fieldName}};
 	{{/each}}
 
+	/**
+	 * 空の{{titleOrName}}を作成する
+	 */
+	public {{className}}Content() {
+	}
+
+	/**
+	 * 指定のキー項目を持つ{{titleOrName}}を作成する
+	 *
+	{{#each keys}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 */
+	public {{className}}Content(
+		{{#each keys}}
+		{{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
+	) {
+		{{#each keys}}
+		this.{{fieldName}} = {{fieldName}};
+		{{/each}}
+	}
+
 	{{#each properties}}
 
 	/**

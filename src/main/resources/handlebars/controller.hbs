@@ -1,0 +1,265 @@
+{{#java this "server/controller/" upperLastName "RpcController" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.controller;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import {{global.project.projectName}}.server.common.net.annotation.JsonRpcController;
+import {{global.project.projectName}}.server.common.net.annotation.JsonRpcMethod;
+import {{global.project.projectName}}.server.common.net.annotation.JsonRpcParam;
+import {{global.project.projectName}}.server.domain.*;
+{{#each classes}}
+import {{global.project.projectName}}.server.mapper.{{className}}Mapper;
+{{/each}}
+
+/**
+ * {{titleOrName}}の Json-Rpc (on Websocket) API
+ */
+@JsonRpcController("/{{lastName}}")
+public class {{upperLastName}}RpcController {
+
+	{{#each classes}}
+
+	/** {{titleOrName}}のMapper */
+	@Autowired
+	private {{className}}Mapper {{lowerName}}Mapper;
+	{{/each}}
+
+	{{#each classes}}
+
+	/**
+	 * {{titleOrName}}を挿入する
+	 *
+	 * @param content 挿入する{{titleOrName}}
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod("insert{{className}}")
+	public boolean insert{{className}}({{className}}Content content) {
+		return {{lowerName}}Mapper.insert(content);
+	}
+
+	/**
+	 * {{titleOrName}}を更新する
+	 *
+	 * @param content 更新する{{titleOrName}}
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod("update{{className}}")
+	public boolean update{{className}}({{className}}Content content) {
+		return {{lowerName}}Mapper.update(content);
+	}
+
+	/**
+	 * {{titleOrName}}を削除する
+	 *
+	 * @param content 削除する{{titleOrName}}
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod("delete{{className}}")
+	public boolean delete{{className}}({{className}}Content content) {
+		return {{lowerName}}Mapper.delete(content);
+	}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	{{#each keys}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @return 取得した{{titleOrName}}
+	 */
+	@JsonRpcMethod("get{{className}}")
+	public {{className}}Content get{{className}}(
+		{{#each keys}}
+		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}}, {{/separator}}
+		{{/each}}
+	) {
+		return {{lowerName}}Mapper.get(
+				{{#each keys}}
+				{{fieldName}}{{#separator}}, {{/separator}}
+				{{/each}}
+				);
+	}
+
+	/**
+	 * 全ての{{titleOrName}}のサマリーを取得する
+	 *
+	 * @return {{titleOrName}}のサマリー
+	 */
+	@JsonRpcMethod("list{{className}}Summary")
+	public {{className}}Summary list{{className}}Summary() {
+		return {{lowerName}}Mapper.listSummary();
+	}
+
+	/**
+	 * 全ての{{titleOrName}}を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{titleOrName}}のリスト
+	 */
+	@JsonRpcMethod("list{{className}}Content")
+	public List<{{className}}Content> list{{className}}Content(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		return {{lowerName}}Mapper.listContent(offset, limit);
+	}
+
+	{{#each queries}}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}のサマリーを取得する
+	 *
+	{{#each arguments}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @return {{../titleOrName}}のサマリー
+	 */
+	@JsonRpcMethod("list{{../className}}SummaryIf{{upperName}}")
+	public {{../className}}Summary list{{../className}}SummaryIf{{upperName}}(
+		{{#each arguments}}
+		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
+	) {
+		return {{../lowerName}}Mapper.listSummaryIf{{upperName}}(
+				{{#each arguments}}
+				{{fieldName}}{{#separator}},{{/separator}}
+				{{/each}}
+				);
+	}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
+	 *
+	{{#each arguments}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{../titleOrName}}のリスト
+	 */
+	@JsonRpcMethod("list{{../className}}ContentIf{{upperName}}")
+	public List<{{../className}}Content> list{{../className}}ContentIf{{upperName}}(
+		{{#each arguments}}
+		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		return {{../lowerName}}Mapper.listContentIf{{upperName}}(
+				{{#each arguments}}
+				{{fieldName}},
+				{{/each}}
+				offset, limit);
+
+	}
+	{{/each}}
+
+	{{#each refs}}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @return {{titleOrName}}
+	 */
+	@JsonRpcMethod("get{{../className}}{{upperName}}")
+	public {{cref.className}}Content get{{../className}}{{upperName}}(
+		@JsonRpcParam("content") {{../className}}Content content
+	) {
+		return {{../lowerName}}Mapper.get{{upperName}}(content);
+	}
+	{{/each}}
+
+	{{#each sets}}
+
+	/**
+	 * {{titleOrName}}のサマリーを取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @return {{titleOrName}}のサマリー
+	 */
+	@JsonRpcMethod("list{{../className}}{{upperName}}Summary")
+	public {{fref.owner.className}}Summary list{{../className}}{{upperName}}Summary(
+			@JsonRpcParam("content") {{../className}}Content content
+	) {
+		return {{../lowerName}}Mapper.list{{upperName}}Summary(content);
+	}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{titleOrName}}
+	 */
+	@JsonRpcMethod("list{{../className}}{{upperName}}Content")
+	public List<{{fref.owner.className}}Content> list{{../className}}{{upperName}}Content(
+		@JsonRpcParam("content") {{../className}}Content content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		return {{../lowerName}}Mapper.list{{upperName}}Content(content, offset, limit);
+	}
+
+	{{#each fref.owner.queries}}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}のサマリーを取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @return {{../titleOrName}}のサマリー
+	 */
+	@JsonRpcMethod("list{{../../className}}{{../upperName}}SummaryIf{{upperName}}")
+	public {{../fref.owner.className}}Summary list{{../../className}}{{../upperName}}SummaryIf{{upperName}}(
+		@JsonRpcParam("content") {{../../className}}Content content,
+		{{#each arguments}}
+		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
+	) {
+		return {{../../lowerName}}Mapper.list{{../upperName}}SummaryIf{{upperName}}(content,
+				{{#each arguments}}
+				{{fieldName}}{{#separator}},{{/separator}}
+				{{/each}}
+				);
+	}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{../titleOrName}}
+	 */
+	@JsonRpcMethod("list{{../../className}}{{../upperName}}ContentIf{{upperName}}")
+	public List<{{../fref.owner.className}}Content> list{{../../className}}{{../upperName}}ContentIf{{upperName}}(
+		@JsonRpcParam("content") {{../../className}}Content content,
+		{{#each arguments}}
+		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		return {{../../lowerName}}Mapper.list{{../upperName}}ContentIf{{upperName}}(content,
+				{{#each arguments}}
+				{{fieldName}},
+				{{/each}}
+				offset, limit);
+	}
+	{{/each}}
+
+	{{/each}}
+
+	{{/each}}
+
+}
+{{/java}}

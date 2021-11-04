@@ -77,7 +77,7 @@
 		</if>
 	</select>
 
-	<select id="listIfNameIsSummary" resultType="ProjectSummary">
+	<select id="listSummaryIfNameIs" resultType="ProjectSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
@@ -88,7 +88,7 @@
 			]]>
 	</select>
 
-	<select id="listIfNameIsContent" resultType="ProjectContent">
+	<select id="listContentIfNameIs" resultType="ProjectContent">
 		SELECT
 			T1.F_PROJECT_ID AS "projectId",
 			T1.F_PROJECT_NAME AS "projectName",
@@ -139,7 +139,7 @@
 		</if>
 	</select>
 
-	<select id="listClassesIfNameIsSummary" resultType="ClassSummary">
+	<select id="listClassesSummaryIfNameIs" resultType="ClassSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
@@ -151,7 +151,7 @@
 			]]>
 	</select>
 
-	<select id="listClassesIfNameIsContent" resultType="ClassContent">
+	<select id="listClassesContentIfNameIs" resultType="ClassContent">
 		SELECT
 			T1.F_CLASS_ID AS "classId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -204,7 +204,7 @@
 		</if>
 	</select>
 
-	<select id="listEnumsIfNameIsSummary" resultType="EnumSummary">
+	<select id="listEnumsSummaryIfNameIs" resultType="EnumSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
@@ -216,7 +216,7 @@
 			]]>
 	</select>
 
-	<select id="listEnumsIfNameIsContent" resultType="EnumContent">
+	<select id="listEnumsContentIfNameIs" resultType="EnumContent">
 		SELECT
 			T1.F_ENUM_ID AS "enumId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",

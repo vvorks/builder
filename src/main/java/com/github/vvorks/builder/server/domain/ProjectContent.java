@@ -48,6 +48,23 @@ public class ProjectContent {
 	private String copyrights;
 
 	/**
+	 * 空のプロジェクト型を作成する
+	 */
+	public ProjectContent() {
+	}
+
+	/**
+	 * 指定のキー項目を持つプロジェクト型を作成する
+	 *
+	 * @param projectId プロジェクトID
+	 */
+	public ProjectContent(
+		int projectId
+	) {
+		this.projectId = projectId;
+	}
+
+	/**
 	 * プロジェクトIDを取得する
 	 *
 	 * @return プロジェクトID

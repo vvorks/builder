@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.util.Logger;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.EnumContent;
@@ -50,7 +50,6 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	private static final String UNDER_CONSTRUCTION = "under construction";
 	private static final String TYPE_UNMATCH = "type unmatch";
 	private static final String UNDEFINED_PROPERTY = "undefined property";
-	private static final String MUST_BE_CONST = "pattern must be a string literal";
 
 	@Autowired
 	private ExprParser parser;
@@ -78,7 +77,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	}
 
 	private FieldContent getField(String name, ClassContent cls) {
-		List<FieldContent> fields = classMapper.listFieldsIfNameIsContent(cls, name, 0, 0);
+		List<FieldContent> fields = classMapper.listFieldsContentIfNameIs(cls, name, 0, 0);
 		return (fields.size() == 1) ? fields.get(0) : null;
 	}
 
@@ -87,7 +86,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	}
 
 	private EnumContent getEnum(String name, ProjectContent prj) {
-		List<EnumContent> enums = projectMapper.listEnumsIfNameIsContent(prj, name, 0, 0);
+		List<EnumContent> enums = projectMapper.listEnumsContentIfNameIs(prj, name, 0, 0);
 		return (enums.size() == 1) ? enums.get(0) : null;
 	}
 

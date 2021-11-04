@@ -4,7 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.util.Logger;
+import com.github.vvorks.builder.common.logging.Logger;
 
 public class Closeables {
 

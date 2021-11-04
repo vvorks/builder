@@ -80,12 +80,16 @@ public interface {{className}}Mapper {
 	);
 
 	{{#each queries}}
+
 	/**
 	 * {{titleOrName}}に合致する{{../titleOrName}}のサマリーを取得する
 	 *
+	{{#each arguments}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
 	 * @return {{../titleOrName}}のサマリー
 	 */
-	public {{../className}}Summary listIf{{upperName}}Summary(
+	public {{../className}}Summary listSummaryIf{{upperName}}(
 		{{#each arguments}}
 		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
 		{{/each}}
@@ -94,11 +98,14 @@ public interface {{className}}Mapper {
 	/**
 	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
 	 *
+	{{#each arguments}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return {{../titleOrName}}のリスト
 	 */
-	public List<{{../className}}Content> listIf{{upperName}}Content(
+	public List<{{../className}}Content> listContentIf{{upperName}}(
 		{{#each arguments}}
 		@Param("{{fieldName}}") {{javaType}} {{fieldName}},
 		{{/each}}
@@ -152,7 +159,7 @@ public interface {{className}}Mapper {
 	 * @param content {{../../titleOrName}}
 	 * @return {{../titleOrName}}のサマリー
 	 */
-	public {{../fref.owner.className}}Summary list{{../upperName}}If{{upperName}}Summary(
+	public {{../fref.owner.className}}Summary list{{../upperName}}SummaryIf{{upperName}}(
 		@Param("content") {{../../className}}Content content,
 		{{#each arguments}}
 		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
@@ -167,7 +174,7 @@ public interface {{className}}Mapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return {{../titleOrName}}
 	 */
-	public List<{{../fref.owner.className}}Content> list{{../upperName}}If{{upperName}}Content(
+	public List<{{../fref.owner.className}}Content> list{{../upperName}}ContentIf{{upperName}}(
 		@Param("content") {{../../className}}Content content,
 		{{#each arguments}}
 		@Param("{{fieldName}}") {{javaType}} {{fieldName}},
@@ -273,7 +280,7 @@ public interface {{className}}Mapper {
 
 	{{#each queries}}
 
-	<select id="listIf{{upperName}}Summary" resultType="{{../className}}Summary">
+	<select id="listSummaryIf{{upperName}}" resultType="{{../className}}Summary">
 		SELECT
 			{{#each ../properties}}
 			{{#if needsSum}}
@@ -304,7 +311,7 @@ public interface {{className}}Mapper {
 			]]>
 	</select>
 
-	<select id="listIf{{upperName}}Content" resultType="{{../className}}Content">
+	<select id="listContentIf{{upperName}}" resultType="{{../className}}Content">
 		SELECT
 			{{#each ../properties}}
 			T1.{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
@@ -394,7 +401,7 @@ public interface {{className}}Mapper {
 
 	{{#each fref.owner.queries}}
 
-	<select id="list{{../upperName}}If{{upperName}}Summary" resultType="{{../fref.owner.className}}Summary">
+	<select id="list{{../upperName}}SummaryIf{{upperName}}" resultType="{{../fref.owner.className}}Summary">
 		SELECT
 			{{#each ../fref.owner.properties}}
 			{{#if needsSum}}
@@ -428,7 +435,7 @@ public interface {{className}}Mapper {
 			]]>
 	</select>
 
-	<select id="list{{../upperName}}If{{upperName}}Content" resultType="{{../fref.owner.className}}Content">
+	<select id="list{{../upperName}}ContentIf{{upperName}}" resultType="{{../fref.owner.className}}Content">
 		SELECT
 			{{#each ../fref.owner.properties}}
 			T1.{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}

@@ -46,6 +46,23 @@ public class ClassContent {
 	private String note;
 
 	/**
+	 * 空のクラスを作成する
+	 */
+	public ClassContent() {
+	}
+
+	/**
+	 * 指定のキー項目を持つクラスを作成する
+	 *
+	 * @param classId クラスID
+	 */
+	public ClassContent(
+		int classId
+	) {
+		this.classId = classId;
+	}
+
+	/**
 	 * クラスIDを取得する
 	 *
 	 * @return クラスID

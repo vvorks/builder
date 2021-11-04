@@ -1,4 +1,4 @@
-package com.github.vvorks.builder.common.util;
+package com.github.vvorks.builder.common.logging;
 
 public interface Logger {
 

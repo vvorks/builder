@@ -137,7 +137,7 @@
 		</if>
 	</select>
 
-	<select id="listIfNameIsSummary" resultType="FieldSummary">
+	<select id="listSummaryIfNameIs" resultType="FieldSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
@@ -148,7 +148,7 @@
 			]]>
 	</select>
 
-	<select id="listIfNameIsContent" resultType="FieldContent">
+	<select id="listContentIfNameIs" resultType="FieldContent">
 		SELECT
 			T1.F_FIELD_ID AS "fieldId",
 			T1.F_OWNER_CLASS_ID AS "ownerClassId",

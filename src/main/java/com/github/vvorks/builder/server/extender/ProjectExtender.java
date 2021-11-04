@@ -27,6 +27,10 @@ public class ProjectExtender {
 		}
 	}
 
+	public String getUpperLastName(ProjectContent prj) {
+		return Strings.toFirstUpper(getLastName(prj));
+	}
+
 	public String getLastName(ProjectContent prj) {
 		String name = prj.getProjectName();
 		int lastDot = name.lastIndexOf('.') + 1;

@@ -9,7 +9,7 @@ import java.util.Set;
 import com.github.jknack.handlebars.ValueResolver;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.util.Logger;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.util.Invoker;
 
 public class ExtenderResolver implements ValueResolver {

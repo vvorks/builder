@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.CacheMap;
-import com.github.vvorks.builder.common.util.Logger;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.FieldContent;

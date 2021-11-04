@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.util.Logger;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.util.Patterns;
 
 public class LoggerWriter extends Writer {

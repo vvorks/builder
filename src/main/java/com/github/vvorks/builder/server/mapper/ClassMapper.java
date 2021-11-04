@@ -69,20 +69,22 @@ public interface ClassMapper {
 	/**
 	 * nameIsに合致するクラスのサマリーを取得する
 	 *
+	 * @param name name
 	 * @return クラスのサマリー
 	 */
-	public ClassSummary listIfNameIsSummary(
+	public ClassSummary listSummaryIfNameIs(
 		@Param("name") String name
 	);
 
 	/**
 	 * nameIsに合致するクラスを取得する
 	 *
+	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラスのリスト
 	 */
-	public List<ClassContent> listIfNameIsContent(
+	public List<ClassContent> listContentIfNameIs(
 		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit
@@ -126,7 +128,7 @@ public interface ClassMapper {
 	 * @param content クラス
 	 * @return フィールド一覧のサマリー
 	 */
-	public FieldSummary listFieldsIfNameIsSummary(
+	public FieldSummary listFieldsSummaryIfNameIs(
 		@Param("content") ClassContent content,
 		@Param("name") String name
 	);
@@ -139,7 +141,7 @@ public interface ClassMapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return フィールド一覧
 	 */
-	public List<FieldContent> listFieldsIfNameIsContent(
+	public List<FieldContent> listFieldsContentIfNameIs(
 		@Param("content") ClassContent content,
 		@Param("name") String name,
 		@Param("offset") int offset,

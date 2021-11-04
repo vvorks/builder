@@ -77,7 +77,7 @@
 		</if>
 	</select>
 
-	<select id="listIfNameIsSummary" resultType="ClassSummary">
+	<select id="listSummaryIfNameIs" resultType="ClassSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
@@ -88,7 +88,7 @@
 			]]>
 	</select>
 
-	<select id="listIfNameIsContent" resultType="ClassContent">
+	<select id="listContentIfNameIs" resultType="ClassContent">
 		SELECT
 			T1.F_CLASS_ID AS "classId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -165,7 +165,7 @@
 		</if>
 	</select>
 
-	<select id="listFieldsIfNameIsSummary" resultType="FieldSummary">
+	<select id="listFieldsSummaryIfNameIs" resultType="FieldSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
@@ -177,7 +177,7 @@
 			]]>
 	</select>
 
-	<select id="listFieldsIfNameIsContent" resultType="FieldContent">
+	<select id="listFieldsContentIfNameIs" resultType="FieldContent">
 		SELECT
 			T1.F_FIELD_ID AS "fieldId",
 			T1.F_OWNER_CLASS_ID AS "ownerClassId",

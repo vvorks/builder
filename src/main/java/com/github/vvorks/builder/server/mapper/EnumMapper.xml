@@ -82,7 +82,7 @@
 		</if>
 	</select>
 
-	<select id="listIfNameIsSummary" resultType="EnumSummary">
+	<select id="listSummaryIfNameIs" resultType="EnumSummary">
 		SELECT
 			COUNT(*) AS "count"
 		FROM
@@ -93,7 +93,7 @@
 			]]>
 	</select>
 
-	<select id="listIfNameIsContent" resultType="EnumContent">
+	<select id="listContentIfNameIs" resultType="EnumContent">
 		SELECT
 			T1.F_ENUM_ID AS "enumId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",

@@ -53,6 +53,23 @@ public class EnumContent {
 	private String note;
 
 	/**
+	 * 空の列挙を作成する
+	 */
+	public EnumContent() {
+	}
+
+	/**
+	 * 指定のキー項目を持つ列挙を作成する
+	 *
+	 * @param enumId 列挙ID
+	 */
+	public EnumContent(
+		int enumId
+	) {
+		this.enumId = enumId;
+	}
+
+	/**
 	 * 列挙IDを取得する
 	 *
 	 * @return 列挙ID

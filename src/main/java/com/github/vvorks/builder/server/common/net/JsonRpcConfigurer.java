@@ -13,7 +13,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.util.Logger;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 
 @Configuration

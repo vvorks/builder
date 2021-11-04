@@ -33,6 +33,10 @@ public class ClassExtender {
 		}
 	}
 
+	public String getLowerName(ClassContent cls) {
+		return Strings.toFirstLower(cls.getClassName());
+	}
+
 	public String getTableName(ClassContent cls) {
 		return SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(cls.getClassName());
 	}

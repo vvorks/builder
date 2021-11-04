@@ -69,20 +69,22 @@ public interface EnumMapper {
 	/**
 	 * nameIsに合致する列挙のサマリーを取得する
 	 *
+	 * @param name name
 	 * @return 列挙のサマリー
 	 */
-	public EnumSummary listIfNameIsSummary(
+	public EnumSummary listSummaryIfNameIs(
 		@Param("name") String name
 	);
 
 	/**
 	 * nameIsに合致する列挙を取得する
 	 *
+	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙のリスト
 	 */
-	public List<EnumContent> listIfNameIsContent(
+	public List<EnumContent> listContentIfNameIs(
 		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit

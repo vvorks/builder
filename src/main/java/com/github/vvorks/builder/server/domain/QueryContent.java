@@ -62,6 +62,23 @@ public class QueryContent {
 	private String note;
 
 	/**
+	 * 空のクエリーを作成する
+	 */
+	public QueryContent() {
+	}
+
+	/**
+	 * 指定のキー項目を持つクエリーを作成する
+	 *
+	 * @param queryId クエリーID
+	 */
+	public QueryContent(
+		int queryId
+	) {
+		this.queryId = queryId;
+	}
+
+	/**
 	 * クエリーIDを取得する
 	 *
 	 * @return クエリーID

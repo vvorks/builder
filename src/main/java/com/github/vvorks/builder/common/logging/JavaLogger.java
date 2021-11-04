@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 import com.github.vvorks.builder.common.lang.Strings;
 
-public class JavaLogger implements com.github.vvorks.builder.common.util.Logger {
+public class JavaLogger implements com.github.vvorks.builder.common.logging.Logger {
 
 	/**
 	 * 最小ログフォーマッタ
@@ -39,9 +39,18 @@ public class JavaLogger implements com.github.vvorks.builder.common.util.Logger 
 		logger = Logger.getLogger(cls.getName());
 		Formatter formatter = new TinyFormatter();
 		Handler[] handlers = logger.getHandlers();
-		if (handlers != null) {
+		if (handlers == null || handlers.length == 0) {
+			for (Handler handler : Logger.getGlobal().getHandlers()) {
+				logger.addHandler(handler);
+				if (handler.getFormatter() == null) {
+					handler.setFormatter(formatter);
+				}
+			}
+		} else {
 			for (Handler handler : handlers) {
-				handler.setFormatter(formatter);
+				if (handler.getFormatter() == null) {
+					handler.setFormatter(formatter);
+				}
 			}
 		}
 	}

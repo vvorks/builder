@@ -69,20 +69,22 @@ public interface ProjectMapper {
 	/**
 	 * nameIsに合致するプロジェクト型のサマリーを取得する
 	 *
+	 * @param name name
 	 * @return プロジェクト型のサマリー
 	 */
-	public ProjectSummary listIfNameIsSummary(
+	public ProjectSummary listSummaryIfNameIs(
 		@Param("name") String name
 	);
 
 	/**
 	 * nameIsに合致するプロジェクト型を取得する
 	 *
+	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return プロジェクト型のリスト
 	 */
-	public List<ProjectContent> listIfNameIsContent(
+	public List<ProjectContent> listContentIfNameIs(
 		@Param("name") String name,
 		@Param("offset") int offset,
 		@Param("limit") int limit
@@ -118,7 +120,7 @@ public interface ProjectMapper {
 	 * @param content プロジェクト型
 	 * @return クラス一覧のサマリー
 	 */
-	public ClassSummary listClassesIfNameIsSummary(
+	public ClassSummary listClassesSummaryIfNameIs(
 		@Param("content") ProjectContent content,
 		@Param("name") String name
 	);
@@ -131,7 +133,7 @@ public interface ProjectMapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラス一覧
 	 */
-	public List<ClassContent> listClassesIfNameIsContent(
+	public List<ClassContent> listClassesContentIfNameIs(
 		@Param("content") ProjectContent content,
 		@Param("name") String name,
 		@Param("offset") int offset,
@@ -168,7 +170,7 @@ public interface ProjectMapper {
 	 * @param content プロジェクト型
 	 * @return 列挙一覧のサマリー
 	 */
-	public EnumSummary listEnumsIfNameIsSummary(
+	public EnumSummary listEnumsSummaryIfNameIs(
 		@Param("content") ProjectContent content,
 		@Param("name") String name
 	);
@@ -181,7 +183,7 @@ public interface ProjectMapper {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙一覧
 	 */
-	public List<EnumContent> listEnumsIfNameIsContent(
+	public List<EnumContent> listEnumsContentIfNameIs(
 		@Param("content") ProjectContent content,
 		@Param("name") String name,
 		@Param("offset") int offset,

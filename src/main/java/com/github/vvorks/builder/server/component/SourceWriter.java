@@ -20,7 +20,7 @@ import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.util.Logger;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.handlebars.ExtenderResolver;
 import com.github.vvorks.builder.server.common.handlebars.GlobalResolver;
 import com.github.vvorks.builder.server.common.handlebars.SeparatorHelper;

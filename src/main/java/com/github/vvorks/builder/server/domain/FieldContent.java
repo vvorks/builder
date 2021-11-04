@@ -107,6 +107,23 @@ public class FieldContent {
 	private String note;
 
 	/**
+	 * 空のフィールドを作成する
+	 */
+	public FieldContent() {
+	}
+
+	/**
+	 * 指定のキー項目を持つフィールドを作成する
+	 *
+	 * @param fieldId フィールドID
+	 */
+	public FieldContent(
+		int fieldId
+	) {
+		this.fieldId = fieldId;
+	}
+
+	/**
 	 * フィールドIDを取得する
 	 *
 	 * @return フィールドID

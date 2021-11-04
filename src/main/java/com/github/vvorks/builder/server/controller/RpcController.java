@@ -44,8 +44,8 @@ public class RpcController {
 		try {
 			ExprNode result = parser.parse(code);
 			//test
-			ProjectContent prj = projectMapper.listIfNameIsContent("com.github.vvorks.builder", 0, 0).get(0);
-			ClassContent cls = projectMapper.listClassesIfNameIsContent(prj, "Field", 0, 0).get(0);
+			ProjectContent prj = projectMapper.listContentIfNameIs("com.github.vvorks.builder", 0, 0).get(0);
+			ClassContent cls = projectMapper.listClassesContentIfNameIs(prj, "Field", 0, 0).get(0);
 			Expression exp = builder.build(result, prj, cls);
 			//test
 			String r = exp.accept(new JavaTextWriter(), null);

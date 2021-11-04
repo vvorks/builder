@@ -7,25 +7,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.github.vvorks.builder.common.json.JsonContext;
-import com.github.vvorks.builder.common.json.JsonRpcConstants;
-import com.github.vvorks.builder.common.json.JsonValue;
+import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Callback;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Result;
+import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.common.net.JsonRpcs;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
-import com.github.vvorks.builder.common.util.Logger;
 import com.github.vvorks.builder.common.util.TimeoutException;
 
 /**
  * WebSocket上でJsonRpc通信を行うサービスクラス
  */
-public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
+public class JsonRpcClient implements WebSocketHandler {
 
 	private static final Class<?> THIS = JsonRpcClient.class;
 	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
 
 	private static final String UNKNOWN_METHOD = "__UNKNOWN__";
+
+	private static final String RPC_VERSION = "2.0";
 
 	private static final int NOTIFY_ID = 0;
 
@@ -41,9 +42,9 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 
 	private static class RequestInfo {
 		private final String method;
-		private final Callback<JsonValue> callback;
+		private final Callback<Json> callback;
 		private final long absTimeout;
-		private RequestInfo(String method, Callback<JsonValue> callback, int timeout) {
+		private RequestInfo(String method, Callback<Json> callback, int timeout) {
 			this.method = method;
 			this.callback = callback;
 			this.absTimeout = (timeout > 0) ? System.currentTimeMillis() + timeout : 0;
@@ -74,18 +75,18 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 	 * ハンドラインターフェース
 	 */
 	public static interface Handler {
-		public void handleRequest(JsonValue params, Callback<JsonValue> callback);
-		public void handleNotify(JsonValue params);
+		public void handleRequest(Json params, Callback<Json> callback);
+		public void handleNotify(Json params);
 	}
 
 	/**
 	 * ハンドラアダプタ
 	 */
 	public static class Adapter implements Handler {
-		public void handleRequest(JsonValue params, Callback<JsonValue> callback) {
+		public void handleRequest(Json params, Callback<Json> callback) {
 			//nop
 		}
-		public void handleNotify(JsonValue params) {
+		public void handleNotify(Json params) {
 			//nop
 		}
 	}
@@ -131,18 +132,18 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 	 * @param callback
 	 * 		応答を受け取るコールバック
 	 */
-	public void request(String method, JsonValue params, int timeout, Callback<JsonValue> callback) {
-		JsonContext b = Factory.newInstance(JsonContext.class, "{}");
-		b.setString(KEY_JSONRPC, "2.0");
-		b.setString(KEY_METHOD, method);
+	public void request(String method, Json params, int timeout, Callback<Json> callback) {
+		Json json = Json.createObject();
+		json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
+		json.setString(JsonRpcs.KEY_METHOD, method);
 		if (params != null) {
-			b.setValue(KEY_PARAMS, params);
+			json.set(JsonRpcs.KEY_PARAMS, params);
 		} else {
-			b.setNull(KEY_PARAMS);
+			json.setNull(JsonRpcs.KEY_PARAMS);
 		}
 		int id = takeNumber();
-		b.setInt(KEY_ID, id);
-		String msg = b.toString();
+		json.setNumber(JsonRpcs.KEY_ID, id);
+		String msg = json.toJsonString();
 		addWaiting(id, new RequestInfo(method, callback, timeout));
 		try {
 			send(id, msg);
@@ -155,7 +156,7 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 						try {
 							req.callback.onDone(new Result<>(new TimeoutException()));
 						} catch (Exception err) {
-							LOGGER.error(err, "RPC CALLBACK ERROR");
+							LOGGER.error(err, "RPC CALLBACK ERROR ON REQUEST TIMEOUT");
 						}
 					}
 				});
@@ -166,9 +167,13 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 			try {
 				req.callback.onDone(new Result<>(e));
 			} catch (Exception err) {
-				LOGGER.error(err, "RPC CALLBACK ERROR");
+				LOGGER.error(err, "RPC CALLBACK ERROR ON REQUEST");
 			}
 		}
+	}
+
+	private void respose() {
+
 	}
 
 	private synchronized void addWaiting(int id, RequestInfo info) {
@@ -202,16 +207,16 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 	 * @param params
 	 * 		パラメータ
 	 */
-	public void notify(String method, JsonValue params) {
-		JsonContext b = Factory.newInstance(JsonContext.class, "{}");
-		b.setString(KEY_JSONRPC, "2.0");
-		b.setString(KEY_METHOD, method);
+	public void notify(String method, Json params) {
+		Json json = Json.createObject();
+		json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
+		json.setString(JsonRpcs.KEY_METHOD, method);
 		if (params != null) {
-			b.setValue(KEY_PARAMS, params);
+			json.set(JsonRpcs.KEY_PARAMS, params);
 		} else {
-			b.setNull(KEY_PARAMS);
+			json.setNull(JsonRpcs.KEY_PARAMS);
 		}
-		String msg = b.toString();
+		String msg = json.toString();
 		try {
 			send(NOTIFY_ID, msg);
 			LOGGER.info("RPC: SEND NTF %s with %s", getShortName(method, NOTIFY_ID), params);
@@ -271,7 +276,7 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 					try {
 						req.callback.onDone(new Result<>(e));
 					} catch (Exception err) {
-						LOGGER.error(err, "RPC CALLBACK ERROR");
+						LOGGER.error(err, "RPC CALLBACK ERROR ON OPEN");
 					}
 				}
 			}
@@ -291,18 +296,18 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 
 	@Override
 	public void onMessage(WebSocket ws, String msg) {
-		JsonContext b = Factory.newInstance(JsonContext.class, msg);
-		String ver = b.getString(KEY_JSONRPC);
-		if (!(ver != null && ver.equals("2.0"))) {
+		Json json = Json.create(msg);
+		String ver = json.getString(JsonRpcs.KEY_JSONRPC);
+		if (!(ver != null && ver.equals(RPC_VERSION))) {
 			LOGGER.error("RPC: JSONRPC ERROR");
 		}
-		String method = b.getString(KEY_METHOD, UNKNOWN_METHOD);
-		int id = b.getInt(KEY_ID, NOTIFY_ID);
-		JsonValue result = b.getValue(KEY_RESULT, null);
-		JsonValue error = b.getValue(KEY_ERROR, null);
+		String method = json.getString(JsonRpcs.KEY_METHOD, UNKNOWN_METHOD);
+		int id = (int) json.getNumber(JsonRpcs.KEY_ID, NOTIFY_ID);
+		Json result = json.get(JsonRpcs.KEY_RESULT);
+		Json error = json.get(JsonRpcs.KEY_ERROR);
 		if (!method.equals(UNKNOWN_METHOD)) {
 			//要求又は通知メッセージ。
-			JsonValue params = b.getValue(KEY_PARAMS);
+			Json params = json.get(JsonRpcs.KEY_PARAMS);
 			Handler handler = handlers.get(method);
 			if (id != NOTIFY_ID) {
 				LOGGER.info("RPC: RECV REQ %s with %s", getShortName(method, id), params);
@@ -314,6 +319,7 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 			} else {
 				if (id != NOTIFY_ID) {
 					LOGGER.error("RPC: RECV REQ %s IGNORED", getShortName(method, id));
+					responseError(JsonRpcs.METHOD_NOT_FOUND, method, id);
 				} else {
 					LOGGER.error("RPC: RECV NTF %s IGNORED", getShortName(method, id));
 				}
@@ -347,7 +353,7 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 		}
 	}
 
-	private void invokeHandler(String method, JsonValue params, Handler handler, int id) {
+	private void invokeHandler(String method, Json params, Handler handler, int id) {
 		if (id != 0) {
 			handler.handleRequest(params, new RequestCallback(method, id));
 		} else {
@@ -355,7 +361,7 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 		}
 	}
 
-	private class RequestCallback implements Callback<JsonValue> {
+	private class RequestCallback implements Callback<Json> {
 
 		private final String method;
 
@@ -366,28 +372,44 @@ public class JsonRpcClient implements WebSocketHandler, JsonRpcConstants {
 			this.id = id;
 		}
 
-		public void onDone(Result<JsonValue> result) {
+		public void onDone(Result<Json> result) {
 			if (id == NOTIFY_ID) {
 				return;
 			}
-			JsonContext b = Factory.newInstance(JsonContext.class, "{}");
-			b.setString("jsonrpc", "2.0");
-			b.setInt("id", id);
+			Json json = Json.createObject();
+			json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
+			json.setNumber(JsonRpcs.KEY_ID, id);
 			try {
-				JsonValue value = result.get();
-				b.setValue("result", value);
+				Json value = result.get();
+				json.set(JsonRpcs.KEY_RESULT, value);
 				LOGGER.info("RPC: SEND RSP %s with %s", getShortName(method, id), value.toJsonString());
 			} catch (Exception err) {
-				String message = err.getMessage();
-				b.setValue("error", message);
-				LOGGER.info("RPC: SEND RSP %s failure %s", getShortName(method, id), message);
+				Json ej = json.setNewObject(JsonRpcs.KEY_ERROR);
+				ej.setNumber(JsonRpcs.KEY_CODE, JsonRpcs.getErrorCode(err));
+				ej.setString(JsonRpcs.KEY_MESSAGE, err.getMessage());
+				LOGGER.info("RPC: SEND RSP %s failure %s", getShortName(method, id), err.getMessage());
 			}
-			String msg = b.toString();
+			String msg = json.toString();
 			try {
 				webSocket.send(msg);
 			} catch (IOException e) {
 				LOGGER.error(e, "RPC: SEND RSP %s ERROR", getShortName(method, id));
 			}
+		}
+	}
+
+	private void responseError(int errorCode, String method, int id) {
+		Json json = Json.createObject();
+		json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
+		json.setNumber(JsonRpcs.KEY_ID, id);
+		Json ej = json.setNewObject(JsonRpcs.KEY_ERROR);
+		ej.setNumber(JsonRpcs.KEY_CODE, errorCode);
+		ej.setString(JsonRpcs.KEY_MESSAGE, method);
+		String msg = json.toString();
+		try {
+			webSocket.send(msg);
+		} catch (IOException e) {
+			LOGGER.error(e, "RPC: SEND RSP ERROR", getShortName(method, id));
 		}
 	}
 

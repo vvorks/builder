@@ -19,15 +19,13 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.vvorks.builder.common.io.Closeables;
-import com.github.vvorks.builder.common.json.JsonRpcConstants;
+import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.util.Logger;
+import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.common.net.JsonRpcConstants;
+import com.github.vvorks.builder.common.net.JsonRpcs;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
@@ -46,8 +44,6 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 	private List<WebSocketSession> opens = new ArrayList<>();
 
 	private Map<String, Invoker> methodMap = new HashMap<>();
-
-	private ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
 	public void context(ApplicationContext context) {
@@ -74,7 +70,7 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 		Parameter[] params = method.getParameters();
 		if (params.length == 0) {
 			return true;
-		} else if (params.length == 1 && params[0].getType() == JsonNode.class) {
+		} else if (params.length == 1 && params[0].getType() == Json.class) {
 			return true;
 		} else {
 			for (Parameter p : params) {
@@ -127,7 +123,7 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) {
 		String payload = message.getPayload();
 		LOGGER.debug("RECV(%s) %s", session.getId(), payload);
-		JsonNode req = loadRequest(payload);
+		Json req = loadRequest(payload);
 		if (req == null) {
 			//要求元が正当なJsonRpcClientとは考えられないので直ちにセッションをクローズ
 			LOGGER.error("KILL(%s)", session.getId());
@@ -135,14 +131,14 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 			return;
 		}
 		//JsonRpcリクエストをディスパッチ
-		ObjectNode res = mapper.createObjectNode();
-		res.set(KEY_JSONRPC, req.get(KEY_JSONRPC));
-		res.set(KEY_ID, req.get(KEY_ID));
+		Json res = Json.createObject();
+		res.setString(KEY_JSONRPC, req.getString(KEY_JSONRPC));
+		res.setString(KEY_ID, req.getString(KEY_ID));
 		URI uri = session.getUri();
 		String uriStr = uri != null ? uri.toString() : "/";
 		String path = uriStr.substring(uriStr.lastIndexOf('/'));
 		LOGGER.info("path %s", path);
-		String methodName = req.get(KEY_METHOD).asText();
+		String methodName = req.getString(KEY_METHOD);
 		String key = path + "/" + methodName;
 		Invoker invoker = methodMap.get(key);
 		if (invoker == null) {
@@ -150,18 +146,19 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 			setError(res, METHOD_NOT_FOUND, String.format("Method '%s' not found.", methodName));
 		} else {
 			try {
-				JsonNode params = req.get(KEY_PARAMS);
+				Json params = req.get(KEY_PARAMS);
 				List<Parameter> ps = invoker.getParameters();
 				Object ret;
 				if (ps.isEmpty()) {
 					ret = invoker.invoke();
-				} else if (ps.size() == 1 && ps.get(0).getType() == JsonNode.class) {
+				} else if (ps.size() == 1 && ps.get(0).getType() == Json.class) {
 					ret = invoker.invoke(params);
 				} else {
 					Object[] paramObjs = mapParams(params, invoker);
 					ret = invoker.invoke(paramObjs);
 				}
-				res.set(KEY_RESULT, toJsonNode(ret));
+				Json retJson = Json.create(ret);
+				res.set(KEY_RESULT, retJson);
 			} catch (IOException err) {
 				LOGGER.error(err);
 				setError(res, INVALID_PARAMS, err);
@@ -172,7 +169,7 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 			}
 		}
 		try {
-			String resp = res.toString();
+			String resp = res.toJsonString();
 			TextMessage outputMessage = new TextMessage(resp);
 			session.sendMessage(outputMessage);
 			LOGGER.debug("SEND(%s) %s", session.getId(), resp);
@@ -182,66 +179,48 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 		}
 	}
 
-	private JsonNode loadRequest(String jsonString) {
+	private Json loadRequest(String jsonString) {
 		try {
 			//正しいJsonRpcリクエストか確認
 			Asserts.requireNotEmpty(jsonString);
-			JsonNode req = mapper.readTree(jsonString);
-			JsonNode versionNode = req.get(KEY_JSONRPC);
-			Asserts.requireNotNull(versionNode);
-			Asserts.require(versionNode.isTextual());
-			String version = versionNode.asText();
+			Json req = Json.create(jsonString);
+			String version = req.getString(KEY_JSONRPC, null);
 			Asserts.require(ACCEPTABLE_JSONRPC_VERSIONS.contains(version));
-			JsonNode idNode = req.get(KEY_ID);
-			Asserts.requireNotNull(idNode);
-			JsonNode methodNode = req.get(KEY_METHOD);
-			Asserts.requireNotNull(methodNode);
-			Asserts.require(methodNode.isTextual());
+			double id = req.getNumber(KEY_ID, Double.NaN);
+			Asserts.require(!Double.isNaN(id));
+			String methodName = req.getString(KEY_METHOD, null);
+			Asserts.requireNotNull(methodName);
 			return req;
-		} catch (JsonProcessingException|RuntimeException err) {
+		} catch (RuntimeException err) {
 			LOGGER.error(err, "ERROR loadRequest");
 			return null;
 		}
 	}
 
-	private Object[] mapParams(JsonNode params, Invoker invoker) throws IOException {
+	private Object[] mapParams(Json params, Invoker invoker) throws IOException {
 		List<Parameter> args = invoker.getParameters();
 		Object[] objs = new Object[args.size()];
 		for (int i = 0; i < args.size(); i++) {
 			Parameter arg = args.get(i);
 			String paramName = arg.getAnnotation(JsonRpcParam.class).value();
-			JsonNode param = params.get(paramName);
-			objs[i] = toPojo(param, arg.getType());
+			Json param = params.get(paramName);
+			objs[i] = param.toObject(arg.getType());
 		}
 		return objs;
 	}
 
-	private <T> T toPojo(JsonNode node, Class<T> cls) throws IOException {
-		return mapper.readValue(mapper.treeAsTokens(node), cls);
+	private void setError(Json res, int errorCode, String errorMessage) {
+		Json error = res.setNewObject(JsonRpcs.KEY_ERROR);
+		error.setNumber(JsonRpcs.KEY_CODE, errorCode);
+		error.setString(JsonRpcs.KEY_MESSAGE, errorMessage);
 	}
 
-	private JsonNode toJsonNode(Object obj) {
-		if (obj instanceof JsonNode) {
-			return (JsonNode) obj;
-		} else {
-			return mapper.convertValue(obj, JsonNode.class);
-		}
-	}
-
-	private void setError(ObjectNode res, int errorCode, String errorMessage) {
-		ObjectNode error = mapper.createObjectNode();
-		error.put(KEY_CODE, errorCode);
-		error.put(KEY_MESSAGE, errorMessage);
-		res.set(KEY_ERROR, error);
-	}
-
-	private void setError(ObjectNode res, int errorCode, Throwable err) {
-		ObjectNode error = mapper.createObjectNode();
-		error.put(KEY_CODE, errorCode);
+	private void setError(Json res, int errorCode, Throwable err) {
+		Json error = res.setNewObject(JsonRpcs.KEY_ERROR);
+		error.setNumber(KEY_CODE, errorCode);
 		String msg = err.getMessage();
 		String errorMessage = (msg == null || msg.isEmpty()) ? err.getClass().getName() : msg;
-		error.put(KEY_MESSAGE, errorMessage);
-		res.set(KEY_ERROR, error);
+		error.setString(KEY_MESSAGE, errorMessage);
 	}
 
 }

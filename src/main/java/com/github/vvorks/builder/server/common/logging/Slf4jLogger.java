@@ -3,7 +3,7 @@ package com.github.vvorks.builder.server.common.logging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Slf4jLogger implements com.github.vvorks.builder.common.util.Logger {
+public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Logger {
 
 	private final Logger logger;
 
