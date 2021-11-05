@@ -3,6 +3,7 @@ package com.github.vvorks.builder.client.app;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.net.WebSocket;
 import com.github.vvorks.builder.common.json.Json;
+import com.github.vvorks.builder.common.lang.Callback;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Main;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -35,11 +36,11 @@ public class GwtMain implements Main {
 				// send request
 				Json json = Json.createObject();
 				json.setString("code", tin.getText());
-				rpc.request("parse", json, 0, (result) -> {
-					try {
-						Json res = result.get();
+				rpc.request("parse", json, 0, new Callback<Json>() {
+					public void onSuccess(Json res) {
 						tout.setText(res.getStringValue());
-					} catch (Exception err) {
+					}
+					public void onFailure(Throwable err) {
 						tout.setText(err.getMessage());
 					}
 				});

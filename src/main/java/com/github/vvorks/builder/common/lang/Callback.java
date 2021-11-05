@@ -8,11 +8,17 @@ package com.github.vvorks.builder.common.lang;
 public interface Callback<T> {
 
 	/**
-	 * 完了通知
+	 * 成功通知
 	 *
-	 * @param result
-	 * 		結果オブジェクト
+	 * @param result 処理結果
 	 */
-	public void onDone(Result<T> result) throws Exception;
+	public void onSuccess(T result);
+
+	/**
+	 * 失敗通知
+	 *
+	 * @param caught エラー原因
+	 */
+	public void onFailure(Throwable caught);
 
 }

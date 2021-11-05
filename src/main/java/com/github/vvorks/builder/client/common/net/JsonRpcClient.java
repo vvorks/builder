@@ -10,7 +10,6 @@ import java.util.Map;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Callback;
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.lang.Result;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.net.JsonRpcs;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
@@ -154,7 +153,7 @@ public class JsonRpcClient implements WebSocketHandler {
 					List<RequestInfo> timeouts = removeTimeoutWaitings();
 					for (RequestInfo req : timeouts) {
 						try {
-							req.callback.onDone(new Result<>(new TimeoutException()));
+							req.callback.onFailure(new TimeoutException());
 						} catch (Exception err) {
 							LOGGER.error(err, "RPC CALLBACK ERROR ON REQUEST TIMEOUT");
 						}
@@ -165,7 +164,7 @@ public class JsonRpcClient implements WebSocketHandler {
 			RequestInfo req = removeWaiting(id);
 			LOGGER.error(e, "RPC: SEND REQ %s ERROR", getShortName(method, id));
 			try {
-				req.callback.onDone(new Result<>(e));
+				req.callback.onFailure(e);
 			} catch (Exception err) {
 				LOGGER.error(err, "RPC CALLBACK ERROR ON REQUEST");
 			}
@@ -269,14 +268,14 @@ public class JsonRpcClient implements WebSocketHandler {
 		for (QueueItem item : sendQueue) {
 			try {
 				webSocket.send(item.message);
-			} catch (IOException e) {
+			} catch (IOException err) {
 				if (item.id != NOTIFY_ID) {
 					RequestInfo req = removeWaiting(item.id);
-					LOGGER.error(e, "RPC: SEND REQ %s ERROR", getShortName(req.method, item.id));
+					LOGGER.error(err, "RPC: SEND REQ %s ERROR", getShortName(req.method, item.id));
 					try {
-						req.callback.onDone(new Result<>(e));
-					} catch (Exception err) {
-						LOGGER.error(err, "RPC CALLBACK ERROR ON OPEN");
+						req.callback.onFailure(err);
+					} catch (Exception err2) {
+						LOGGER.error(err2, "RPC CALLBACK ERROR ON OPEN");
 					}
 				}
 			}
@@ -303,8 +302,6 @@ public class JsonRpcClient implements WebSocketHandler {
 		}
 		String method = json.getString(JsonRpcs.KEY_METHOD, UNKNOWN_METHOD);
 		int id = (int) json.getNumber(JsonRpcs.KEY_ID, NOTIFY_ID);
-		Json result = json.get(JsonRpcs.KEY_RESULT);
-		Json error = json.get(JsonRpcs.KEY_ERROR);
 		if (!method.equals(UNKNOWN_METHOD)) {
 			//要求又は通知メッセージ。
 			Json params = json.get(JsonRpcs.KEY_PARAMS);
@@ -326,13 +323,15 @@ public class JsonRpcClient implements WebSocketHandler {
 			}
 		} else if (id != NOTIFY_ID) {
 			//応答メッセージ
+			Json result = json.get(JsonRpcs.KEY_RESULT);
+			Json error = json.get(JsonRpcs.KEY_ERROR);
 			RequestInfo req = removeWaiting(id);
 			if (req != null) {
 				method = req.method;
 				if (result != null) {
 					LOGGER.info("RPC: RECV RSP %s with %s", getShortName(method, id), result);
 					try {
-						req.callback.onDone(new Result<>(result));
+						req.callback.onSuccess(result);
 					} catch (Exception err) {
 						LOGGER.error(err, "RPC: CALLBACK ERROR");
 					}
@@ -340,7 +339,7 @@ public class JsonRpcClient implements WebSocketHandler {
 					String errMsg = error == null ? "" : error.toJsonString();
 					LOGGER.error("RPC: RECV RSP %s error %s", getShortName(method, id), errMsg);
 					try {
-						req.callback.onDone(new Result<>(new JsonRpcException(errMsg)));
+						req.callback.onFailure(new JsonRpcException(errMsg));
 					} catch (Exception err) {
 						LOGGER.error(err, "RPC: CALLBACK ERROR");
 					}
@@ -372,29 +371,34 @@ public class JsonRpcClient implements WebSocketHandler {
 			this.id = id;
 		}
 
-		public void onDone(Result<Json> result) {
-			if (id == NOTIFY_ID) {
-				return;
-			}
+		public void onSuccess(Json result) {
 			Json json = Json.createObject();
 			json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
 			json.setNumber(JsonRpcs.KEY_ID, id);
+			json.set(JsonRpcs.KEY_RESULT, result);
+			LOGGER.info("RPC: SEND RSP %s with %s", getShortName(method, id), result.toJsonString());
+			sendResponse(json);
+		}
+		
+		public void onFailure(Throwable err) {
+			Json json = Json.createObject();
+			json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
+			json.setNumber(JsonRpcs.KEY_ID, id);
+			Json ej = json.setNewObject(JsonRpcs.KEY_ERROR);
+			ej.setNumber(JsonRpcs.KEY_CODE, JsonRpcs.getErrorCode(err));
+			ej.setString(JsonRpcs.KEY_MESSAGE, err.getMessage());
+			LOGGER.info("RPC: SEND RSP %s failure %s", getShortName(method, id), err.getMessage());
+			sendResponse(json);
+		}
+		
+		private void sendResponse(Json json) {
 			try {
-				Json value = result.get();
-				json.set(JsonRpcs.KEY_RESULT, value);
-				LOGGER.info("RPC: SEND RSP %s with %s", getShortName(method, id), value.toJsonString());
-			} catch (Exception err) {
-				Json ej = json.setNewObject(JsonRpcs.KEY_ERROR);
-				ej.setNumber(JsonRpcs.KEY_CODE, JsonRpcs.getErrorCode(err));
-				ej.setString(JsonRpcs.KEY_MESSAGE, err.getMessage());
-				LOGGER.info("RPC: SEND RSP %s failure %s", getShortName(method, id), err.getMessage());
-			}
-			String msg = json.toString();
-			try {
+				String msg = json.toString();
 				webSocket.send(msg);
 			} catch (IOException e) {
 				LOGGER.error(e, "RPC: SEND RSP %s ERROR", getShortName(method, id));
 			}
+
 		}
 	}
 
