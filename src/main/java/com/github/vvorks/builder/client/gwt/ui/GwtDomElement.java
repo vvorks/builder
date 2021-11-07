@@ -17,6 +17,21 @@ public class GwtDomElement implements DomElement {
 	}
 
 	@Override
+	public void setParent(DomElement newParent) {
+		Element np = newParent != null ? ((GwtDomElement) newParent).getNativeElement() : null;
+		Element me = this.getNativeElement();
+		Element op = me.getParentElement();
+		if (np != op) {
+			if (op != null) {
+				op.removeChild(me);
+			}
+			if (np != null) {
+				np.appendChild(me);
+			}
+		}
+	}
+
+	@Override
 	public DomElement appendChild(DomElement newChild) {
 		GwtDomElement e = (GwtDomElement) newChild;
 		this.nativeElement.appendChild(e.getNativeElement());
@@ -36,12 +51,6 @@ public class GwtDomElement implements DomElement {
 	}
 
 	@Override
-	public void setScrollPosition(int x, int y) {
-		nativeElement.setScrollLeft(x);
-		nativeElement.setScrollTop(y);
-	}
-
-	@Override
 	public void removeAttribute(String name) {
 		nativeElement.removeAttribute(name);
 	}
@@ -57,18 +66,9 @@ public class GwtDomElement implements DomElement {
 	}
 
 	@Override
-	public void setParent(DomElement newParent) {
-		Element np = newParent != null ? ((GwtDomElement) newParent).getNativeElement() : null;
-		Element me = this.getNativeElement();
-		Element op = me.getParentElement();
-		if (np != op) {
-			if (op != null) {
-				op.removeChild(me);
-			}
-			if (np != null) {
-				np.appendChild(me);
-			}
-		}
+	public void setScrollPosition(int x, int y) {
+		nativeElement.setScrollLeft(x);
+		nativeElement.setScrollTop(y);
 	}
 
 }

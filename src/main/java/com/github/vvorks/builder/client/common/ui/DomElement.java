@@ -8,13 +8,13 @@ public interface DomElement {
 		return Factory.newInstance(DomElement.class, tag);
 	}
 
+	public void setParent(DomElement newParent);
+
 	public DomElement appendChild(DomElement newChild);
 
 	public DomElement removeChild(DomElement oldChild);
 
 	public void setAttribute(String name, String value);
-
-	public void setScrollPosition(int x, int y);
 
 	public void removeAttribute(String name);
 
@@ -22,6 +22,6 @@ public interface DomElement {
 
 	public void setInnerHtml(String html);
 
-	public void setParent(DomElement newParent);
+	public void setScrollPosition(int x, int y);
 
 }

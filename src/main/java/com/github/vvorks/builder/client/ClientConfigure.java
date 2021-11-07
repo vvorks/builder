@@ -9,10 +9,10 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.gwt.json.GwtJson;
 import com.github.vvorks.builder.client.gwt.logging.AltConsoleHandler;
 import com.github.vvorks.builder.client.gwt.net.GwtWebSocket;
-import com.github.vvorks.builder.client.gwt.ui.DivPanel;
+import com.github.vvorks.builder.client.gwt.ui.CanvasPanel;
 import com.github.vvorks.builder.client.gwt.ui.DomPanel;
 import com.github.vvorks.builder.client.gwt.ui.GwtDeviceContext;
-import com.github.vvorks.builder.client.gwt.ui.GwtDomElement;
+import com.github.vvorks.builder.client.gwt.ui.GwtPseudoElement;
 import com.github.vvorks.builder.client.gwt.util.GwtDelayedExecuter;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Factory;
@@ -51,8 +51,10 @@ public class ClientConfigure {
 			.bindTo(Logger.class, args -> new JavaLogger((Class<?>) args[0]))
 			.bindTo(Json.class, args -> new GwtJson(args[0]))
 			.bindTo(WebSocket.class, args -> new GwtWebSocket())
-			.bindTo(DomPanel.class, args -> new DivPanel())
-			.bindTo(DomElement.class, args -> new GwtDomElement(args[0]))
+		//	.bindTo(DomPanel.class, args -> new DivPanel())
+		//	.bindTo(DomElement.class, args -> new GwtDomElement(args[0]))
+			.bindTo(DomPanel.class, args -> new CanvasPanel())
+			.bindTo(DomElement.class, args -> new GwtPseudoElement(args[0]))
 			.bindTo(DeviceContext.class, args -> new GwtDeviceContext())
 			//singleton settings
 			.bindIn(DelayedExecuter.class, args -> new GwtDelayedExecuter())
