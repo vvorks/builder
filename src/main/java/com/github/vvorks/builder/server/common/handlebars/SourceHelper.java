@@ -10,15 +10,14 @@ import java.io.StringReader;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.io.Ios;
 
 public class SourceHelper implements Helper<Object> {
 
-	private static final Class<?> THIS = SourceHelper.class;
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = SourceHelper.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private final File outDir;
 

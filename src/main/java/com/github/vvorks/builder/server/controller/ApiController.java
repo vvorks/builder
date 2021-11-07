@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.vvorks.builder.BuilderApplication;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.component.SourceWriter;
 import com.github.vvorks.builder.server.component.XlsxLoader;
@@ -22,8 +21,8 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 @RestController
 public class ApiController {
 
-	private static final Class<?> THIS = XlsxLoader.class;
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = ApiController.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	@Autowired
 	private XlsxLoader loader;

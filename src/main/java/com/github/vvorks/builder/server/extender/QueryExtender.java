@@ -9,7 +9,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.CacheMap;
@@ -33,9 +32,8 @@ import com.github.vvorks.builder.server.mapper.QueryMapper;
 @Component
 public class QueryExtender {
 
-	private static final Class<?> THIS = QueryExtender.class;
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = QueryExtender.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	public static class JoinInfo {
 		private final FieldContent lastField;
@@ -133,7 +131,7 @@ public class QueryExtender {
 			}
 			return item;
 		} catch (ParseException err) {
-			throw new RuntimeException(err);
+			throw new IllegalArgumentException(err);
 		}
 	}
 

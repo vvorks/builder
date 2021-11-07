@@ -12,7 +12,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.domain.ClassContent;
@@ -44,8 +43,8 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 @Component
 public class ExpressionBuilder implements ExprParserVisitor {
 
-	private static final Class<?> THIS = ExpressionBuilder.class;
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = ExpressionBuilder.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private static final String UNDER_CONSTRUCTION = "under construction";
 	private static final String TYPE_UNMATCH = "type unmatch";
@@ -517,97 +516,6 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		String name = ((UnresolvedProperty)lValue).getName();
 		return new Argument(name);
 	}
-
-//	@Override
-//	public Expression visit(ASTPrimaryExpression node, Expression unused) throws ParseException {
-//		int n = node.size();
-//		int i = 0;
-//		ExprNode child = node.getChild(i++);
-//		Expression lValue = child.jjtAccept(this, unused);
-//		switch (child.id) {
-//		case ExprParserTreeConstants.JJTPROPERTY:
-//			String name = ((UnresolvedProperty)lValue).getName();
-//			FieldContent fld;
-//			EnumContent enm;
-//			if ((fld = getField(name, context)) != null) {
-//				Operation op = new Operation(Operation.Code.GET);
-//				op.addOperandWithType(new FieldRef(fld));
-//				lValue = op;
-//			} else if ((enm = getEnum(name, project)) != null) {
-//				Operation op = new Operation(Operation.Code.CONST);
-//				op.addOperandWithType(new EnumRef(enm));
-//				lValue = op;
-//			} else {
-//				throw new SemanticException(UNDEFINED_PROPERTY, child);
-//			}
-//			break;
-//		case ExprParserTreeConstants.JJTARGUMENT:
-//
-//		case ExprParserTreeConstants.JJTINVOCATION:
-//			throw new SemanticException(UNDER_CONSTRUCTION, child);
-//		default:
-//			break;
-//		}
-//		while (i < n) {
-//			child = node.getChild(i++);
-//			Expression rValue = child.jjtAccept(this, unused);
-//			Operation op = (Operation) lValue;
-//			Expression last = op.getLastOperand();
-//			if (last instanceof FieldRef) {
-//				switch (child.id) {
-//				case ExprParserTreeConstants.JJTPROPERTY:
-//					String rName = ((UnresolvedProperty)rValue).getName();
-//					FieldContent fld = ((FieldRef) last).getContent();
-//					if (fld.getType() != DataType.REF) {
-//						throw new SemanticException(TYPE_UNMATCH, child);
-//					}
-//					ClassContent retCls = getReturnClass(fld);
-//					if ((fld = getField(rName, retCls)) != null) {
-//						rValue = new FieldRef(fld);
-//					} else {
-//						throw new SemanticException(UNDEFINED_PROPERTY, child);
-//					}
-//					if (op.getCode() == Operation.Code.GET) {
-//						op.addOperandWithType(rValue);
-//					} else {
-//						lValue = newPrimaryOperation(lValue, Operation.Code.GET, rValue);
-//					}
-//					break;
-//				case ExprParserTreeConstants.JJTARRAYACCESS:
-//				case ExprParserTreeConstants.JJTINVOCATION:
-//					throw new SemanticException(UNDER_CONSTRUCTION, child);
-//				default:
-//					throw new InternalError();
-//				}
-//			} else if (last instanceof EnumRef) {
-//				switch (child.id) {
-//				case ExprParserTreeConstants.JJTPROPERTY:
-//					String rName = ((UnresolvedProperty)rValue).getName();
-//					EnumContent enm = ((EnumRef) last).getContent();
-//					EnumValueContent ev;
-//					if ((ev = getEnumValue(rName, enm)) != null) {
-//						rValue = new EnumValueRef(ev);
-//					} else {
-//						throw new SemanticException(UNDEFINED_PROPERTY, child);
-//					}
-//					if (op.getCode() == Operation.Code.CONST) {
-//						op.addOperandWithType(rValue);
-//					} else {
-//						lValue = newPrimaryOperation(lValue, Operation.Code.CONST, rValue);
-//					}
-//					break;
-//				case ExprParserTreeConstants.JJTARRAYACCESS:
-//				case ExprParserTreeConstants.JJTINVOCATION:
-//					throw new SemanticException(UNDER_CONSTRUCTION, child);
-//				default:
-//					throw new InternalError();
-//				}
-//			} else {
-//				throw new SemanticException(TYPE_UNMATCH, child);
-//			}
-//		}
-//		return lValue;
-//	}
 
 	private Operation newPrimaryOperation(Expression lValue, Operation.Code code, Expression rValue) {
 		Operation result;

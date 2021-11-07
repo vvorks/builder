@@ -1,6 +1,12 @@
 package com.github.vvorks.builder.common.logging;
 
+import com.github.vvorks.builder.common.lang.Factory;
+
 public interface Logger {
+
+	public static Logger createLogger(Class<?> cls) {
+		return Factory.newInstance(Logger.class, cls);
+	}
 
 	/**
 	 * トレースログを出力する.

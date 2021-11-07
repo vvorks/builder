@@ -22,7 +22,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.github.vvorks.builder.common.io.Closeables;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.net.JsonRpcConstants;
 import com.github.vvorks.builder.common.net.JsonRpcs;
@@ -33,8 +32,8 @@ import com.github.vvorks.builder.server.common.util.Invoker;
 
 public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConstants {
 
-	private static final Class<?> THIS = JsonRpcServer.class;
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = JsonRpcServer.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private static final String[] VERSIONS = {"2.0"};
 	private static final Set<String> ACCEPTABLE_JSONRPC_VERSIONS = new HashSet<>(Arrays.asList(VERSIONS));
@@ -157,11 +156,8 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 					Object[] paramObjs = mapParams(params, invoker);
 					ret = invoker.invoke(paramObjs);
 				}
-				Json retJson = Json.create(ret);
+				Json retJson = Json.createJson(ret);
 				res.set(KEY_RESULT, retJson);
-			} catch (IOException err) {
-				LOGGER.error(err);
-				setError(res, INVALID_PARAMS, err);
 			} catch (RuntimeException err) {
 				Throwable cause = err.getCause() != null ? err.getCause() : err;
 				LOGGER.error(cause);
@@ -183,7 +179,7 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 		try {
 			//正しいJsonRpcリクエストか確認
 			Asserts.requireNotEmpty(jsonString);
-			Json req = Json.create(jsonString);
+			Json req = Json.createJson(jsonString);
 			String version = req.getString(KEY_JSONRPC, null);
 			Asserts.require(ACCEPTABLE_JSONRPC_VERSIONS.contains(version));
 			double id = req.getNumber(KEY_ID, Double.NaN);
@@ -197,7 +193,7 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 		}
 	}
 
-	private Object[] mapParams(Json params, Invoker invoker) throws IOException {
+	private Object[] mapParams(Json params, Invoker invoker) {
 		List<Parameter> args = invoker.getParameters();
 		Object[] objs = new Object[args.size()];
 		for (int i = 0; i < args.size(); i++) {

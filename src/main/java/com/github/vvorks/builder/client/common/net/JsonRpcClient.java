@@ -20,8 +20,8 @@ import com.github.vvorks.builder.common.util.TimeoutException;
  */
 public class JsonRpcClient implements WebSocketHandler {
 
-	private static final Class<?> THIS = JsonRpcClient.class;
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = JsonRpcClient.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private static final String UNKNOWN_METHOD = "__UNKNOWN__";
 
@@ -171,10 +171,6 @@ public class JsonRpcClient implements WebSocketHandler {
 		}
 	}
 
-	private void respose() {
-
-	}
-
 	private synchronized void addWaiting(int id, RequestInfo info) {
 		waitings.put(id, info);
 	}
@@ -295,7 +291,7 @@ public class JsonRpcClient implements WebSocketHandler {
 
 	@Override
 	public void onMessage(WebSocket ws, String msg) {
-		Json json = Json.create(msg);
+		Json json = Json.createJson(msg);
 		String ver = json.getString(JsonRpcs.KEY_JSONRPC);
 		if (!(ver != null && ver.equals(RPC_VERSION))) {
 			LOGGER.error("RPC: JSONRPC ERROR");
@@ -379,7 +375,7 @@ public class JsonRpcClient implements WebSocketHandler {
 			LOGGER.info("RPC: SEND RSP %s with %s", getShortName(method, id), result.toJsonString());
 			sendResponse(json);
 		}
-		
+
 		public void onFailure(Throwable err) {
 			Json json = Json.createObject();
 			json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
@@ -390,7 +386,7 @@ public class JsonRpcClient implements WebSocketHandler {
 			LOGGER.info("RPC: SEND RSP %s failure %s", getShortName(method, id), err.getMessage());
 			sendResponse(json);
 		}
-		
+
 		private void sendResponse(Json json) {
 			try {
 				String msg = json.toString();

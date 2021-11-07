@@ -3,13 +3,12 @@ package com.github.vvorks.builder.common.io;
 import java.io.Closeable;
 import java.io.IOException;
 
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public class Closeables {
 
-	private static final Class<?> THIS = Closeables.class;
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = Closeables.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private Closeables() {
 	}

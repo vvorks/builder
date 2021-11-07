@@ -18,8 +18,8 @@ public class JavaLogger implements com.github.vvorks.builder.common.logging.Logg
 	 */
 	public static class TinyFormatter extends Formatter {
 		@Override
-		public String format(LogRecord record) {
-			return record.getMessage();
+		public String format(LogRecord rec) {
+			return rec.getMessage();
 		}
 	}
 

@@ -27,6 +27,6 @@
 	<source path='client' />
 	<source path='common' />
 
-	<entry-point class='com.github.vvorks.builder.client.BuilderEntryPoint' />
+	<entry-point class='com.github.vvorks.builder.client.gwt.GwtEntryPoint' />
 
 </module>

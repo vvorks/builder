@@ -12,7 +12,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 
@@ -20,8 +19,8 @@ import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 @EnableWebSocket
 public class JsonRpcConfigurer implements WebSocketConfigurer {
 
-	private static final Class<?> THIS = JsonRpcConfigurer.class;
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = JsonRpcConfigurer.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	@Autowired
 	private ApplicationContext context;

@@ -19,7 +19,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.io.Ios;
@@ -30,8 +29,8 @@ import com.github.vvorks.builder.server.extender.SqlWriter;
 @Component
 public class XlsxLoader {
 
-	private static final Class<?> THIS = XlsxLoader.class;
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = XlsxLoader.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private static final String EOL = "\n";
 

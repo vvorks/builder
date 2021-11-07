@@ -1,24 +1,19 @@
-package com.github.vvorks.builder.client.common.logging;
+package com.github.vvorks.builder.client.gwt.logging;
 
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 /**
  * ブラウザコンソールにログ出力するハンドラ
  */
 public class AltConsoleHandler extends Handler {
 
-	public static void setup() {
-		Logger.getGlobal().addHandler(new AltConsoleHandler());
-	}
-
 	@Override
-	public void publish(LogRecord record) {
-		if (!isLoggable(record)) {
+	public void publish(LogRecord rec) {
+		if (!isLoggable(rec)) {
 			return;
 		}
-		log(getFormatter().format(record));
+		log(getFormatter().format(rec));
 	}
 	private native void log(String message) /*-{
 		setTimeout(window.console.log.bind(window.console, message))
@@ -27,10 +22,12 @@ public class AltConsoleHandler extends Handler {
 
 	@Override
 	public void flush() {
+		//NOP
 	}
 
 	@Override
 	public void close() throws SecurityException {
+		//NOP
 	}
 
 }

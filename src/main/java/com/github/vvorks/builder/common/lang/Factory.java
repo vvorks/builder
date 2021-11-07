@@ -125,8 +125,8 @@ public class Factory {
 		Asserts.requireNotNull(creator, "cls");
 		try {
 			return creator.create(args);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (Exception err) {
+			throw new IllegalArgumentException(err);
 		}
 	}
 
@@ -143,8 +143,8 @@ public class Factory {
 		Asserts.requireNotNull(creator, "cls");
 		try {
 			return creator.create();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (Exception err) {
+			throw new IllegalArgumentException(err);
 		}
 	}
 

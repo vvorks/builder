@@ -9,9 +9,11 @@ import com.github.vvorks.builder.common.lang.Factory;
 public abstract class Json {
 
 	/** JSONデータ種別を示す列挙 */
-	public static enum Type {
+	public enum Type {
 		UNDEFINED, NULL, BOOLEAN, NUMBER, STRING, OBJECT, ARRAY;
 	}
+
+	private static final Json NULL_VALUE = createJson(null);
 
 	protected static final boolean DEFAULT_BOOLEAN = false;
 
@@ -19,16 +21,20 @@ public abstract class Json {
 
 	protected static final String DEFAULT_STRING = "";
 
-	public static Json create(Object arg) {
+	public static Json createJson(Object arg) {
 		return Factory.newInstance(Json.class, arg);
 	}
 
 	public static Json createObject() {
-		return create("{}");
+		return createJson("{}");
 	}
 
 	public static Json createArray() {
-		return create("[]");
+		return createJson("[]");
+	}
+
+	public static Json valueOf(Jsonizable value) {
+		return value != null ? value.toJson() : NULL_VALUE;
 	}
 
 	/** POJOへの変換（サポートされない場合あり） */
@@ -146,6 +152,14 @@ public abstract class Json {
 
 	public abstract void setString(String key, String value);
 
+	public void setString(String key, Object value) {
+		if (value == null) {
+			setNull(key);
+		} else {
+			setString(key, value.toString());
+		}
+	}
+
 	public abstract void set(String key, Json value);
 
 	public abstract Json setNewObject(String key);
@@ -160,11 +174,47 @@ public abstract class Json {
 
 	public abstract void setString(int index, String value);
 
+	public void setString(int index, Object value) {
+		if (value == null) {
+			setNull(index);
+		} else {
+			setString(index, value.toString());
+		}
+	}
+
 	public abstract void set(int index, Json value);
 
 	public abstract Json setNewObject(int index);
 
 	public abstract Json setNewArray(int index);
+
+	public void addNull() {
+		setNull(size());
+	}
+
+	public void addBoolean(boolean value) {
+		setBoolean(size(), value);
+	}
+
+	public void addNumber(double value) {
+		setNumber(size(), value);
+	}
+
+	public void addString(String value) {
+		setString(size(), value);
+	}
+
+	public void add(Json value) {
+		set(size(), value);
+	}
+
+	public Json addNewObject() {
+		return setNewObject(size());
+	}
+
+	public Json addNewArray() {
+		return setNewArray(size());
+	}
 
 	public String toString() {
 		return toJsonString();

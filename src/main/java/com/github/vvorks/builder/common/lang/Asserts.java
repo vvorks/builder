@@ -53,6 +53,18 @@ public class Asserts {
 		}
 	}
 
+	public static void assumeNotNull(Object obj) {
+		if (obj == null) {
+			throw new IllegalStateException();
+		}
+	}
+
+	public static void assumeNotNull(Object obj, String errorMessage) {
+		if (obj == null) {
+			throw new IllegalStateException(errorMessage);
+		}
+	}
+
 	public static void check(boolean cond) {
 		if (!cond) {
 			throw new AssertionError();

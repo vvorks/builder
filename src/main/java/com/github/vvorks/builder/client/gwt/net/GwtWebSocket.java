@@ -1,9 +1,11 @@
-package com.github.vvorks.builder.client.common.net;
+package com.github.vvorks.builder.client.gwt.net;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.vvorks.builder.client.common.net.WebSocket;
+import com.github.vvorks.builder.client.common.net.WebSocketHandler;
 import com.google.gwt.core.client.JavaScriptObject;
 
 public class GwtWebSocket implements WebSocket {
@@ -113,16 +115,16 @@ public class GwtWebSocket implements WebSocket {
 		var ws = new WebSocket(url);
 		var self = this;
 		ws.onopen = function(evt) {
-			self.@com.github.vvorks.builder.client.common.net.GwtWebSocket::onOpen()();
+			self.@com.github.vvorks.builder.client.gwt.net.GwtWebSocket::onOpen()();
 		};
 		ws.onclose = function(evt) {
-			self.@com.github.vvorks.builder.client.common.net.GwtWebSocket::onClose()();
+			self.@com.github.vvorks.builder.client.gwt.net.GwtWebSocket::onClose()();
 		};
 		ws.onmessage = function(evt) {
-			self.@com.github.vvorks.builder.client.common.net.GwtWebSocket::onMessage(Ljava/lang/String;)(evt.data);
+			self.@com.github.vvorks.builder.client.gwt.net.GwtWebSocket::onMessage(Ljava/lang/String;)(evt.data);
 		};
 		ws.onerror = function(evt) {
-			self.@com.github.vvorks.builder.client.common.net.GwtWebSocket::onError()();
+			self.@com.github.vvorks.builder.client.gwt.net.GwtWebSocket::onError()();
 		}
 		return ws;
 	}-*/;

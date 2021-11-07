@@ -1,4 +1,4 @@
-package com.github.vvorks.builder.client.common.json;
+package com.github.vvorks.builder.client.gwt.json;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -305,7 +305,8 @@ public class GwtJson extends Json {
 
 	@Override
 	public void setString(String key, String value) {
-		asObject(nativeValue).put(key, new JSONString(value));
+		JSONValue nv = (value == null) ? JSONNull.getInstance() : new JSONString(value);
+		asObject(nativeValue).put(key, nv);
 	}
 
 	@Override
@@ -344,7 +345,8 @@ public class GwtJson extends Json {
 
 	@Override
 	public void setString(int index, String value) {
-		asArray(nativeValue).set(index, new JSONString(value));
+		JSONValue nv = (value == null) ? JSONNull.getInstance() : new JSONString(value);
+		asArray(nativeValue).set(index, nv);
 	}
 
 	@Override

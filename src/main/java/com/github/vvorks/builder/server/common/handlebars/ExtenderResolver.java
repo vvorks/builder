@@ -7,16 +7,14 @@ import java.util.Map;
 import java.util.Set;
 
 import com.github.jknack.handlebars.ValueResolver;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.util.Invoker;
 
 public class ExtenderResolver implements ValueResolver {
 
-	private static final Class<?> THIS = ExtenderResolver.class;
-
-	private static final Logger LOGGER = Factory.newInstance(Logger.class, THIS);
+	public static final Class<?> THIS = ExtenderResolver.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private final Map<Class<?>, Map<String, Invoker>> classMap;
 
