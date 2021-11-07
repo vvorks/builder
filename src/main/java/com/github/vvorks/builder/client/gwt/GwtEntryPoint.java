@@ -12,6 +12,7 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.media.client.Video;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -53,8 +54,19 @@ public class GwtEntryPoint implements EntryPoint {
 			root.remove(em);
 			root.remove(ex);
 			root.remove(in);
+			//背景ビデオ(FOR DEBUG/DEMO)
+			Video video = Video.createIfSupported();
+			if (video != null) {
+				video.setWidth("100%");
+				video.setHeight("100%");
+				video.setLoop(true);
+				video.setAutoplay(true);
+				video.setMuted(true);
+				video.addSource("video/sample_1920x1080.mp4");
+				root.add(video);
+			}
 			//パネル準備
-			DomPanel panel = new DomPanel();
+			DomPanel panel = Factory.newInstance(DomPanel.class);
 			panel.setWidth("100%");
 			panel.setHeight("100%");
 			root.add(panel);

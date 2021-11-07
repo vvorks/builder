@@ -6,8 +6,6 @@ import com.github.vvorks.builder.client.common.ui.KeyCodes;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -28,17 +26,11 @@ public class DomPanel extends FocusWidget {
 	public static final Class<?> THIS = DomPanel.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
 
-	private final UiApplication app;
+	protected final UiApplication app;
 
 	public DomPanel() {
-		//このパネル用のElementを作成し、設定
-		Element panelElement = Document.get().createDivElement();
-		setElement(panelElement);
 		//アプリケーションの作成
 		app = Factory.newInstance(UiApplication.class);
-		//ルートノードの作成とこのパネルのElementとの関連付け
-		Element e = ((GwtDomElement) app.getRootElement()).getNativeElement();
-		panelElement.appendChild(e);
 		//イベントハンドラの初期化
 		addKeyDownHandler(event -> onKeyDown(event));
 		addKeyPressHandler(event -> onKeyPress(event));
