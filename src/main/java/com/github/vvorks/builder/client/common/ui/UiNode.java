@@ -18,6 +18,7 @@ import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Copyable;
+import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
@@ -26,6 +27,18 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	public static final Class<?> THIS = UiNode.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
+
+	public static final String NS_HTML = "http://www.w3.org/1999/xhtml";
+
+	public static final String NS_MATHML = "http://www.w3.org/1998/Math/MathML";
+
+	public static final String NS_SVG = "http://www.w3.org/2000/svg";
+
+	public static final String NS_CANVAS = "http://github.com/vvorks/2021/canvas";
+
+	public static final String HTML_DIV = "div";
+
+	public static final String HTML_CANVAS = "canvas";
 
 	/** イベント結果フラグ： イベントは無視された */
 	public static final int EVENT_IGNORED = 0x00;
@@ -105,22 +118,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	}
 
-	/** 祖先イテレータ用Iterable */
-	private static class AncestorIterable implements Iterable<UiNode> {
-
-		private UiNode from;
-
-		public AncestorIterable(UiNode from) {
-			this.from = from;
-		}
-
-		@Override
-		public Iterator<UiNode> iterator() {
-			return new AncestorIterator(from);
-		}
-
-	}
-
 	/** 子孫イテレータ */
 	private static class DescendantIterator implements Iterator<UiNode> {
 
@@ -161,29 +158,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
-		}
-
-	}
-
-	/** 子孫イテレータ用Iterable */
-	private static class DescendantIterable implements Iterable<UiNode> {
-
-		private final UiNode top;
-
-		private final Predicate<UiNode> visitChild;
-
-		public DescendantIterable(UiNode top) {
-			this(top, node -> true);
-		}
-
-		public DescendantIterable(UiNode top, Predicate<UiNode> visitChild) {
-			this.top = top;
-			this.visitChild = visitChild;
-		}
-
-		@Override
-		public Iterator<UiNode> iterator() {
-			return new DescendantIterator(top, visitChild);
 		}
 
 	}
@@ -447,14 +421,19 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		this.domElement = element;
 	}
 
-	protected DomElement createDomElement() {
-		return DomElement.createDomElement("div");
+	protected DomElement createDomElement(String namespaceURI, String qualifiedName, UiNode owner) {
+		if (parent == null) {
+			return Factory.newInstance(DomElement.class, namespaceURI, qualifiedName, owner);
+		}
+		return parent.createDomElement(namespaceURI, qualifiedName, owner);
 	}
 
-	protected void ensureDomElement() {
-		if (domElement == null) {
-			setDomElement(createDomElement());
+	protected boolean ensureDomElement() {
+		boolean firstTime = (domElement == null);
+		if (firstTime) {
+			setDomElement(createDomElement(NS_HTML, HTML_DIV, this));
 		}
+		return firstTime;
 	}
 
 	public void registerStyle(UiStyle style) {
@@ -500,15 +479,19 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public Iterable<UiNode> getAncestors() {
-		return new AncestorIterable(this);
+		return () -> new AncestorIterator(this);
+	}
+
+	public Iterable<UiNode> getAncestorsIf(Predicate<UiNode> condition) {
+		return Iterables.filter(getAncestors(), condition);
 	}
 
 	public Iterable<UiNode> getDescendants() {
-		return new DescendantIterable(this);
+		return () -> new DescendantIterator(this, node -> true);
 	}
 
 	public Iterable<UiNode> getDescendantsIf(Predicate<UiNode> condition) {
-		return Iterables.filter(getDescendants(), node -> condition.test(node));
+		return Iterables.filter(getDescendants(), condition);
 	}
 
 	public Iterable<UiNode> getFocusCandidates() {
@@ -519,12 +502,15 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		if (!(!isDeletedAll() && isVisibleAll() && isEnableAll())) {
 			return Collections.emptyList();
 		}
-		Iterable<UiNode> itb = new DescendantIterable(this, d -> !d.isDeleted() && d.isVisible() && d.isEnable());
-		return Iterables.filter(itb, d -> d != except && d.isFocusable());
+		return Iterables.filter(getEnableDescendants(), d -> d != except && d.isFocusable());
+	}
+
+	protected Iterable<UiNode> getEnableDescendants() {
+		return () -> new DescendantIterator(this, d -> !d.isDeleted() && d.isVisible() && d.isEnable());
 	}
 
 	public Iterable<UiNode> getChildren() {
-		return new DescendantIterable(this, d -> false);
+		return () -> new DescendantIterator(this, d -> false);
 	}
 
 	public Iterable<UiNode> getChildrenIf(Predicate<UiNode> condition) {
@@ -1258,8 +1244,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	public void sync() {
 		//実DOMの準備
 		ensureDomElement();
-		//下位層の同期（冗長描画防止の為下位層から同期をとる）
-		syncChildren();
 		if (isChanged(CHANGED_CONTENT)) {
 			syncContent();
 		}
@@ -1268,13 +1252,16 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			syncElementStyle();
 			syncScroll();
 		}
+		//下位層の同期
+		syncChildren();
+		//階層接続
 		if (isChanged(CHANGED_HIERARCHY)) {
-			syncDomElement();
+			syncDomElement(domElement);
 		}
 		clearChanged();
 	}
 
-	protected void syncDomElement() {
+	protected void syncDomElement(DomElement domElement) {
 		//削除ノードの分離
 		for (UiNode r : removeChildrenIf(e -> e.isDeleted())) {
 			//削除マークのついた子ノードを取り外し、さらにDOM要素とも切断する。

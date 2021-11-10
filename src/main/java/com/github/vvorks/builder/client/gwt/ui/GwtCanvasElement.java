@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.vvorks.builder.client.common.ui.DomElement;
+import com.github.vvorks.builder.common.lang.Strings;
+import com.google.gwt.dom.client.Document;
 
-public class GwtPseudoElement implements DomElement {
+public class GwtCanvasElement extends GwtDomElement {
 
-	private String tag;
+	private GwtCanvasElement parent;
 
-	private GwtPseudoElement parent;
-
-	private List<GwtPseudoElement> children;
+	private List<GwtCanvasElement> children;
 
 	private Map<String, String> attributes;
 
@@ -23,46 +23,37 @@ public class GwtPseudoElement implements DomElement {
 
 	private int scrollY;
 
-	public GwtPseudoElement(Object tag) {
-		this.tag = tag.toString();
+	public GwtCanvasElement(boolean root) {
+		super(root ? Document.get().createCanvasElement() : null);
 	}
 
 	@Override
 	public void setParent(DomElement newParent) {
-		GwtPseudoElement np = (GwtPseudoElement) newParent;
-		GwtPseudoElement me = this;
-		GwtPseudoElement op = me.parent;
+		if (nativeElement != null) {
+			super.setParent(newParent);
+			return;
+		}
+		GwtCanvasElement np = (GwtCanvasElement) newParent;
+		GwtCanvasElement me = this;
+		GwtCanvasElement op = me.parent;
 		if (np != op) {
 			if (op != null) {
-				op.removeChild0(me);
+				op.removeChild(me);
 			}
 			if (np != null) {
-				np.appendChild0(me);
+				np.appendChild(me);
 			}
 		}
-
 	}
 
-	@Override
-	public DomElement appendChild(DomElement newChild) {
-		newChild.setParent(this);
-		return newChild;
-	}
-
-	private void appendChild0(GwtPseudoElement newChild) {
+	private void appendChild(GwtCanvasElement newChild) {
 		if (children == null) {
 			children = new ArrayList<>();
 		}
 		children.add(newChild);
 	}
 
-	@Override
-	public DomElement removeChild(DomElement oldChild) {
-		oldChild.setParent(null);
-		return oldChild;
-	}
-
-	public void removeChild0(GwtPseudoElement oldChild) {
+	public void removeChild(GwtCanvasElement oldChild) {
 		if (children != null) {
 			children.remove(oldChild);
 		}
@@ -70,6 +61,9 @@ public class GwtPseudoElement implements DomElement {
 
 	@Override
 	public void setAttribute(String name, String value) {
+		if (nativeElement != null) {
+			nativeElement.setAttribute(name, value);
+		}
 		if (attributes == null) {
 			attributes = new LinkedHashMap<>();
 		}
@@ -78,6 +72,9 @@ public class GwtPseudoElement implements DomElement {
 
 	@Override
 	public void removeAttribute(String name) {
+		if (nativeElement != null) {
+			nativeElement.removeAttribute(name);
+		}
 		if (attributes != null) {
 			attributes.remove(name);
 		}
@@ -90,11 +87,15 @@ public class GwtPseudoElement implements DomElement {
 
 	@Override
 	public void setInnerHtml(String html) {
-		throw new UnsupportedOperationException();
+		this.text = Strings.unescapeHtml(html);
 	}
 
 	@Override
 	public void setScrollPosition(int x, int y) {
+		if (nativeElement != null) {
+			nativeElement.setScrollLeft(x);
+			nativeElement.setScrollTop(y);
+		}
 		this.scrollX = x;
 		this.scrollY = y;
 	}

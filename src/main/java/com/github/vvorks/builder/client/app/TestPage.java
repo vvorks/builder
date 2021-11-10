@@ -4,9 +4,9 @@ import java.util.Map;
 
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiButton;
+import com.github.vvorks.builder.client.common.ui.UiCanvasFrame;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
 import com.github.vvorks.builder.client.common.ui.UiLayoutEditor;
-import com.github.vvorks.builder.client.common.ui.UiList;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiVerticalGroup;
@@ -54,10 +54,17 @@ public class TestPage extends UiPage {
 					b.leave();
 				}
 			b.leave();
-			b.enter(new UiList("list"));
+			//b.enter(new UiList("list"));
+			b.enter(new UiCanvasFrame("canvasFrame"));
 				b.style(BuilderUiApplication.BASIC);
 				b.border(borderWidth);
 				b.locate(12.0, 1.0, 1.0, NA, NA, 8.0);
+				b.enter(new UiButton("buttonInCanvas"));
+					b.text("button");
+					b.style(BuilderUiApplication.BASIC);
+					b.border(borderWidth);
+					b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
+				b.leave();
 			b.leave();
 			b.enter(new UiLayoutEditor("layouter"));
 				b.style(BuilderUiApplication.BASIC);

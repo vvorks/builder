@@ -6,6 +6,8 @@ import com.github.vvorks.builder.client.common.ui.KeyCodes;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -42,6 +44,13 @@ public class DomPanel extends FocusWidget {
 		addDoubleClickHandler(event -> onDoubleClick(event));
 		addMouseWheelHandler(event -> onMouseWheel(event));
 		Window.addResizeHandler(event -> onResize(event));
+		//このパネル用のElementを作成し、設定
+		Element panelElement = Document.get().createDivElement();
+		setElement(panelElement);
+		//ルートノードの作成とこのパネルのElementとの関連付け
+		Element e = ((GwtHtmlElement) app.getRootElement()).getNativeElement();
+		panelElement.appendChild(e);
+
 	}
 
 	private void onKeyDown(KeyDownEvent event) {

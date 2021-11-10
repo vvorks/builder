@@ -101,8 +101,8 @@ public class UiGroup extends UiNode {
 	@Override
 	protected void setDomElement(DomElement element) {
 		super.setDomElement(element);
-		stretcher = DomElement.createDomElement("div");
-		element.appendChild(stretcher);
+		stretcher = createDomElement(NS_HTML, HTML_DIV, this);
+		stretcher.setParent(element);
 	}
 
 	@Override

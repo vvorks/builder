@@ -66,7 +66,7 @@ public class GwtEntryPoint implements EntryPoint {
 				root.add(video);
 			}
 			//パネル準備
-			DomPanel panel = Factory.newInstance(DomPanel.class);
+			DomPanel panel = new DomPanel();
 			panel.setWidth("100%");
 			panel.setHeight("100%");
 			root.add(panel);

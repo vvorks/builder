@@ -45,8 +45,8 @@ public class UiButton extends UiNode {
 	@Override
 	protected void setDomElement(DomElement element) {
 		super.setDomElement(element);
-		innerElement = DomElement.createDomElement("div");
-		element.appendChild(innerElement);
+		innerElement = createDomElement(NS_HTML, HTML_DIV, this);
+		innerElement.setParent(element);
 	}
 
 	@Override

@@ -1,15 +1,25 @@
 package com.github.vvorks.builder.client.gwt.ui;
 
 import com.github.vvorks.builder.client.common.ui.DomElement;
-import com.google.gwt.dom.client.Document;
+import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.google.gwt.dom.client.Element;
 
-public class GwtDomElement implements DomElement {
+public abstract class GwtDomElement implements DomElement {
 
-	private Element nativeElement;
+	public static GwtDomElement create(String ns, String tag, UiNode owner) {
+		if (UiNode.NS_CANVAS.equals(ns)) {
+			return new GwtCanvasElement(false);
+		}  else if (UiNode.NS_HTML.equals(ns) && UiNode.HTML_CANVAS.equals(tag)) {
+			return new GwtCanvasElement(true);
+		} else {
+			return new GwtHtmlElement(tag);
+		}
+	}
 
-	public GwtDomElement(Object tag) {
-		this.nativeElement = Document.get().createElement(tag.toString());
+	protected final Element nativeElement;
+
+	protected GwtDomElement(Element nativeElement) {
+		this.nativeElement = nativeElement;
 	}
 
 	public Element getNativeElement() {
@@ -18,7 +28,7 @@ public class GwtDomElement implements DomElement {
 
 	@Override
 	public void setParent(DomElement newParent) {
-		Element np = newParent != null ? ((GwtDomElement) newParent).getNativeElement() : null;
+		Element np = newParent != null ? ((GwtHtmlElement) newParent).getNativeElement() : null;
 		Element me = this.getNativeElement();
 		Element op = me.getParentElement();
 		if (np != op) {
@@ -29,46 +39,6 @@ public class GwtDomElement implements DomElement {
 				np.appendChild(me);
 			}
 		}
-	}
-
-	@Override
-	public DomElement appendChild(DomElement newChild) {
-		GwtDomElement e = (GwtDomElement) newChild;
-		this.nativeElement.appendChild(e.getNativeElement());
-		return newChild;
-	}
-
-	@Override
-	public DomElement removeChild(DomElement oldChild) {
-		GwtDomElement e = (GwtDomElement) oldChild;
-		this.nativeElement.removeChild(e.getNativeElement());
-		return oldChild;
-	}
-
-	@Override
-	public void setAttribute(String name, String value) {
-		nativeElement.setAttribute(name, value);
-	}
-
-	@Override
-	public void removeAttribute(String name) {
-		nativeElement.removeAttribute(name);
-	}
-
-	@Override
-	public void setInnerText(String text) {
-		nativeElement.setInnerText(text);
-	}
-
-	@Override
-	public void setInnerHtml(String html) {
-		nativeElement.setInnerHTML(html);
-	}
-
-	@Override
-	public void setScrollPosition(int x, int y) {
-		nativeElement.setScrollLeft(x);
-		nativeElement.setScrollTop(y);
 	}
 
 }

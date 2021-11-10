@@ -643,9 +643,9 @@ public final class Strings {
 		return str + "s";
 	}
 
-	private static final String ESCAPE_CHARS = "<>&\"'\n";
+	private static final String ESCAPE_CHARS = "<>&\"'";
 
-	private static final String[] ESCAPE_STRINGS = {"&lt;", "&gt;", "&amp;", "&quot;", "&#039;", "<br/>"};
+	private static final String[] ESCAPE_STRINGS = {"&lt;", "&gt;", "&amp;", "&quot;", "&#039;"};
 
 	/**
 	 * 文字列をHTML ESCAPE化する
@@ -688,57 +688,71 @@ public final class Strings {
 		return sb.toString();
 	}
 
-//	/**
-//	 * HTML ESCAPE化された文字列を文字列に戻す.
-//	 *
-//	 * @param html
-//	 * 		HTML ESCAPE化された文字列
-//	 * @return
-//	 * 		元の文字列
-//	 */
-//	public static String unescapeHtml(String html) {
-//		if (isEmpty(html)) {
-//			return html;
-//		}
-//		int n = html.length();
-//		StringBuilder sb = new StringBuilder(n);
-//		int spos = -1;
-//		for (int i = 0; i < n; i++) {
-//			char ch = html.charAt(i);
-//			sb.append(ch);
-//			switch (ch) {
-//			case '&':
-//				spos = sb.length() - 1;
-//				break;
-//			case ';':
-//				if (spos == -1) {
-//					break;
-//				}
-//				String sym = sb.substring(spos);
-//				if (sym.equalsIgnoreCase("&lt;")) {
-//					sb.setLength(spos);
-//					sb.append('<');
-//				} else if (sym.equalsIgnoreCase("&gt;")) {
-//					sb.setLength(spos);
-//					sb.append('>');
-//				} else if (sym.equalsIgnoreCase("&amp;")) {
-//					sb.setLength(spos);
-//					sb.append('&');
-//				} else if (sym.equalsIgnoreCase("&quot;")) {
-//					sb.setLength(spos);
-//					sb.append('"');
-//				} else if (sym.equalsIgnoreCase("&#039;")) {
-//					sb.setLength(spos);
-//					sb.append('\'');
-//				}
-//				spos = -1;
-//				break;
-//			default:
-//				break;
-//			}
-//		}
-//		return sb.toString();
-//	}
+	/**
+	 * HTML ESCAPE化された文字列を文字列に戻す.
+	 *
+	 * @param html
+	 * 		HTML ESCAPE化された文字列
+	 * @return
+	 * 		元の文字列
+	 */
+	public static String unescapeHtml(String html) {
+		if (isEmpty(html)) {
+			//文字列が空の場合はアンエスケープ不要なので、元の文字列をそのまま返す
+			return html;
+		}
+		//要アンエスケープのチェック
+		int i = 0;
+		int n = html.length();
+		for (; i < n; i++) {
+			char ch = html.charAt(i);
+			if (ch == '&') {
+				break;
+			}
+		}
+		if (i == n) {
+			//アンエスケープ不要なので、元の文字列をそのまま返す
+			return html;
+		}
+		StringBuilder sb = new StringBuilder(n);
+		sb.append(html.substring(0, i));
+		int ch = i < n ? html.charAt(i++) : -1;
+		while (ch != -1) {
+			while (ch != -1 && ch != '&') {
+				sb.append((char)ch);
+				ch = i < n ? html.charAt(i++) : -1;
+			}
+			if (ch == -1) {
+				break;
+			}
+			int spos = sb.length();
+			sb.append('&');
+			while (ch != -1 && ch != ';') {
+				sb.append((char) ch);
+				ch = i < n ? html.charAt(i++) : -1;
+			}
+			if (ch == -1) {
+				break;
+			}
+			sb.append(';');
+			String sym = sb.substring(spos).toLowerCase();
+			int index = indexOf(ESCAPE_STRINGS, sym);
+			if (index >= 0) {
+				sb.setLength(spos);
+				sb.append(ESCAPE_CHARS.charAt(index));
+			}
+		}
+		return sb.toString();
+	}
+
+	private static int indexOf(String[] strs, String key) {
+		for (int i = 0; i < strs.length; i++) {
+			if (strs[i].equals(key)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
 	/**
 	 * 文字列が、指定された接頭辞のいずれかで始まるかどうかを判定する.

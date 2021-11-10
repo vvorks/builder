@@ -12,12 +12,8 @@ public class UiPhantom extends UiNode {
 
 	private static class PhantomElement implements DomElement {
 
-		public DomElement appendChild(DomElement newChild) {
-			return newChild;
-		}
-
-		public DomElement removeChild(DomElement oldChild) {
-			return oldChild;
+		public void setParent(DomElement newParent) {
+			//NOP
 		}
 
 		public void setAttribute(String name, String value) {
@@ -40,10 +36,6 @@ public class UiPhantom extends UiNode {
 			//NOP
 		}
 
-		public void setParent(DomElement newParent) {
-			//NOP
-		}
-
 	}
 
 	public UiPhantom() {
@@ -57,7 +49,7 @@ public class UiPhantom extends UiNode {
 	}
 
 	@Override
-	protected DomElement createDomElement() {
+	protected DomElement createDomElement(String namespaceURI, String qualifiedName, UiNode owner) {
 		return new PhantomElement();
 	}
 
