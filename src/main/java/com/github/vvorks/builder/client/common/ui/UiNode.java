@@ -428,12 +428,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return parent.createDomElement(namespaceURI, qualifiedName, owner);
 	}
 
-	protected boolean ensureDomElement() {
-		boolean firstTime = (domElement == null);
-		if (firstTime) {
+	protected void ensureDomElement() {
+		if (domElement == null) {
 			setDomElement(createDomElement(NS_HTML, HTML_DIV, this));
 		}
-		return firstTime;
 	}
 
 	public void registerStyle(UiStyle style) {
@@ -1244,20 +1242,24 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	public void sync() {
 		//実DOMの準備
 		ensureDomElement();
+		//内容の同期
 		if (isChanged(CHANGED_CONTENT)) {
 			syncContent();
 		}
+		//下位層の同期
+		syncChildren();
+		//位置・表示条件の同期
 		if (isChanged(CHANGED_LOCATION|CHANGED_DISPLAY)) {
 			syncStyle();
 			syncElementStyle();
 			syncScroll();
 		}
-		//下位層の同期
-		syncChildren();
 		//階層接続
 		if (isChanged(CHANGED_HIERARCHY)) {
 			syncDomElement(domElement);
 		}
+		//最終処理
+		syncFinally();
 		clearChanged();
 	}
 
@@ -1284,16 +1286,17 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		UiStyle s = getStyle();
 		if (s != null) {
 			UiAtomicStyle as = s.getAtomicStyleOf(this);
-			domElement.setAttribute("class", as.getCssClassName());
+			domElement.setDefinedStyle(as);
 		} else {
-			domElement.removeAttribute("class");
+			domElement.setDefinedStyle(null);
 		}
 	}
 
 	protected void syncElementStyle() {
 		CssStyle.Builder b = new CssStyle.Builder();
 		syncElementStyle(b);
-		domElement.setAttribute("style", b.build().toString());
+		domElement.setLocalStyle(b.build());
+		domElement.setBounds(getLeftPx(), getTopPx(), getWidthPx(), getHeightPx());
 	}
 
 	protected void syncElementStyle(CssStyle.Builder b) {
@@ -1313,7 +1316,23 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	protected void syncScroll() {
-		domElement.setScrollPosition(getScrollLeftPx(), getScrollTopPx());
+		int x = 0;
+		int y = 0;
+		int w = 0;
+		int h = 0;
+		if (scrollLeft != null || scrollTop != null) {
+			x = getScrollLeftPx();
+			y = getScrollTopPx();
+		}
+		if (scrollWidth != null || scrollHeight != null) {
+			w = getScrollWidthPx();
+			h = getScrollHeightPx();
+		}
+		domElement.setScrollBounds(x, y, w, h);
+	}
+
+	protected void syncFinally() {
+		domElement.sync();
 	}
 
 	protected void syncChildren() {

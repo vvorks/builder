@@ -11,7 +11,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 /**
  * レイアウトエディタ
- *
+ * TODO なんかポイント位置が微妙にずれている気がする（Borderのずれ？）
  * TODO コピー＆ペースト操作（クリップボードが必要）
  * TODO ロード・セーブ
  * TODO テンプレートノード設定（レイアウトエディタ機能外）
@@ -36,7 +36,7 @@ public class UiLayoutEditor extends UiNode {
 	private static final int HANDLE_BORDER	= 1;
 
 	/** デフォルトグリッドサイズ */
-	private static final Length DEFAULT_GRID = new Length("1em");
+	private static final Length DEFAULT_GRID = new Length("1px");
 
 	/** 矢印キーコードからインデックス値を得るための配列 */
 	private static final int[] ARROW_KEYS	= {KeyCodes.LEFT, KeyCodes.RIGHT, KeyCodes.UP, KeyCodes.DOWN};

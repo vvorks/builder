@@ -16,23 +16,33 @@ public class UiPhantom extends UiNode {
 			//NOP
 		}
 
-		public void setAttribute(String name, String value) {
+		@Override
+		public void setDefinedStyle(UiAtomicStyle style) {
 			//NOP
 		}
 
-		public void setScrollPosition(int x, int y) {
+		@Override
+		public void setLocalStyle(CssStyle style) {
 			//NOP
 		}
 
-		public void removeAttribute(String name) {
+		@Override
+		public void setBounds(int left, int top, int width, int height) {
 			//NOP
 		}
 
+		@Override
+		public void setScrollBounds(int x, int y, int width, int height) {
+			//NOP
+		}
+
+		@Override
 		public void setInnerText(String text) {
 			//NOP
 		}
 
-		public void setInnerHtml(String html) {
+		@Override
+		public void sync() {
 			//NOP
 		}
 
@@ -41,6 +51,10 @@ public class UiPhantom extends UiNode {
 	public UiPhantom() {
 		setEnable(false);
 		setVisible(false);
+		setLeft(Length.ZERO);
+		setTop(Length.ZERO);
+		setWidth(Length.ZERO);
+		setHeight(Length.ZERO);
 	}
 
 	@Override

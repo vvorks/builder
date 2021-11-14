@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.github.vvorks.builder.server.ServerConfigure;
+import com.github.vvorks.builder.server.ServerSettings;
 
 @SpringBootApplication
 public class BuilderApplication {
@@ -15,7 +15,7 @@ public class BuilderApplication {
     private static ConfigurableApplicationContext context;
 
 	public static void main(String[] args) {
-		ServerConfigure.setup();
+		ServerSettings.setup();
 		start(args);
 	}
 

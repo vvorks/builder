@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import com.github.vvorks.builder.client.ClientConfigure;
+import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.net.WebSocket;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Creator;
@@ -88,7 +88,7 @@ public class UiApplication implements EventHandler {
 		this.styles = new LinkedHashMap<>();
 		this.socket = Factory.newInstance(WebSocket.class);
 		try {
-			socket.open(ClientConfigure.SERVER_URL);
+			socket.open(ClientSettings.SERVER_URL);
 		} catch (IOException err) {
 			throw new RuntimeException(err);
 		}
@@ -511,7 +511,7 @@ public class UiApplication implements EventHandler {
 	}
 
 	private void refresh() {
-		if (ClientConfigure.DEBUG) {
+		if (ClientSettings.DEBUG) {
 			for (UiNode node : root.getDescendantsIf(d -> d.isChanged())) {
 				LOGGER.debug("changed %s", getFullName(node));
 			}
@@ -553,7 +553,7 @@ public class UiApplication implements EventHandler {
 			axis = AXIS_NO;
 			break;
 		case KeyCodes.SPACE:
-			if (ClientConfigure.DEBUG) {
+			if (ClientSettings.DEBUG) {
 				LOGGER.debug(root.toString());
 			}
 			next = null;

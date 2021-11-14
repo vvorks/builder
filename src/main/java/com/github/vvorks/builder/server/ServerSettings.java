@@ -6,11 +6,11 @@ import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.json.JacksonJson;
 import com.github.vvorks.builder.server.common.logging.Slf4jLogger;
 
-public class ServerConfigure {
+public class ServerSettings {
 
 	public static final boolean DEBUG = true;
 
-	private ServerConfigure() {
+	private ServerSettings() {
 	}
 
 	public static void setup() {

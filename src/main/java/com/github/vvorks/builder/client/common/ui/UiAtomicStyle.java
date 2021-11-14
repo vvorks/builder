@@ -2,6 +2,7 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Strings;
@@ -20,6 +21,9 @@ public class UiAtomicStyle extends UiStyle {
 	public static final String VERTICAL_ALIGN_TOP = "top";
 	public static final String VERTICAL_ALIGN_MIDDLE = "middle";
 	public static final String VERTICAL_ALIGN_BOTTOM = "bottom";
+
+	private static final String DEFAULT_FONT_FAMILY = "sans-serif";
+	private static final Length DEFAULT_FONT_SIZE = new Length("12pt");
 
 	/** 基底スタイル */
 	private final UiAtomicStyle baseStyle;
@@ -92,74 +96,57 @@ public class UiAtomicStyle extends UiStyle {
 		return baseStyle;
 	}
 
-	public Integer getColor() {
-		if (color != null || baseStyle == null) {
-			return color;
+	private <R> R getProperty(Function<UiAtomicStyle, R> func, R defaultValue) {
+		UiAtomicStyle s = this;
+		while (s != null) {
+			R result = func.apply(s);
+			if (result != null) {
+				return result;
+			}
+			s = s.getBaseStyle();
 		}
-		return baseStyle.getColor();
+		return defaultValue;
+	}
+
+	public Integer getColor() {
+		return getProperty(s -> s.color, Colors.BLACK);
 	}
 
 	public Integer getBackgroundColor() {
-		if (backgroundColor != null || baseStyle == null) {
-			return backgroundColor;
-		}
-		return baseStyle.backgroundColor;
+		return getProperty(s -> s.backgroundColor, Colors.WHITE);
 	}
 
 	public String getBackgroundImage() {
-		if (backgroundImage != null || baseStyle == null) {
-			return backgroundImage;
-		}
-		return baseStyle.backgroundImage;
-	}
-
-	public Length getFontSize() {
-		if (fontSize != null || baseStyle == null) {
-			return fontSize;
-		}
-		return baseStyle.fontSize;
+		return getProperty(s -> s.backgroundImage, null);
 	}
 
 	public String getFontFamily() {
-		if (fontFamily != null || baseStyle == null) {
-			return fontFamily;
-		}
-		return baseStyle.fontFamily;
+		return getProperty(s -> s.fontFamily, DEFAULT_FONT_FAMILY);
+	}
+
+	public Length getFontSize() {
+		return getProperty(s -> s.fontSize, DEFAULT_FONT_SIZE);
 	}
 
 	public Length getLineHeight() {
-		if (lineHeight != null || baseStyle == null) {
-			return lineHeight;
-		}
-		return baseStyle.lineHeight;
+		Length prop = getProperty(s -> s.lineHeight, null);
+		return (prop != null) ? prop : getFontSize();
 	}
 
 	public String getTextAlign() {
-		if (textAlign != null || baseStyle == null) {
-			return textAlign;
-		}
-		return baseStyle.textAlign;
+		return getProperty(s -> s.textAlign, UiAtomicStyle.TEXT_ALIGN_JUSTIFY);
 	}
 
 	public String getVerticalAlign() {
-		if (verticalAlign != null || baseStyle == null) {
-			return verticalAlign;
-		}
-		return baseStyle.verticalAlign;
+		return getProperty(s -> s.verticalAlign, UiAtomicStyle.VERTICAL_ALIGN_TOP);
 	}
 
 	public Integer getBorderColor() {
-		if (borderColor != null || baseStyle == null) {
-			return borderColor;
-		}
-		return baseStyle.borderColor;
+		return getProperty(s -> s.borderColor, Colors.BLACK);
 	}
 
 	public String getFormat() {
-		if (format != null || baseStyle == null) {
-			return format;
-		}
-		return baseStyle.format;
+		return getProperty(s -> s.format, null);
 	}
 
 	@Override

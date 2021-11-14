@@ -36,10 +36,12 @@ public class TestPage extends UiPage {
 		String borderWidth = "2px";
 		final double NA = UiNode.Builder.NA;
 		UiNode.Builder b = new UiNode.Builder(this, "em");
+		//全体
 		b.enter(new UiGroup("group"));
 			b.style(BuilderUiApplication.BASIC);
 			b.border(borderWidth);
 			b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
+			//DOMの縦グループ
 			b.enter(new UiVerticalGroup("group1"));
 				b.style(BuilderUiApplication.BASIC);
 				b.border(borderWidth);
@@ -54,22 +56,32 @@ public class TestPage extends UiPage {
 					b.leave();
 				}
 			b.leave();
-			//b.enter(new UiList("list"));
+			//CANVAS枠
 			b.enter(new UiCanvasFrame("canvasFrame"));
 				b.style(BuilderUiApplication.BASIC);
-				b.border(borderWidth);
-				b.locate(12.0, 1.0, 1.0, NA, NA, 8.0);
-				b.enter(new UiButton("buttonInCanvas"));
-					b.text("button");
+				b.border(0);
+				b.locate(12.0, 1.0, NA, 1.0, 10.0, NA);
+				//CANVAS枠中の縦グループ
+				b.enter(new UiVerticalGroup("group2"));
 					b.style(BuilderUiApplication.BASIC);
 					b.border(borderWidth);
-					b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
+					b.spacing(1.0);
+					b.locate(0.0, 0.0, 0.0, 0.0, NA, NA);
+					for (int i = 1; i <= 10; i++) {
+						b.enter(new UiButton("item" + i));
+							b.text("項目" + i);
+							b.style(BuilderUiApplication.BASIC);
+							b.border(borderWidth);
+							b.locate(NA, NA, NA, NA, NA, 2.0);
+						b.leave();
+					}
 				b.leave();
 			b.leave();
+			//レイアウタ
 			b.enter(new UiLayoutEditor("layouter"));
 				b.style(BuilderUiApplication.BASIC);
 				b.border(borderWidth);
-				b.locate(12.0, 10.0, 1.0, 1.0, NA, NA);
+				b.locate(23.0, 1.0, 1.0, 1.0, NA, NA);
 			b.leave();
 		b.leave();
 	}

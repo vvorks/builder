@@ -1,39 +1,110 @@
 package com.github.vvorks.builder.client.gwt.ui;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.vvorks.builder.client.common.ui.Colors;
 import com.github.vvorks.builder.client.common.ui.DomElement;
+import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
+import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.common.logging.Logger;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 
 public class GwtCanvasElement extends GwtDomElement {
+
+	public static final Class<?> THIS = GwtCanvasElement.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private GwtCanvasElement parent;
 
 	private List<GwtCanvasElement> children;
 
-	private Map<String, String> attributes;
+	private GwtContext2d context2d;
 
-	private String text;
-
-	private int scrollX;
-
-	private int scrollY;
-
-	public GwtCanvasElement(boolean root) {
-		super(root ? Document.get().createCanvasElement() : null);
+	public GwtCanvasElement(String tag) {
+		super(UiNode.HTML_CANVAS.equals(tag) ? Document.get().createCanvasElement() : null);
 	}
 
 	@Override
 	public void setParent(DomElement newParent) {
-		if (nativeElement != null) {
+		if (hasNativeElement()) {
 			super.setParent(newParent);
+		} else {
+			setParentLocal((GwtCanvasElement) newParent);
+		}
+	}
+
+	@Override
+	public void sync() {
+		if (!hasNativeElement()) {
 			return;
 		}
-		GwtCanvasElement np = (GwtCanvasElement) newParent;
+		CanvasElement canvas = ((CanvasElement) getNativeElement());
+		if (context2d == null || (changed & (CHANGED_WIDTH|CHANGED_HEIGHT)) != 0) {
+			if (context2d == null) {
+				context2d = new GwtContext2d(canvas, width, height);
+			} else {
+				context2d.reinit(canvas, width, height);
+			}
+		}
+		paintChildren(context2d);
+		changed = 0;
+	}
+
+	protected void paintChildren(GwtContext2d con) {
+		if (children != null) {
+			for (GwtCanvasElement child : children) {
+				//TODO 本当はコンテキストのSave/Restoreが必要
+				con.moveOrigin(+child.left, +child.top);
+				child.paint(con);
+				con.moveOrigin(-child.left, -child.top);
+			}
+		}
+	}
+
+	public void paint(GwtContext2d con) {
+		//TOODここで描画範囲絞り込み
+		paintBackground(con);
+		paintContent(con);
+		paintBorder(con);
+		paintChildren(con);
+	}
+
+	protected void paintBackground(GwtContext2d con) {
+		con.setFillColor(definedStyle.getBackgroundColor());
+		con.setStrokeColor(Colors.TRANSPARENT);
+		con.drawRect(0, 0, width, height);
+	}
+
+	protected void paintContent(GwtContext2d con) {
+		if (Strings.isEmpty(text)) {
+			return;
+		}
+		con.setFillColor(definedStyle.getColor());
+		con.setStrokeColor(Colors.TRANSPARENT);
+		con.setFontFamily(definedStyle.getFontFamily());
+		con.setFontSize(definedStyle.getFontSize().px(() -> width));
+		int bw = localStyle.getBorderWidth().px(() -> width);
+		int dw = bw * 2;
+		int lineHeight = definedStyle.getLineHeight().px(() -> height);
+		int flags = get2dAlign(definedStyle) | GwtContext2d.DRAW_ELLIPSIS;
+		con.drawText(bw, bw, width - dw, height - dw, text, lineHeight, flags);
+	}
+
+	protected void paintBorder(GwtContext2d con) {
+		con.setFillColor(Colors.TRANSPARENT);
+		con.setStrokeColor(definedStyle.getBorderColor());
+		int bw = localStyle.getBorderWidth().px(() -> width);
+		int hw = (int) Math.round(bw / 2.0);
+		con.drawRect(hw, hw, width - bw, height - bw);
+	}
+
+	private void setParentLocal(GwtCanvasElement newParent) {
+		GwtCanvasElement np = newParent;
 		GwtCanvasElement me = this;
 		GwtCanvasElement op = me.parent;
 		if (np != op) {
@@ -41,63 +112,47 @@ public class GwtCanvasElement extends GwtDomElement {
 				op.removeChild(me);
 			}
 			if (np != null) {
-				np.appendChild(me);
+				np.addChild(me);
 			}
+			me.parent = np;
 		}
 	}
 
-	private void appendChild(GwtCanvasElement newChild) {
+	private void addChild(GwtCanvasElement child) {
 		if (children == null) {
 			children = new ArrayList<>();
 		}
-		children.add(newChild);
+		children.add(child);
 	}
 
-	public void removeChild(GwtCanvasElement oldChild) {
+	private void removeChild(GwtCanvasElement child) {
 		if (children != null) {
-			children.remove(oldChild);
+			children.remove(child);
 		}
 	}
 
-	@Override
-	public void setAttribute(String name, String value) {
-		if (nativeElement != null) {
-			nativeElement.setAttribute(name, value);
-		}
-		if (attributes == null) {
-			attributes = new LinkedHashMap<>();
-		}
-		attributes.put(name, value);
+	private static final Map<String, Integer> ALIGN_MAP = new HashMap<>();
+	static {
+		ALIGN_MAP.put(UiAtomicStyle.TEXT_ALIGN_LEFT,    GwtContext2d.ALIGN_LEFT);
+		ALIGN_MAP.put(UiAtomicStyle.TEXT_ALIGN_CENTER,  GwtContext2d.ALIGN_CENTER);
+		ALIGN_MAP.put(UiAtomicStyle.TEXT_ALIGN_RIGHT,   GwtContext2d.ALIGN_RIGHT);
+		ALIGN_MAP.put(UiAtomicStyle.TEXT_ALIGN_JUSTIFY, GwtContext2d.ALIGN_JUSTIFY);
 	}
 
-	@Override
-	public void removeAttribute(String name) {
-		if (nativeElement != null) {
-			nativeElement.removeAttribute(name);
-		}
-		if (attributes != null) {
-			attributes.remove(name);
-		}
+	private static final Map<String, Integer> VALIGN_MAP = new HashMap<>();
+	static {
+		VALIGN_MAP.put(UiAtomicStyle.VERTICAL_ALIGN_TOP,    GwtContext2d.VALIGN_TOP);
+		VALIGN_MAP.put(UiAtomicStyle.VERTICAL_ALIGN_MIDDLE, GwtContext2d.VALIGN_MIDDLE);
+		VALIGN_MAP.put(UiAtomicStyle.VERTICAL_ALIGN_BOTTOM, GwtContext2d.VALIGN_BOTTOM);
 	}
 
-	@Override
-	public void setInnerText(String text) {
-		this.text = text;
-	}
-
-	@Override
-	public void setInnerHtml(String html) {
-		this.text = Strings.unescapeHtml(html);
-	}
-
-	@Override
-	public void setScrollPosition(int x, int y) {
-		if (nativeElement != null) {
-			nativeElement.setScrollLeft(x);
-			nativeElement.setScrollTop(y);
-		}
-		this.scrollX = x;
-		this.scrollY = y;
+	private static int get2dAlign(UiAtomicStyle style) {
+		int align = 0;
+		Integer hAlign = ALIGN_MAP.get(style.getTextAlign());
+		align |= hAlign != null ? hAlign.intValue() : GwtContext2d.ALIGN_JUSTIFY;
+		Integer vAlign = VALIGN_MAP.get(style.getVerticalAlign());
+		align |= vAlign != null ? vAlign.intValue() : GwtContext2d.VALIGN_TOP;
+		return align;
 	}
 
 }

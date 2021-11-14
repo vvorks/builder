@@ -4,14 +4,16 @@ public interface DomElement {
 
 	public void setParent(DomElement newParent);
 
-	public void setAttribute(String name, String value);
+	public void setDefinedStyle(UiAtomicStyle style);
 
-	public void removeAttribute(String name);
+	public void setLocalStyle(CssStyle style);
+
+	public void setBounds(int left, int top, int width, int height);
 
 	public void setInnerText(String text);
 
-	public void setInnerHtml(String html);
+	public void setScrollBounds(int x, int y, int width, int height);
 
-	public void setScrollPosition(int x, int y);
+	public void sync();
 
 }

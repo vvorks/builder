@@ -48,7 +48,7 @@ public class DomPanel extends FocusWidget {
 		Element panelElement = Document.get().createDivElement();
 		setElement(panelElement);
 		//ルートノードの作成とこのパネルのElementとの関連付け
-		Element e = ((GwtHtmlElement) app.getRootElement()).getNativeElement();
+		Element e = ((GwtDomElement) app.getRootElement()).getNativeElement();
 		panelElement.appendChild(e);
 
 	}

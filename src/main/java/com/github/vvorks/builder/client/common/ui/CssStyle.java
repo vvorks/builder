@@ -12,7 +12,47 @@ public class CssStyle implements Jsonizable {
 	public static final Class<?> THIS = CssStyle.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
 
-	private final Map<String, String> map;
+	private final Map<String, Object> map;
+
+	public boolean isVisible() {
+		return "visible".equals(map.get("visibility"));
+	}
+
+	public Length getLeft() {
+		return (Length) map.get("left");
+	}
+
+	public Length getTop() {
+		return (Length) map.get("top");
+	}
+
+	public Length getRight() {
+		return (Length) map.get("right");
+	}
+
+	public Length getBottom() {
+		return (Length) map.get("bottom");
+	}
+
+	public Length getWidth() {
+		return (Length) map.get("width");
+	}
+
+	public Length gethHeight() {
+		return (Length) map.get("height");
+	}
+
+	public Length getBorderWidth() {
+		return (Length) map.get("border-width");
+	}
+
+	public String getTransform() {
+		return (String) map.get("transform");
+	}
+
+	public Object getProperty(String name) {
+		return map.get(name);
+	}
 
 	@Override
 	public String toString() {
@@ -20,11 +60,11 @@ public class CssStyle implements Jsonizable {
 			return "";
 		}
 		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String, String> e : map.entrySet()) {
+		for (Map.Entry<String, Object> e : map.entrySet()) {
 			sb.append(";");
 			sb.append(e.getKey());
 			sb.append(":");
-			sb.append(e.getValue());
+			sb.append(String.valueOf(e.getValue()));
 		}
 		return sb.substring(1);
 	}
@@ -32,8 +72,8 @@ public class CssStyle implements Jsonizable {
 	@Override
 	public Json toJson() {
 		Json json = Json.createObject();
-		for (Map.Entry<String, String> e : map.entrySet()) {
-			json.setString(e.getKey(), e.getValue());
+		for (Map.Entry<String, Object> e : map.entrySet()) {
+			json.setString(e.getKey(), String.valueOf(e.getValue()));
 		}
 		return json;
 	}
@@ -51,60 +91,48 @@ public class CssStyle implements Jsonizable {
 		}
 
 		public Builder visible(boolean b) {
-			property("visibility", b ? "visible" : "hidden");
-			return this;
+			return property("visibility", b ? "visible" : "hidden");
 		}
 
 		public Builder left(Length length) {
-			property("left", length);
-			return this;
+			return property("left", length);
 		}
 
 		public Builder top(Length length) {
-			property("top", length);
-			return this;
+			return property("top", length);
 		}
 
 		public Builder right(Length length) {
-			property("right", length);
-			return this;
+			return property("right", length);
 		}
 
 		public Builder bottom(Length length) {
-			property("bottom", length);
-			return this;
+			return property("bottom", length);
 		}
 
 		public Builder width(Length length) {
-			property("width", length);
-			return this;
+			return property("width", length);
 		}
 
 		public Builder height(Length length) {
-			property("height", length);
-			return this;
+			return property("height", length);
 		}
 
 		public Builder borderWidth(Length length) {
-			property("border-width", length);
-			return this;
+			return property("border-width", length);
 		}
 
-		public void transform(String value) {
-			if (value != null) {
-				add("transform", value);
-			}
+		public Builder transform(String value) {
+			return property("transform", value);
 		}
 
 		public Builder property(String name, Object value) {
 			if (value != null) {
-				add(name, value.toString());
+				style.map.put(name, value);
+			} else {
+				style.map.remove(name);
 			}
 			return this;
-		}
-
-		private void add(String key, String value) {
-			style.map.put(key, value);
 		}
 
 		public CssStyle build() {

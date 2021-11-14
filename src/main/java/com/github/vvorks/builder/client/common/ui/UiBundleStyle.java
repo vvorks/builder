@@ -133,11 +133,6 @@ public class UiBundleStyle extends UiStyle {
 		return json;
 	}
 
-
-
-
-
-
 	public static class Builder {
 
 		private static final Predicate<UiNode> DISABLE	= node -> !node.isEnableAll();

@@ -4,9 +4,6 @@ import com.github.vvorks.builder.common.lang.Factory;
 
 public class UiCanvasFrame extends UiNode {
 
-	/** キャンバスElement */
-	private DomElement canvasElement;
-
 	public UiCanvasFrame(String name) {
 		super(name);
 	}
@@ -25,36 +22,7 @@ public class UiCanvasFrame extends UiNode {
 		if (owner != this) {
 			return Factory.newInstance(DomElement.class, NS_CANVAS, qualifiedName, owner);
 		}
-		return super.createDomElement(namespaceURI, qualifiedName, owner);
-	}
-
-	@Override
-	protected void setDomElement(DomElement element) {
-		super.setDomElement(element);
-		canvasElement = createDomElement(NS_HTML, HTML_CANVAS, this);
-		canvasElement.setParent(element);
-	}
-
-	@Override
-	protected void syncStyle() {
-		super.syncStyle();
-		syncInnerStyle();
-	}
-
-	private void syncInnerStyle() {
-		CssStyle.Builder sb = new CssStyle.Builder()
-				.property("position", "absolute")
-				.property("overflow", "hidden")
-				.left(Length.ZERO)
-				.top(Length.ZERO)
-				.width(Length.FULL)
-				.height(Length.FULL);
-		canvasElement.setAttribute("style", sb.build().toString());
-	}
-
-	@Override
-	protected void syncDomElement(DomElement domElement) {
-		super.syncDomElement(canvasElement);
+		return super.createDomElement(NS_HTML, HTML_CANVAS, owner);
 	}
 
 }

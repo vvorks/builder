@@ -14,8 +14,6 @@ public class UiGroup extends UiNode {
 
 	private Length spacingHeight;
 
-	private DomElement stretcher;
-
 	public UiGroup(String name) {
 		super(name);
 	}
@@ -99,13 +97,6 @@ public class UiGroup extends UiNode {
 	}
 
 	@Override
-	protected void setDomElement(DomElement element) {
-		super.setDomElement(element);
-		stretcher = createDomElement(NS_HTML, HTML_DIV, this);
-		stretcher.setParent(element);
-	}
-
-	@Override
 	public void scrollFor(UiNode child) {
 		Asserts.requireNotNull(child);
 		Asserts.require(child.getParent() == this);
@@ -129,22 +120,6 @@ public class UiGroup extends UiNode {
 		}
 		setScrollLeft(s.getLeft() + dx);
 		setScrollTop (s.getTop()  + dy);
-	}
-
-	@Override
-	protected void syncStyle() {
-		super.syncStyle();
-		syncInnerStyle();
-	}
-
-	private void syncInnerStyle() {
-		CssStyle.Builder sb = new CssStyle.Builder()
-				.property("position", "absolute")
-				.left(new Length(getScrollWidthPx() - 1))
-				.top(new Length(getScrollHeightPx() - 1))
-				.width(new Length(1))
-				.height(new Length(1));
-		stretcher.setAttribute("style", sb.build().toString());
 	}
 
 }

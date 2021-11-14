@@ -1,6 +1,6 @@
 package com.github.vvorks.builder.client.gwt;
 
-import com.github.vvorks.builder.client.ClientConfigure;
+import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.client.gwt.ui.DomPanel;
 import com.github.vvorks.builder.common.lang.Factory;
@@ -22,9 +22,9 @@ public class GwtEntryPoint implements EntryPoint {
 
 	public void onModuleLoad() {
 		//クライアント構成セットアップ
-		ClientConfigure.setup();
+		ClientSettings.setup();
 		//ルート要素の初期化
-		String bgColor = ClientConfigure.DEBUG ? "#000040" : "rgba(0, 0, 0, 0.0)";
+		String bgColor = ClientSettings.DEBUG ? "#000040" : "rgba(0, 0, 0, 0.0)";
 		RootLayoutPanel root = RootLayoutPanel.get();
 		Style rootStyle = root.getElement().getStyle();
 		rootStyle.setOverflow(Overflow.HIDDEN);

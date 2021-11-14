@@ -19,12 +19,12 @@ import com.github.vvorks.builder.common.logging.JavaLogger;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 
-public class ClientConfigure {
+public class ClientSettings {
 
 	public static final boolean DEBUG = true;
 
 	/** このクラス */
-	private static final Class<?> THIS = ClientConfigure.class;
+	private static final Class<?> THIS = ClientSettings.class;
 
 	/** クラス名 */
 	private static final String CLASS_NAME = THIS.getName();
@@ -38,7 +38,7 @@ public class ClientConfigure {
 	/** サーバーURL */
 	public static final String SERVER_URL = "ws://localhost:8080/builder";
 
-	private ClientConfigure() {
+	private ClientSettings() {
 	}
 
 	public static void setup() {
