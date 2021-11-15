@@ -202,6 +202,27 @@ public class GwtContext2d {
 		this.fontSize = fontSize;
 	}
 
+	public void save() {
+		con.save();
+	}
+
+	public void restore() {
+		con.restore();
+	}
+
+	public void clipRect(int x, int y, int w, int h) {
+		x += xOrigin;
+		y += yOrigin;
+		con.beginPath();
+		con.moveTo(x, y);
+		con.lineTo(x + w, y);
+		con.lineTo(x + w, y + h);
+		con.lineTo(x, y + h);
+		con.closePath();
+		con.clip();
+	}
+
+
 	/**
 	 * 指定範囲を全消去する
 	 *

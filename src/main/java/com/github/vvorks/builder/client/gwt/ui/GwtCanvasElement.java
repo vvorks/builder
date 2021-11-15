@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.github.vvorks.builder.client.common.ui.Colors;
 import com.github.vvorks.builder.client.common.ui.DomElement;
+import com.github.vvorks.builder.client.common.ui.Rect;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Strings;
@@ -57,12 +58,23 @@ public class GwtCanvasElement extends GwtDomElement {
 
 	protected void paintChildren(GwtContext2d con) {
 		if (children != null) {
+			int bw = getBorderWidth();
+			con.moveOrigin(+bw, +bw);
+			con.moveOrigin(-scrollX, -scrollY);
+			Rect vp = new Rect(scrollX, scrollY, width - bw * 2, height - bw * 2);
 			for (GwtCanvasElement child : children) {
-				//TODO 本当はコンテキストのSave/Restoreが必要
-				con.moveOrigin(+child.left, +child.top);
-				child.paint(con);
-				con.moveOrigin(-child.left, -child.top);
+				Rect vc = new Rect(child.left, child.top, child.width, child.height);
+				if (!vc.intersect(vp).isEmpty()) {
+					con.save();
+					con.clipRect(vc.getLeft(), vc.getTop(), vc.getWidth(), vc.getHeight());
+					con.moveOrigin(+child.left, +child.top);
+					child.paint(con);
+					con.moveOrigin(-child.left, -child.top);
+					con.restore();
+				}
 			}
+			con.moveOrigin(+scrollX, +scrollY);
+			con.moveOrigin(-bw, -bw);
 		}
 	}
 
@@ -70,13 +82,14 @@ public class GwtCanvasElement extends GwtDomElement {
 		//TOODここで描画範囲絞り込み
 		paintBackground(con);
 		paintContent(con);
-		paintBorder(con);
 		paintChildren(con);
+		paintBorder(con);
 	}
 
 	protected void paintBackground(GwtContext2d con) {
 		con.setFillColor(definedStyle.getBackgroundColor());
 		con.setStrokeColor(Colors.TRANSPARENT);
+		con.setStrokeWidth(0);
 		con.drawRect(0, 0, width, height);
 	}
 
@@ -88,7 +101,7 @@ public class GwtCanvasElement extends GwtDomElement {
 		con.setStrokeColor(Colors.TRANSPARENT);
 		con.setFontFamily(definedStyle.getFontFamily());
 		con.setFontSize(definedStyle.getFontSize().px(() -> width));
-		int bw = localStyle.getBorderWidth().px(() -> width);
+		int bw = getBorderWidth();
 		int dw = bw * 2;
 		int lineHeight = definedStyle.getLineHeight().px(() -> height);
 		int flags = get2dAlign(definedStyle) | GwtContext2d.DRAW_ELLIPSIS;
@@ -97,9 +110,10 @@ public class GwtCanvasElement extends GwtDomElement {
 
 	protected void paintBorder(GwtContext2d con) {
 		con.setFillColor(Colors.TRANSPARENT);
-		con.setStrokeColor(definedStyle.getBorderColor());
-		int bw = localStyle.getBorderWidth().px(() -> width);
+		int bw = getBorderWidth();
 		int hw = (int) Math.round(bw / 2.0);
+		con.setStrokeColor(definedStyle.getBorderColor());
+		con.setStrokeWidth(bw);
 		con.drawRect(hw, hw, width - bw, height - bw);
 	}
 
@@ -129,6 +143,10 @@ public class GwtCanvasElement extends GwtDomElement {
 		if (children != null) {
 			children.remove(child);
 		}
+	}
+
+	private int getBorderWidth() {
+		return localStyle.getBorderWidth().px(() -> width);
 	}
 
 	private static final Map<String, Integer> ALIGN_MAP = new HashMap<>();

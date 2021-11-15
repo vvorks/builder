@@ -3,6 +3,7 @@ package com.github.vvorks.builder.client.common.ui;
 import java.util.Objects;
 
 import com.github.vvorks.builder.common.json.Json;
+import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public class Rect extends Point {
@@ -119,6 +120,36 @@ public class Rect extends Point {
 		return setFromTwoPoints(x1, y1, x2, y2);
 	}
 
+	public Rect intersect(Rect other) {
+		if (separates(other)) {
+			setSize(0, 0);
+		} else {
+			setFromTwoPoints(
+					Math.max(getLeft(), other.getLeft()),
+					Math.max(getTop(), other.getTop()),
+					Math.min(getRight(), other.getRight()),
+					Math.min(getBottom(), other.getBottom()));
+		}
+		return this;
+	}
+
+	public Rect union(Rect other) {
+		if (isEmpty()) {
+			set(other);
+		} else {
+			setFromTwoPoints(
+					Math.min(getLeft(), other.getLeft()),
+					Math.min(getTop(), other.getTop()),
+					Math.max(getRight(), other.getRight()),
+					Math.max(getBottom(), other.getBottom()));
+		}
+		return this;
+	}
+
+	public boolean isEmpty() {
+		return width <= 0 || height <= 0;
+	}
+
 	public boolean contains(int x, int y) {
 		return	getLeft() <= x && x < getRight()
 		&&		getTop()  <= y && y < getBottom();
@@ -198,6 +229,10 @@ public class Rect extends Point {
 		json.setNumber("width", width);
 		json.setNumber("height", height);
 		return json;
+	}
+
+	public String toString() {
+		return Strings.sprintf("%d, %d, %d, %d", x, y, width, height);
 	}
 
 
