@@ -174,28 +174,20 @@ public class Rect extends Point {
 		int dx;
 		if (pt.x < getLeft()) {
 			dx = pt.x - getLeft();
-		} else if (pt.x > getRight()) {
-			dx = pt.x - getRight();
+		} else if (pt.x >= getRight()) {
+			dx = pt.x + 1 - getRight();
 		} else {
 			dx = 0;
 		}
 		int dy;
 		if (pt.y < getTop()) {
 			dy = pt.y - getTop();
-		} else if (pt.y > getBottom()) {
-			dy = pt.y - getBottom();
+		} else if (pt.y >= getBottom()) {
+			dy = pt.y + 1 - getBottom();
 		} else {
 			dy = 0;
 		}
-		return sqrt(square(dx) + square(dy));
-	}
-
-	private static double square(double x) {
-		return x * x;
-	}
-
-	private static double sqrt(double x) {
-		return Math.sqrt(x);
+		return Math.sqrt(dx*dx + dy*dy);
 	}
 
 	@Override
