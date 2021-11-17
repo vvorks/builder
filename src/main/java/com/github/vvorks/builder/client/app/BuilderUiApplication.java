@@ -25,6 +25,7 @@ public class BuilderUiApplication extends UiApplication {
 	public static final UiAtomicStyle FOCUS = UiStyle.newAtomicBuilder(THIS, "focus", ENABLE)
 			.color(Colors.RED)
 			.borderColor(Colors.RED)
+			.backgroundImage("image/italy.png")
 			.build();
 
 	public static final UiAtomicStyle CLICKING = UiStyle.newAtomicBuilder(THIS, "clicking", ENABLE)

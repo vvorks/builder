@@ -1,7 +1,9 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
@@ -54,8 +56,11 @@ public class CssStyle implements Jsonizable {
 		return map.get(name);
 	}
 
-	@Override
-	public String toString() {
+	public Set<Map.Entry<String, Object>> getProperties() {
+		return Collections.unmodifiableSet(map.entrySet());
+	}
+
+	public String toCssString() {
 		if (map.isEmpty()) {
 			return "";
 		}

@@ -2,7 +2,7 @@ package com.github.vvorks.builder.client;
 
 import com.github.vvorks.builder.client.app.BuilderUiApplication;
 import com.github.vvorks.builder.client.common.net.WebSocket;
-import com.github.vvorks.builder.client.common.ui.DeviceContext;
+import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
@@ -10,7 +10,7 @@ import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.gwt.json.GwtJson;
 import com.github.vvorks.builder.client.gwt.logging.AltConsoleHandler;
 import com.github.vvorks.builder.client.gwt.net.GwtWebSocket;
-import com.github.vvorks.builder.client.gwt.ui.GwtDeviceContext;
+import com.github.vvorks.builder.client.gwt.ui.GwtDomDocument;
 import com.github.vvorks.builder.client.gwt.ui.GwtDomElement;
 import com.github.vvorks.builder.client.gwt.util.GwtDelayedExecuter;
 import com.github.vvorks.builder.common.json.Json;
@@ -51,7 +51,7 @@ public class ClientSettings {
 			.bindTo(Json.class, args -> new GwtJson(args[0]))
 			.bindTo(WebSocket.class, args -> new GwtWebSocket())
 			.bindTo(DomElement.class, args -> GwtDomElement.create((String) args[0], (String)args[1], (UiNode) args[2]))
-			.bindTo(DeviceContext.class, args -> new GwtDeviceContext())
+			.bindTo(DomDocument.class, args -> new GwtDomDocument())
 			//singleton settings
 			.bindIn(DelayedExecuter.class, args -> new GwtDelayedExecuter())
 			.bindIn(Metrics.class, args -> new Metrics())

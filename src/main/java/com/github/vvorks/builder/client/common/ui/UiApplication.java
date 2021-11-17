@@ -15,7 +15,6 @@ import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Creator;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Iterables;
-import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiApplication implements EventHandler {
@@ -70,7 +69,7 @@ public class UiApplication implements EventHandler {
 
 	private final UiRoot root;
 
-	private final DeviceContext deviceContext;
+	private final DomDocument deviceContext;
 
 	private Map<String, Creator<UiPage>> pages;
 
@@ -82,7 +81,7 @@ public class UiApplication implements EventHandler {
 
 	public UiApplication() {
 		this.root = new UiRoot();
-		this.deviceContext = Factory.newInstance(DeviceContext.class);
+		this.deviceContext = Factory.newInstance(DomDocument.class);
 		this.pages = new LinkedHashMap<>();
 		this.pageStack = new ArrayDeque<>();
 		this.styles = new LinkedHashMap<>();
@@ -98,7 +97,7 @@ public class UiApplication implements EventHandler {
 		return root.getDomElement();
 	}
 
-	public DeviceContext getDeviceContext() {
+	public DomDocument getDeviceContext() {
 		return deviceContext;
 	}
 
@@ -115,12 +114,11 @@ public class UiApplication implements EventHandler {
 	}
 
 	public void injectRegisteredStyles() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(Strings.sprintf("BODY {%s}\n", BODY_STYLE));
-		sb.append(Strings.sprintf("BODY,DIV {%s}\n", RESET_STYLE));
-		UiStyle.toCssStyles(styles.values(), sb);
-		String cssString = sb.toString();
-		deviceContext.injectStyleSheet(getClass(), cssString);
+		Map<String, CssStyle> cssMap = new LinkedHashMap<>();
+		cssMap.put("BODY", BODY_STYLE);
+		cssMap.put("BODY,DIV", RESET_STYLE);
+		UiStyle.toCssStyles(styles.values(), cssMap);
+		deviceContext.injectStyleSheet(getClass(), cssMap);
 	}
 
 	protected void addPage(String tag, Creator<UiPage> creator) {

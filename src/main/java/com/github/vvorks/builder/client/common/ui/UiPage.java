@@ -1,7 +1,9 @@
 package com.github.vvorks.builder.client.common.ui;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.logging.Logger;
@@ -59,17 +61,16 @@ public abstract class UiPage extends UiNode {
 			list.add(d.getRegisteredStyles());
 		}
 		Iterable<UiStyle> flatList = Iterables.concat(list);
-		StringBuilder sb = new StringBuilder();
-		UiStyle.toCssStyles(flatList, sb);
-		String cssString = sb.toString();
+		Map<String, CssStyle> cssMap = new LinkedHashMap<>();
+		UiStyle.toCssStyles(flatList, cssMap);
 		UiApplication app = getApplication();
-		DeviceContext dc = app.getDeviceContext();
-		dc.injectStyleSheet(getClass(), cssString);
+		DomDocument dc = app.getDeviceContext();
+		dc.injectStyleSheet(getClass(), cssMap);
 	}
 
 	public void deinjectStyleInPage() {
 		UiApplication app = getApplication();
-		DeviceContext dc = app.getDeviceContext();
+		DomDocument dc = app.getDeviceContext();
 		dc.deinjectStyleSheet(getClass());
 	}
 

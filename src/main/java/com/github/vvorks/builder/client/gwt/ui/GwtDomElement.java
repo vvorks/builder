@@ -16,6 +16,9 @@ public class GwtDomElement implements DomElement {
 	public static final Class<?> THIS = GwtDomElement.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
 
+	private static final String PROP_CLASS = "class";
+	private static final String PROP_STYLE = "style";
+
 	protected static final int CHANGED_LEFT				= 0x0001;
 	protected static final int CHANGED_TOP				= 0x0002;
 	protected static final int CHANGED_WIDTH			= 0x0004;
@@ -108,17 +111,17 @@ public class GwtDomElement implements DomElement {
 			return;
 		}
 		if (style != null) {
-			nativeElement.setAttribute("class", style.getCssClassName());
+			nativeElement.setAttribute(PROP_CLASS, style.getCssClassName());
 		} else {
-			nativeElement.removeAttribute("class");
+			nativeElement.removeAttribute(PROP_CLASS);
 		}
 		if (innerElement == null) {
 			return;
 		}
 		if (style != null) {
-			innerElement.setAttribute("class", style.getCssClassName());
+			innerElement.setAttribute(PROP_CLASS, style.getCssClassName());
 		} else {
-			innerElement.removeAttribute("class");
+			innerElement.removeAttribute(PROP_CLASS);
 		}
 		String align;
 		String valign;
@@ -145,7 +148,7 @@ public class GwtDomElement implements DomElement {
 			//上ぞろえ
 			sb.top(Length.ZERO);
 		}
-		innerElement.setAttribute("style", sb.build().toString());
+		innerElement.setAttribute(PROP_STYLE, sb.build().toCssString());
 	}
 
 	@Override
@@ -154,7 +157,7 @@ public class GwtDomElement implements DomElement {
 		if (nativeElement == null) {
 			return;
 		}
-		nativeElement.setAttribute("style", style.toString());
+		nativeElement.setAttribute(PROP_STYLE, style.toCssString());
 	}
 
 	@Override
@@ -221,7 +224,7 @@ public class GwtDomElement implements DomElement {
 					.top(new Length(scrollHeight - 1))
 					.width(new Length(1))
 					.height(new Length(1));
-			anchor.setAttribute("style", sb.build().toString());
+			anchor.setAttribute(PROP_STYLE, sb.build().toCssString());
 		} else {
 			removeAnchorElement();
 		}
