@@ -18,7 +18,6 @@ import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Copyable;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
@@ -421,11 +420,11 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		this.domElement = element;
 	}
 
-	protected DomElement createDomElement(String namespaceURI, String qualifiedName, UiNode owner) {
+	protected DomElement createDomElement(String ns, String tag, UiNode owner) {
 		if (parent == null) {
-			return Factory.newInstance(DomElement.class, namespaceURI, qualifiedName, owner);
+			return getDocument().createElement(ns, tag, owner);
 		}
-		return parent.createDomElement(namespaceURI, qualifiedName, owner);
+		return parent.createDomElement(ns, tag, owner);
 	}
 
 	protected void ensureDomElement() {
@@ -1345,6 +1344,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	protected UiApplication getApplication() {
 		return parent != null ? parent.getApplication() : null;
+	}
+
+	protected DomDocument getDocument() {
+		return parent != null ? parent.getDocument() : null;
 	}
 
 	public UiPage getPage() {

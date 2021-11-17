@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.logging.Logger;
 
@@ -17,6 +18,7 @@ public abstract class UiPage extends UiNode {
 
 	protected UiPage(String name, UiApplication app) {
 		super(name);
+		Asserts.requireNotNull(app);
 		this.application = app;
 		setLeft(Length.ZERO);
 		setTop(Length.ZERO);
@@ -35,6 +37,11 @@ public abstract class UiPage extends UiNode {
 	@Override
 	protected UiApplication getApplication() {
 		return application;
+	}
+
+	@Override
+	protected DomDocument getDocument() {
+		return application.getDocument();
 	}
 
 	@Override
@@ -64,14 +71,14 @@ public abstract class UiPage extends UiNode {
 		Map<String, CssStyle> cssMap = new LinkedHashMap<>();
 		UiStyle.toCssStyles(flatList, cssMap);
 		UiApplication app = getApplication();
-		DomDocument dc = app.getDeviceContext();
-		dc.injectStyleSheet(getClass(), cssMap);
+		DomDocument doc = app.getDocument();
+		doc.injectStyleSheet(getClass(), cssMap);
 	}
 
 	public void deinjectStyleInPage() {
 		UiApplication app = getApplication();
-		DomDocument dc = app.getDeviceContext();
-		dc.deinjectStyleSheet(getClass());
+		DomDocument doc = app.getDocument();
+		doc.deinjectStyleSheet(getClass());
 	}
 
 }

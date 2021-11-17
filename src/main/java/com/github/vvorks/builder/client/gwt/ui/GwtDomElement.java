@@ -6,7 +6,6 @@ import com.github.vvorks.builder.client.common.ui.CssStyle;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
-import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -28,18 +27,7 @@ public class GwtDomElement implements DomElement {
 	protected static final int CHANGED_SCROLL_WIDTH		= 0x0040;
 	protected static final int CHANGED_SCROLL_HEIGHT	= 0x0080;
 
-	public static GwtDomElement create(String ns, String tag, UiNode owner) {
-		if (isCanvas(ns, tag)) {
-			return new GwtCanvasElement(tag);
-		} else {
-			return new GwtDomElement(tag);
-		}
-	}
-
-	private static boolean isCanvas(String ns, String tag) {
-		return	UiNode.NS_CANVAS.equals(ns) ||
-				((ns == null || UiNode.NS_HTML.equals(ns)) && UiNode.HTML_CANVAS.equals(tag));
-	}
+	private final GwtDomDocument document;
 
 	protected final Element nativeElement;
 
@@ -73,11 +61,13 @@ public class GwtDomElement implements DomElement {
 
 	protected int changed;
 
-	protected GwtDomElement(String tag) {
+	protected GwtDomElement(GwtDomDocument doc, String tag) {
+		this.document = doc;
 		this.nativeElement = Document.get().createElement(tag);
 	}
 
-	protected GwtDomElement(Element nativeElement) {
+	protected GwtDomElement(GwtDomDocument doc, Element nativeElement) {
+		this.document = doc;
 		this.nativeElement = nativeElement;
 	}
 
@@ -148,7 +138,7 @@ public class GwtDomElement implements DomElement {
 			//上ぞろえ
 			sb.top(Length.ZERO);
 		}
-		innerElement.setAttribute(PROP_STYLE, sb.build().toCssString());
+		innerElement.setAttribute(PROP_STYLE, document.toCssString(sb.build()));
 	}
 
 	@Override
@@ -157,7 +147,7 @@ public class GwtDomElement implements DomElement {
 		if (nativeElement == null) {
 			return;
 		}
-		nativeElement.setAttribute(PROP_STYLE, style.toCssString());
+		nativeElement.setAttribute(PROP_STYLE, document.toCssString(style));
 	}
 
 	@Override
@@ -224,7 +214,7 @@ public class GwtDomElement implements DomElement {
 					.top(new Length(scrollHeight - 1))
 					.width(new Length(1))
 					.height(new Length(1));
-			anchor.setAttribute(PROP_STYLE, sb.build().toCssString());
+			anchor.setAttribute(PROP_STYLE, document.toCssString(sb.build()));
 		} else {
 			removeAnchorElement();
 		}

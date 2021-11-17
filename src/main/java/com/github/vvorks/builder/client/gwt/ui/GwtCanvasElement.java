@@ -26,8 +26,8 @@ public class GwtCanvasElement extends GwtDomElement {
 
 	private GwtContext2d context2d;
 
-	public GwtCanvasElement(String tag) {
-		super(UiNode.HTML_CANVAS.equals(tag) ? Document.get().createCanvasElement() : null);
+	public GwtCanvasElement(GwtDomDocument doc, String tag) {
+		super(doc, UiNode.HTML_CANVAS.equals(tag) ? Document.get().createCanvasElement() : null);
 	}
 
 	@Override

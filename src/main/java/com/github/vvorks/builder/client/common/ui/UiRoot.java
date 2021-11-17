@@ -8,7 +8,10 @@ public class UiRoot extends UiNode {
 	public static final Class<?> THIS = UiRoot.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
 
-	public UiRoot() {
+	private DomDocument document;
+
+	public UiRoot(DomDocument document) {
+		this.document = document;
 	}
 
 	protected UiRoot(UiRoot src) {
@@ -18,6 +21,11 @@ public class UiRoot extends UiNode {
 	@Override
 	public UiRoot copy() {
 		return new UiRoot(this);
+	}
+
+	@Override
+	protected DomDocument getDocument() {
+		return document;
 	}
 
 	@Override

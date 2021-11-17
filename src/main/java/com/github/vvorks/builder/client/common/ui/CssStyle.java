@@ -60,20 +60,6 @@ public class CssStyle implements Jsonizable {
 		return Collections.unmodifiableSet(map.entrySet());
 	}
 
-	public String toCssString() {
-		if (map.isEmpty()) {
-			return "";
-		}
-		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String, Object> e : map.entrySet()) {
-			sb.append(";");
-			sb.append(e.getKey());
-			sb.append(":");
-			sb.append(String.valueOf(e.getValue()));
-		}
-		return sb.substring(1);
-	}
-
 	@Override
 	public Json toJson() {
 		Json json = Json.createObject();

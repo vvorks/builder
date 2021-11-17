@@ -1,7 +1,5 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.common.lang.Factory;
-
 public class UiCanvasFrame extends UiNode {
 
 	public UiCanvasFrame(String name) {
@@ -18,9 +16,9 @@ public class UiCanvasFrame extends UiNode {
 	}
 
 	@Override
-	protected DomElement createDomElement(String namespaceURI, String qualifiedName, UiNode owner) {
+	protected DomElement createDomElement(String ns, String tag, UiNode owner) {
 		if (owner != this) {
-			return Factory.newInstance(DomElement.class, NS_CANVAS, qualifiedName, owner);
+			return getDocument().createElement(NS_CANVAS, tag, owner);
 		}
 		return super.createDomElement(NS_HTML, HTML_CANVAS, owner);
 	}

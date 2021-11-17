@@ -69,7 +69,7 @@ public class UiApplication implements EventHandler {
 
 	private final UiRoot root;
 
-	private final DomDocument deviceContext;
+	private final DomDocument document;
 
 	private Map<String, Creator<UiPage>> pages;
 
@@ -80,8 +80,8 @@ public class UiApplication implements EventHandler {
 	private final WebSocket socket;
 
 	public UiApplication() {
-		this.root = new UiRoot();
-		this.deviceContext = Factory.newInstance(DomDocument.class);
+		this.document = Factory.newInstance(DomDocument.class);
+		this.root = new UiRoot(document);
 		this.pages = new LinkedHashMap<>();
 		this.pageStack = new ArrayDeque<>();
 		this.styles = new LinkedHashMap<>();
@@ -97,8 +97,8 @@ public class UiApplication implements EventHandler {
 		return root.getDomElement();
 	}
 
-	public DomDocument getDeviceContext() {
-		return deviceContext;
+	public DomDocument getDocument() {
+		return document;
 	}
 
 	public void registerStyle(UiStyle style) {
@@ -118,7 +118,7 @@ public class UiApplication implements EventHandler {
 		cssMap.put("BODY", BODY_STYLE);
 		cssMap.put("BODY,DIV", RESET_STYLE);
 		UiStyle.toCssStyles(styles.values(), cssMap);
-		deviceContext.injectStyleSheet(getClass(), cssMap);
+		document.injectStyleSheet(getClass(), cssMap);
 	}
 
 	protected void addPage(String tag, Creator<UiPage> creator) {

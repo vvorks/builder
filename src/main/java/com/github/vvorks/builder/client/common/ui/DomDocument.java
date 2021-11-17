@@ -8,4 +8,6 @@ public interface DomDocument {
 
 	public void deinjectStyleSheet(Class<?> cls);
 
+	public DomElement createElement(String namespaceURI, String qualifiedName, UiNode owner);
+
 }
