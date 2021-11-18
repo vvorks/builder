@@ -130,7 +130,7 @@ public class GwtDomElement implements DomElement {
 				.property("text-align", align);
 		if (Objects.equals(valign, UiAtomicStyle.VERTICAL_ALIGN_MIDDLE)) {
 			//上下中央ぞろえ
-			sb.top(Length.HALF).transform("translateY(-50%)");
+			sb.top(Length.HALF).property("transform", "translateY(-50%)");
 		} else if (Objects.equals(valign, UiAtomicStyle.VERTICAL_ALIGN_BOTTOM)) {
 			//下ぞろえ
 			sb.bottom(Length.ZERO);

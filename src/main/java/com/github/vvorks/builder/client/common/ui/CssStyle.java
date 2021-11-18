@@ -16,40 +16,8 @@ public class CssStyle implements Jsonizable {
 
 	private final Map<String, Object> map;
 
-	public boolean isVisible() {
-		return "visible".equals(map.get("visibility"));
-	}
-
-	public Length getLeft() {
-		return (Length) map.get("left");
-	}
-
-	public Length getTop() {
-		return (Length) map.get("top");
-	}
-
-	public Length getRight() {
-		return (Length) map.get("right");
-	}
-
-	public Length getBottom() {
-		return (Length) map.get("bottom");
-	}
-
-	public Length getWidth() {
-		return (Length) map.get("width");
-	}
-
-	public Length gethHeight() {
-		return (Length) map.get("height");
-	}
-
 	public Length getBorderWidth() {
 		return (Length) map.get("border-width");
-	}
-
-	public String getTransform() {
-		return (String) map.get("transform");
 	}
 
 	public Object getProperty(String name) {
@@ -111,10 +79,6 @@ public class CssStyle implements Jsonizable {
 
 		public Builder borderWidth(Length length) {
 			return property("border-width", length);
-		}
-
-		public Builder transform(String value) {
-			return property("transform", value);
 		}
 
 		public Builder property(String name, Object value) {

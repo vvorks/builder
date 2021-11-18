@@ -1302,16 +1302,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		b.property("position", "absolute");
 		b.borderWidth(borderWidth);
 		b.visible(isVisible());
-		if (left != null || right != null) {
-			b.left(left).right(right).width(width);
-		} else {
-			b.width(width).left(Length.HALF).transform("translateX(-50%)");
-		}
-		if (top != null || bottom != null) {
-			b.top(top).bottom(bottom).height(height);
-		} else {
-			b.height(height).top(Length.HALF).transform("translateY(-50%)");
-		}
+		b.left(left).right(right).width(width);
+		b.top(top).bottom(bottom).height(height);
 	}
 
 	protected void syncScroll() {
