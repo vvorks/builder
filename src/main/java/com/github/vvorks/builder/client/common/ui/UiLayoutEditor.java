@@ -32,9 +32,6 @@ public class UiLayoutEditor extends UiNode {
 	/** ドラッグ閾値（単位：PX） */
 	private static final int DRAG_THRETHOLD	= 4;
 
-	/** ハンドル片の枠幅（単位：PX） */
-	private static final int HANDLE_BORDER	= 1;
-
 	/** デフォルトグリッドサイズ */
 	private static final Length DEFAULT_GRID = new Length("1px");
 
@@ -50,6 +47,7 @@ public class UiLayoutEditor extends UiNode {
 			.font("6pt")
 			.align(UiAtomicStyle.TEXT_ALIGN_CENTER, UiAtomicStyle.VERTICAL_ALIGN_MIDDLE)
 			.borderColor(Colors.BLACK)
+			.borderWidth("1px")
 			.build();
 
 	/** 作成中ハンドルのスタイル */
@@ -64,6 +62,7 @@ public class UiLayoutEditor extends UiNode {
 			.font("12pt")
 			.align(UiAtomicStyle.TEXT_ALIGN_CENTER, UiAtomicStyle.VERTICAL_ALIGN_MIDDLE)
 			.borderColor(Colors.BLACK)
+			.borderWidth("2px")
 			.build();
 
 	/**
@@ -128,7 +127,6 @@ public class UiLayoutEditor extends UiNode {
 		public HandlePiece(Handle owner, HandleType type) {
 			this.owner = owner;
 			this.type = type;
-			setBorderWidth(HANDLE_BORDER);
 		}
 
 		@Override

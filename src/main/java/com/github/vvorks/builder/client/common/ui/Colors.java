@@ -3,6 +3,8 @@ package com.github.vvorks.builder.client.common.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.vvorks.builder.common.lang.Strings;
+
 /**
  * 色情報操作用クラス
  */
@@ -610,6 +612,17 @@ public class Colors {
 			}
 		}
 		return c;
+	}
+
+	public static String toCssColor(int c) {
+		if (isOpaque(c)) {
+			return Strings.sprintf("#%06x", c & 0xFFFFFF);
+		}
+		return Strings.sprintf("rgba(%d,%d,%d,%g)",
+				getRValue(c),
+				getGValue(c),
+				getBValue(c),
+				getAValue(c));
 	}
 
 }

@@ -52,16 +52,20 @@ public class GwtCanvasElement extends GwtDomElement {
 				context2d.reinit(canvas, width, height);
 			}
 		}
+		context2d.clearRect(0, 0, width, height); //TODO 仮
 		paintChildren(context2d);
 		changed = 0;
 	}
 
 	protected void paintChildren(GwtContext2d con) {
 		if (children != null) {
-			int bw = getBorderWidth();
-			con.moveOrigin(+bw, +bw);
+			int l = definedStyle.getBorderLeft().px(() -> width);
+			int t = definedStyle.getBorderTop().px(() -> height);
+			int r = definedStyle.getBorderRight().px(() -> width);
+			int b = definedStyle.getBorderBottom().px(() -> height);
+			con.moveOrigin(+l, +t);
 			con.moveOrigin(-scrollX, -scrollY);
-			Rect vp = new Rect(scrollX, scrollY, width - bw * 2, height - bw * 2);
+			Rect vp = new Rect(scrollX, scrollY, width - l - r, height - t - b);
 			for (GwtCanvasElement child : children) {
 				Rect vc = new Rect(child.left, child.top, child.width, child.height);
 				if (!vc.intersect(vp).isEmpty()) {
@@ -74,12 +78,12 @@ public class GwtCanvasElement extends GwtDomElement {
 				}
 			}
 			con.moveOrigin(+scrollX, +scrollY);
-			con.moveOrigin(-bw, -bw);
+			con.moveOrigin(-l, -t);
 		}
 	}
 
 	public void paint(GwtContext2d con) {
-		//TOODここで描画範囲絞り込み
+		//TOOD ここで描画範囲絞り込み
 		paintBackground(con);
 		paintContent(con);
 		paintChildren(con);
@@ -101,20 +105,26 @@ public class GwtCanvasElement extends GwtDomElement {
 		con.setStrokeColor(Colors.TRANSPARENT);
 		con.setFontFamily(definedStyle.getFontFamily());
 		con.setFontSize(definedStyle.getFontSize().px(() -> width));
-		int bw = getBorderWidth();
-		int dw = bw * 2;
+		int l = definedStyle.getBorderLeft().px(() -> width);
+		int t = definedStyle.getBorderTop().px(() -> height);
+		int r = definedStyle.getBorderRight().px(() -> width);
+		int b = definedStyle.getBorderBottom().px(() -> height);
 		int lineHeight = definedStyle.getLineHeight().px(() -> height);
 		int flags = get2dAlign(definedStyle) | GwtContext2d.DRAW_ELLIPSIS;
-		con.drawText(bw, bw, width - dw, height - dw, text, lineHeight, flags);
+		con.drawText(l, t, width - l - r, height - t - b, text, lineHeight, flags);
 	}
 
 	protected void paintBorder(GwtContext2d con) {
-		con.setFillColor(Colors.TRANSPARENT);
-		int bw = getBorderWidth();
-		int hw = (int) Math.round(bw / 2.0);
-		con.setStrokeColor(definedStyle.getBorderColor());
-		con.setStrokeWidth(bw);
-		con.drawRect(hw, hw, width - bw, height - bw);
+		int l = definedStyle.getBorderLeft().px(() -> width);
+		int t = definedStyle.getBorderTop().px(() -> height);
+		int r = definedStyle.getBorderRight().px(() -> width);
+		int b = definedStyle.getBorderBottom().px(() -> height);
+		con.setStrokeWidth(0);
+		con.setFillColor(definedStyle.getBorderColor());
+		con.drawRect(0, 0, width, t);
+		con.drawRect(0, t, r, height - t - b);
+		con.drawRect(width - l, t, width, height - t - b);
+		con.drawRect(0, height - b, width, height);
 	}
 
 	private void setParentLocal(GwtCanvasElement newParent) {
@@ -143,10 +153,6 @@ public class GwtCanvasElement extends GwtDomElement {
 		if (children != null) {
 			children.remove(child);
 		}
-	}
-
-	private int getBorderWidth() {
-		return localStyle.getBorderWidth().px(() -> width);
 	}
 
 	private static final Map<String, Integer> ALIGN_MAP = new HashMap<>();

@@ -221,9 +221,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	/**	論理高 */
 	private Length scrollHeight;
 
-	/** ボーダーの太さ */
-	private Length borderWidth;
-
 	/** スタイル */
 	private UiStyle style;
 
@@ -261,7 +258,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		this.scrollHeight = src.scrollHeight;
 		this.scrollLeft = src.scrollLeft;
 		this.scrollTop = src.scrollTop;
-		this.borderWidth = src.borderWidth;
 		this.style = src.style;
 		//子孫をコピー
 		UiNode child = src.getFirstChild();
@@ -891,6 +887,38 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		}
 	}
 
+	public Length getBorderLeft() {
+		return (style != null) ? style.getAtomicStyleOf(this).getBorderLeft() : Length.ZERO;
+	}
+
+	public int getBorderLeftPx() {
+		return getBorderLeft().px(() -> getParentWidthPx());
+	}
+
+	public Length getBorderTop() {
+		return (style != null) ? style.getAtomicStyleOf(this).getBorderTop() : Length.ZERO;
+	}
+
+	public int getBorderTopPx() {
+		return getBorderTop().px(() -> getParentHeightPx());
+	}
+
+	public Length getBorderRight() {
+		return (style != null) ? style.getAtomicStyleOf(this).getBorderRight() : Length.ZERO;
+	}
+
+	public int getBorderRightPx() {
+		return getBorderRight().px(() -> getParentWidthPx());
+	}
+
+	public Length getBorderBottom() {
+		return (style != null) ? style.getAtomicStyleOf(this).getBorderBottom() : Length.ZERO;
+	}
+
+	public int getBorderBottomPx() {
+		return getBorderBottom().px(() -> getParentHeightPx());
+	}
+
 	public Length getScrollLeft() {
 		return scrollLeft;
 	}
@@ -958,7 +986,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public int getScrollWidthPx() {
-		int result = getWidthPx() - getBorderWidthPx() * 2;
+		int result = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
 		if (scrollWidth != null) {
 			result = Math.max(result, scrollWidth.px(() -> getParentWidthPx()));
 		}
@@ -988,7 +1016,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public int getScrollHeightPx() {
-		int result = getHeightPx() - getBorderWidthPx() * 2;
+		int result = getHeightPx() - getBorderLeftPx() - getBorderRightPx();
 		if (scrollHeight != null) {
 			result = Math.max(result, scrollHeight.px(() -> getParentHeightPx()));
 		}
@@ -1102,36 +1130,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		}
 	}
 
-	public Length getBorderWidth() {
-		return borderWidth;
-	}
-
-	public int getBorderWidthPx() {
-		int result;
-		if (borderWidth != null) {
-			result = borderWidth.px(() -> 0);
-		} else {
-			result = 0;
-		}
-		return result;
-	}
-
-	public void setBorderWidth(String newValue) {
-		setBorderWidth(newValue == null ? null : new Length(newValue));
-	}
-
-	public void setBorderWidth(int newValue) {
-		setBorderWidth(new Length(newValue));
-	}
-
-	public void setBorderWidth(Length newValue) {
-		if (!Objects.equals(borderWidth, newValue)) {
-			borderWidth = newValue;
-			setChanged(CHANGED_DISPLAY);
-			clearDescendantsCache();
-		}
-	}
-
 	protected UiNode getFocus() {
 		return getApplication().getFocus();
 	}
@@ -1157,9 +1155,11 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	/** このノードの表示上の矩形を自身の座標系で返す */
 	public Rect getRectangleOnThis() {
-		int bw = getBorderWidthPx();
-		return new Rect(getScrollLeftPx(), getScrollTopPx(),
-				getWidthPx() - bw * 2, getHeightPx() - bw * 2);
+		return new Rect(
+				getScrollLeftPx(),
+				getScrollTopPx(),
+				getWidthPx() - getBorderLeftPx() - getBorderRightPx(),
+				getHeightPx() - getBorderTopPx() - getBorderBottomPx());
 	}
 
 	public UiNode getBlocker() {
@@ -1195,9 +1195,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 * 		-1:上位座標系への変換 +1:下位座標系への変換
 	 */
 	public void translate(Point pt, int sig) {
-		int borderWidthPx = getBorderWidthPx();
 		pt.move(-sig * getLeftPx()      , -sig * getTopPx()      );
-		pt.move(-sig * borderWidthPx    , -sig * borderWidthPx   );
+		pt.move(-sig * getBorderLeftPx(), -sig * getBorderTopPx());
 		pt.move(+sig * getScrollLeftPx(), +sig * getScrollTopPx());
 	}
 
@@ -1300,7 +1299,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	protected void syncElementStyle(CssStyle.Builder b) {
 		b.property("position", "absolute");
-		b.borderWidth(borderWidth);
 		b.visible(isVisible());
 		b.left(left).right(right).width(width);
 		b.top(top).bottom(bottom).height(height);
@@ -1433,7 +1431,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		json.setString("scrollTop", scrollTop);
 		json.setString("scrollWidth", scrollWidth);
 		json.setString("scrollHeight", scrollHeight);
-		json.setString("borderWidth", borderWidth);
 		Json children = json.setNewArray("children");
 		for (UiNode child : getChildren()) {
 			children.add(child.toJson());
@@ -1512,18 +1509,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		public Builder style(UiStyle s) {
 			UiNode node = stack.peek();
 			node.setStyle(s);
-			return this;
-		}
-
-		public Builder border(String value) {
-			UiNode node = stack.peek();
-			node.setBorderWidth(value);
-			return this;
-		}
-
-		public Builder border(double value) {
-			UiNode node = stack.peek();
-			node.setBorderWidth(encode(value));
 			return this;
 		}
 

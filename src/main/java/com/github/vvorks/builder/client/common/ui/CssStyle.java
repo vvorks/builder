@@ -16,10 +16,6 @@ public class CssStyle implements Jsonizable {
 
 	private final Map<String, Object> map;
 
-	public Length getBorderWidth() {
-		return (Length) map.get("border-width");
-	}
-
 	public Object getProperty(String name) {
 		return map.get(name);
 	}
@@ -75,10 +71,6 @@ public class CssStyle implements Jsonizable {
 
 		public Builder height(Length length) {
 			return property("height", length);
-		}
-
-		public Builder borderWidth(Length length) {
-			return property("border-width", length);
 		}
 
 		public Builder property(String name, Object value) {

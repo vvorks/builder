@@ -10,7 +10,6 @@ public class UiBox extends UiNode {
 
 	public UiBox() {
 		super();
-		setBorderWidth("2px");
 	}
 
 	public UiBox(UiBox src) {

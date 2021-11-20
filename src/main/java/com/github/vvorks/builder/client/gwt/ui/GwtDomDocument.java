@@ -6,6 +6,7 @@ import java.util.Map;
 import com.github.vvorks.builder.client.common.ui.CssStyle;
 import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.DomElement;
+import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.google.gwt.dom.client.StyleElement;
@@ -85,9 +86,19 @@ public class GwtDomDocument implements DomDocument {
 			String propStr = String.valueOf(propValue);
 			boundsBits |= getBoundsBit(propStr);
 			if (propName.equals("background-image")) {
-				propStr = "url(\"" + propStr + "\")";
-				sb.append(propName).append(":").append(propStr).append(";");
+				sb.append(propName).append(":");
+					sb.append("url(\"").append(propStr).append("\");");
 				sb.append("background-size:100% 100%;");
+			} else if (propName.equals("border-image")){
+				sb.append("border-image-source:");
+					sb.append("url(\"").append(propStr).append("\");");
+				sb.append("border-image-slice:");
+					sb.append(toPixel(style, "border-top-width"));
+					sb.append(" ").append(toPixel(style, "border-right-width"));
+					sb.append(" ").append(toPixel(style, "border-bottom-width"));
+					sb.append(" ").append(toPixel(style, "border-left-width"));
+					sb.append(" fill");
+					sb.append(";");
 			} else {
 				sb.append(propName).append(":").append(propStr).append(";");
 			}
@@ -100,6 +111,10 @@ public class GwtDomDocument implements DomDocument {
 			sb.append("top:50%;transform:translateY(-50%)");
 		}
 		return sb.toString();
+	}
+
+	private int toPixel(CssStyle style, String name) {
+		return ((Length) style.getProperty(name)).px(()->0);
 	}
 
 	@Override

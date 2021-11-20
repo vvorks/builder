@@ -2,6 +2,7 @@ package com.github.vvorks.builder.client.gwt.ui;
 
 import java.util.Objects;
 
+import com.github.vvorks.builder.client.common.ui.Colors;
 import com.github.vvorks.builder.client.common.ui.CssStyle;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
@@ -108,11 +109,6 @@ public class GwtDomElement implements DomElement {
 		if (innerElement == null) {
 			return;
 		}
-		if (style != null) {
-			innerElement.setAttribute(PROP_CLASS, style.getCssClassName());
-		} else {
-			innerElement.removeAttribute(PROP_CLASS);
-		}
 		String align;
 		String valign;
 		if (style != null) {
@@ -125,6 +121,8 @@ public class GwtDomElement implements DomElement {
 		CssStyle.Builder sb = new CssStyle.Builder()
 				.property("position", "absolute")
 				.property("overflow", "hidden")
+				.property("border-width", Length.ZERO)
+				.property("background-color", Colors.toCssColor(Colors.TRANSPARENT))
 				.left(Length.ZERO)
 				.width(Length.FULL)
 				.property("text-align", align);
