@@ -15,6 +15,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.media.client.Video;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -65,11 +66,14 @@ public class GwtEntryPoint implements EntryPoint {
 				video.addSource("video/sample_1920x1080.mp4");
 				root.add(video);
 			}
-			//パネル準備
-			DomPanel panel = new DomPanel();
-			panel.setWidth("100%");
-			panel.setHeight("100%");
+			//backyard準備
+			LayoutPanel backyard = new LayoutPanel();
+			root.add(backyard);
+			setWidgetOutOfScreen(backyard);
+			//メインパネル準備
+			DomPanel panel = new DomPanel(backyard);
 			root.add(panel);
+			setWidget100Percent(panel);
 			panel.setFocus(true);
 			//ページ読み込み
 			panel.load(fragment.getTag(), fragment.getParameters());
@@ -86,6 +90,28 @@ public class GwtEntryPoint implements EntryPoint {
 		style.setTop(0, Unit.PX);
 		style.setWidth(value, unit);
 		style.setHeight(value, unit);
+	}
+
+	private void setWidgetOutOfScreen(Widget widget) {
+		Style style = widget.getElement().getStyle();
+		style.setPosition(Position.ABSOLUTE);
+		style.setMargin(0, Unit.PX);
+		style.setBorderWidth(0, Unit.PX);
+		style.setPadding(0, Unit.PX);
+		style.setLeft(-100, Unit.PCT);
+		style.setTop(0, Unit.PCT);
+		style.setWidth(100, Unit.PCT);
+		style.setHeight(100, Unit.PCT);
+	}
+
+	private void setWidget100Percent(Widget widget) {
+		Style style = widget.getElement().getStyle();
+		style.setPosition(Position.ABSOLUTE);
+		style.setMargin(0, Unit.PX);
+		style.setBorderWidth(0, Unit.PX);
+		style.setPadding(0, Unit.PX);
+		style.setWidth(100, Unit.PCT);
+		style.setHeight(100, Unit.PCT);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.github.vvorks.builder.client.app;
 import java.util.Map;
 
 import com.github.vvorks.builder.client.common.ui.Colors;
+import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.client.common.ui.UiBundleStyle;
@@ -44,7 +45,8 @@ public class BuilderUiApplication extends UiApplication {
 			.build();
 
 	@SuppressWarnings("unchecked")
-	public BuilderUiApplication() {
+	public BuilderUiApplication(DomDocument doc) {
+		super(doc);
 		final UiApplication app = this;
 		addPage("", args -> new TestPage("testpage", app, (Map<String, String>)args[0]));
 		registerStyle(BASIC);

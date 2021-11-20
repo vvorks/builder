@@ -2,6 +2,7 @@ package com.github.vvorks.builder.client.gwt.ui;
 
 import java.util.Map;
 
+import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.KeyCodes;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.common.lang.Factory;
@@ -22,6 +23,7 @@ import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.Panel;
 
 public class DomPanel extends FocusWidget {
 
@@ -30,9 +32,10 @@ public class DomPanel extends FocusWidget {
 
 	protected final UiApplication app;
 
-	public DomPanel() {
+	public DomPanel(Panel backyard) {
 		//アプリケーションの作成
-		app = Factory.newInstance(UiApplication.class);
+		DomDocument doc = new GwtDomDocument(backyard);
+		app = Factory.newInstance(UiApplication.class, doc);
 		//イベントハンドラの初期化
 		addKeyDownHandler(event -> onKeyDown(event));
 		addKeyPressHandler(event -> onKeyPress(event));
@@ -50,7 +53,6 @@ public class DomPanel extends FocusWidget {
 		//ルートノードの作成とこのパネルのElementとの関連付け
 		Element e = ((GwtDomElement) app.getRootElement()).getNativeElement();
 		panelElement.appendChild(e);
-
 	}
 
 	private void onKeyDown(KeyDownEvent event) {

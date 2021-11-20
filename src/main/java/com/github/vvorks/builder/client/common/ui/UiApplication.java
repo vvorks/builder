@@ -79,8 +79,8 @@ public class UiApplication implements EventHandler {
 
 	private final WebSocket socket;
 
-	public UiApplication() {
-		this.document = Factory.newInstance(DomDocument.class);
+	public UiApplication(DomDocument doc) {
+		this.document = doc;
 		this.root = new UiRoot(document);
 		this.pages = new LinkedHashMap<>();
 		this.pageStack = new ArrayDeque<>();

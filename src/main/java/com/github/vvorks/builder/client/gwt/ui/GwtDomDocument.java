@@ -11,6 +11,7 @@ import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.user.client.ui.Panel;
 
 public class GwtDomDocument implements DomDocument {
 
@@ -39,6 +40,12 @@ public class GwtDomDocument implements DomDocument {
 	/** 使用ユニット毎のスタイル要素を保持するmap */
 	private Map<Class<?>, StyleElement> styles = new LinkedHashMap<>();
 
+	private final Panel backyard;
+
+	public GwtDomDocument(Panel backyard) {
+		this.backyard = backyard;
+	}
+
 	@Override
 	public DomElement createElement(String ns, String tag, UiNode owner) {
 		if (isCanvas(ns, tag)) {
@@ -64,6 +71,16 @@ public class GwtDomDocument implements DomDocument {
 			styles.put(cls, style);
 		} else if (!cssString.equals(style.getInnerText())) {
 			StyleInjector.setContents(style, cssString);
+		}
+	}
+
+	@Override
+	public void deinjectStyleSheet(Class<?> cls) {
+		Asserts.requireNotNull(cls);
+		StyleElement style = styles.get(cls);
+		if (style != null) {
+			styles.remove(cls);
+			style.removeFromParent();
 		}
 	}
 
@@ -117,14 +134,8 @@ public class GwtDomDocument implements DomDocument {
 		return ((Length) style.getProperty(name)).px(()->0);
 	}
 
-	@Override
-	public void deinjectStyleSheet(Class<?> cls) {
-		Asserts.requireNotNull(cls);
-		StyleElement style = styles.get(cls);
-		if (style != null) {
-			styles.remove(cls);
-			style.removeFromParent();
-		}
+	public Panel getBackyard() {
+		return backyard;
 	}
 
 }
