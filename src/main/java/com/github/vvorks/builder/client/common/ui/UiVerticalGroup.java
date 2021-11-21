@@ -30,7 +30,7 @@ public class UiVerticalGroup extends UiGroup {
 		int spc = getSpacingHeightPx();
 		int total = spc;
 		Length lr = getSpacingWidth();
-		for (UiNode child : getChildrenIf(c -> !c.isDeletedAll() && c.isVisibleAll())) {
+		for (UiNode child : getChildrenIf(c -> !c.isDeleted() && c.isVisible())) {
 			Length top = new Length(total);
 			Length height = child.getHeight();
 			child.setBounds(lr, top, lr, null, null, height);

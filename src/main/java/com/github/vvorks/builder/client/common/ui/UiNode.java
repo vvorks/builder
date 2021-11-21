@@ -575,6 +575,22 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return list.indexOf(ancestor);
 	}
 
+	public UiNode insertChild(UiNode newChild) {
+		Asserts.require(newChild != null);
+		if (newChild.parent == this) {
+			return newChild;
+		}
+		if (newChild.parent != null) {
+			newChild.parent.removeChild(newChild);
+		}
+		UiNode younger = this.firstChild;
+		this.firstChild = newChild;
+		newChild.nextSibling = younger;
+		newChild.parent = this;
+		this.setChanged(CHANGED_HIERARCHY);
+		return newChild;
+	}
+
 	public UiNode appendChild(UiNode newChild) {
 		return insertBefore(newChild, null);
 	}
@@ -621,6 +637,27 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		oldChild.nextSibling = null;
 		this.setChanged(CHANGED_HIERARCHY);
 		return oldChild;
+	}
+
+	public UiNode removeFirstChild() {
+		UiNode oldChild = firstChild;
+		this.firstChild = oldChild.nextSibling;
+		oldChild.parent = null;
+		oldChild.nextSibling = null;
+		this.setChanged(CHANGED_HIERARCHY);
+		return oldChild;
+	}
+
+	public UiNode clearChildren() {
+		UiNode result = firstChild;
+		firstChild = null;
+		return result;
+	}
+
+	public UiNode clearNextSibling() {
+		UiNode result = nextSibling;
+		nextSibling = null;
+		return result;
 	}
 
 	public Iterable<UiNode> removeChildrenIf(Predicate<UiNode> condition) {
@@ -832,6 +869,18 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return result;
 	}
 
+	public int getWidthPx(final int parentWidthPx) {
+		int result;
+		if (width != null) {
+			result = width.px(() -> parentWidthPx);
+		} else {
+			int leftPx = left.px(() -> parentWidthPx);
+			int rightPx = right.px(() -> parentWidthPx);
+			result = parentWidthPx - leftPx - rightPx;
+		}
+		return result;
+	}
+
 	public void setWidth(String value) {
 		setWidth(value == null ? null : new Length(value));
 	}
@@ -861,6 +910,18 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			result = height.px(() -> getParentHeightPx());
 		} else {
 			final int parentHeightPx = getParentHeightPx();
+			int topPx = top.px(() -> parentHeightPx);
+			int bottomPx = bottom.px(() -> parentHeightPx);
+			result = parentHeightPx - topPx - bottomPx;
+		}
+		return result;
+	}
+
+	public int getHeightPx(final int parentHeightPx) {
+		int result;
+		if (height != null) {
+			result = height.px(() -> parentHeightPx);
+		} else {
 			int topPx = top.px(() -> parentHeightPx);
 			int bottomPx = bottom.px(() -> parentHeightPx);
 			result = parentHeightPx - topPx - bottomPx;
@@ -1016,7 +1077,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public int getScrollHeightPx() {
-		int result = getHeightPx() - getBorderLeftPx() - getBorderRightPx();
+		int result = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
 		if (scrollHeight != null) {
 			result = Math.max(result, scrollHeight.px(() -> getParentHeightPx()));
 		}
