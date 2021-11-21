@@ -28,7 +28,7 @@ public class GwtDomElement implements DomElement {
 	protected static final int CHANGED_SCROLL_WIDTH		= 0x0040;
 	protected static final int CHANGED_SCROLL_HEIGHT	= 0x0080;
 
-	private final GwtDomDocument document;
+	protected final GwtDomDocument document;
 
 	protected final Element nativeElement;
 

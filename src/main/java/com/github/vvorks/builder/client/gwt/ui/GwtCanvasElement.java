@@ -14,6 +14,7 @@ import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.ui.Image;
 
 public class GwtCanvasElement extends GwtDomElement {
 
@@ -91,10 +92,24 @@ public class GwtCanvasElement extends GwtDomElement {
 	}
 
 	protected void paintBackground(GwtContext2d con) {
-		con.setFillColor(definedStyle.getBackgroundColor());
-		con.setStrokeColor(Colors.TRANSPARENT);
-		con.setStrokeWidth(0);
-		con.drawRect(0, 0, width, height);
+		String bdUrl = definedStyle.getBorderImage();
+		String bkUrl = definedStyle.getBackgroundImage();
+		if (bdUrl != null) {
+			Image img = document.getImageResource(bdUrl);
+			int l = definedStyle.getBorderLeft().px(() -> width);
+			int t = definedStyle.getBorderTop().px(() -> height);
+			int r = definedStyle.getBorderRight().px(() -> width);
+			int b = definedStyle.getBorderBottom().px(() -> height);
+			con.drawBorderImage(img, 0, 0, width, height, l, t, r, b);
+		} else if (bkUrl != null) {
+			Image img = document.getImageResource(bkUrl);
+			con.drawImage(img, 0, 0, width, height);
+		} else {
+			con.setFillColor(definedStyle.getBackgroundColor());
+			con.setStrokeColor(Colors.TRANSPARENT);
+			con.setStrokeWidth(0);
+			con.drawRect(0, 0, width, height);
+		}
 	}
 
 	protected void paintContent(GwtContext2d con) {
@@ -115,16 +130,22 @@ public class GwtCanvasElement extends GwtDomElement {
 	}
 
 	protected void paintBorder(GwtContext2d con) {
-		int l = definedStyle.getBorderLeft().px(() -> width);
-		int t = definedStyle.getBorderTop().px(() -> height);
-		int r = definedStyle.getBorderRight().px(() -> width);
-		int b = definedStyle.getBorderBottom().px(() -> height);
-		con.setStrokeWidth(0);
-		con.setFillColor(definedStyle.getBorderColor());
-		con.drawRect(0, 0, width, t);
-		con.drawRect(0, t, r, height - t - b);
-		con.drawRect(width - l, t, width, height - t - b);
-		con.drawRect(0, height - b, width, height);
+		String bdUrl = definedStyle.getBorderImage();
+		String bkUrl = definedStyle.getBackgroundImage();
+		if (bdUrl != null) {
+		} else if (bkUrl != null) {
+		} else {
+			int l = definedStyle.getBorderLeft().px(() -> width);
+			int t = definedStyle.getBorderTop().px(() -> height);
+			int r = definedStyle.getBorderRight().px(() -> width);
+			int b = definedStyle.getBorderBottom().px(() -> height);
+			con.setStrokeWidth(0);
+			con.setFillColor(definedStyle.getBorderColor());
+			con.drawRect(0, 0, width, t);
+			con.drawRect(0, t, r, height - t - b);
+			con.drawRect(width - l, t, width, height - t - b);
+			con.drawRect(0, height - b, width, height);
+		}
 	}
 
 	private void setParentLocal(GwtCanvasElement newParent) {

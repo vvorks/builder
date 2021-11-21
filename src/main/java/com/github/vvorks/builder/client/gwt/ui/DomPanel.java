@@ -30,11 +30,15 @@ public class DomPanel extends FocusWidget {
 	public static final Class<?> THIS = DomPanel.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
 
+	protected final Panel backyard;
+
 	protected final UiApplication app;
 
 	public DomPanel(Panel backyard) {
+		//backyard初期化
+		this.backyard = backyard;
 		//アプリケーションの作成
-		DomDocument doc = new GwtDomDocument(backyard);
+		DomDocument doc = new GwtDomDocument(this);
 		app = Factory.newInstance(UiApplication.class, doc);
 		//イベントハンドラの初期化
 		addKeyDownHandler(event -> onKeyDown(event));
@@ -53,6 +57,10 @@ public class DomPanel extends FocusWidget {
 		//ルートノードの作成とこのパネルのElementとの関連付け
 		Element e = ((GwtDomElement) app.getRootElement()).getNativeElement();
 		panelElement.appendChild(e);
+	}
+
+	public Panel getBackyard() {
+		return backyard;
 	}
 
 	private void onKeyDown(KeyDownEvent event) {
@@ -158,6 +166,11 @@ public class DomPanel extends FocusWidget {
 		int screenHeight = event.getHeight();
 		int timestamp = newTimestamp();
 		app.processResize(screenWidth, screenHeight, timestamp);
+	}
+
+	public void onImageLoaded(String url) {
+		int timestamp = newTimestamp();
+		app.processImageLoaded(url, timestamp);
 	}
 
 	private int getTimeStamp(DomEvent<?> event) {

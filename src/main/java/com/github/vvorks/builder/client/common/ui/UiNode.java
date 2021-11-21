@@ -1396,6 +1396,29 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		}
 	}
 
+	@Override
+	public int onImageLoaded(String url) {
+		int result = onImageLoaded(this, url);
+		UiNode child = firstChild;
+		while (child != null) {
+			result |= child.onImageLoaded(url);
+			child = child.getNextSibling();
+		}
+		return result;
+	}
+
+	protected int onImageLoaded(UiNode node, String url) {
+		int result = EVENT_IGNORED;
+		if (style != null) {
+			UiAtomicStyle as = style.getAtomicStyleOf(this);
+			if (url.equals(as.getBackgroundImage()) || url.equals(as.getBorderImage())) {
+				setChanged(CHANGED_DISPLAY);
+				result = EVENT_AFFECTED;
+			}
+		}
+		return result;
+	}
+
 	public void onMount() {
 		UiNode child = firstChild;
 		while (child != null) {

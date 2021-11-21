@@ -8,6 +8,8 @@ import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.CanvasElement;
+import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.user.client.ui.Image;
 
 public class GwtContext2d {
 
@@ -620,6 +622,37 @@ public class GwtContext2d {
 			pathRenderer = new PathRenderer();
 		}
 		pathRenderer.render(con, x, y, path);
+	}
+
+	public void drawImage(Image image, int x, int y, int w, int h) {
+		x += xOrigin;
+		y += yOrigin;
+		ImageElement elem = ImageElement.as(image.getElement());
+		int sw = image.getWidth();
+		int sh = image.getHeight();
+		con.drawImage(elem, 0, 0, sw, sh, x, y, w, h);
+	}
+
+	public void drawBorderImage(Image image, int x, int y, int w, int h, int bl, int bt, int br, int bb) {
+		x += xOrigin;
+		y += yOrigin;
+		ImageElement elem = ImageElement.as(image.getElement());
+		int dw = image.getWidth();
+		int dh = image.getHeight();
+		if (dw <= bl + br || dh <= bt + bb) {
+			return;
+		}
+		int[] sxs = new int[] {0, 0 + bl, 0 + dw - br, 0 + dw};
+		int[] sys = new int[] {0, 0 + bt, 0 + dh - bb, 0 + dh};
+		int[] dxs = new int[] {x, x + bl, x + w  - br, x + w };
+		int[] dys = new int[] {y, y + bt, y + h  - bb, y + h };
+		for (int r = 0 ;r < 3; r++) {
+			for (int c = 0; c < 3; c++) {
+				con.drawImage(elem,
+					sxs[c], sys[r], sxs[c + 1] - sxs[c], sys[r + 1] - sys[r],
+					dxs[c], dys[r], dxs[c + 1] - dxs[c], dys[r + 1] - dys[r]);
+			}
+		}
 	}
 
 	/**

@@ -11,6 +11,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.media.client.Video;
 import com.google.gwt.user.client.Window;
@@ -69,7 +70,7 @@ public class GwtEntryPoint implements EntryPoint {
 			//backyard準備
 			LayoutPanel backyard = new LayoutPanel();
 			root.add(backyard);
-			setWidgetOutOfScreen(backyard);
+			setWidgetHidden(backyard);
 			//メインパネル準備
 			DomPanel panel = new DomPanel(backyard);
 			root.add(panel);
@@ -92,13 +93,14 @@ public class GwtEntryPoint implements EntryPoint {
 		style.setHeight(value, unit);
 	}
 
-	private void setWidgetOutOfScreen(Widget widget) {
+	private void setWidgetHidden(Widget widget) {
 		Style style = widget.getElement().getStyle();
+		style.setVisibility(Visibility.HIDDEN);
 		style.setPosition(Position.ABSOLUTE);
 		style.setMargin(0, Unit.PX);
 		style.setBorderWidth(0, Unit.PX);
 		style.setPadding(0, Unit.PX);
-		style.setLeft(-100, Unit.PCT);
+		style.setLeft(0, Unit.PCT);
 		style.setTop(0, Unit.PCT);
 		style.setWidth(100, Unit.PCT);
 		style.setHeight(100, Unit.PCT);

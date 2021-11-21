@@ -477,6 +477,23 @@ public class UiApplication implements EventHandler {
 		}
 	}
 
+	public int processImageLoaded(String url, int time) {
+		try {
+			LOGGER.trace("processImageLoaded(%s, %d)", url, time);
+			int result = EVENT_IGNORED;
+			result |= root.onImageLoaded(url);
+			result |= this.onImageLoaded(url);
+			if ((result & EVENT_AFFECTED) != 0) {
+				refresh();
+			}
+			return result;
+		} catch (Exception err) {
+			LOGGER.error(err);
+			throw err;
+		}
+
+	}
+
 	private UiNode getKeyTarget() {
 		return getFocus();
 	}
@@ -669,6 +686,11 @@ public class UiApplication implements EventHandler {
 	public void onResize(int screenWidth, int screenHeight) {
 		Metrics met = Factory.getInstance(Metrics.class);
 		met.setScreenSize(screenWidth, screenHeight);
+	}
+
+	@Override
+	public int onImageLoaded(String url) {
+		return EVENT_IGNORED;
 	}
 
 	private int setClicking(UiNode node) {
