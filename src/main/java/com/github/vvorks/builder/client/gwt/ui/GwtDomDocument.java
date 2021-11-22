@@ -13,6 +13,7 @@ import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.ui.Image;
@@ -20,9 +21,8 @@ import com.google.gwt.user.client.ui.Panel;
 
 public class GwtDomDocument implements DomDocument {
 
-	private static final String[] BOUNDS_KEYS = {
-		"left", "right", "width", "top", "bottom", "height"
-	};
+	public static final Class<?> THIS = GwtDomDocument.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private static final int LEFT_BIT	= 0x0001;
 	private static final int RIGHT_BIT	= 0x0002;
@@ -33,13 +33,14 @@ public class GwtDomDocument implements DomDocument {
 	private static final int HORZ_BITS	= LEFT_BIT|RIGHT_BIT|WIDTH_BIT;
 	private static final int VERT_BITS	= TOP_BIT|BOTTOM_BIT|HEIGHT_BIT;
 
-	private static int getBoundsBit(String key) {
-		for (int i = 0; i < BOUNDS_KEYS.length; i++) {
-			if (BOUNDS_KEYS[i].equals(key)) {
-				return 1 << i;
-			}
-		}
-		return 0;
+	private static final Map<String, Integer> BOUNDS_MAP = new HashMap<>();
+	static {
+		BOUNDS_MAP.put("left", LEFT_BIT);
+		BOUNDS_MAP.put("right", RIGHT_BIT);
+		BOUNDS_MAP.put("width", WIDTH_BIT);
+		BOUNDS_MAP.put("top", TOP_BIT);
+		BOUNDS_MAP.put("bottom", BOTTOM_BIT);
+		BOUNDS_MAP.put("height", HEIGHT_BIT);
 	}
 
 	/** 使用ユニット毎のスタイル要素を保持するmap */
@@ -122,7 +123,7 @@ public class GwtDomDocument implements DomDocument {
 			String propName = p.getKey();
 			Object propValue = p.getValue();
 			String propStr = String.valueOf(propValue);
-			boundsBits |= getBoundsBit(propStr);
+			boundsBits |= BOUNDS_MAP.getOrDefault(propName, 0);
 			if (propName.equals("background-image")) {
 				sb.append(propName).append(":");
 					sb.append("url(\"").append(propStr).append("\");");
@@ -142,11 +143,11 @@ public class GwtDomDocument implements DomDocument {
 			}
 		}
 		if ((boundsBits & HORZ_BITS) == WIDTH_BIT && (boundsBits & VERT_BITS) == HEIGHT_BIT) {
-			sb.append("left:50%;top:50%;transform:translate(-50%,-50%)");
+			sb.append("left:0;right:0;top:0;bottom:0;margin:auto;");
 		} else if ((boundsBits & HORZ_BITS) == WIDTH_BIT ) {
-			sb.append("left:50%;transform:translateX(-50%)");
+			sb.append("left:0;right:0;margin:0 auto;");
 		} else if ((boundsBits & VERT_BITS) == HEIGHT_BIT) {
-			sb.append("top:50%;transform:translateY(-50%)");
+			sb.append("top:0;bottom:0;margin:auto 0;");
 		}
 		return sb.toString();
 	}
