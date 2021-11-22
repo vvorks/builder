@@ -12,6 +12,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 /**
  * レイアウトエディタ
  * TODO なんかポイント位置が微妙にずれている気がする（Borderのずれ？）
+ * TODO ハンドルクリック後？ハンドルだけが移動する不具合あり。要調査
  * TODO コピー＆ペースト操作（クリップボードが必要）
  * TODO ロード・セーブ
  * TODO テンプレートノード設定（レイアウトエディタ機能外）
@@ -22,6 +23,9 @@ public class UiLayoutEditor extends UiNode {
 
 	public static final Class<?> THIS = UiLayoutEditor.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
+
+	/** 非選択ノード内でドラッグした場合、当該ノード内での新規作成操作をするか否か */
+	private static final boolean NEW_IN_PARENT = false;
 
 	/** ハンドル片の幅・高さ（単位：PX） */
 	private static final int HANDLE_SIZE	= 8;
@@ -835,21 +839,34 @@ public class UiLayoutEditor extends UiNode {
 		int result = EVENT_CONSUMED;
 		if (mouseState == MouseState.DOWN && isDragged(xDown, yDown, x, y)) {
 			if (dragMode == HandleType.OB) {
-				//既存選択をクリア
-				clearHandles();
-				//ダミーノード作成
-				UiNode newNode = addNewNode(this, new UiPhantom(), xDown, yDown, x, y);
-				//ハンドル分サイズを調整
-				Rect r = newNode.getRectangleOnParent();
-				r.inflate(-HANDLE_HALF, -HANDLE_HALF);
-				newNode.updateBounds(r);
-				//ハンドルを作成
-				masterHandle = addHandle(newNode);
-				//影付きスタイル設定
-				masterHandle.setStyle(SHADE_STYLE);
-				//ハンドル片を非表示化
-				masterHandle.setHandleVisible(false);
-				masterHandleIsNew = true;
+				if (masterTarget != null && !NEW_IN_PARENT) {
+					//非選択ノードでのドラッグ→移動モード
+					//モードの再設定
+					dragMode = HandleType.C;
+					//ハンドル追加モードでなければ、既存選択をクリア
+					if (!isCtrl(mods)) {
+						clearHandles();
+					}
+					//ハンドルを作成
+					masterHandle = addHandle(masterTarget);
+				} else {
+					//背景でのドラッグ→新規作成モード
+					//既存選択をクリア
+					clearHandles();
+					//ダミーノード作成
+					UiNode newNode = addNewNode(this, new UiPhantom(), xDown, yDown, x, y);
+					//ハンドル分サイズを調整
+					Rect r = newNode.getRectangleOnParent();
+					r.inflate(-HANDLE_HALF, -HANDLE_HALF);
+					newNode.updateBounds(r);
+					//ハンドルを作成
+					masterHandle = addHandle(newNode);
+					//影付きスタイル設定
+					masterHandle.setStyle(SHADE_STYLE);
+					//ハンドル片を非表示化
+					masterHandle.setHandleVisible(false);
+					masterHandleIsNew = true;
+				}
 			}
 			for (Handle h : activeHandles) {
 				h.preDrag(masterHandle);
