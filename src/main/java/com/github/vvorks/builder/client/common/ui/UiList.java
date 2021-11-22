@@ -1,9 +1,8 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.logging.Logger;
 
-public class UiList extends UiNode {
+public class UiList extends UiGroup {
 
 	public static final Class<?> THIS = UiList.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
@@ -11,10 +10,6 @@ public class UiList extends UiNode {
 	private UiNode template;
 
 	private int logicalCount;
-
-	public UiList() {
-		super();
-	}
 
 	public UiList(String name) {
 		super(name);
@@ -92,32 +87,6 @@ public class UiList extends UiNode {
 			total += child.getHeightPx();
 		}
 		setScrollHeight(total);
-	}
-
-	@Override
-	public void scrollFor(UiNode child) {
-		Asserts.requireNotNull(child);
-		Asserts.require(child.getParent() == this);
-		Rect r = child.getRectangleOnParent();
-		Rect s = this.getRectangleOnThis();
-		int dx;
-		int dy;
-		if (r.getLeft() < s.getLeft()) {
-			dx = -(s.getLeft() - r.getLeft());
-		} else if (r.getRight() > s.getRight()) {
-			dx = +(r.getRight() - s.getRight());
-		} else {
-			dx = 0;
-		}
-		if (r.getTop() < s.getTop()) {
-			dy = -(s.getTop() - r.getTop());
-		} else if (r.getBottom() > s.getBottom()) {
-			dy = +(r.getBottom() - s.getBottom());
-		} else {
-			dy = 0;
-		}
-		setScrollLeft(s.getLeft() + dx);
-		setScrollTop (s.getTop()  + dy);
 	}
 
 }

@@ -48,8 +48,9 @@ public class BuilderUiApplication extends UiApplication {
 	public BuilderUiApplication(DomDocument doc) {
 		super(doc);
 		final UiApplication app = this;
-		addPage("", args -> new TestPage("testPage", app, (Map<String, String>)args[0]));
-		addPage("#list", args -> new ListPage("listPage", app, (Map<String, String>)args[0]));
+		addPage("", args -> new GroupTestPage("testPage", app, (Map<String, String>)args[0]));
+		addPage("#list", args -> new ListTestPage("listPage", app, (Map<String, String>)args[0]));
+		addPage("#layout", args -> new LayouterTestPage("layoutPage", app, (Map<String, String>)args[0]));
 		registerStyle(BASIC);
 		registerStyle(NOBORDER);
 	}

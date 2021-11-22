@@ -3,29 +3,28 @@ package com.github.vvorks.builder.client.app;
 import java.util.Map;
 
 import com.github.vvorks.builder.client.common.ui.UiApplication;
-import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
-import com.github.vvorks.builder.client.common.ui.UiList;
+import com.github.vvorks.builder.client.common.ui.UiLayoutEditor;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.common.logging.Logger;
 
-public class ListPage extends UiPage {
+public class LayouterTestPage extends UiPage {
 
-	public static final Class<?> THIS = ListPage.class;
+	public static final Class<?> THIS = LayouterTestPage.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
 
-	public ListPage(String name, UiApplication app, Map<String, String> params) {
+	public LayouterTestPage(String name, UiApplication app, Map<String, String> params) {
 		super(name, app);
 	}
 
-	protected ListPage(ListPage source) {
+	protected LayouterTestPage(LayouterTestPage source) {
 		super(source);
 	}
 
 	@Override
-	public ListPage copy() {
-		return new ListPage(this);
+	public LayouterTestPage copy() {
+		return new LayouterTestPage(this);
 	}
 
 	@Override
@@ -37,15 +36,10 @@ public class ListPage extends UiPage {
 		b.enter(new UiGroup("group"));
 			b.style(BuilderUiApplication.NOBORDER);
 			b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
-			//DOMの縦グループ
-			b.enter(new UiList("list1"));
-				b.style(BuilderUiApplication.ENABLE);
+			//レイアウタ
+			b.enter(new UiLayoutEditor("layouter"));
+				b.style(BuilderUiApplication.BASIC);
 				b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
-				b.enter(new UiButton("template"));
-					b.text("template");
-					b.style(BuilderUiApplication.BASIC);
-					b.locate(0.0, 0.0, 0.0, NA, NA, 3.0);
-				b.leave();
 			b.leave();
 		b.leave();
 	}

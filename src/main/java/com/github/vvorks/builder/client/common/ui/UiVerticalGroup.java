@@ -29,11 +29,16 @@ public class UiVerticalGroup extends UiGroup {
 	private void relocateChildren() {
 		int spc = getSpacingHeightPx();
 		int total = spc;
-		Length lr = getSpacingWidth();
 		for (UiNode child : getChildrenIf(c -> !c.isDeleted() && c.isVisible())) {
 			Length top = new Length(total);
 			Length height = child.getHeight();
-			child.setBounds(lr, top, lr, null, null, height);
+			Length left = child.getLeft();
+			Length right = child.getRight();
+			Length width = child.getWidth();
+			if (left == null && right == null && width == null) {
+				left = right = getSpacingWidth();
+			}
+			child.setBounds(left, top, right, null, width, height);
 			total += child.getHeightPx() + spc;
 		}
 		setScrollHeight(total);

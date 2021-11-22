@@ -6,28 +6,28 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiCanvasFrame;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
-import com.github.vvorks.builder.client.common.ui.UiLayoutEditor;
+import com.github.vvorks.builder.client.common.ui.UiHorizontalGroup;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiVerticalGroup;
 import com.github.vvorks.builder.common.logging.Logger;
 
-public class TestPage extends UiPage {
+public class GroupTestPage extends UiPage {
 
-	public static final Class<?> THIS = TestPage.class;
+	public static final Class<?> THIS = GroupTestPage.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
 
-	public TestPage(String name, UiApplication app, Map<String, String> params) {
+	public GroupTestPage(String name, UiApplication app, Map<String, String> params) {
 		super(name, app);
 	}
 
-	protected TestPage(TestPage source) {
+	protected GroupTestPage(GroupTestPage source) {
 		super(source);
 	}
 
 	@Override
-	public TestPage copy() {
-		return new TestPage(this);
+	public GroupTestPage copy() {
+		return new GroupTestPage(this);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class TestPage extends UiPage {
 				}
 			b.leave();
 			//CANVAS枠
-			b.enter(new UiCanvasFrame("canvasFrame"));
+			b.enter(new UiCanvasFrame("canvasFrame1"));
 				b.style(BuilderUiApplication.NOBORDER);
 				b.locate(12.0, 1.0, NA, 1.0, 10.0, NA);
 				//CANVAS枠中の縦グループ
@@ -70,11 +70,42 @@ public class TestPage extends UiPage {
 					}
 				b.leave();
 			b.leave();
-			//レイアウタ
-			b.enter(new UiLayoutEditor("layouter"));
-				b.style(BuilderUiApplication.BASIC);
-				b.locate(23.0, 1.0, 1.0, 1.0, NA, NA);
+			//DOMの横グループ
+			b.enter(new UiHorizontalGroup("group3"));
+				b.style(BuilderUiApplication.ENABLE);
+				b.spacing(1.0);
+				b.locate(23.0, 1.0, 1.0, NA, NA, 4.0);
+				for (int i = 1; i <= 10; i++) {
+					b.enter(new UiButton("item" + i));
+						b.text("項目" + i);
+						b.style(BuilderUiApplication.BASIC);
+						b.locate(NA, NA, NA, NA, (i % 2) == 1 ? 6.0 : 10.0, NA);
+					b.leave();
+				}
 			b.leave();
+			//CANVAS枠
+			b.enter(new UiCanvasFrame("canvasFrame2"));
+				b.style(BuilderUiApplication.NOBORDER);
+				b.locate(23.0, 6.0, 1.0, NA, NA, 4.0);
+				//CANVAS枠中の横グループ
+				b.enter(new UiHorizontalGroup("group4"));
+					b.style(BuilderUiApplication.ENABLE);
+					b.spacing(1.0);
+					b.locate(0.0, 0.0, 0.0, 0.0, NA, NA);
+					for (int i = 1; i <= 10; i++) {
+						b.enter(new UiButton("item" + i));
+							b.text("項目" + i);
+							b.style(BuilderUiApplication.BASIC);
+							b.locate(NA, NA, NA, NA, (i % 2) == 1 ? 6.0 : 10.0, NA);
+						b.leave();
+					}
+				b.leave();
+			b.leave();
+//			//レイアウタ
+//			b.enter(new UiLayoutEditor("layouter"));
+//				b.style(BuilderUiApplication.BASIC);
+//				b.locate(23.0, 1.0, 1.0, 1.0, NA, NA);
+//			b.leave();
 		b.leave();
 	}
 
