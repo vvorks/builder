@@ -41,10 +41,15 @@ public class ListTestPage extends UiPage {
 			b.enter(new UiList("list1"));
 				b.style(BuilderUiApplication.ENABLE);
 				b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
-				b.enter(new UiButton("template"));
-					b.text("template");
+				b.enter(new UiButton("button"));
+					b.text("button1");
 					b.style(BuilderUiApplication.BASIC);
-					b.locate(0.0, 0.0, 0.0, NA, NA, 3.0);
+					b.locate(0.0, 0.0, NA, NA, 5.0, 3.0);
+				b.leave();
+				b.enter(new UiButton("button"));
+					b.text("button2");
+					b.style(BuilderUiApplication.BASIC);
+					b.locate(5.0, 0.0, 0.0, NA, NA, 3.0);
 				b.leave();
 			b.leave();
 		b.leave();

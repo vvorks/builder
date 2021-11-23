@@ -143,8 +143,9 @@ public class UiApplication implements EventHandler {
 		pageStack.push(p);
 		p.page.onMount();
 		if (p.focus == null) {
-			Iterable<UiNode> candidates = p.page.getFocusCandidates();
-			p.focus = Iterables.getFirst(candidates, null);
+			p.focus = Iterables.getFirst(
+					Iterables.filter(p.page.getFocusCandidates(), c -> c.getBlocker() == null),
+					null);
 		}
 	}
 
@@ -205,13 +206,13 @@ public class UiApplication implements EventHandler {
 	}
 
 	public UiNode setFocus(UiNode newFocusNode, int axis) {
-		Asserts.require(newFocusNode != null);
+		Asserts.requireNotNull(newFocusNode);
 		UiPage page = newFocusNode.getPage();
-		Asserts.require(page != null);
+		Asserts.requireNotNull(page);
 		LivePage p = getLivePageOf(page);
 		UiNode oldFocusNode = p.focus;
 		if (oldFocusNode != newFocusNode) {
-			LOGGER.debug("FOCUS %s -> %s", getFullName(oldFocusNode), getFullName(newFocusNode));
+			LOGGER.debug("FOCUS %s -> %s", getQualifiedName(oldFocusNode, page), getQualifiedName(newFocusNode, page));
 			notifyFocus(oldFocusNode, newFocusNode);
 			p.focus = newFocusNode;
 			Rect r = newFocusNode.getRectangleOn(root);
@@ -225,8 +226,8 @@ public class UiApplication implements EventHandler {
 		return oldFocusNode;
 	}
 
-	private String getFullName(UiNode node) {
-		return node == null ? null : node.getFullName();
+	private String getQualifiedName(UiNode node, UiNode qualifier) {
+		return node == null ? null : node.getQualifiedName(qualifier);
 	}
 
 	private void notifyFocus(UiNode oldFocus, UiNode newFocus) {
@@ -527,8 +528,15 @@ public class UiApplication implements EventHandler {
 
 	private void refresh() {
 		if (ClientSettings.DEBUG) {
-			for (UiNode node : root.getDescendantsIf(d -> d.isChanged())) {
-				LOGGER.debug("changed %s", getFullName(node));
+			LivePage p = getLivePage(null);
+			if (p != null) {
+				StringBuilder sb = new StringBuilder();
+				for (UiNode node : p.page.getDescendantsIf(d -> d.isChanged())) {
+					sb.append(",").append(node.getQualifiedName(p.page));
+				}
+				if (sb.length() > 0) {
+					LOGGER.debug("changed %s", sb.substring(1));
+				}
 			}
 		}
 		root.sync();

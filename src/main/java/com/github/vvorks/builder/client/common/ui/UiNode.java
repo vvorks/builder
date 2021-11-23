@@ -278,17 +278,28 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	public String getName() {
 		if (Strings.isEmpty(name)) {
-			return getClass().getSimpleName().replace('$', '_') + "_0x" + Integer.toHexString(no);
+			return getClass().getSimpleName().replace('$', '_') + no;
 		}
 		return name;
 	}
 
 	public String getFullName() {
-		String relName = getName();
-		if (parent == null) {
-			return relName;
+		return getQualifiedName(null);
+	}
+
+	public String getQualifiedName(UiNode root) {
+		List<String> list = new ArrayList<>();
+		UiNode node = this;
+		while (node != null && node != root) {
+			list.add(node.getName());
+			node = node.parent;
 		}
-		return parent.getFullName() + "_" + relName;
+		Collections.reverse(list);
+		StringBuilder sb = new StringBuilder();
+		for (String s : list) {
+			sb.append("_").append(s);
+		}
+		return sb.substring(1);
 	}
 
 	public boolean isFocusable() {
@@ -447,6 +458,11 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	public UiNode getParent() {
 		return parent;
+	}
+
+	/** 親ノード設定： 全体の整合性を保つよう注意して使用する事 */
+	protected void setParent(UiNode parent) {
+		this.parent = parent;
 	}
 
 	public UiNode getFirstChild() {
@@ -640,6 +656,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public UiNode removeFirstChild() {
+		Asserts.requireNotNull(firstChild);
 		UiNode oldChild = firstChild;
 		this.firstChild = oldChild.nextSibling;
 		oldChild.parent = null;
@@ -648,16 +665,38 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return oldChild;
 	}
 
-	public UiNode clearChildren() {
-		UiNode result = firstChild;
-		firstChild = null;
-		return result;
+	public UiNode removeLastChild() {
+		Asserts.requireNotNull(firstChild);
+		UiNode prev = null;
+		UiNode last = firstChild;
+		for (UiNode node = last; node != null; node = node.nextSibling) {
+			prev = last;
+			last = node;
+		}
+		if (prev == null) {
+			this.firstChild = null;
+		} else {
+			prev.nextSibling = null;
+		}
+		last.parent = null;
+		this.setChanged(CHANGED_HIERARCHY);
+		return last;
 	}
 
-	public UiNode clearNextSibling() {
-		UiNode result = nextSibling;
-		nextSibling = null;
-		return result;
+	public UiNode clearChildren() {
+		UiNode children = firstChild;
+		children.parent = null;
+		firstChild = null;
+		this.setChanged(CHANGED_HIERARCHY);
+		return children;
+	}
+
+	public UiNode setChildren(UiNode children) {
+		Asserts.assume(firstChild == null);
+		firstChild = children;
+		children.parent = this;
+		this.setChanged(CHANGED_HIERARCHY);
+		return children;
 	}
 
 	public Iterable<UiNode> removeChildrenIf(Predicate<UiNode> condition) {
@@ -1305,14 +1344,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		if (isChanged(CHANGED_CONTENT)) {
 			syncContent();
 		}
-		//下位層の同期
-		syncChildren();
 		//位置・表示条件の同期
 		if (isChanged(CHANGED_LOCATION|CHANGED_DISPLAY)) {
 			syncStyle();
 			syncElementStyle();
 			syncScroll();
 		}
+		//下位層の同期
+		syncChildren();
 		//階層接続
 		if (isChanged(CHANGED_HIERARCHY)) {
 			syncDomElement(domElement);

@@ -7,7 +7,9 @@ import com.github.vvorks.builder.client.common.ui.CssStyle;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
+import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 
@@ -202,8 +204,6 @@ public class GwtDomElement implements DomElement {
 		if (nativeElement == null) {
 			return;
 		}
-		nativeElement.setScrollLeft(x);
-		nativeElement.setScrollTop(y);
 		if (width != 0 || height != 0) {
 			Element anchor = ensureAnchorElement();
 			CssStyle.Builder sb = new CssStyle.Builder()
@@ -215,6 +215,17 @@ public class GwtDomElement implements DomElement {
 			anchor.setAttribute(PROP_STYLE, document.toCssString(sb.build()));
 		} else {
 			removeAnchorElement();
+		}
+		nativeElement.setScrollLeft(x);
+		nativeElement.setScrollTop(y);
+		if (nativeElement.getScrollLeft() != x || nativeElement.getScrollTop() != y) {
+			//要素作成直後（でおそらく未Reflow）の場合、scrollLeft,scrolllTopが設定できない。
+			//致し方ないので遅延実行でリトライする
+			DelayedExecuter executer = Factory.getInstance(DelayedExecuter.class);
+			executer.runLator(() -> {
+				nativeElement.setScrollLeft(x);
+				nativeElement.setScrollTop(y);
+			});
 		}
 	}
 
