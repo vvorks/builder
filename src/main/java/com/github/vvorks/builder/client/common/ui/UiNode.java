@@ -1590,7 +1590,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			UiNode node = stack.peek();
 			if (node instanceof UiButton) {
 				UiButton textNode = (UiButton) node;
-				textNode.setText(text);
+				textNode.setString(text);
 			}
 			return this;
 		}
@@ -1648,6 +1648,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			Asserts.assume(node instanceof UiGroup);
 			UiGroup group = (UiGroup) node;
 			group.setSpacing(encode(value));
+			return this;
+		}
+
+		public Builder source(DataSource source) {
+			UiNode node = stack.peek();
+			Asserts.assume(node instanceof UiList);
+			UiList list = (UiList) node;
+			list.setDataSource(source);
 			return this;
 		}
 

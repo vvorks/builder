@@ -49,6 +49,9 @@ public class UiList extends UiGroup {
 
 	}
 
+	/** データソース */
+	private DataSource dataSource;
+
 	/** テンプレートノード */
 	private UiLine template;
 
@@ -72,6 +75,10 @@ public class UiList extends UiGroup {
 	@Override
 	public UiList copy() {
 		return new UiList(this);
+	}
+
+	public void setDataSource(DataSource ds) {
+		this.dataSource = ds;
 	}
 
 	@Override
@@ -134,7 +141,7 @@ public class UiList extends UiGroup {
 				UiLine child = template.copy(i);
 				UiNode gc = child.getFirstChild();
 				if (gc instanceof UiButton) {
-					((UiButton) gc).setText("child " + i);
+					((UiButton) gc).setString("child " + i);
 				}
 				insertBefore(child, ref);
 			}

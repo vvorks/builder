@@ -1,13 +1,18 @@
 package com.github.vvorks.builder.client.app;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.github.vvorks.builder.client.common.ui.DataSource;
+import com.github.vvorks.builder.client.common.ui.ListDataSource;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
 import com.github.vvorks.builder.client.common.ui.UiList;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiPage;
+import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public class ListTestPage extends UiPage {
@@ -40,6 +45,7 @@ public class ListTestPage extends UiPage {
 			//DOMの縦グループ
 			b.enter(new UiList("list1"));
 				b.style(BuilderUiApplication.ENABLE);
+				b.source(createDataSource());
 				b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
 				b.enter(new UiButton("button"));
 					b.text("button1");
@@ -53,6 +59,17 @@ public class ListTestPage extends UiPage {
 				b.leave();
 			b.leave();
 		b.leave();
+	}
+
+	private DataSource createDataSource() {
+		List<Json> list = new ArrayList<>();
+		for (int i = 0; i < 50; i++) {
+			Json json = Json.createObject();
+			json.setNumber("no", i);
+			json.setString("name", "title " + i);
+			list.add(json);
+		}
+		return new ListDataSource(list);
 	}
 
 }
