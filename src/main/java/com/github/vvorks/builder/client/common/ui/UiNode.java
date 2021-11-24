@@ -1444,6 +1444,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return parent != null ? parent.getPage() : null;
 	}
 
+	public DataRecord getDataRecord() {
+		return parent != null ? parent.getDataRecord() : null;
+	}
+
 	@Override
 	public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
 		return UiNode.EVENT_IGNORED;
@@ -1505,6 +1509,11 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			child = child.getNextSibling();
 		}
 		return result;
+	}
+
+	@Override
+	public int onDataSourceUpdated(DataSource ds) {
+		return EVENT_IGNORED;
 	}
 
 	protected int onImageLoaded(UiNode node, String url) {
@@ -1590,7 +1599,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			UiNode node = stack.peek();
 			if (node instanceof UiButton) {
 				UiButton textNode = (UiButton) node;
-				textNode.setString(text);
+				textNode.setText(text);
 			}
 			return this;
 		}

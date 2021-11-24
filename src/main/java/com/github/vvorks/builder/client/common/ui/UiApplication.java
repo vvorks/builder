@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import com.github.vvorks.builder.client.ClientSettings;
@@ -79,6 +82,8 @@ public class UiApplication implements EventHandler {
 
 	private final WebSocket socket;
 
+	private final Map<DataSource, Set<UiNode>> dataSourceMap;
+
 	public UiApplication(DomDocument doc) {
 		this.document = doc;
 		this.root = new UiRoot(document);
@@ -86,6 +91,7 @@ public class UiApplication implements EventHandler {
 		this.pageStack = new ArrayDeque<>();
 		this.styles = new LinkedHashMap<>();
 		this.socket = Factory.newInstance(WebSocket.class);
+		this.dataSourceMap = new HashMap<>();
 		try {
 			socket.open(ClientSettings.SERVER_URL);
 		} catch (IOException err) {
@@ -224,6 +230,18 @@ public class UiApplication implements EventHandler {
 			}
 		}
 		return oldFocusNode;
+	}
+
+	public void bindDataSource(DataSource ds, UiNode node) {
+		getBindedNodes(ds).add(node);
+	}
+
+	public void unbindDataSource(DataSource ds, UiNode node) {
+		getBindedNodes(ds).remove(node);
+	}
+
+	private Set<UiNode> getBindedNodes(DataSource ds) {
+		return dataSourceMap.computeIfAbsent(ds, k -> new LinkedHashSet<>());
 	}
 
 	private String getQualifiedName(UiNode node, UiNode qualifier) {
@@ -492,8 +510,27 @@ public class UiApplication implements EventHandler {
 			LOGGER.error(err);
 			throw err;
 		}
+	}
+
+	public int processDataSourceUpdated(DataSource ds, int time) {
+		try {
+			LOGGER.trace("processDataSourceUpdated(%s, %d)", ds, time);
+			int result = EVENT_IGNORED;
+			for (UiNode node : getBindedNodes(ds)) {
+				result |= node.onDataSourceUpdated(ds);
+			}
+			result |= this.onDataSourceUpdated(ds);
+			if ((result & EVENT_AFFECTED) != 0) {
+				refresh();
+			}
+			return result;
+		} catch (Exception err) {
+			LOGGER.error(err);
+			throw err;
+		}
 
 	}
+
 
 	private UiNode getKeyTarget() {
 		return getFocus();
@@ -698,6 +735,11 @@ public class UiApplication implements EventHandler {
 
 	@Override
 	public int onImageLoaded(String url) {
+		return EVENT_IGNORED;
+	}
+
+	@Override
+	public int onDataSourceUpdated(DataSource ds) {
 		return EVENT_IGNORED;
 	}
 

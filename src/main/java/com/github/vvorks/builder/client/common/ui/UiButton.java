@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import com.github.vvorks.builder.common.logging.Logger;
 
-public class UiButton extends UiNode implements HasString {
+public class UiButton extends UiNode {
 
 	public static final Class<?> THIS = UiButton.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
@@ -27,13 +27,11 @@ public class UiButton extends UiNode implements HasString {
 		return new UiButton(this);
 	}
 
-	@Override
-	public String getString() {
+	public String getText() {
 		return text;
 	}
 
-	@Override
-	public void setString(String newText) {
+	public void setText(String newText) {
 		if (!Objects.equals(this.text, newText)) {
 			this.text = newText;
 			setChanged(CHANGED_CONTENT);

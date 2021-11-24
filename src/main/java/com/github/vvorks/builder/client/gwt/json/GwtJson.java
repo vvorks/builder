@@ -34,6 +34,10 @@ public class GwtJson extends Json {
 			nativeValue = parse(((Json) obj).toJsonString());
 		} else if (obj instanceof String) {
 			nativeValue = parse((String) obj);
+		} else if (obj instanceof Number) {
+			nativeValue = new JSONNumber(((Number)obj).doubleValue());
+		} else if (obj instanceof Boolean) {
+			nativeValue = JSONBoolean.getInstance(((Boolean)obj).booleanValue());
 		} else {
 			throw new UnsupportedOperationException();
 		}

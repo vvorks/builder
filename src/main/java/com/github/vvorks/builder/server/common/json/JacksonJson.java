@@ -39,6 +39,10 @@ public class JacksonJson extends Json {
 			nativeValue = parse(((Json)obj).toJsonString());
 		} else if (obj instanceof String) {
 			nativeValue = parse((String) obj);
+		} else if (obj instanceof Number) {
+			nativeValue = DoubleNode.valueOf(((Number)obj).doubleValue());
+		} else if (obj instanceof Boolean) {
+			nativeValue = ((Boolean)obj).booleanValue() ? BooleanNode.TRUE : BooleanNode.FALSE;
 		} else {
 			nativeValue = fromObject(obj);
 		}

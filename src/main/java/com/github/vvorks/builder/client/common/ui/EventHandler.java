@@ -12,5 +12,6 @@ public interface EventHandler {
 	int onMouseWheel(UiNode target, int x, int y, int dx, int dy, int mods, int time);
 	void onResize(int screenWidth, int screenHeight);
 	int onImageLoaded(String url);
+	int onDataSourceUpdated(DataSource ds);
 
 }

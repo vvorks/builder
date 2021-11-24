@@ -8,13 +8,56 @@ import com.github.vvorks.builder.common.lang.Factory;
 
 public abstract class Json {
 
-	/** JSONデータ種別を示す列挙 */
+	/**
+	 * JSONデータ種別を示す列挙型
+	 */
 	public enum Type {
-		UNDEFINED, NULL, BOOLEAN, NUMBER, STRING, OBJECT, ARRAY;
+
+		/** 未定義 */
+		UNDEFINED(Void.class),
+
+		/** null */
+		NULL(null),
+
+		/** 真偽値型 */
+		BOOLEAN(Boolean.class),
+
+		/** 数値型 */
+		NUMBER(Double.class),
+
+		/** 文字列型 */
+		STRING(String.class),
+
+		/** オブジェクト型 */
+		OBJECT(Object.class),
+
+		/** 配列型 */
+		ARRAY(Object[].class);
+
+		/** 対応するクラスオブジェクト */
+		private final Class<?> cls;
+
+		/** タイプを初期化する */
+		private Type(Class<?> cls) {
+			this.cls = cls;
+		}
+
+		/** 対応するJavaのクラスオブジェクトを取得する */
+		public Class<?> asClass() {
+			return cls;
+		}
+
 	}
 
-	private static final Json NULL_VALUE = createJson(null);
+	/** null値 */
+	public static final Json NULL = createJson(null);
 
+	/** true値 */
+	public static final Json TRUE = createJson(true);
+
+	/** false値 */
+	public static final Json FALSE = createJson(false);
+	
 	protected static final boolean DEFAULT_BOOLEAN = false;
 
 	protected static final double DEFAULT_NUMBER = 0.0d;
@@ -34,7 +77,7 @@ public abstract class Json {
 	}
 
 	public static Json valueOf(Jsonizable value) {
-		return value != null ? value.toJson() : NULL_VALUE;
+		return value != null ? value.toJson() : NULL;
 	}
 
 	/** POJOへの変換（サポートされない場合あり） */

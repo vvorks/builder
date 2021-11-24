@@ -299,52 +299,61 @@ public class JsonRpcClient implements WebSocketHandler {
 		String method = json.getString(JsonRpcs.KEY_METHOD, UNKNOWN_METHOD);
 		int id = (int) json.getNumber(JsonRpcs.KEY_ID, NOTIFY_ID);
 		if (!method.equals(UNKNOWN_METHOD)) {
-			//要求又は通知メッセージ。
-			Json params = json.get(JsonRpcs.KEY_PARAMS);
-			Handler handler = handlers.get(method);
-			if (id != NOTIFY_ID) {
-				LOGGER.info("RPC: RECV REQ %s with %s", getShortName(method, id), params);
-			} else {
-				LOGGER.info("RPC: RECV NTF %s with %s", getShortName(method, id), params);
-			}
-			if (handler != null) {
-				invokeHandler(method, params, handler, id);
-			} else {
-				if (id != NOTIFY_ID) {
-					LOGGER.error("RPC: RECV REQ %s IGNORED", getShortName(method, id));
-					responseError(JsonRpcs.METHOD_NOT_FOUND, method, id);
-				} else {
-					LOGGER.error("RPC: RECV NTF %s IGNORED", getShortName(method, id));
-				}
-			}
+			onRequest(json, id, method);
 		} else if (id != NOTIFY_ID) {
-			//応答メッセージ
-			Json result = json.get(JsonRpcs.KEY_RESULT);
-			Json error = json.get(JsonRpcs.KEY_ERROR);
-			RequestInfo req = removeWaiting(id);
-			if (req != null) {
-				method = req.method;
-				if (result != null) {
-					LOGGER.info("RPC: RECV RSP %s with %s", getShortName(method, id), result);
-					try {
-						req.callback.onSuccess(result);
-					} catch (Exception err) {
-						LOGGER.error(err, "RPC: CALLBACK ERROR");
-					}
-				} else {
-					String errMsg = error == null ? "" : error.toJsonString();
-					LOGGER.error("RPC: RECV RSP %s error %s", getShortName(method, id), errMsg);
-					try {
-						req.callback.onFailure(new JsonRpcException(errMsg));
-					} catch (Exception err) {
-						LOGGER.error(err, "RPC: CALLBACK ERROR");
-					}
-				}
-			} else {
-				LOGGER.error("RPC: RECV RSP %s", getShortName("Missing", id));
-			}
+			onResponse(json, id);
 		} else {
 			LOGGER.error("RPC: RECV UNKNOWN MESSAGE %s", msg);
+		}
+	}
+
+	private void onRequest(Json json, int id, String method) {
+		//要求又は通知メッセージ。
+		Json params = json.get(JsonRpcs.KEY_PARAMS);
+		Handler handler = handlers.get(method);
+		if (id != NOTIFY_ID) {
+			LOGGER.info("RPC: RECV REQ %s with %s", getShortName(method, id), params);
+		} else {
+			LOGGER.info("RPC: RECV NTF %s with %s", getShortName(method, id), params);
+		}
+		if (handler != null) {
+			invokeHandler(method, params, handler, id);
+		} else {
+			if (id != NOTIFY_ID) {
+				LOGGER.error("RPC: RECV REQ %s IGNORED", getShortName(method, id));
+				responseError(JsonRpcs.METHOD_NOT_FOUND, method, id);
+			} else {
+				LOGGER.error("RPC: RECV NTF %s IGNORED", getShortName(method, id));
+			}
+		}
+	}
+
+	private void onResponse(Json json, int id) {
+		String method;
+		//応答メッセージ
+		Json result = json.get(JsonRpcs.KEY_RESULT);
+		Json error = json.get(JsonRpcs.KEY_ERROR);
+		RequestInfo req = removeWaiting(id);
+		if (req != null) {
+			method = req.method;
+			if (result != null) {
+				LOGGER.info("RPC: RECV RSP %s with %s", getShortName(method, id), result);
+				try {
+					req.callback.onSuccess(result);
+				} catch (Exception err) {
+					LOGGER.error(err, "RPC: CALLBACK ERROR");
+				}
+			} else {
+				String errMsg = error == null ? "" : error.toJsonString();
+				LOGGER.error("RPC: RECV RSP %s error %s", getShortName(method, id), errMsg);
+				try {
+					req.callback.onFailure(new JsonRpcException(errMsg));
+				} catch (Exception err) {
+					LOGGER.error(err, "RPC: CALLBACK ERROR");
+				}
+			}
+		} else {
+			LOGGER.error("RPC: RECV RSP %s", getShortName("Missing", id));
 		}
 	}
 
