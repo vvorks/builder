@@ -142,11 +142,11 @@ public class UiList extends UiGroup {
 	public void setDataSource(DataSource ds) {
 		UiApplication app = getApplication();
 		if (this.dataSource != null) {
-			app.unbindDataSource(ds, this);
+			app.detachDataSource(this, this.dataSource);
 		}
 		this.dataSource = ds;
 		if (this.dataSource != null) {
-			app.bindDataSource(ds, this);
+			app.attachDataSource(this, this.dataSource);
 		}
 	}
 

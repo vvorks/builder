@@ -39,9 +39,9 @@ public class SourceHelper implements Helper<Object> {
 		LOGGER.info("gen ./%s", name);
 		String source = options.fn().toString();
 		//ファイル種別毎の後処理
-		if (name.endsWith(".java")) {
-			//source = javaFormatter.format(source);
-		}
+//		if (name.endsWith(".java")) {
+//			source = javaFormatter.format(source);
+//		}
 		//改行正規化とファイル出力
 		try (
 			BufferedReader in = new BufferedReader(new StringReader(source));

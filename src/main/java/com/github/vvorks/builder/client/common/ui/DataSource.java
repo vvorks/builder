@@ -7,6 +7,12 @@ import com.github.vvorks.builder.common.json.Json;
 
 public interface DataSource {
 
+	/** 関連するアプリケーションを追加 */
+	public void attach(UiApplication app);
+
+	/** 関連するアプリケーションを削除 */
+	public void detach(UiApplication app);
+
 	/**
 	 * 検索条件を指定する
 	 *

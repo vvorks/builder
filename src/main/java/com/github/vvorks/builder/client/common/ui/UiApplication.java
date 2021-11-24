@@ -232,15 +232,23 @@ public class UiApplication implements EventHandler {
 		return oldFocusNode;
 	}
 
-	public void bindDataSource(DataSource ds, UiNode node) {
-		getBindedNodes(ds).add(node);
+	public void attachDataSource(UiNode node, DataSource ds) {
+		Set<UiNode> nodes = getAttachedNodes(ds);
+		if (nodes.isEmpty()) {
+			ds.attach(this);
+		}
+		nodes.add(node);
 	}
 
-	public void unbindDataSource(DataSource ds, UiNode node) {
-		getBindedNodes(ds).remove(node);
+	public void detachDataSource(UiNode node, DataSource ds) {
+		Set<UiNode> nodes = getAttachedNodes(ds);
+		nodes.remove(node);
+		if (nodes.isEmpty()) {
+			ds.detach(this);
+		}
 	}
 
-	private Set<UiNode> getBindedNodes(DataSource ds) {
+	private Set<UiNode> getAttachedNodes(DataSource ds) {
 		return dataSourceMap.computeIfAbsent(ds, k -> new LinkedHashSet<>());
 	}
 
@@ -516,7 +524,7 @@ public class UiApplication implements EventHandler {
 		try {
 			LOGGER.trace("processDataSourceUpdated(%s, %d)", ds, time);
 			int result = EVENT_IGNORED;
-			for (UiNode node : getBindedNodes(ds)) {
+			for (UiNode node : getAttachedNodes(ds)) {
 				result |= node.onDataSourceUpdated(ds);
 			}
 			result |= this.onDataSourceUpdated(ds);
