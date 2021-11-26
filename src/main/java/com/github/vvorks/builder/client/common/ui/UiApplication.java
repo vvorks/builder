@@ -149,10 +149,14 @@ public class UiApplication implements EventHandler {
 		pageStack.push(p);
 		p.page.onMount();
 		if (p.focus == null) {
-			p.focus = Iterables.getFirst(
-					Iterables.filter(p.page.getFocusCandidates(), c -> c.getBlocker() == null),
-					null);
+			p.focus = getFirstFocus(p.page);
 		}
+	}
+
+	public UiNode getFirstFocus(UiNode owner) {
+		Iterable<UiNode> candidates = Iterables.filter(
+				owner.getFocusCandidates(), c -> c.getBlocker() == null);
+		return Iterables.getFirst(candidates, null);
 	}
 
 	public void back() {

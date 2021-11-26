@@ -1,17 +1,15 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import java.util.Optional;
-import java.util.OptionalInt;
-
 import com.github.vvorks.builder.common.json.Json;
 
 public interface DataSource {
 
-	/** 関連するアプリケーションを追加 */
-	public void attach(UiApplication app);
-
-	/** 関連するアプリケーションを削除 */
-	public void detach(UiApplication app);
+	/**
+	 * データ読み込み状態を取得する
+	 *
+	 * @return データ読み込み済みの場合、真
+	 */
+	public boolean isLoaded();
 
 	/**
 	 * 検索条件を指定する
@@ -29,33 +27,33 @@ public interface DataSource {
 	public void setRange(int offset, int limit);
 
 	/**
-	 * （保持していれば）全件数情報を返す
+	 * （データ読み込み済みならば）全件数情報を返す
 	 *
 	 * @return 全件数情報
 	 */
-	public OptionalInt getCount();
+	public int getCount();
 
 	/**
-	 * （保持していれば）保持中のデータ開始位置を返す
+	 * （データ読み込み済みならば）保持中のデータ開始位置を返す
 	 *
 	 * @return データ開始位置
 	 */
-	public OptionalInt getOffset();
+	public int getOffset();
 
 	/**
-	 * （保持していれば）保持中のデータ件数を返す
+	 * （データ読み込み済みならば）保持中のデータ件数を返す
 	 *
 	 * @return データ件数
 	 */
-	public OptionalInt getLimit();
+	public int getLimit();
 
 	/**
-	 * （保持していれば）指定位置のデータを返す
+	 * （データ読み込み済みならば）指定位置のデータを返す
 	 *
 	 * @param index 位置
 	 * @return データ
 	 */
-	public Optional<Json> getData(int index);
+	public Json getData(int index);
 
 	/**
 	 * データを追加する
@@ -77,5 +75,19 @@ public interface DataSource {
 	 * @param data 削除するデータ
 	 */
 	public void remove(Json data);
+
+	/**
+	 * 関連するアプリケーションを追加
+	 *
+	 * @param app アプリケーション
+	 */
+	public void attach(UiApplication app);
+
+	/**
+	 * 関連するアプリケーションを削除
+	 *
+	 * @param app アプリケーション
+	 */
+	public void detach(UiApplication app);
 
 }

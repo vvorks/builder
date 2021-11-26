@@ -518,6 +518,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return () -> new DescendantIterator(this, d -> !d.isDeleted() && d.isVisible() && d.isEnable());
 	}
 
+	public int size() {
+		int count = 0;
+		for (UiNode c = firstChild; c != null; c = c.nextSibling) {
+			count++;
+		}
+		return count;
+	}
+
 	public Iterable<UiNode> getChildren() {
 		return () -> new DescendantIterator(this, d -> false);
 	}
@@ -1264,6 +1272,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	public UiNode getBlocker() {
 		UiNode anc = parent;
+		LOGGER.debug("node %s:%s", this.getName(), THIS.getSimpleName());
 		Rect r = this.getRectangleOnParent();
 		while (anc != null && anc.getRectangleOnThis().contains(r)) {
 			anc.translate(r, -1);

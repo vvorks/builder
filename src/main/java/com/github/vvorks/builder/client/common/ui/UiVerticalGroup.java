@@ -20,10 +20,11 @@ public class UiVerticalGroup extends UiGroup {
 		return new UiVerticalGroup(this);
 	}
 
+
 	@Override
-	protected void syncChildren() {
+	public void onMount() {
 		relocateChildren();
-		super.syncChildren();
+		super.onMount();
 	}
 
 	private void relocateChildren() {

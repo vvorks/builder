@@ -2,7 +2,6 @@ package com.github.vvorks.builder.client.common.ui;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiList extends UiGroup {
@@ -14,7 +13,7 @@ public class UiList extends UiGroup {
 
 	protected static class UiLine extends UiNode implements DataRecord {
 
-		private final int index;
+		private int index;
 
 		private Json json;
 
@@ -28,22 +27,17 @@ public class UiList extends UiGroup {
 			this.index = src.index;
 		}
 
-		protected UiLine(UiLine src, int index) {
-			super(src);
-			this.index = index;
-		}
-
 		@Override
 		public UiLine copy() {
 			return new UiLine(this);
 		}
 
-		public UiLine copy(int index) {
-			return new UiLine(this, index);
-		}
-
 		public int getIndex() {
 			return index;
+		}
+
+		public void setIndex(int index) {
+			this.index = index;
 		}
 
 		@Override
@@ -123,7 +117,7 @@ public class UiList extends UiGroup {
 	/** 行高さ（ピクセル単位） */
 	private int lineHeight;
 
-	/** ビューが保持する行数 */
+	/** １画面に表示可能な行数 */
 	private int linesPerView;
 
 	public UiList(String name) {
@@ -151,20 +145,26 @@ public class UiList extends UiGroup {
 	}
 
 	@Override
+	public boolean isFocusable() {
+		return template == null || getFirstChild() == null;
+	}
+
+	@Override
 	public void onMount() {
 		if (template == null) {
 			template = new UiLine("template");
 			template.setBounds(Length.ZERO, Length.ZERO, Length.ZERO, null, null, getMaxHeight());
 			template.setChildren(clearChildren());
 			template.setParent(this);
-			linesPerView = 0;
 		}
-		prepareLines();
-		for (int i = 0; i < VIEW_MARGIN; i++) {
-			rollUp();
-		}
-		relocateChildren();
+		updateMetrics();
 		super.onMount();
+	}
+
+	private void updateMetrics() {
+		pageHeight = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
+		lineHeight = template.getHeightPx(pageHeight);
+		linesPerView = (int) Math.ceil((double)pageHeight / (double)lineHeight);
 	}
 
 	private Length getMaxHeight() {
@@ -189,59 +189,86 @@ public class UiList extends UiGroup {
 
 	@Override
 	public void onResize(int screenWidth, int screenHeight) {
-		prepareLines();
+		updateMetrics();
+		DataSource ds = dataSource;
+		int count = ds.isLoaded() ? ds.getCount() : 0;
+		prepareLines(count);
 	}
 
 	@Override
 	public int onDataSourceUpdated(DataSource ds) {
 		int result = super.onDataSourceUpdated(ds);
-		//TODO 情報の反映
+		int count = ds.isLoaded() ? ds.getCount() : 0;
+		prepareLines(count);
+		result |= EVENT_AFFECTED;
 		return result;
 	}
 
-	private void prepareLines() {
-		pageHeight = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
-		lineHeight = template.getHeightPx(pageHeight);
-		int newLinesPerView = (int) Math.ceil((double)pageHeight / (double)lineHeight) + VIEW_MARGIN * 2;
-		if (newLinesPerView > linesPerView) {
-			//挿入ポイントの探索
-			UiLine ref = (UiLine) getFirstChild();
-			if (ref == null || ref.getIndex() == 0) {
-				ref = null;
-			} else {
-				ref = (UiLine) Iterables.getFirst(
-						getChildrenIf(c -> ((UiLine)c).getIndex() == 0), null);
+	private void prepareLines(int count) {
+		UiApplication app = getApplication();
+		UiNode focus = app.getFocus();
+		boolean isFocus = (focus == this);
+		boolean hasFocus = (this.isAncestor(focus));
+		if (count <= 0 || linesPerView <= 0) {
+			clearChildren();
+			if (hasFocus) {
+				app.setFocus(this);
 			}
-			//子ノードの追加
-			for (int i = linesPerView; i < newLinesPerView; i++) {
-				UiLine child = template.copy(i);
-				//TODO 一旦非表示で追加する
-				UiNode gc = child.getFirstChild();
-				if (gc instanceof UiButton) {
-					((UiButton) gc).setText("child " + i);
-				}
-				//TODO ↑はテスト用なので削除する
-				insertBefore(child, ref);
-			}
-			linesPerView = newLinesPerView;
+			return;
 		}
-
+		boolean hasMargin = (count >= linesPerView);
+		int oldLines = size();
+		int newLines = hasMargin ? linesPerView + VIEW_MARGIN * 2 : count;
+		if (oldLines != newLines) {
+			int scrollTop = -1;
+			if (newLines > oldLines) {
+				for (int i = 0; i < newLines - oldLines; i++) {
+					insertChild(template.copy());
+				}
+				if (oldLines < linesPerView && newLines >= linesPerView) {
+					scrollTop = lineHeight * VIEW_MARGIN;
+				}
+			} else {
+				for (int i = 0; i < oldLines - newLines; i++) {
+					removeFirstChild();
+				}
+				if (oldLines >= linesPerView && newLines < linesPerView) {
+					scrollTop = 0;
+				}
+			}
+			int index = hasMargin ? newLines - VIEW_MARGIN : 0;
+			for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
+				((UiLine)c).setIndex(index);
+				if (c.getFirstChild() instanceof UiButton) {
+					((UiButton)c.getFirstChild()).setText("" + index);
+				}
+				index = (index + 1) % newLines;
+			}
+			relocateChildren();
+			if (scrollTop >= 0) {
+				setScrollTop(scrollTop);
+			}
+			if (isFocus || hasFocus) {
+				setFocus(app.getFirstFocus(this));
+			}
+		}
 	}
 
 	private void relocateChildren() {
-		int spc = getSpacingHeightPx();
-		int total = spc;
-		for (UiNode child : getChildrenIf(c -> !c.isDeleted() && c.isVisible())) {
+		Length spacingWidth = getSpacingWidth();
+		int spacingHeightPx = getSpacingHeightPx();
+		int total = spacingHeightPx;
+		for (UiNode child : this.getChildrenIf(c -> !c.isDeleted() && c.isVisible())) {
 			Length top = new Length(total);
 			Length height = child.getHeight();
 			Length left = child.getLeft();
 			Length right = child.getRight();
 			Length width = child.getWidth();
 			if (left == null && right == null && width == null) {
-				left = right = getSpacingWidth();
+				left = right = spacingWidth;
 			}
 			child.setBounds(left, top, right, null, width, height);
-			total += child.getHeightPx() + spc;
+			total += child.getHeightPx() + spacingHeightPx;
 		}
 		setScrollHeight(total);
 	}
@@ -249,15 +276,17 @@ public class UiList extends UiGroup {
 	@Override
 	public void scrollFor(UiNode child) {
 		super.scrollFor(child);
-		int scrollTop = getScrollTopPx();
-		int scrollHeight = getScrollHeightPx();
-		int margin = lineHeight * VIEW_MARGIN;
-		if (scrollTop < margin) {
-			rollUp();
-			relocateChildren();
-		} else if (scrollHeight - (scrollTop + pageHeight) < margin) {
-			rollDown();
-			relocateChildren();
+		if (size() >= linesPerView) {
+			int scrollTop = getScrollTopPx();
+			int scrollHeight = getScrollHeightPx();
+			int margin = lineHeight * VIEW_MARGIN;
+			if (scrollTop < margin) {
+				rollUp();
+				relocateChildren();
+			} else if (scrollHeight - (scrollTop + pageHeight) < margin) {
+				rollDown();
+				relocateChildren();
+			}
 		}
 	}
 

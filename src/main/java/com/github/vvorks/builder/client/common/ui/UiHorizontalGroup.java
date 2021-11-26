@@ -21,9 +21,9 @@ public class UiHorizontalGroup extends UiGroup {
 	}
 
 	@Override
-	protected void syncChildren() {
+	public void onMount() {
 		relocateChildren();
-		super.syncChildren();
+		super.onMount();
 	}
 
 	private void relocateChildren() {
