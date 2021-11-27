@@ -72,6 +72,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	/** 削除済みフラグ */
 	protected static final int FLAGS_DELETED		= 0x00000040;
 
+	/** 予約領域(下位１６ビットの未使用分) */
+	protected static final int FLAGS_RESERVED		= 0x0000FF80;
+
+	/** ノード固有のフラグ領域(上位１６ビット) */
+	protected static final int FLAGS_CUSTOM			= 0xFFFF0000;
+
 	/** 初期フラグ値 */
 	protected static final int FLAGS_INITIAL		= FLAGS_ENABLE|FLAGS_VISIBLE;
 
@@ -465,17 +471,39 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		this.parent = parent;
 	}
 
+	public UiNode getRoot() {
+		UiNode result = this;
+		while (result.parent != null) {
+			result = result.parent;
+		}
+		return result;
+	}
+
+	/**
+	 * 先頭の子ノードを取得する
+	 *
+	 * @return 先頭の子ノード。子ノードが存在しない場合、null
+	 */
 	public UiNode getFirstChild() {
 		return firstChild;
 	}
 
 	/**
-	 * 指定した子ノードの直前の子ノードを返す
+	 * 末尾の子ノードを取得する
+	 *
+	 * @return 末尾の子ノード。子ノードが存在しない場合、null
+	 */
+	public UiNode getLastChild() {
+		return getElderBrother(null);
+	}
+
+	/**
+	 * 指定した子ノードの直前の子ノードを取得する
 	 *
 	 * @param younger
 	 * 		対象子ノード
 	 * @return
-	 * 		youngerの直前の子ノード。youngerが存在しなかった場合、末子。
+	 * 		youngerの直前の子ノード。youngerが存在しなかった場合、末尾の子ノード。
 	 */
 	public UiNode getElderBrother(UiNode younger) {
 		UiNode node = firstChild;
@@ -487,26 +515,59 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return prev;
 	}
 
+	/**
+	 * 祖先ノードを取得する
+	 *
+	 * @return 祖先ノードを返すIterable
+	 */
 	public Iterable<UiNode> getAncestors() {
 		return () -> new AncestorIterator(this);
 	}
 
+	/**
+	 * 指定条件に合致する祖先ノードを取得する
+	 *
+	 * @param condition 条件
+	 * @return 指定条件に合致する祖先ノードを返すIterable
+	 */
 	public Iterable<UiNode> getAncestorsIf(Predicate<UiNode> condition) {
 		return Iterables.filter(getAncestors(), condition);
 	}
 
+	/**
+	 * 子孫ノードを取得する
+	 *
+	 * @return 子孫ノードを返すIterable
+	 */
 	public Iterable<UiNode> getDescendants() {
 		return () -> new DescendantIterator(this, node -> true);
 	}
 
+	/**
+	 * 指定条件に合致する子孫ノードを取得する
+	 *
+	 * @param condition 条件
+	 * @return 指定条件に合致する子孫ノードを返すIterable
+	 */
 	public Iterable<UiNode> getDescendantsIf(Predicate<UiNode> condition) {
 		return Iterables.filter(getDescendants(), condition);
 	}
 
+	/**
+	 * フォーカス可能な子孫ノードを取得する
+	 *
+	 * @return フォーカス可能な子孫ノードを返すIterable
+	 */
 	public Iterable<UiNode> getFocusCandidates() {
 		return getFocusCandidates(null);
 	}
 
+	/**
+	 * フォーカス可能な子孫ノードを取得する
+	 *
+	 * @param except 除外するノード
+	 * @return　フォーカス可能な子孫ノードを返すIterable
+	 */
 	public Iterable<UiNode> getFocusCandidates(UiNode except) {
 		if (!(!isDeletedAll() && isVisibleAll() && isEnableAll())) {
 			return Collections.emptyList();
@@ -514,10 +575,20 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return Iterables.filter(getEnableDescendants(), d -> d != except && d.isFocusable());
 	}
 
+	/**
+	 * 有効な子孫ノードを取得する
+	 *
+	 * @return 有効な子孫ノードを返すIterable
+	 */
 	protected Iterable<UiNode> getEnableDescendants() {
 		return () -> new DescendantIterator(this, d -> !d.isDeleted() && d.isVisible() && d.isEnable());
 	}
 
+	/**
+	 * 子ノード数を取得する
+	 *
+	 * @return 子ノード数
+	 */
 	public int size() {
 		int count = 0;
 		for (UiNode c = firstChild; c != null; c = c.nextSibling) {
@@ -526,14 +597,35 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return count;
 	}
 
+	/**
+	 * 子ノードを取得する
+	 *
+	 * @return 子ノードを返すItrable
+	 */
 	public Iterable<UiNode> getChildren() {
 		return () -> new DescendantIterator(this, d -> false);
 	}
 
+	/**
+	 * 指定条件に合致する子ノードを取得する
+	 *
+	 * @param condition 条件
+	 * @return 指定条件に合致する子ノードを返すIterable
+	 */
 	public Iterable<UiNode> getChildrenIf(Predicate<UiNode> condition) {
 		return Iterables.filter(getChildren(), node -> condition.test(node));
 	}
 
+	/**
+	 * 指定位置に存在する子ノードを返す
+	 *
+	 * 指定位置に子ノードが存在しない場合にはnullを返す
+	 * 指定位置に複数の子ノードが存在する場合、より末尾に近い（つまり、より前面の）子ノードを返す
+	 *
+	 * @param x X座標
+	 * @param y Y座標
+	 * @return 指定した位置に存在する子ノード、又はnull
+	 */
 	public UiNode getVisibleChildAt(int x, int y) {
 		return Iterables.getLast(
 				getChildrenIf(c ->
@@ -543,14 +635,36 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 				null);
 	}
 
+	/**
+	 * ノードが指定箇所に位置するかを判定する
+	 *
+	 * @param x X座標
+	 * @param y Y座標
+	 * @param 指定箇所に位置する場合、真
+	 */
 	private boolean contains(int x, int y) {
 		return	0 <= x && x < getWidthPx() && 0 <= y && y < getHeightPx() && isHit(x, y);
 	}
 
+	/**
+	 * ノード形状が非矩形の場合、指定位置が矩形内において有効なノード領域か否かを判定する
+	 *
+	 * 非矩形の形状をしているノードはこのメソッドをOverrideする必要がある。
+	 *
+	 * @param x X座標
+	 * @param y Y座標
+	 * @return
+	 */
 	public boolean isHit(int x, int y) {
 		return true;
 	}
 
+	/**
+	 * 自身が祖先ノードか否かを取得する
+	 *
+	 * @param other 調査対象ノード
+	 * @return 自身がotherの祖先ノードである場合、真
+	 */
 	public boolean isAncestor(UiNode other) {
 		if (other == null) {
 			return false;
@@ -562,6 +676,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	/**
 	 * 最終共通祖先(Last Universal Common Ancestor)を取得する。
+	 *
+	 * @param other 対象ノード
+	 * @return 自身とotherとの最終共通祖先（つまり分岐点）
 	 */
 	public UiNode getLucaWith(UiNode other) {
 		if (other == null) {
@@ -599,6 +716,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return list.indexOf(ancestor);
 	}
 
+	/**
+	 * 指定ノードを先頭子ノードとして挿入する
+	 *
+	 * @param newChild 挿入対象ノード
+	 * @return 挿入ノード
+	 */
 	public UiNode insertChild(UiNode newChild) {
 		Asserts.require(newChild != null);
 		if (newChild.parent == this) {
@@ -615,10 +738,23 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return newChild;
 	}
 
+	/**
+	 * 指定ノードを末尾ノードとして追加する
+	 *
+	 * @param newChild 追加対象ノード
+	 * @return 追加ノード
+	 */
 	public UiNode appendChild(UiNode newChild) {
 		return insertBefore(newChild, null);
 	}
 
+	/**
+	 * 指定ノードを参照ノードの前に挿入する
+	 *
+	 * @param newChild 挿入対象ノード
+	 * @param refChild 参照ノード
+	 * @return 挿入ノード
+	 */
 	public UiNode insertBefore(UiNode newChild, UiNode refChild) {
 		Asserts.require(newChild != null);
 		if (newChild.parent == this) {
@@ -1272,7 +1408,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	public UiNode getBlocker() {
 		UiNode anc = parent;
-		LOGGER.debug("node %s:%s", this.getName(), THIS.getSimpleName());
 		Rect r = this.getRectangleOnParent();
 		while (anc != null && anc.getRectangleOnThis().contains(r)) {
 			anc.translate(r, -1);
@@ -1609,6 +1744,15 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			if (node instanceof UiButton) {
 				UiButton textNode = (UiButton) node;
 				textNode.setText(text);
+			}
+			return this;
+		}
+
+		public Builder loop(boolean loop) {
+			UiNode node = stack.peek();
+			if (node instanceof UiList) {
+				UiList listNode = (UiList) node;
+				listNode.setLoopMode(loop);
 			}
 			return this;
 		}

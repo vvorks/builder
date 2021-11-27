@@ -9,9 +9,16 @@ public class UiList extends UiGroup {
 	public static final Class<?> THIS = UiList.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
 
-	private static final int VIEW_MARGIN = 3;
+	/** 疑似スクロール用のマージン行数 */
+	protected static final int VIEW_MARGIN	= 3;
 
-	protected static class UiLine extends UiNode implements DataRecord {
+	/** 末端でのカーソル移動実行時のふるまい：周回 */
+	protected static final int FLAGS_EDGE_LOOP = 0x00010000;
+
+	/**
+	 * 行クラス
+	 */
+	protected class UiLine extends UiNode implements DataRecord {
 
 		private int index;
 
@@ -37,7 +44,14 @@ public class UiList extends UiGroup {
 		}
 
 		public void setIndex(int index) {
+			DataSource ds = getDataSource();
+			//TODO 変更時の処理
 			this.index = index;
+			this.json = ds.getData(index); //TODO コピーが必要？
+			for (UiNode d : this.getDescendantsIf(c -> c instanceof DataField)) {
+				DataField field = (DataField) d;
+				field.setRecord(this);
+			}
 		}
 
 		@Override
@@ -120,10 +134,20 @@ public class UiList extends UiGroup {
 	/** １画面に表示可能な行数 */
 	private int linesPerView;
 
+	/**
+	 * UiListを作成する
+	 *
+	 * @param name ノード名
+	 */
 	public UiList(String name) {
 		super(name);
 	}
 
+	/**
+	 * コピーコンストラクタ
+	 *
+	 * @param src コピー元
+	 */
 	public UiList(UiList src) {
 		super(src);
 	}
@@ -133,6 +157,20 @@ public class UiList extends UiGroup {
 		return new UiList(this);
 	}
 
+	/**
+	 * データソースを取得する
+	 *
+	 * @return データソース
+	 */
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	/**
+	 * データソースを設定する
+	 *
+	 * @param ds データソース
+	 */
 	public void setDataSource(DataSource ds) {
 		UiApplication app = getApplication();
 		if (this.dataSource != null) {
@@ -144,9 +182,21 @@ public class UiList extends UiGroup {
 		}
 	}
 
+	public boolean isLoopMode() {
+		return getFlags(FLAGS_EDGE_LOOP);
+	}
+
+	public void setLoopMode(boolean loopMode) {
+		setFlags(FLAGS_EDGE_LOOP, loopMode, 0);
+	}
+
 	@Override
 	public boolean isFocusable() {
 		return template == null || getFirstChild() == null;
+	}
+
+	private boolean isScrollable() {
+		return size() >= linesPerView;
 	}
 
 	@Override
@@ -191,24 +241,197 @@ public class UiList extends UiGroup {
 	public void onResize(int screenWidth, int screenHeight) {
 		updateMetrics();
 		DataSource ds = dataSource;
-		int count = ds.isLoaded() ? ds.getCount() : 0;
-		prepareLines(count);
+		if (ds.isLoaded()) {
+			prepareLines(ds.getCount(), ds.getOffset());
+		} else {
+			prepareLines(0, 0);
+		}
 	}
 
 	@Override
 	public int onDataSourceUpdated(DataSource ds) {
 		int result = super.onDataSourceUpdated(ds);
-		int count = ds.isLoaded() ? ds.getCount() : 0;
-		prepareLines(count);
+		if (ds.isLoaded()) {
+			prepareLines(ds.getCount(), ds.getOffset());
+		} else {
+			prepareLines(0, 0);
+		}
 		result |= EVENT_AFFECTED;
 		return result;
 	}
 
-	private void prepareLines(int count) {
+	@Override
+	public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
+		int result;
+		if (isScrollable() && !isLoopMode()) {
+			result = onKeyDownScroll(target, keyCode, charCode, mods, time);
+		} else if (!isScrollable() && isLoopMode()) {
+			result = onKeyDownSingle(target, keyCode, charCode, mods, time);
+		} else {
+			result = super.onKeyDown(target, keyCode, charCode, mods, time);
+		}
+		return result;
+	}
+
+	public int onKeyDownScroll(UiNode target, int keyCode, int charCode, int mods, int time) {
+		UiApplication app = getApplication();
+		int result = EVENT_IGNORED;
+		UiNode root = getRoot();
+		int tIndex = getOwnerIndex(target);
+		Rect tRect = target.getRectangleOn(root);
+		UiNode next;
+		int axis;
+		switch (keyCode) {
+		case KeyCodes.UP:
+			next = app.getNearestNode(target, c -> getExceptRectUp(c, root, tIndex, tRect));
+			axis = UiApplication.AXIS_Y;
+			break;
+		case KeyCodes.DOWN:
+			next = app.getNearestNode(target, c -> getExceptRectDown(c, root, tIndex, tRect));
+			axis = UiApplication.AXIS_Y;
+			break;
+		case KeyCodes.TAB: //TODO 要対応（優先度低）
+		default:
+			next = null;
+			axis = UiApplication.AXIS_NO;
+			break;
+		}
+		if (next != null) {
+			app.scrollFor(next);
+			app.setFocus(next, axis);
+			result |= EVENT_EATEN;
+		}
+		return result;
+	}
+
+	private int getOwnerIndex(UiNode node) {
+		while (node != null && !(node instanceof UiLine)) {
+			node = node.getParent();
+		}
+		return node != null ? ((UiLine) node).getIndex() : -1;
+	}
+
+	/**
+	 * 末尾から先頭への切れ目を超えずに移動するための判定式
+	 *
+	 * TODO メソッド名見直し（機能をうまく表現できない・・・）
+	 *
+	 * @param child 対象子ノード
+	 * @param root ルートノード（矩形取得に必要）
+	 * @param tIndex 現在の行インデックス
+	 * @param tRect 現在のノード矩形
+	 * @return childの矩形。またはnull（切れ目を超えている場合）
+	 */
+	private Rect getExceptRectUp(UiNode child, UiNode root,int tIndex, Rect tRect) {
+		Rect r = child.getRectangleOn(root);
+		int i = getOwnerIndex(child);
+		return (r.getBottom() <= tRect.getTop()) && (i == -1 || i <= tIndex) ? r : null;
+	}
+
+	/**
+	 * 先頭から末尾への切れ目を超えずに移動するための判定式
+	 *
+	 * TODO メソッド名見直し（機能をうまく表現できない・・・）
+	 *
+	 * @param child 対象子ノード
+	 * @param root ルートノード（矩形取得に必要）
+	 * @param tIndex 現在の行インデックス
+	 * @param tRect 現在のノード矩形
+	 * @return childの矩形。またはnull（切れ目を超えている場合）
+	 */
+	private Rect getExceptRectDown(UiNode child, UiNode root,int tIndex, Rect tRect) {
+		Rect r = child.getRectangleOn(root);
+		int i = getOwnerIndex(child);
+		return (r.getTop() >= tRect.getBottom()) && (i == -1 || i >= tIndex) ? r : null;
+	}
+
+	public int onKeyDownSingle(UiNode target, int keyCode, int charCode, int mods, int time) {
+		UiApplication app = getApplication();
+		int result = EVENT_IGNORED;
+		UiNode root = getRoot();
+		int tIndex = getOwnerIndex(target);
+		Rect tRect = target.getRectangleOn(root);
+		UiNode next;
+		int axis;
+		int offset = size() * lineHeight;
+		switch (keyCode) {
+		case KeyCodes.UP:
+			next = app.getNearestNode(target, c -> getXlatRectUp(c, root, tIndex, tRect, offset));
+			axis = UiApplication.AXIS_Y;
+			break;
+		case KeyCodes.DOWN:
+			next = app.getNearestNode(target, c -> getXlatRectDown(c, root, tIndex, tRect, offset));
+			axis = UiApplication.AXIS_Y;
+			break;
+		case KeyCodes.TAB: //TODO 要対応（優先度低）
+		default:
+			next = null;
+			axis = UiApplication.AXIS_NO;
+			break;
+		}
+		if (next != null) {
+			app.scrollFor(next);
+			app.setFocus(next, axis);
+			result |= EVENT_EATEN;
+		}
+		return result;
+	}
+
+	private Rect getXlatRectUp(UiNode child, UiNode root, int tIndex, Rect tRect, int offset) {
+		if (!this.isAncestor(child)) {
+			return null;
+		}
+		Rect r = child.getRectangleOn(root);
+		int newIndex = getOwnerIndex(child);
+		//カーソル上移動の場合
+		if (r.getBottom() <= tRect.getTop()) {
+			//上にあるノードはそのまま対象
+		} else if (r.getTop() >= tRect.getBottom()) {
+			//下にあるノードの場合
+			if (tIndex != newIndex) {
+				//別レコード内ノードは位置を上に移動して対象化
+				r.move(0, -offset);
+			} else {
+				//同レコード内ノードは対象外
+				r = null;
+			}
+		} else {
+			//横並びの子ノードは対象外
+			r = null;
+		}
+		return r;
+	}
+
+	private Rect getXlatRectDown(UiNode child, UiNode root, int tIndex, Rect tRect, int offset) {
+		if (!this.isAncestor(child)) {
+			return null;
+		}
+		Rect r = child.getRectangleOn(root);
+		int newIndex = getOwnerIndex(child);
+		//カーソル下移動の場合
+		if (r.getTop() >= tRect.getBottom()) {
+			//下にあるノードはそのまま対象
+		} else if (r.getBottom() <= tRect.getTop()) {
+			//上にあるノードの場合
+			if (tIndex != newIndex) {
+				//別レコード内ノードは位置を下に移動して対象化
+				r.move(0, +offset);
+			} else {
+				//同レコード内ノードは対象外
+				r = null;
+			}
+		} else {
+			//横並びの子ノードは対象外
+			r = null;
+		}
+		return r;
+	}
+
+	private void prepareLines(int count, int offset) {
 		UiApplication app = getApplication();
 		UiNode focus = app.getFocus();
 		boolean isFocus = (focus == this);
-		boolean hasFocus = (this.isAncestor(focus));
+		boolean hasFocus = this.isAncestor(focus);
 		if (count <= 0 || linesPerView <= 0) {
 			clearChildren();
 			if (hasFocus) {
@@ -236,13 +459,10 @@ public class UiList extends UiGroup {
 					scrollTop = 0;
 				}
 			}
-			int index = hasMargin ? newLines - VIEW_MARGIN : 0;
+			int index = hasMargin ? lap(offset - VIEW_MARGIN, count) : offset;
 			for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
 				((UiLine)c).setIndex(index);
-				if (c.getFirstChild() instanceof UiButton) {
-					((UiButton)c.getFirstChild()).setText("" + index);
-				}
-				index = (index + 1) % newLines;
+				index = lap(index + 1, count);
 			}
 			relocateChildren();
 			if (scrollTop >= 0) {
@@ -281,23 +501,45 @@ public class UiList extends UiGroup {
 			int scrollHeight = getScrollHeightPx();
 			int margin = lineHeight * VIEW_MARGIN;
 			if (scrollTop < margin) {
-				rollUp();
+				while (scrollTop < margin) {
+					scrollTop = rollUp();
+				}
 				relocateChildren();
 			} else if (scrollHeight - (scrollTop + pageHeight) < margin) {
-				rollDown();
+				while (scrollHeight - (scrollTop + pageHeight) < margin) {
+					scrollTop = rollDown();
+				}
 				relocateChildren();
 			}
 		}
 	}
 
-	private void rollUp() {
-		insertChild(removeLastChild());
-		setScrollTop(getScrollTopPx() + lineHeight);
+	private int rollUp() {
+		int count = dataSource.getCount();
+		UiLine edgeLine = (UiLine) getFirstChild();
+		int index = lap(edgeLine.getIndex() - 1, count);
+		UiLine rollLine = (UiLine) removeLastChild();
+		rollLine.setIndex(index);
+		insertChild(rollLine);
+		int newScrollTop = getScrollTopPx() + lineHeight;
+		setScrollTop(newScrollTop);
+		return newScrollTop;
 	}
 
-	private void rollDown() {
-		appendChild(removeFirstChild());
-		setScrollTop(getScrollTopPx() - lineHeight);
+	private int rollDown() {
+		int count = dataSource.getCount();
+		UiLine edgeLine = (UiLine) getLastChild();
+		int index = lap(edgeLine.getIndex() + 1, count);
+		UiLine rollLine = (UiLine) removeFirstChild();
+		rollLine.setIndex(index);
+		appendChild(rollLine);
+		int newScrollTop = getScrollTopPx() - lineHeight;
+		setScrollTop(newScrollTop);
+		return newScrollTop;
+	}
+
+	private static int lap(int index, int count) {
+		return (index + count) % count;
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
+import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public class Point implements Jsonizable {
@@ -84,4 +85,8 @@ public class Point implements Jsonizable {
 		return json;
 	}
 
+	@Override
+	public String toString() {
+		return Strings.sprintf("%d, %d", x, y);
+	}
 }

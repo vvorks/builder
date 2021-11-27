@@ -223,9 +223,9 @@ public class Rect extends Point {
 		return json;
 	}
 
+	@Override
 	public String toString() {
 		return Strings.sprintf("%d, %d, %d, %d", x, y, width, height);
 	}
-
 
 }

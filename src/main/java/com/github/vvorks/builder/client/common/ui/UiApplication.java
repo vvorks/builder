@@ -10,7 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.net.WebSocket;
@@ -37,10 +37,10 @@ public class UiApplication implements EventHandler {
 	/** イベント結果フラグ： イベントは消費され、かつUi要素の状態が変化した */
 	public static final int EVENT_EATEN = EVENT_CONSUMED | EVENT_AFFECTED;
 
-	private static final int AXIS_NO = 0x00;
-	private static final int AXIS_X  = 0x01;
-	private static final int AXIS_Y  = 0x02;
-	private static final int AXIS_XY = AXIS_X|AXIS_Y;
+	public static final int AXIS_NO = 0x00;
+	public static final int AXIS_X  = 0x01;
+	public static final int AXIS_Y  = 0x02;
+	public static final int AXIS_XY = AXIS_X|AXIS_Y;
 
 	private static final CssStyle BODY_STYLE = new CssStyle.Builder()
 			.property("user-select", "none")
@@ -149,7 +149,7 @@ public class UiApplication implements EventHandler {
 		pageStack.push(p);
 		p.page.onMount();
 		if (p.focus == null) {
-			p.focus = getFirstFocus(p.page);
+			setFocus(getFirstFocus(p.page), AXIS_XY);
 		}
 	}
 
@@ -599,19 +599,31 @@ public class UiApplication implements EventHandler {
 		int axis;
 		switch (keyCode) {
 		case KeyCodes.LEFT:
-			next = getNearestNode(target, r -> r.getRight() <= tRect.getLeft());
+			next = getNearestNode(target, c -> {
+				Rect r = c.getRectangleOn(root);
+				return r.getRight() <= tRect.getLeft() ? r : null;
+			});
 			axis = AXIS_X;
 			break;
 		case KeyCodes.RIGHT:
-			next = getNearestNode(target, r -> r.getLeft() >= tRect.getRight());
+			next = getNearestNode(target, c -> {
+				Rect r = c.getRectangleOn(root);
+				return r.getLeft() >= tRect.getRight() ? r : null;
+			});
 			axis = AXIS_X;
 			break;
 		case KeyCodes.UP:
-			next = getNearestNode(target, r -> r.getBottom() <= tRect.getTop());
+			next = getNearestNode(target, c -> {
+				Rect r = c.getRectangleOn(root);
+				return r.getBottom() <= tRect.getTop() ? r : null;
+			});
 			axis = AXIS_Y;
 			break;
 		case KeyCodes.DOWN:
-			next = getNearestNode(target, r -> r.getTop() >= tRect.getBottom());
+			next = getNearestNode(target, c -> {
+				Rect r = c.getRectangleOn(root);
+				return r.getTop() >= tRect.getBottom() ? r : null;
+			});
 			axis = AXIS_Y;
 			break;
 		case KeyCodes.TAB:
@@ -644,29 +656,32 @@ public class UiApplication implements EventHandler {
 		return result;
 	}
 
-	private UiNode getNearestNode(UiNode curr, Predicate<Rect> cond) {
+	public UiNode getNearestNode(UiNode curr, Function<UiNode, Rect> getRect) {
 		LivePage p = getLivePage();
 		UiNode next = null;
 		int minDegree = Integer.MAX_VALUE;
 		double minDistance = Double.POSITIVE_INFINITY;
 		for (UiNode c : p.page.getFocusCandidates(curr)) {
-			Rect cRect = c.getRectangleOn(root);
-			UiNode blocker = c.getBlocker();
-			UiNode luca = c.getLucaWith(curr);
-			if ((blocker == null || blocker == luca) && cond.test(cRect)) {
-				int degree = curr.getDegree(luca);
-				double distance = cRect.distance(p.axis);
-				if (degree < minDegree || (degree == minDegree && distance < minDistance)) {
-					next = c;
-					minDegree = degree;
-					minDistance = distance;
+			Rect cRect = getRect.apply(c);
+			if (cRect != null) {
+				UiNode blocker = c.getBlocker();
+				UiNode luca = c.getLucaWith(curr);
+				if ((blocker == null || blocker == luca)) {
+					int degree = curr.getDegree(luca);
+					LOGGER.debug("degree %d", degree);
+					double distance = cRect.distance(p.axis);
+					if (degree < minDegree || (degree == minDegree && distance < minDistance)) {
+						next = c;
+						minDegree = degree;
+						minDistance = distance;
+					}
 				}
 			}
 		}
 		return next;
 	}
 
-	private UiNode getAdjacentNode(UiNode curr, int dir) {
+	public UiNode getAdjacentNode(UiNode curr, int dir) {
 		LivePage p = getLivePage();
 		Asserts.assume(p != null);
 		List<UiNode> list = new ArrayList<>();
@@ -679,7 +694,7 @@ public class UiApplication implements EventHandler {
 		return list.get((index + dir + n) % n);
 	}
 
-	private void scrollFor(UiNode node) {
+	public void scrollFor(UiNode node) {
 		UiNode target = node;
 		UiNode parent = target.getParent();
 		while (parent != null) {
