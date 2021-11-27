@@ -11,6 +11,8 @@ import com.github.vvorks.builder.client.common.ui.CssStyle;
 import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
+import com.github.vvorks.builder.client.common.ui.Rect;
+import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.logging.Logger;
@@ -153,7 +155,7 @@ public class GwtDomDocument implements DomDocument {
 	}
 
 	private int toPixel(CssStyle style, String name) {
-		return ((Length) style.getProperty(name)).px(()->0);
+		return ((Length) style.getProperty(name)).px(0);
 	}
 
 	public Panel getBackyard() {
@@ -245,5 +247,30 @@ public class GwtDomDocument implements DomDocument {
 		}
 		return item.image;
 	}
+
+	@Override
+	public void startEditing(UiNode owner, String text) {
+		Rect absRect = owner.getRectangleOnRoot();
+		UiAtomicStyle style = owner.getStyle().getAtomicStyleOf(owner);
+		int w = absRect.getWidth();
+		int h = absRect.getHeight();
+		absRect.resize(
+				+style.getBorderLeft().px(w),
+				+style.getBorderTop().px(h),
+				-style.getBorderRight().px(w),
+				-style.getBorderBottom().px(h));
+		domPanel.startEditing(absRect, style, text);
+	}
+
+	/**
+	 * 編集を終了する
+	 *
+	 * @param owner 編集対象ノード
+	 * @return 結果文字列
+	 */
+	public String endEditing(UiNode owner) {
+		return domPanel.endEditing();
+	}
+
 
 }

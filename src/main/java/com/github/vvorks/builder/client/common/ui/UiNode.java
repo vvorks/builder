@@ -49,6 +49,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	/** イベント結果フラグ： イベントは消費され、かつUi要素の状態が変化した */
 	public static final int EVENT_EATEN = EVENT_CONSUMED | EVENT_AFFECTED;
 
+	/** イベント結果フラグ： システム動作を妨げない */
+	public static final int EVENT_NOPREVENT = 0x04;
+
+	/** イベント結果フラグ： イベントは消費されたがシステム動作は妨げない */
+	public static final int EVENT_THROUGH = EVENT_CONSUMED|EVENT_NOPREVENT;
+
 	/** フォーカス可能フラグ */
 	protected static final int FLAGS_FOCUSABLE		= 0x00000001;
 
@@ -1053,10 +1059,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	public int getWidthPx(final int parentWidthPx) {
 		int result;
 		if (width != null) {
-			result = width.px(() -> parentWidthPx);
+			result = width.px(parentWidthPx);
 		} else {
-			int leftPx = left.px(() -> parentWidthPx);
-			int rightPx = right.px(() -> parentWidthPx);
+			int leftPx = left.px(parentWidthPx);
+			int rightPx = right.px(parentWidthPx);
 			result = parentWidthPx - leftPx - rightPx;
 		}
 		return result;
@@ -1091,8 +1097,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			result = height.px(() -> getParentHeightPx());
 		} else {
 			final int parentHeightPx = getParentHeightPx();
-			int topPx = top.px(() -> parentHeightPx);
-			int bottomPx = bottom.px(() -> parentHeightPx);
+			int topPx = top.px(parentHeightPx);
+			int bottomPx = bottom.px(parentHeightPx);
 			result = parentHeightPx - topPx - bottomPx;
 		}
 		return result;
@@ -1101,10 +1107,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	public int getHeightPx(final int parentHeightPx) {
 		int result;
 		if (height != null) {
-			result = height.px(() -> parentHeightPx);
+			result = height.px(parentHeightPx);
 		} else {
-			int topPx = top.px(() -> parentHeightPx);
-			int bottomPx = bottom.px(() -> parentHeightPx);
+			int topPx = top.px(parentHeightPx);
+			int bottomPx = bottom.px(parentHeightPx);
 			result = parentHeightPx - topPx - bottomPx;
 		}
 		return result;
@@ -1412,6 +1418,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			anc = anc.parent;
 		}
 		return anc;
+	}
+
+	public Rect getRectangleOnRoot() {
+		return getRectangleOn(null);
 	}
 
 	public Rect getRectangleOn(UiNode ancestor) {

@@ -31,6 +31,12 @@ public class UiApplication implements EventHandler {
 	/** イベント結果フラグ： イベントは消費された */
 	public static final int EVENT_CONSUMED = UiNode.EVENT_CONSUMED;
 
+	/** イベント結果フラグ： システム動作の抑止は行わない */
+	public static final int EVENT_NOPREVENT = UiNode.EVENT_NOPREVENT;
+
+	/** イベント結果フラグ： イベントは消費されたが、システム動作の抑止は行わない */
+	public static final int EVENT_THROUGH = UiNode.EVENT_THROUGH;
+
 	/** イベント結果フラグ： イベントによりUi要素の状態が変化した */
 	public static final int EVENT_AFFECTED = UiNode.EVENT_AFFECTED;
 

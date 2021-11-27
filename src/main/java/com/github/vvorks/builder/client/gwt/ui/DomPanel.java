@@ -4,7 +4,9 @@ import java.util.Map;
 
 import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.KeyCodes;
+import com.github.vvorks.builder.client.common.ui.Rect;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
+import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.google.gwt.dom.client.Document;
@@ -32,25 +34,17 @@ public class DomPanel extends FocusWidget {
 
 	protected final Panel backyard;
 
+	protected final ImeArea imeArea;
+
 	protected final UiApplication app;
 
-	public DomPanel(Panel backyard) {
-		//backyard初期化
+	public DomPanel(Panel backyard, ImeArea imeArea) {
+		//sub panels初期化
 		this.backyard = backyard;
+		this.imeArea = imeArea;
 		//アプリケーションの作成
 		DomDocument doc = new GwtDomDocument(this);
 		app = Factory.newInstance(UiApplication.class, doc);
-		//イベントハンドラの初期化
-		addKeyDownHandler(event -> onKeyDown(event));
-		addKeyPressHandler(event -> onKeyPress(event));
-		addKeyUpHandler(event -> onKeyUp(event));
-		addMouseDownHandler(event -> onMouseDown(event));
-		addMouseMoveHandler(event -> onMouseMove(event));
-		addMouseUpHandler(event -> onMouseUp(event));
-		addClickHandler(event -> onClick(event));
-		addDoubleClickHandler(event -> onDoubleClick(event));
-		addMouseWheelHandler(event -> onMouseWheel(event));
-		Window.addResizeHandler(event -> onResize(event));
 		//このパネル用のElementを作成し、設定
 		Element panelElement = Document.get().createDivElement();
 		setElement(panelElement);
@@ -63,92 +57,92 @@ public class DomPanel extends FocusWidget {
 		return backyard;
 	}
 
-	private void onKeyDown(KeyDownEvent event) {
+	public void onKeyDown(KeyDownEvent event) {
 		int keyCode = event.getNativeKeyCode();
 		int mods = getModifier(event) & ~KeyCodes.MOD_BUTTON;
 		int timestamp = getTimeStamp(event);
 		int result = app.processKeyDown(keyCode, 0, mods, timestamp);
-		if ((result & UiApplication.EVENT_CONSUMED) != 0) {
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
 			event.preventDefault();
 		}
 	}
 
-	private void onKeyPress(KeyPressEvent event) {
+	public void onKeyPress(KeyPressEvent event) {
 		int charCode = event.getCharCode();
 		int mods = getModifier(event) & ~KeyCodes.MOD_BUTTON;
 		int timestamp = getTimeStamp(event);
 		int result = app.processKeyPress(0, charCode, mods, timestamp);
-		if ((result & UiApplication.EVENT_CONSUMED) != 0) {
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
 			event.preventDefault();
 		}
 	}
 
-	private void onKeyUp(KeyUpEvent event) {
+	public void onKeyUp(KeyUpEvent event) {
 		int keyCode = event.getNativeKeyCode();
 		int mods = getModifier(event) & ~KeyCodes.MOD_BUTTON;
 		int timestamp = getTimeStamp(event);
 		int result = app.processKeyUp(keyCode, 0, mods, timestamp);
-		if ((result & UiApplication.EVENT_CONSUMED) != 0) {
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
 			event.preventDefault();
 		}
 	}
 
-	private void onMouseDown(MouseDownEvent event) {
+	public void onMouseDown(MouseDownEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
 		int mods = getModifier(event);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseDown(x, y, mods, timestamp);
-		if ((result & UiApplication.EVENT_CONSUMED) != 0) {
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
 			event.preventDefault();
 		}
 	}
 
-	private void onMouseMove(MouseMoveEvent event) {
+	public void onMouseMove(MouseMoveEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
 		int mods = getModifier(event);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseMove(x, y, mods, timestamp);
-		if ((result & UiApplication.EVENT_CONSUMED) != 0) {
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
 			event.preventDefault();
 		}
 	}
 
-	private void onMouseUp(MouseUpEvent event) {
+	public void onMouseUp(MouseUpEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
 		int mods = getModifier(event);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseUp(x, y, mods, timestamp);
-		if ((result & UiApplication.EVENT_CONSUMED) != 0) {
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
 			event.preventDefault();
 		}
 	}
 
-	private void onClick(ClickEvent event) {
+	public void onClick(ClickEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
 		int mods = getModifier(event);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseClick(x, y, mods, timestamp);
-		if ((result & UiApplication.EVENT_CONSUMED) != 0) {
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
 			event.preventDefault();
 		}
 	}
 
-	private void onDoubleClick(DoubleClickEvent event) {
+	public void onDoubleClick(DoubleClickEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
 		int mods = getModifier(event) | KeyCodes.MOD_DOUBLECLICK;
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseClick(x, y, mods, timestamp);
-		if ((result & UiApplication.EVENT_CONSUMED) != 0) {
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
 			event.preventDefault();
 		}
 	}
 
-	private void onMouseWheel(MouseWheelEvent event) {
+	public void onMouseWheel(MouseWheelEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
 		int deltaX = 0;
@@ -156,12 +150,12 @@ public class DomPanel extends FocusWidget {
 		int mods = getModifier(event);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseWheel(x, y, deltaX, deltaY, mods, timestamp);
-		if ((result & UiApplication.EVENT_CONSUMED) != 0) {
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
 			event.preventDefault();
 		}
 	}
 
-	private void onResize(ResizeEvent event) {
+	public void onResize(ResizeEvent event) {
 		int screenWidth = event.getWidth();
 		int screenHeight = event.getHeight();
 		int timestamp = newTimestamp();
@@ -225,6 +219,23 @@ public class DomPanel extends FocusWidget {
 		int screenHeight = Window.getClientHeight();
 		app.processInitialize(screenWidth, screenHeight);
 		app.processLoad(tag, parameters);
+	}
+
+	public void startEditing(Rect r, UiAtomicStyle style, String text) {
+		imeArea.setStyle(style);
+		imeArea.setText(text);
+		int len = text.length();
+		if (len > 0) {
+			imeArea.setSelection(len, len);
+		}
+		imeArea.show(r.getLeft(), r.getTop(), r.getWidth(), r.getHeight());
+	}
+
+	public String endEditing() {
+		String result = imeArea.getText();
+		imeArea.setText("");
+		imeArea.hide();
+		return result;
 	}
 
 }

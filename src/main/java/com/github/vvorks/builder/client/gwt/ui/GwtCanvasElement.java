@@ -60,10 +60,10 @@ public class GwtCanvasElement extends GwtDomElement {
 
 	protected void paintChildren(GwtContext2d con) {
 		if (children != null) {
-			int l = definedStyle.getBorderLeft().px(() -> width);
-			int t = definedStyle.getBorderTop().px(() -> height);
-			int r = definedStyle.getBorderRight().px(() -> width);
-			int b = definedStyle.getBorderBottom().px(() -> height);
+			int l = definedStyle.getBorderLeft().px(width);
+			int t = definedStyle.getBorderTop().px(height);
+			int r = definedStyle.getBorderRight().px(width);
+			int b = definedStyle.getBorderBottom().px(height);
 			con.moveOrigin(+l, +t);
 			con.moveOrigin(-scrollX, -scrollY);
 			Rect vp = new Rect(scrollX, scrollY, width - l - r, height - t - b);
@@ -96,10 +96,10 @@ public class GwtCanvasElement extends GwtDomElement {
 		String bkUrl = definedStyle.getBackgroundImage();
 		if (bdUrl != null) {
 			Image img = document.getImageResource(bdUrl);
-			int l = definedStyle.getBorderLeft().px(() -> width);
-			int t = definedStyle.getBorderTop().px(() -> height);
-			int r = definedStyle.getBorderRight().px(() -> width);
-			int b = definedStyle.getBorderBottom().px(() -> height);
+			int l = definedStyle.getBorderLeft().px(width);
+			int t = definedStyle.getBorderTop().px(height);
+			int r = definedStyle.getBorderRight().px(width);
+			int b = definedStyle.getBorderBottom().px(height);
 			con.drawBorderImage(img, 0, 0, width, height, l, t, r, b);
 		} else if (bkUrl != null) {
 			Image img = document.getImageResource(bkUrl);
@@ -119,12 +119,12 @@ public class GwtCanvasElement extends GwtDomElement {
 		con.setFillColor(definedStyle.getColor());
 		con.setStrokeColor(Colors.TRANSPARENT);
 		con.setFontFamily(definedStyle.getFontFamily());
-		con.setFontSize(definedStyle.getFontSize().px(() -> width));
-		int l = definedStyle.getBorderLeft().px(() -> width);
-		int t = definedStyle.getBorderTop().px(() -> height);
-		int r = definedStyle.getBorderRight().px(() -> width);
-		int b = definedStyle.getBorderBottom().px(() -> height);
-		int lineHeight = definedStyle.getLineHeight().px(() -> height);
+		con.setFontSize(definedStyle.getFontSize().px(width));
+		int l = definedStyle.getBorderLeft().px(width);
+		int t = definedStyle.getBorderTop().px(height);
+		int r = definedStyle.getBorderRight().px(width);
+		int b = definedStyle.getBorderBottom().px(height);
+		int lineHeight = definedStyle.getLineHeight().px(height);
 		int flags = get2dAlign(definedStyle) | GwtContext2d.DRAW_ELLIPSIS;
 		con.drawText(l, t, width - l - r, height - t - b, text, lineHeight, flags);
 	}
@@ -135,10 +135,10 @@ public class GwtCanvasElement extends GwtDomElement {
 		if (bdUrl != null) {
 		} else if (bkUrl != null) {
 		} else {
-			int l = definedStyle.getBorderLeft().px(() -> width);
-			int t = definedStyle.getBorderTop().px(() -> height);
-			int r = definedStyle.getBorderRight().px(() -> width);
-			int b = definedStyle.getBorderBottom().px(() -> height);
+			int l = definedStyle.getBorderLeft().px(width);
+			int t = definedStyle.getBorderTop().px(height);
+			int r = definedStyle.getBorderRight().px(width);
+			int b = definedStyle.getBorderBottom().px(height);
 			con.setStrokeWidth(0);
 			con.setFillColor(definedStyle.getBorderColor());
 			con.drawRect(0, 0, width, t);

@@ -3,6 +3,7 @@ package com.github.vvorks.builder.client.gwt;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.client.gwt.ui.DomPanel;
+import com.github.vvorks.builder.client.gwt.ui.ImeArea;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.net.URLFragment;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
@@ -31,10 +32,6 @@ public class GwtEntryPoint implements EntryPoint {
 		Style rootStyle = root.getElement().getStyle();
 		rootStyle.setOverflow(Overflow.HIDDEN);
 		rootStyle.setBackgroundColor(bgColor);
-		//起動パラメータの取得
-		String encStr = Window.Location.getHash();
-		String hashStr = URL.decodeQueryString(encStr);
-		URLFragment fragment = new URLFragment(hashStr);
 		//メトリックス計測用のダミー要素を作成
 		final Widget em = new HTML("");
 		final Widget ex = new HTML("");
@@ -56,29 +53,54 @@ public class GwtEntryPoint implements EntryPoint {
 			root.remove(em);
 			root.remove(ex);
 			root.remove(in);
-			//背景ビデオ(FOR DEBUG/DEMO)
-			Video video = Video.createIfSupported();
-			if (video != null) {
-				video.setWidth("100%");
-				video.setHeight("100%");
-				video.setLoop(true);
-				video.setAutoplay(true);
-				video.setMuted(true);
-				video.addSource("video/sample_1920x1080.mp4");
-				root.add(video);
-			}
-			//backyard準備
-			LayoutPanel backyard = new LayoutPanel();
-			root.add(backyard);
-			setWidgetHidden(backyard);
-			//メインパネル準備
-			DomPanel panel = new DomPanel(backyard);
-			root.add(panel);
-			setWidget100Percent(panel);
-			panel.setFocus(true);
-			//ページ読み込み
-			panel.load(fragment.getTag(), fragment.getParameters());
+			//実初期化開始
+			initialize(root);
 		});
+	}
+
+	private void initialize(RootLayoutPanel root) {
+		//背景ビデオ(FOR DEBUG/DEMO)
+		Video video = Video.createIfSupported();
+		if (video != null) {
+			video.setWidth("100%");
+			video.setHeight("100%");
+			video.setLoop(true);
+			video.setAutoplay(true);
+			video.setMuted(true);
+			video.addSource("video/sample_1920x1080.mp4");
+			root.add(video);
+		}
+		//backyard準備
+		LayoutPanel backyard = new LayoutPanel();
+		root.add(backyard);
+		setWidgetHidden(backyard);
+		//ImeAreaの作成
+		ImeArea imeArea = new ImeArea();
+		//メインパネル準備
+		DomPanel panel = new DomPanel(backyard, imeArea);
+		root.add(panel);
+		setWidget100Percent(panel);
+		//ImeAreaの追加
+		root.add(imeArea);
+		//イベントハンドラの初期化
+		imeArea.addKeyDownHandler(event -> panel.onKeyDown(event));
+		imeArea.addKeyPressHandler(event -> panel.onKeyPress(event));
+		imeArea.addKeyUpHandler(event -> panel.onKeyUp(event));
+		panel.addMouseDownHandler(event -> panel.onMouseDown(event));
+		panel.addMouseMoveHandler(event -> panel.onMouseMove(event));
+		panel.addMouseUpHandler(event -> panel.onMouseUp(event));
+		panel.addClickHandler(event -> panel.onClick(event));
+		panel.addDoubleClickHandler(event -> panel.onDoubleClick(event));
+		panel.addMouseWheelHandler(event -> panel.onMouseWheel(event));
+		Window.addResizeHandler(event -> panel.onResize(event));
+		//フォーカス設定
+		imeArea.setFocus(true);
+		//起動パラメータの取得
+		String encStr = Window.Location.getHash();
+		String hashStr = URL.decodeQueryString(encStr);
+		URLFragment fragment = new URLFragment(hashStr);
+		//ページ読み込み
+		panel.load(fragment.getTag(), fragment.getParameters());
 	}
 
 	private void setWidgetSize(Widget widget, int value, Unit unit) {

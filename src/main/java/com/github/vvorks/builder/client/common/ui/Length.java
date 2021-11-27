@@ -160,6 +160,18 @@ public class Length implements Jsonizable {
 	}
 
 	/**
+	 * ピクセル単位での値を整数で取得する
+	 *
+	 * @param parentValue
+	 * 		親座標系のピクセル値（％計算で使用する）。遅延実行のため
+	 * @return
+	 * 		ピクセル単位の値（小数点以下は四捨五入される）
+	 */
+	public int px(int parentValue) {
+		return (int) Math.round(getValuePx(parentValue));
+	}
+
+	/**
 	 * ピクセル単位での値を取得する
 	 *
 	 * @param parentValue
@@ -168,12 +180,37 @@ public class Length implements Jsonizable {
 	 * 		ピクセル単位の値（小数点以下の処理は呼び出し元で行う事）
 	 */
 	public double getValuePx(Value<Integer> parentValue) {
+		double px;
+		if (unit == Unit.PCT) {
+			px = (value * parentValue.getValue()) / 100;
+		} else {
+			px = getValuePxNotPct();
+		}
+		return px;
+	}
+
+	/**
+	 * ピクセル単位での値を取得する
+	 *
+	 * @param parentValue
+	 * 		親座標系のピクセル値（％計算で使用する）
+	 * @return
+	 * 		ピクセル単位の値（小数点以下の処理は呼び出し元で行う事）
+	 */
+	public double getValuePx(int parentValue) {
+		double px;
+		if (unit == Unit.PCT) {
+			px = (value * parentValue) / 100;
+		} else {
+			px = getValuePxNotPct();
+		}
+		return px;
+	}
+
+	private double getValuePxNotPct() {
 		Metrics met = Factory.getInstance(Metrics.class);
 		double px;
 		switch (unit) {
-		case PCT:
-			px = (value * parentValue.getValue()) / 100;
-			break;
 		case IN:
 			px = value * met.getInSize();
 			break;
