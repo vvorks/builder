@@ -187,7 +187,7 @@ public class Rect extends Point {
 		} else {
 			dy = 0;
 		}
-		return Math.sqrt(dx*dx + dy*dy);
+		return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 	}
 
 	@Override

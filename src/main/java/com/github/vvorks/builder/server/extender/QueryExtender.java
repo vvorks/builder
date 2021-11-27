@@ -148,7 +148,7 @@ public class QueryExtender {
 
 	private static final EnumSet<DataType> SCALER_TYPES = EnumSet.of(
 			DataType.KEY,
-			DataType.ENUM,		//TODO 要確認
+			DataType.ENUM,
 			DataType.BOOLEAN,
 			DataType.INTEGER,
 			DataType.REAL,

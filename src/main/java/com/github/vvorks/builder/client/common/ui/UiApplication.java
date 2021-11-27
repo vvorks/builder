@@ -668,7 +668,6 @@ public class UiApplication implements EventHandler {
 				UiNode luca = c.getLucaWith(curr);
 				if ((blocker == null || blocker == luca)) {
 					int degree = curr.getDegree(luca);
-					LOGGER.debug("degree %d", degree);
 					double distance = cRect.distance(p.axis);
 					if (degree < minDegree || (degree == minDegree && distance < minDistance)) {
 						next = c;

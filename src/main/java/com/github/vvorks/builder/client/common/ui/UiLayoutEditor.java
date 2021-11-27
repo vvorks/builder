@@ -191,8 +191,8 @@ public class UiLayoutEditor extends UiNode {
 		private double yScale;
 
 		public Handle() {
-			final double X = UiNode.Builder.NA;
-			UiNode.Builder b = new UiNode.Builder(this, "px");
+			final double X = UiNodeBuilder.NA;
+			UiNodeBuilder b = new UiNodeBuilder(this, "px");
 			b.enter(new HandlePiece(this, HandleType.NW))
 				.style(HANDLE_STYLE)
 				.locate(0, 0, X, X, HANDLE_SIZE, HANDLE_SIZE)

@@ -2,12 +2,12 @@ package com.github.vvorks.builder.client.app;
 
 import java.util.Map;
 
+import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiCanvasFrame;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalGroup;
-import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiVerticalGroup;
 import com.github.vvorks.builder.common.logging.Logger;
@@ -33,8 +33,8 @@ public class GroupTestPage extends UiPage {
 	@Override
 	protected void initialize() {
 		LOGGER.trace("%s.initialize()", getFullName());
-		final double NA = UiNode.Builder.NA;
-		UiNode.Builder b = new UiNode.Builder(this, "em");
+		final double NA = UiNodeBuilder.NA;
+		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		//全体
 		b.enter(new UiGroup("group"));
 			b.style(BuilderUiApplication.NOBORDER);
@@ -101,11 +101,6 @@ public class GroupTestPage extends UiPage {
 					}
 				b.leave();
 			b.leave();
-//			//レイアウタ
-//			b.enter(new UiLayoutEditor("layouter"));
-//				b.style(BuilderUiApplication.BASIC);
-//				b.locate(23.0, 1.0, 1.0, 1.0, NA, NA);
-//			b.leave();
 		b.leave();
 	}
 

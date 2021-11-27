@@ -47,7 +47,7 @@ public class UiList extends UiGroup {
 			DataSource ds = getDataSource();
 			//TODO 変更時の処理
 			this.index = index;
-			this.json = ds.getData(index); //TODO コピーが必要？
+			this.json = ds.getData(index);
 			for (UiNode d : this.getDescendantsIf(c -> c instanceof DataField)) {
 				DataField field = (DataField) d;
 				field.setRecord(this);

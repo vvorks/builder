@@ -481,7 +481,7 @@ public final class Strings {
 			return EMPTY_STRINGS;
 		}
 		CharReader in = new CharReader(str);
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		int spos = in.position();
 		int epos = spos;
 		int curr = in.read();
@@ -960,7 +960,7 @@ public final class Strings {
 	}
 
 	public static String concat(String separator, Collection<?> list) {
-		if (list == null || list.size() == 0 || (list.size() == 1 && list.iterator().next() == null)) {
+		if (list == null || list.isEmpty() || (list.size() == 1 && list.iterator().next() == null)) {
 			return "";
 		} else if (list.size() == 1) {
 			return list.iterator().next().toString();
