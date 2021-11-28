@@ -17,7 +17,7 @@ public class BuilderUiApplication extends UiApplication {
 
 	public static final UiAtomicStyle ENABLE = UiStyle.newAtomicBuilder(THIS, "enable", null)
 			.color(Colors.BLACK)
-			.backgroundColor(Colors.WHITE)
+			.backgroundColor(Colors.TRANSPARENT)
 			.font("12pt")
 			.align(UiAtomicStyle.TEXT_ALIGN_LEFT, UiAtomicStyle.VERTICAL_ALIGN_MIDDLE)
 			.borderWidth("4px")

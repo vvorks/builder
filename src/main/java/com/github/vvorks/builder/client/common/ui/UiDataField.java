@@ -20,6 +20,8 @@ public class UiDataField extends UiNode implements DataField {
 
 	private transient EditState editState;
 
+	private transient String saveText;
+
 	public UiDataField(String name) {
 		super(name);
 		setFocusable(true);
@@ -85,11 +87,15 @@ public class UiDataField extends UiNode implements DataField {
 		int result;
 		if (isCharKey(keyCode, mods) || isImeKey(keyCode, mods)) {
 			editState = EditState.HALF;
+			saveText = getText();
+			setText("");
 			doc.startEditing(this, "");
 			result = EVENT_AFFECTED;
 		} else if (isEditKey(keyCode, mods)) {
 			editState = EditState.FULL;
-			doc.startEditing(this, getText());
+			saveText = getText();
+			setText("");
+			doc.startEditing(this, saveText);
 			result = EVENT_EATEN;
 		} else {
 			result = EVENT_IGNORED;
@@ -116,6 +122,7 @@ public class UiDataField extends UiNode implements DataField {
 			getApplication().onKeyDown(target, KeyCodes.DOWN, 0, 0, time);
 		} else if (isEscKey(keyCode, mods)) {
 			doc.endEditing(this);
+			setText(saveText);
 			editState = EditState.NONE;
 			result = EVENT_EATEN;
 		} else {

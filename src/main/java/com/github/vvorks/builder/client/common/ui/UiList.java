@@ -326,8 +326,8 @@ public class UiList extends UiGroup {
 	@Override
 	public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
 		int result;
-		if (hiddenIndex != -1) {
-			recoverFocus();
+		if (isFocusHidden(target)) {
+			recoverFocus(target);
 		}
 		if (isScrollable() && !isLoopMode()) {
 			result = onKeyDownScroll(target, keyCode, charCode, mods, time);
@@ -339,9 +339,14 @@ public class UiList extends UiGroup {
 		return result;
 	}
 
-	private void recoverFocus() {
+	private boolean isFocusHidden(UiNode target) {
+		return	(target == this && hiddenIndex != -1) ||
+				(target.getBlocker() == this);
+	}
+	
+	private void recoverFocus(UiNode target) {
 		//TODO フォーカスリカバリ処理実装
-		LOGGER.debug("FOCUS HIDDEN %d, %d", hiddenIndex, hiddenColumn);
+		LOGGER.debug("FOCUS HIDDEN %s %d, %d", target.getFullName(), hiddenIndex, hiddenColumn);
 	}
 
 	public int onKeyDownScroll(UiNode target, int keyCode, int charCode, int mods, int time) {
