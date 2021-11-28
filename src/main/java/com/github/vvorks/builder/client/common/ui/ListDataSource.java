@@ -7,9 +7,13 @@ import java.util.Set;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Factory;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 
 public class ListDataSource implements DataSource {
+
+	public static final Class<?> THIS = ListDataSource.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	private Set<UiApplication> apps;
 
@@ -67,17 +71,17 @@ public class ListDataSource implements DataSource {
 
 	@Override
 	public void insert(Json data) {
-		throw new UnsupportedOperationException();
+		list.add(data);
 	}
 
 	@Override
 	public void update(Json data) {
-		throw new UnsupportedOperationException();
+		//NOP
 	}
 
 	@Override
 	public void remove(Json data) {
-		throw new UnsupportedOperationException();
+		list.remove(data);
 	}
 
 	@Override

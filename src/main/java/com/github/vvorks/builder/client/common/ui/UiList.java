@@ -12,25 +12,35 @@ public class UiList extends UiGroup {
 	/** 疑似スクロール用のマージン行数 */
 	protected static final int VIEW_MARGIN	= 3;
 
-	/** 末端でのカーソル移動実行時のふるまい：周回 */
+	/** 末端でのカーソル移動実行時のふるまい */
 	protected static final int FLAGS_EDGE_LOOP = 0x00010000;
+
+	/** データ更新を直ちにコミットするか否か */
+	protected static final int FLAGS_COMMIT_SOON = 0x00020000;
+
+	/** JSONデータ変更済みフラグ（UILine用） */
+	private static final int FLAGS_UPDATED = 0x00010000;
 
 	/**
 	 * 行クラス
 	 */
-	protected class UiLine extends UiNode implements DataRecord {
+	protected static class UiLine extends UiNode implements DataRecord {
+
+		private final UiList list;
 
 		private int index;
 
 		private Json json;
 
-		public UiLine(String name) {
+		public UiLine(UiList list, String name) {
 			super(name);
+			this.list = list;
 			this.index = -1;
 		}
 
 		protected UiLine(UiLine src) {
 			super(src);
+			this.list = src.list;
 			this.index = src.index;
 		}
 
@@ -44,8 +54,8 @@ public class UiList extends UiGroup {
 		}
 
 		public void setIndex(int index) {
-			DataSource ds = getDataSource();
-			//TODO 変更時の処理
+			flush();
+			DataSource ds = list.getDataSource();
 			this.index = index;
 			this.json = ds.getData(index);
 			for (UiNode d : this.getDescendantsIf(c -> c instanceof DataField)) {
@@ -57,6 +67,14 @@ public class UiList extends UiGroup {
 		@Override
 		public String getName() {
 			return index < 0 ? super.getName() : "" + index;
+		}
+
+		@Override
+		public void onFocus(UiNode target, boolean gained, UiNode other) {
+			if (!gained) {
+				flush();
+			}
+			super.onFocus(target, gained, other);
 		}
 
 		@Override
@@ -97,24 +115,43 @@ public class UiList extends UiGroup {
 		public void setNull(String column) {
 			Asserts.assume(exists());
 			json.setNull(column);
+			onFieldUpdated();
 		}
 
 		@Override
 		public void setBoolean(String column, boolean value) {
 			Asserts.assume(exists());
 			json.setBoolean(column, value);
+			onFieldUpdated();
 		}
 
 		@Override
 		public void setNumber(String column, double value) {
 			Asserts.assume(exists());
 			json.setNumber(column, value);
+			onFieldUpdated();
 		}
 
 		@Override
 		public void setString(String column, String value) {
 			Asserts.assume(exists());
 			json.setString(column, value);
+			onFieldUpdated();
+		}
+
+		private void onFieldUpdated() {
+			setFlags(FLAGS_UPDATED, true, 0);
+			if (list.isFlushSoon()) {
+				flush();
+			}
+		}
+
+		private void flush() {
+			if (exists() && isFlagsOn(FLAGS_UPDATED)) {
+				DataSource ds = list.getDataSource();
+				ds.update(json);
+				setFlags(FLAGS_UPDATED, false, 0);
+			}
 		}
 
 	}
@@ -183,11 +220,19 @@ public class UiList extends UiGroup {
 	}
 
 	public boolean isLoopMode() {
-		return getFlags(FLAGS_EDGE_LOOP);
+		return isFlagsOn(FLAGS_EDGE_LOOP);
 	}
 
 	public void setLoopMode(boolean loopMode) {
 		setFlags(FLAGS_EDGE_LOOP, loopMode, 0);
+	}
+
+	public boolean isFlushSoon() {
+		return isFlagsOn(FLAGS_COMMIT_SOON);
+	}
+
+	public void setFlushSoon(boolean soon) {
+		setFlags(FLAGS_COMMIT_SOON, soon, 0);
 	}
 
 	@Override
@@ -202,7 +247,7 @@ public class UiList extends UiGroup {
 	@Override
 	public void onMount() {
 		if (template == null) {
-			template = new UiLine("template");
+			template = new UiLine(this, "template");
 			template.setBounds(Length.ZERO, Length.ZERO, Length.ZERO, null, null, getMaxHeight());
 			template.setChildren(clearChildren());
 			template.setParent(this);

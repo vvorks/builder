@@ -48,6 +48,15 @@ public class UiNodeBuilder {
 		return this;
 	}
 
+	public UiNodeBuilder flushSoon(boolean soon) {
+		UiNode node = stack.peek();
+		if (node instanceof UiList) {
+			UiList listNode = (UiList) node;
+			listNode.setFlushSoon(soon);
+		}
+		return this;
+	}
+
 	public UiNodeBuilder locate(String left, String top, String right, String bottom, String width, String height) {
 		UiNode node = stack.peek();
 		node.setBounds(left, top, right, bottom, width, height);

@@ -230,10 +230,10 @@ public class DomPanel extends FocusPanel {
 	}
 
 	public String endEditing() {
-		String result = imePanel.getText();
+		String text = imePanel.getText();
 		imePanel.setText("");
 		imePanel.hide();
-		return result;
+		return text;
 	}
 
 }

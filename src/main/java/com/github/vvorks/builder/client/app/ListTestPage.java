@@ -60,6 +60,7 @@ public class ListTestPage extends UiPage {
 				b.source(createDataSource());
 				b.locate(5.0, 5.0, 5.0, 5.0, NA, NA);
 				b.loop(true);
+				b.flushSoon(false);
 				b.enter(new UiDataField("no"));
 					b.style(BuilderUiApplication.BASIC);
 					b.locate(0.0, 0.0, NA, NA, 5.0, 4.0);

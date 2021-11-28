@@ -313,7 +313,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public boolean isFocusable() {
-		return getFlags(FLAGS_FOCUSABLE);
+		return isFlagsOn(FLAGS_FOCUSABLE);
 	}
 
 	public void setFocusable(boolean focusable) {
@@ -321,7 +321,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public boolean isEnable() {
-		return getFlags(FLAGS_ENABLE);
+		return isFlagsOn(FLAGS_ENABLE);
 	}
 
 	public boolean isEnableAll() {
@@ -333,7 +333,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public boolean isVisible() {
-		return getFlags(FLAGS_VISIBLE);
+		return isFlagsOn(FLAGS_VISIBLE);
 	}
 
 	public boolean isVisibleAll() {
@@ -345,7 +345,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public boolean isClicking() {
-		return getFlags(FLAGS_CLICKING);
+		return isFlagsOn(FLAGS_CLICKING);
 	}
 
 	public void setClicking(boolean clicked) {
@@ -353,7 +353,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public boolean isHookEvents() {
-		return getFlags(FLAGS_HOOK_EVENTS);
+		return isFlagsOn(FLAGS_HOOK_EVENTS);
 	}
 
 	public void setHookEvents(boolean uses) {
@@ -361,7 +361,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public boolean isEditable() {
-		return getFlags(FLAGS_EDITABLE);
+		return isFlagsOn(FLAGS_EDITABLE);
 	}
 
 	public void setEditable(boolean editable) {
@@ -388,14 +388,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public boolean isDeleted() {
-		return getFlags(FLAGS_DELETED);
+		return isFlagsOn(FLAGS_DELETED);
 	}
 
 	public boolean isDeletedAll() {
 		return isDeleted() && (parent == null || parent.isDeletedAll());
 	}
 
-	protected boolean getFlags(int mask) {
+	protected boolean isFlagsOn(int mask) {
 		return (flags & mask) != 0;
 	}
 
