@@ -1,5 +1,6 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.logging.Logger;
@@ -36,12 +37,14 @@ public class UiList extends UiGroup {
 			super(name);
 			this.list = list;
 			this.index = -1;
+			this.json = null;
 		}
 
 		protected UiLine(UiLine src) {
 			super(src);
 			this.list = src.list;
 			this.index = src.index;
+			this.json = src.json;
 		}
 
 		@Override
@@ -171,6 +174,12 @@ public class UiList extends UiGroup {
 	/** １画面に表示可能な行数 */
 	private int linesPerView;
 
+	/** Wheelにより隠れてしまったフォーカス位置のインデックス */
+	private int hiddenIndex;
+
+	/** Wheelにより隠れてしまったフォーカス位置のカラム番号 */
+	private int hiddenColumn;
+
 	/**
 	 * UiListを作成する
 	 *
@@ -178,6 +187,8 @@ public class UiList extends UiGroup {
 	 */
 	public UiList(String name) {
 		super(name);
+		hiddenIndex = -1;
+		hiddenColumn = -1;
 	}
 
 	/**
@@ -187,6 +198,13 @@ public class UiList extends UiGroup {
 	 */
 	public UiList(UiList src) {
 		super(src);
+		dataSource = src.dataSource;
+		template = src.template;
+		pageHeight = src.pageHeight;
+		lineHeight = src.lineHeight;
+		linesPerView = src.linesPerView;
+		hiddenIndex = src.hiddenIndex;
+		hiddenColumn = src.hiddenColumn;
 	}
 
 	@Override
@@ -308,6 +326,9 @@ public class UiList extends UiGroup {
 	@Override
 	public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
 		int result;
+		if (hiddenIndex != -1) {
+			recoverFocus();
+		}
 		if (isScrollable() && !isLoopMode()) {
 			result = onKeyDownScroll(target, keyCode, charCode, mods, time);
 		} else if (!isScrollable() && isLoopMode()) {
@@ -316,6 +337,11 @@ public class UiList extends UiGroup {
 			result = super.onKeyDown(target, keyCode, charCode, mods, time);
 		}
 		return result;
+	}
+
+	private void recoverFocus() {
+		//TODO フォーカスリカバリ処理実装
+		LOGGER.debug("FOCUS HIDDEN %d, %d", hiddenIndex, hiddenColumn);
 	}
 
 	public int onKeyDownScroll(UiNode target, int keyCode, int charCode, int mods, int time) {
@@ -539,48 +565,93 @@ public class UiList extends UiGroup {
 	}
 
 	@Override
+	public int onMouseWheel(UiNode target, int x, int y, int dx, int dy, int mods, int time) {
+		int result = EVENT_CONSUMED;
+		if (size() >= linesPerView) {
+			int oldTop = getScrollTopPx();
+			int newTop = oldTop + dy * ClientSettings.WHEEL_SCALE;
+			//TODO 非ループモードの場合の制限付与が必要
+			if (oldTop != newTop) {
+				result |= EVENT_AFFECTED;
+				scrollVirtual(newTop);
+			}
+		}
+		return result;
+	}
+
+	@Override
 	public void scrollFor(UiNode child) {
 		super.scrollFor(child);
 		if (size() >= linesPerView) {
 			int scrollTop = getScrollTopPx();
 			int scrollHeight = getScrollHeightPx();
 			int margin = lineHeight * VIEW_MARGIN;
-			if (scrollTop < margin) {
-				while (scrollTop < margin) {
-					scrollTop = rollUp();
-				}
-				relocateChildren();
-			} else if (scrollHeight - (scrollTop + pageHeight) < margin) {
-				while (scrollHeight - (scrollTop + pageHeight) < margin) {
-					scrollTop = rollDown();
-				}
-				relocateChildren();
+			if (scrollTop < margin || scrollHeight - (scrollTop + pageHeight) < margin) {
+				scrollVirtual(scrollTop);
 			}
 		}
 	}
 
-	private int rollUp() {
+	private void scrollVirtual(int scrollTop) {
+		int scrollHeight = getScrollHeightPx();
+		int margin = lineHeight * VIEW_MARGIN;
+		if (scrollTop < margin) {
+			while (scrollTop < margin) {
+				rollUp();
+				scrollTop += lineHeight;
+			}
+		} else {
+			while (scrollHeight - (scrollTop + pageHeight) < margin) {
+				rollDown();
+				scrollTop -= lineHeight;
+			}
+		}
+		setScrollTop(scrollTop);
+		relocateChildren();
+	}
+
+	private void rollUp() {
+		UiApplication app = getApplication();
 		int count = dataSource.getCount();
 		UiLine edgeLine = (UiLine) getFirstChild();
 		int index = lap(edgeLine.getIndex() - 1, count);
 		UiLine rollLine = (UiLine) removeLastChild();
+		UiNode focus = app.getFocus();
+		if (rollLine.isAncestor(focus)) {
+			hiddenIndex = rollLine.getIndex();
+			hiddenColumn = rollLine.getDescendantIndex(focus);
+			app.setFocus(this);
+		}
 		rollLine.setIndex(index);
 		insertChild(rollLine);
-		int newScrollTop = getScrollTopPx() + lineHeight;
-		setScrollTop(newScrollTop);
-		return newScrollTop;
+		if (index == hiddenIndex) {
+			UiNode restore = rollLine.getDescendantAt(hiddenColumn);
+			app.setFocus(restore);
+			hiddenIndex = -1;
+			hiddenColumn = -1;
+		}
 	}
 
-	private int rollDown() {
+	private void rollDown() {
+		UiApplication app = getApplication();
 		int count = dataSource.getCount();
 		UiLine edgeLine = (UiLine) getLastChild();
 		int index = lap(edgeLine.getIndex() + 1, count);
 		UiLine rollLine = (UiLine) removeFirstChild();
+		UiNode focus = app.getFocus();
+		if (rollLine.isAncestor(focus)) {
+			hiddenIndex = rollLine.getIndex();
+			hiddenColumn = rollLine.getDescendantIndex(focus);
+			app.setFocus(this);
+		}
 		rollLine.setIndex(index);
 		appendChild(rollLine);
-		int newScrollTop = getScrollTopPx() - lineHeight;
-		setScrollTop(newScrollTop);
-		return newScrollTop;
+		if (index == hiddenIndex) {
+			UiNode restore = rollLine.getDescendantAt(hiddenColumn);
+			app.setFocus(restore);
+			hiddenIndex = -1;
+			hiddenColumn = -1;
+		}
 	}
 
 	private static int lap(int index, int count) {

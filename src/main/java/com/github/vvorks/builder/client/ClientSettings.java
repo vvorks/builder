@@ -34,6 +34,9 @@ public class ClientSettings {
 	/** サーバーURL */
 	public static final String SERVER_URL = "ws://localhost:8080/builder";
 
+	/** ホイール係数 */
+	public static final int WHEEL_SCALE = 20;
+
 	private ClientSettings() {
 	}
 

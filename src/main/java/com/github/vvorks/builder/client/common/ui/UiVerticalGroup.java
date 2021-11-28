@@ -1,5 +1,6 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiVerticalGroup extends UiGroup {
@@ -25,6 +26,20 @@ public class UiVerticalGroup extends UiGroup {
 	public void onMount() {
 		relocateChildren();
 		super.onMount();
+	}
+
+	@Override
+	public int onMouseWheel(UiNode target, int x, int y, int dx, int dy, int mods, int time) {
+		int result = EVENT_CONSUMED;
+		int delta = dy * ClientSettings.WHEEL_SCALE;
+		int oldTop = getScrollTopPx();
+		int maxTop = getScrollHeightPx() - (getHeightPx() - getBorderTopPx() - getBorderBottomPx());
+		int newTop = Math.min(Math.max(0, oldTop + delta), maxTop);
+		if (oldTop != newTop) {
+			setScrollTop(newTop);
+			result |= EVENT_AFFECTED;
+		}
+		return result;
 	}
 
 	private void relocateChildren() {

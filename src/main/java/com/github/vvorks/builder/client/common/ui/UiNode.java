@@ -557,6 +557,28 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return Iterables.filter(getDescendants(), condition);
 	}
 
+	public int getDescendantIndex(UiNode descendant) {
+		int index = 0;
+		for (UiNode d : getDescendants()) {
+			if (d == descendant) {
+				return index;
+			}
+			index++;
+		}
+		return -1;
+	}
+
+	public UiNode getDescendantAt(int pos) {
+		int index = 0;
+		for (UiNode d : getDescendants()) {
+			if (index == pos) {
+				return d;
+			}
+			index++;
+		}
+		return null;
+	}
+
 	/**
 	 * フォーカス可能な子孫ノードを取得する
 	 *
