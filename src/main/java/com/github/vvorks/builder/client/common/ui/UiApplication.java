@@ -228,7 +228,7 @@ public class UiApplication implements EventHandler {
 		LivePage p = getLivePageOf(page);
 		UiNode oldFocusNode = p.focus;
 		if (oldFocusNode != newFocusNode) {
-			LOGGER.debug("FOCUS %s -> %s", getQualifiedName(oldFocusNode, page), getQualifiedName(newFocusNode, page));
+			//LOGGER.debug("FOCUS %s -> %s", getQualifiedName(oldFocusNode, page), getQualifiedName(newFocusNode, page));
 			notifyFocus(oldFocusNode, newFocusNode);
 			p.focus = newFocusNode;
 			Rect r = newFocusNode.getRectangleOn(root);
@@ -286,7 +286,7 @@ public class UiApplication implements EventHandler {
 
 	public void processInitialize(int screenWidth, int screenHeight) {
 		try {
-			LOGGER.trace("processInitialize(%d, %d)", screenWidth, screenHeight);
+			LOGGER.info("processInitialize(%d, %d)", screenWidth, screenHeight);
 			injectRegisteredStyles();
 			this.onResize(screenWidth, screenHeight);
 			root.onResize(screenWidth, screenHeight);
@@ -299,7 +299,7 @@ public class UiApplication implements EventHandler {
 
 	public void processLoad(String tag, Map<String, String> params) {
 		try {
-			LOGGER.trace("processLoad(%s, %s)", tag, params);
+			LOGGER.info("processLoad(%s, %s)", tag, params);
 			call(tag, params);
 			refresh();
 		} catch (Exception err) {
@@ -310,7 +310,7 @@ public class UiApplication implements EventHandler {
 
 	public int processKeyDown(int keyCode, int charCode, int mods, int time) {
 		try {
-			LOGGER.trace("processKeyDown(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
+			LOGGER.info("processKeyDown(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
 			UiNode target = getKeyTarget();
 			UiNode node = target;
 			int result = node.onKeyDown(target, keyCode, charCode, mods, time);
@@ -333,7 +333,7 @@ public class UiApplication implements EventHandler {
 
 	public int processKeyPress(int keyCode, int charCode, int mods, int time) {
 		try {
-			LOGGER.trace("processKeyPress(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
+			LOGGER.info("processKeyPress(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
 			UiNode target = getKeyTarget();
 			UiNode node = target;
 			int result = node.onKeyPress(target, keyCode, charCode, mods, time);
@@ -356,7 +356,7 @@ public class UiApplication implements EventHandler {
 
 	public int processKeyUp(int keyCode, int charCode, int mods, int time) {
 		try {
-			LOGGER.trace("processKeyUp(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
+			LOGGER.info("processKeyUp(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
 			UiNode target = getKeyTarget();
 			UiNode node = target;
 			int result = node.onKeyUp(target, keyCode, charCode, mods, time);
@@ -403,7 +403,7 @@ public class UiApplication implements EventHandler {
 
 	public int processMouseDown(int x, int y, int mods, int time) {
 		try {
-			LOGGER.trace("processMouseDown(%d, %d, 0x%x, %d)", x, y, mods, time);
+			LOGGER.info("processMouseDown(%d, %d, 0x%x, %d)", x, y, mods, time);
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
 			UiNode node = target;
@@ -428,7 +428,7 @@ public class UiApplication implements EventHandler {
 
 	public int processMouseUp(int x, int y, int mods, int time) {
 		try {
-			LOGGER.trace("processMouseUp(%d, %d, 0x%x, %d)", x, y, mods, time);
+			LOGGER.info("processMouseUp(%d, %d, 0x%x, %d)", x, y, mods, time);
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
 			UiNode node = target;
@@ -453,7 +453,7 @@ public class UiApplication implements EventHandler {
 
 	public int processMouseClick(int x, int y, int mods, int time) {
 		try {
-			LOGGER.trace("processMouseClick(%d, %d, 0x%x, %d)", x, y, mods, time);
+			LOGGER.info("processMouseClick(%d, %d, 0x%x, %d)", x, y, mods, time);
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
 			UiNode node = target;
@@ -478,7 +478,7 @@ public class UiApplication implements EventHandler {
 
 	public int processMouseWheel(int x, int y, int dx, int dy, int mods, int time) {
 		try {
-			LOGGER.trace("processMouseWheel(%d, %d, %d, %d, 0x%x, %d)", x, y, dx, dy, mods, time);
+			LOGGER.info("processMouseWheel(%d, %d, %d, %d, 0x%x, %d)", x, y, dx, dy, mods, time);
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
 			UiNode node = target;
@@ -503,7 +503,7 @@ public class UiApplication implements EventHandler {
 
 	public int processResize(int screenWidth, int screenHeight, int time) {
 		try {
-			LOGGER.trace("processResize(%d, %d, %d)", screenWidth, screenHeight, time);
+			LOGGER.info("processResize(%d, %d, %d)", screenWidth, screenHeight, time);
 			this.onResize(screenWidth, screenHeight);
 			root.onResize(screenWidth, screenHeight);
 			refresh();
@@ -516,7 +516,7 @@ public class UiApplication implements EventHandler {
 
 	public int processImageLoaded(String url, int time) {
 		try {
-			LOGGER.trace("processImageLoaded(%s, %d)", url, time);
+			LOGGER.info("processImageLoaded(%s, %d)", url, time);
 			int result = EVENT_IGNORED;
 			result |= root.onImageLoaded(url);
 			result |= this.onImageLoaded(url);
@@ -532,7 +532,7 @@ public class UiApplication implements EventHandler {
 
 	public int processDataSourceUpdated(DataSource ds, int time) {
 		try {
-			LOGGER.trace("processDataSourceUpdated(%s, %d)", ds, time);
+			LOGGER.info("processDataSourceUpdated(%s, %d)", ds, time);
 			int result = EVENT_IGNORED;
 			for (UiNode node : getAttachedNodes(ds)) {
 				result |= node.onDataSourceUpdated(ds);
@@ -582,18 +582,18 @@ public class UiApplication implements EventHandler {
 	}
 
 	private void refresh() {
-		if (ClientSettings.DEBUG) {
-			LivePage p = getLivePage(null);
-			if (p != null) {
-				StringBuilder sb = new StringBuilder();
-				for (UiNode node : p.page.getDescendantsIf(d -> d.isChanged())) {
-					sb.append(",").append(node.getQualifiedName(p.page));
-				}
-				if (sb.length() > 0) {
-					LOGGER.debug("changed %s", sb.substring(1));
-				}
-			}
-		}
+//		if (ClientSettings.DEBUG) {
+//			LivePage p = getLivePage(null);
+//			if (p != null) {
+//				StringBuilder sb = new StringBuilder();
+//				for (UiNode node : p.page.getDescendantsIf(d -> d.isChanged())) {
+//					sb.append(",").append(node.getQualifiedName(p.page));
+//				}
+//				if (sb.length() > 0) {
+//					LOGGER.debug("changed %s", sb.substring(1));
+//				}
+//			}
+//		}
 		root.sync();
 	}
 

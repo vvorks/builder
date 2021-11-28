@@ -103,10 +103,10 @@ public class JavaLogger implements com.github.vvorks.builder.common.logging.Logg
 		StringBuilder sb = new StringBuilder();
 		Date time = new Date();
 		sb.append(Strings.sprintf(
-				"%02d/%02d/%02d %02d:%02d:%02d.%03d %s ",
-				(time.getYear() + 1900) - 2000,
-				time.getMonth() + 1,
-				time.getDate(),
+				"%02d:%02d:%02d.%03d %s ",
+				//(time.getYear() + 1900) - 2000,
+				//time.getMonth() + 1,
+				//time.getDate(),
 				time.getHours(),
 				time.getMinutes(),
 				time.getSeconds(),
