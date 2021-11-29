@@ -228,18 +228,29 @@ public class UiApplication implements EventHandler {
 		LivePage p = getLivePageOf(page);
 		UiNode oldFocusNode = p.focus;
 		if (oldFocusNode != newFocusNode) {
-			//LOGGER.debug("FOCUS %s -> %s", getQualifiedName(oldFocusNode, page), getQualifiedName(newFocusNode, page));
+			LOGGER.debug("FOCUS %s -> %s", getQualifiedName(oldFocusNode, page), getQualifiedName(newFocusNode, page));
 			notifyFocus(oldFocusNode, newFocusNode);
 			p.focus = newFocusNode;
-			Rect r = newFocusNode.getRectangleOn(root);
-			if ((axis & AXIS_X) != 0) {
-				p.axis.setX(r.getCenterX());
-			}
-			if ((axis & AXIS_Y) != 0) {
-				p.axis.setY(r.getTop());
-			}
+			adjustAxis(p, axis);
 		}
 		return oldFocusNode;
+	}
+
+	public void adjustAxis(int axis) {
+		adjustAxis(getLivePage(), axis);
+	}
+
+	protected void adjustAxis(LivePage p, int axis) {
+		Rect r = p.focus.getRectangleOnRoot();
+		if ((axis & AXIS_X) != 0) {
+			p.axis.setX(r.getCenterX());
+		}
+		if ((axis & AXIS_Y) != 0) {
+			p.axis.setY(r.getTop());
+		}
+		if (axis != AXIS_NO) {
+			getDocument().setAxis(p.axis.getX(), p.axis.getY());
+		}
 	}
 
 	public void attachDataSource(UiNode node, DataSource ds) {

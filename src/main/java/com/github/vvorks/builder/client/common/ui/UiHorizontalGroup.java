@@ -37,6 +37,7 @@ public class UiHorizontalGroup extends UiGroup {
 		if (oldLeft != newLeft) {
 			setScrollLeft(newLeft);
 			result |= EVENT_AFFECTED;
+			getApplication().adjustAxis(UiApplication.AXIS_X);
 		}
 		return result;
 	}

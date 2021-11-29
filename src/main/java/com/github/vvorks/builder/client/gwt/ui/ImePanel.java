@@ -3,6 +3,7 @@ package com.github.vvorks.builder.client.gwt.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.ui.Colors;
 import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
@@ -47,6 +48,10 @@ public class ImePanel extends FocusPanel {
 
 	private Element inner;
 
+	private Element xAxis;
+
+	private Element yAxis;
+
 	public ImePanel() {
 		Document doc = Document.get();
 		Element elem = getElement();
@@ -54,12 +59,8 @@ public class ImePanel extends FocusPanel {
 		elem.appendChild(outer);
 		outer.setTabIndex(-1);
 		Style outerStyle = outer.getStyle();
-		outerStyle.setPosition(Position.ABSOLUTE);
+		resetStyle(outerStyle);
 		outerStyle.setDisplay(Display.TABLE);
-		outerStyle.setMargin(0, Unit.PX);
-		outerStyle.setBorderWidth(0, Unit.PX);
-		outerStyle.setPadding(0, Unit.PX);
-		outerStyle.setOutlineWidth(0, Unit.PX);
 		hide();
 		inner = doc.createDivElement();
 		inner.setTabIndex(0);
@@ -80,6 +81,40 @@ public class ImePanel extends FocusPanel {
 				setFocus(false);
 			}
 		});
+		createAxis();
+	}
+
+	private void createAxis() {
+		if (ClientSettings.DEBUG) {
+			Document doc = Document.get();
+			Element elem = getElement();
+			xAxis = doc.createDivElement();
+			Style xStyle = xAxis.getStyle();
+			resetStyle(xStyle);
+			xStyle.setLeft(0, Unit.PX);
+			xStyle.setWidth(1, Unit.PX);
+			xStyle.setTop(0, Unit.PX);
+			xStyle.setBottom(0, Unit.PX);
+			xStyle.setBackgroundColor("cyan");
+			yAxis = doc.createDivElement();
+			Style yStyle = yAxis.getStyle();
+			resetStyle(yStyle);
+			yStyle.setLeft(0, Unit.PX);
+			yStyle.setRight(0, Unit.PX);
+			yStyle.setTop(0, Unit.PX);
+			yStyle.setHeight(1, Unit.PX);
+			yStyle.setBackgroundColor("cyan");
+			elem.appendChild(xAxis);
+			elem.appendChild(yAxis);
+		}
+	}
+
+	private void resetStyle(Style style) {
+		style.setPosition(Position.ABSOLUTE);
+		style.setMargin(0, Unit.PX);
+		style.setBorderWidth(0, Unit.PX);
+		style.setPadding(0, Unit.PX);
+		style.setOutlineWidth(0, Unit.PX);
 	}
 
 	public void setStyle(UiAtomicStyle style) {
@@ -204,6 +239,14 @@ public class ImePanel extends FocusPanel {
 			inner.focus();
 		} else {
 			inner.blur();
+		}
+	}
+
+	public void setAxis(int x, int y) {
+		if (ClientSettings.DEBUG) {
+			LOGGER.debug("axis %d, %d", x, y);
+			xAxis.getStyle().setLeft(x, Unit.PX);
+			yAxis.getStyle().setTop(y, Unit.PX);
 		}
 	}
 

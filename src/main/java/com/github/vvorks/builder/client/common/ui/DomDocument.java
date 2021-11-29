@@ -45,4 +45,12 @@ public interface DomDocument {
 	 */
 	public String endEditing(UiNode owner);
 
+	/**
+	 * 軸座標を設定する
+	 *
+	 * @param x 軸のX座標
+	 * @param y 軸のY座標
+	 */
+	public void setAxis(int x, int y);
+
 }

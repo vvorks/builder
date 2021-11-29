@@ -38,6 +38,7 @@ public class UiVerticalGroup extends UiGroup {
 		if (oldTop != newTop) {
 			setScrollTop(newTop);
 			result |= EVENT_AFFECTED;
+			getApplication().adjustAxis(UiApplication.AXIS_Y);
 		}
 		return result;
 	}

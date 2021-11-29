@@ -236,4 +236,8 @@ public class DomPanel extends FocusPanel {
 		return text;
 	}
 
+	public void setAxis(int x, int y) {
+		imePanel.setAxis(x, y);
+	}
+
 }

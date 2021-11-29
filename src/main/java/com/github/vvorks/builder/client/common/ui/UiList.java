@@ -343,7 +343,7 @@ public class UiList extends UiGroup {
 		return	(target == this && hiddenIndex != -1) ||
 				(target.getBlocker() == this);
 	}
-	
+
 	private void recoverFocus(UiNode target) {
 		//TODO フォーカスリカバリ処理実装
 		LOGGER.debug("FOCUS HIDDEN %s %d, %d", target.getFullName(), hiddenIndex, hiddenColumn);
@@ -366,7 +366,7 @@ public class UiList extends UiGroup {
 			next = app.getNearestNode(target, c -> getExceptRectDown(c, root, tIndex, tRect));
 			axis = UiApplication.AXIS_Y;
 			break;
-		case KeyCodes.TAB: //TODO 要対応（優先度低）
+		case KeyCodes.TAB: //TODO 要対応
 		default:
 			next = null;
 			axis = UiApplication.AXIS_NO;
@@ -439,7 +439,7 @@ public class UiList extends UiGroup {
 			next = app.getNearestNode(target, c -> getXlatRectDown(c, root, tIndex, tRect, offset));
 			axis = UiApplication.AXIS_Y;
 			break;
-		case KeyCodes.TAB: //TODO 要対応（優先度低）
+		case KeyCodes.TAB: //TODO 要対応
 		default:
 			next = null;
 			axis = UiApplication.AXIS_NO;
@@ -577,8 +577,9 @@ public class UiList extends UiGroup {
 			int newTop = oldTop + dy * ClientSettings.WHEEL_SCALE;
 			//TODO 非ループモードの場合の制限付与が必要
 			if (oldTop != newTop) {
-				result |= EVENT_AFFECTED;
 				scrollVirtual(newTop);
+				result |= EVENT_AFFECTED;
+				getApplication().adjustAxis(UiApplication.AXIS_Y);
 			}
 		}
 		return result;
@@ -625,13 +626,13 @@ public class UiList extends UiGroup {
 		if (rollLine.isAncestor(focus)) {
 			hiddenIndex = rollLine.getIndex();
 			hiddenColumn = rollLine.getDescendantIndex(focus);
-			app.setFocus(this);
+			app.setFocus(this, UiApplication.AXIS_NO);
 		}
 		rollLine.setIndex(index);
 		insertChild(rollLine);
 		if (index == hiddenIndex) {
 			UiNode restore = rollLine.getDescendantAt(hiddenColumn);
-			app.setFocus(restore);
+			app.setFocus(restore, UiApplication.AXIS_NO);
 			hiddenIndex = -1;
 			hiddenColumn = -1;
 		}
@@ -647,13 +648,13 @@ public class UiList extends UiGroup {
 		if (rollLine.isAncestor(focus)) {
 			hiddenIndex = rollLine.getIndex();
 			hiddenColumn = rollLine.getDescendantIndex(focus);
-			app.setFocus(this);
+			app.setFocus(this, UiApplication.AXIS_NO);
 		}
 		rollLine.setIndex(index);
 		appendChild(rollLine);
 		if (index == hiddenIndex) {
 			UiNode restore = rollLine.getDescendantAt(hiddenColumn);
-			app.setFocus(restore);
+			app.setFocus(restore, UiApplication.AXIS_NO);
 			hiddenIndex = -1;
 			hiddenColumn = -1;
 		}

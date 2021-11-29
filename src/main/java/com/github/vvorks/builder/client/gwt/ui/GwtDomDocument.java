@@ -272,5 +272,9 @@ public class GwtDomDocument implements DomDocument {
 		return domPanel.endEditing();
 	}
 
+	@Override
+	public void setAxis(int x, int y) {
+		domPanel.setAxis(x, y);
+	}
 
 }

@@ -2,12 +2,12 @@ package com.github.vvorks.builder.client.app;
 
 import java.util.Map;
 
-import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiCanvasFrame;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalGroup;
+import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiVerticalGroup;
 import com.github.vvorks.builder.common.logging.Logger;
@@ -44,7 +44,7 @@ public class GroupTestPage extends UiPage {
 				b.style(BuilderUiApplication.ENABLE);
 				b.spacing(1.0);
 				b.locate(1.0, 1.0, NA, 1.0, 10.0, NA);
-				for (int i = 1; i <= 10; i++) {
+				for (int i = 1; i <= 20; i++) {
 					b.enter(new UiButton("item" + i));
 						b.text("項目" + i);
 						b.style(BuilderUiApplication.BASIC);
@@ -61,7 +61,7 @@ public class GroupTestPage extends UiPage {
 					b.style(BuilderUiApplication.ENABLE);
 					b.spacing(1.0);
 					b.locate(0.0, 0.0, 0.0, 0.0, NA, NA);
-					for (int i = 1; i <= 10; i++) {
+					for (int i = 1; i <= 20; i++) {
 						b.enter(new UiButton("item" + i));
 							b.text("項目" + i);
 							b.style(BuilderUiApplication.BASIC);
@@ -75,7 +75,7 @@ public class GroupTestPage extends UiPage {
 				b.style(BuilderUiApplication.ENABLE);
 				b.spacing(1.0);
 				b.locate(23.0, 1.0, 1.0, NA, NA, 4.0);
-				for (int i = 1; i <= 10; i++) {
+				for (int i = 1; i <= 20; i++) {
 					b.enter(new UiButton("item" + i));
 						b.text("項目" + i);
 						b.style(BuilderUiApplication.BASIC);
@@ -92,7 +92,7 @@ public class GroupTestPage extends UiPage {
 					b.style(BuilderUiApplication.ENABLE);
 					b.spacing(1.0);
 					b.locate(0.0, 0.0, 0.0, 0.0, NA, NA);
-					for (int i = 1; i <= 10; i++) {
+					for (int i = 1; i <= 20; i++) {
 						b.enter(new UiButton("item" + i));
 							b.text("項目" + i);
 							b.style(BuilderUiApplication.BASIC);
