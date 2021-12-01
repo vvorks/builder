@@ -17,11 +17,18 @@ public class Point implements Jsonizable {
 	protected int y;
 
 	protected Point() {
-		set(0, 0);
+		this.x = 0;
+		this.y = 0;
 	}
 
 	public Point(int x, int y) {
-		set(x, y);
+		this.x = x;
+		this.y = y;
+	}
+
+	public Point(Point other) {
+		this.x = other.x;
+		this.y = other.y;
 	}
 
 	public int getX() {
@@ -89,4 +96,5 @@ public class Point implements Jsonizable {
 	public String toString() {
 		return Strings.sprintf("%d, %d", x, y);
 	}
+
 }

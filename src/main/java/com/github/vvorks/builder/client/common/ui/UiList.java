@@ -174,6 +174,9 @@ public class UiList extends UiGroup {
 	/** １画面に表示可能な行数 */
 	private int linesPerView;
 
+	/** Wheelにより隠れてしまったフォーカス位置の方向 */
+	private int hiddenDir;
+
 	/** Wheelにより隠れてしまったフォーカス位置のインデックス */
 	private int hiddenIndex;
 
@@ -340,13 +343,18 @@ public class UiList extends UiGroup {
 	}
 
 	private boolean isFocusHidden(UiNode target) {
-		return	(target == this && hiddenIndex != -1) ||
-				(target.getBlocker() == this);
+		return (target == this && hiddenIndex != -1);
 	}
 
 	private void recoverFocus(UiNode target) {
-		//TODO フォーカスリカバリ処理実装
-		LOGGER.debug("FOCUS HIDDEN %s %d, %d", target.getFullName(), hiddenIndex, hiddenColumn);
+		int count = getDataSource().getCount();
+		int relative = hiddenDir == 1 ? linesPerView : 0;
+		int index = lap(hiddenIndex - relative - VIEW_MARGIN, count);
+		renumberChildren(count, index);
+		setScrollTop(lineHeight * VIEW_MARGIN);
+		UiLine child = (UiLine) getChild(VIEW_MARGIN + relative);
+		Asserts.checkNotNull(child);
+		restoreFocus(child);
 	}
 
 	public int onKeyDownScroll(UiNode target, int keyCode, int charCode, int mods, int time) {
@@ -355,21 +363,27 @@ public class UiList extends UiGroup {
 		UiNode root = getRoot();
 		int tIndex = getOwnerIndex(target);
 		Rect tRect = target.getRectangleOn(root);
-		UiNode next;
-		int axis;
+		UiNode next = null;
+		int axis = AXIS_NO;
 		switch (keyCode) {
 		case KeyCodes.UP:
 			next = app.getNearestNode(target, c -> getExceptRectUp(c, root, tIndex, tRect));
-			axis = UiApplication.AXIS_Y;
+			axis = AXIS_Y;
 			break;
 		case KeyCodes.DOWN:
 			next = app.getNearestNode(target, c -> getExceptRectDown(c, root, tIndex, tRect));
-			axis = UiApplication.AXIS_Y;
+			axis = AXIS_Y;
 			break;
-		case KeyCodes.TAB: //TODO 要対応
+		case KeyCodes.TAB:
+			int dir = (mods & KeyCodes.MOD_SHIFT) != 0 ? -1 : +1;
+			next = app.getAdjacentNode(target, dir, c -> {
+				int i = getOwnerIndex(c);
+				return i == -1 || dir == -1 ? i <= tIndex : i >= tIndex;
+			});
+			axis = AXIS_XY;
+			result |= EVENT_CONSUMED;
+			break;
 		default:
-			next = null;
-			axis = UiApplication.AXIS_NO;
 			break;
 		}
 		if (next != null) {
@@ -390,8 +404,6 @@ public class UiList extends UiGroup {
 	/**
 	 * 末尾から先頭への切れ目を超えずに移動するための判定式
 	 *
-	 * TODO メソッド名見直し（機能をうまく表現できない・・・）
-	 *
 	 * @param child 対象子ノード
 	 * @param root ルートノード（矩形取得に必要）
 	 * @param tIndex 現在の行インデックス
@@ -406,8 +418,6 @@ public class UiList extends UiGroup {
 
 	/**
 	 * 先頭から末尾への切れ目を超えずに移動するための判定式
-	 *
-	 * TODO メソッド名見直し（機能をうまく表現できない・・・）
 	 *
 	 * @param child 対象子ノード
 	 * @param root ルートノード（矩形取得に必要）
@@ -427,22 +437,25 @@ public class UiList extends UiGroup {
 		UiNode root = getRoot();
 		int tIndex = getOwnerIndex(target);
 		Rect tRect = target.getRectangleOn(root);
-		UiNode next;
-		int axis;
+		UiNode next = null;
+		int axis = AXIS_NO;
 		int offset = size() * lineHeight;
 		switch (keyCode) {
 		case KeyCodes.UP:
 			next = app.getNearestNode(target, c -> getXlatRectUp(c, root, tIndex, tRect, offset));
-			axis = UiApplication.AXIS_Y;
+			axis = AXIS_Y;
 			break;
 		case KeyCodes.DOWN:
 			next = app.getNearestNode(target, c -> getXlatRectDown(c, root, tIndex, tRect, offset));
-			axis = UiApplication.AXIS_Y;
+			axis = AXIS_Y;
 			break;
-		case KeyCodes.TAB: //TODO 要対応
+		case KeyCodes.TAB:
+			int dir = (mods & KeyCodes.MOD_SHIFT) != 0 ? -1 : +1;
+			next = app.getAdjacentNode(target, dir, c -> this.isAncestor(c));
+			axis = AXIS_XY;
+			result |= EVENT_CONSUMED;
+			break;
 		default:
-			next = null;
-			axis = UiApplication.AXIS_NO;
 			break;
 		}
 		if (next != null) {
@@ -504,17 +517,15 @@ public class UiList extends UiGroup {
 	}
 
 	private void prepareLines(int count, int offset) {
-		UiApplication app = getApplication();
-		UiNode focus = app.getFocus();
-		boolean isFocus = (focus == this);
-		boolean hasFocus = this.isAncestor(focus);
+		boolean hasFocus = hasFocus();
 		if (count <= 0 || linesPerView <= 0) {
 			clearChildren();
 			if (hasFocus) {
-				app.setFocus(this);
+				setFocus(this);
 			}
 			return;
 		}
+		UiApplication app = getApplication();
 		boolean hasMargin = (count >= linesPerView);
 		int oldLines = size();
 		int newLines = hasMargin ? linesPerView + VIEW_MARGIN * 2 : count;
@@ -536,17 +547,21 @@ public class UiList extends UiGroup {
 				}
 			}
 			int index = hasMargin ? lap(offset - VIEW_MARGIN, count) : offset;
-			for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
-				((UiLine)c).setIndex(index);
-				index = lap(index + 1, count);
-			}
+			renumberChildren(count, index);
 			relocateChildren();
 			if (scrollTop >= 0) {
 				setScrollTop(scrollTop);
 			}
-			if (isFocus || hasFocus) {
+			if (hasFocus) {
 				setFocus(app.getFirstFocus(this));
 			}
+		}
+	}
+
+	private void renumberChildren(int count, int index) {
+		for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
+			((UiLine)c).setIndex(index);
+			index = lap(index + 1, count);
 		}
 	}
 
@@ -573,13 +588,23 @@ public class UiList extends UiGroup {
 	public int onMouseWheel(UiNode target, int x, int y, int dx, int dy, int mods, int time) {
 		int result = EVENT_CONSUMED;
 		if (size() >= linesPerView) {
-			int oldTop = getScrollTopPx();
-			int newTop = oldTop + dy * ClientSettings.WHEEL_SCALE;
-			//TODO 非ループモードの場合の制限付与が必要
-			if (oldTop != newTop) {
+			int count = getDataSource().getCount();
+			int scrollTop = getScrollTopPx();
+			int newTop;
+			if (isLoopMode()) {
+				newTop = scrollTop + dy * ClientSettings.WHEEL_SCALE;
+			} else {
+				int index = ((UiLine) getFirstChild()).getIndex();
+				int diff = (lap(index + VIEW_MARGIN, count) - VIEW_MARGIN) * lineHeight;
+				int top = scrollTop + diff;
+				int len = count * lineHeight - pageHeight;
+				top = Math.min(Math.max(0, top + dy * ClientSettings.WHEEL_SCALE), len);
+				newTop = top - diff;
+			}
+			if (scrollTop != newTop) {
 				scrollVirtual(newTop);
 				result |= EVENT_AFFECTED;
-				getApplication().adjustAxis(UiApplication.AXIS_Y);
+				getApplication().adjustAxis(this, AXIS_Y);
 			}
 		}
 		return result;
@@ -617,47 +642,51 @@ public class UiList extends UiGroup {
 	}
 
 	private void rollUp() {
-		UiApplication app = getApplication();
 		int count = dataSource.getCount();
 		UiLine edgeLine = (UiLine) getFirstChild();
 		int index = lap(edgeLine.getIndex() - 1, count);
 		UiLine rollLine = (UiLine) removeLastChild();
-		UiNode focus = app.getFocus();
+		UiNode focus = getFocus();
 		if (rollLine.isAncestor(focus)) {
-			hiddenIndex = rollLine.getIndex();
-			hiddenColumn = rollLine.getDescendantIndex(focus);
-			app.setFocus(this, UiApplication.AXIS_NO);
+			hiddenDir = +1;
+			saveFocus(rollLine, focus);
 		}
 		rollLine.setIndex(index);
 		insertChild(rollLine);
 		if (index == hiddenIndex) {
-			UiNode restore = rollLine.getDescendantAt(hiddenColumn);
-			app.setFocus(restore, UiApplication.AXIS_NO);
-			hiddenIndex = -1;
-			hiddenColumn = -1;
+			restoreFocus(rollLine);
 		}
 	}
 
 	private void rollDown() {
-		UiApplication app = getApplication();
 		int count = dataSource.getCount();
 		UiLine edgeLine = (UiLine) getLastChild();
 		int index = lap(edgeLine.getIndex() + 1, count);
 		UiLine rollLine = (UiLine) removeFirstChild();
-		UiNode focus = app.getFocus();
+		UiNode focus = getFocus();
 		if (rollLine.isAncestor(focus)) {
-			hiddenIndex = rollLine.getIndex();
-			hiddenColumn = rollLine.getDescendantIndex(focus);
-			app.setFocus(this, UiApplication.AXIS_NO);
+			hiddenDir = -1;
+			saveFocus(rollLine, focus);
 		}
 		rollLine.setIndex(index);
 		appendChild(rollLine);
 		if (index == hiddenIndex) {
-			UiNode restore = rollLine.getDescendantAt(hiddenColumn);
-			app.setFocus(restore, UiApplication.AXIS_NO);
-			hiddenIndex = -1;
-			hiddenColumn = -1;
+			restoreFocus(rollLine);
 		}
+	}
+
+	private void saveFocus(UiLine rollLine, UiNode focus) {
+		hiddenIndex = rollLine.getIndex();
+		hiddenColumn = rollLine.getDescendantIndex(focus);
+		setFocus(this, AXIS_Y);
+	}
+
+	private void restoreFocus(UiLine rollLine) {
+		UiNode restore = rollLine.getDescendantAt(hiddenColumn);
+		setFocus(restore, AXIS_Y);
+		hiddenDir = 0;
+		hiddenIndex = -1;
+		hiddenColumn = -1;
 	}
 
 	private static int lap(int index, int count) {

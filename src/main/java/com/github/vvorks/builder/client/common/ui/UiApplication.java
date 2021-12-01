@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.net.WebSocket;
@@ -26,26 +27,33 @@ public class UiApplication implements EventHandler {
 	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	/** イベント結果フラグ： イベントは無視された */
-	public static final int EVENT_IGNORED = UiNode.EVENT_IGNORED;
+	public static final int EVENT_IGNORED = 0x00;
 
 	/** イベント結果フラグ： イベントは消費された */
-	public static final int EVENT_CONSUMED = UiNode.EVENT_CONSUMED;
-
-	/** イベント結果フラグ： システム動作の抑止は行わない */
-	public static final int EVENT_NOPREVENT = UiNode.EVENT_NOPREVENT;
-
-	/** イベント結果フラグ： イベントは消費されたが、システム動作の抑止は行わない */
-	public static final int EVENT_THROUGH = UiNode.EVENT_THROUGH;
+	public static final int EVENT_CONSUMED = 0x01;
 
 	/** イベント結果フラグ： イベントによりUi要素の状態が変化した */
-	public static final int EVENT_AFFECTED = UiNode.EVENT_AFFECTED;
+	public static final int EVENT_AFFECTED = 0x02;
 
 	/** イベント結果フラグ： イベントは消費され、かつUi要素の状態が変化した */
 	public static final int EVENT_EATEN = EVENT_CONSUMED | EVENT_AFFECTED;
 
+	/** イベント結果フラグ： システム動作の抑止は行わない */
+	public static final int EVENT_NOPREVENT = 0x04;
+
+	/** イベント結果フラグ： イベントは消費されたが、システム動作の抑止は行わない */
+	public static final int EVENT_THROUGH = EVENT_CONSUMED|EVENT_NOPREVENT;
+
+	/** 軸設定フラグ： 軸設定しない */
 	public static final int AXIS_NO = 0x00;
+
+	/** 軸設定フラグ： X軸を設定する */
 	public static final int AXIS_X  = 0x01;
+
+	/** 軸設定フラグ： Y軸を設定する */
 	public static final int AXIS_Y  = 0x02;
+
+	/** 軸設定フラグ： XY軸を設定する */
 	public static final int AXIS_XY = AXIS_X|AXIS_Y;
 
 	private static final CssStyle BODY_STYLE = new CssStyle.Builder()
@@ -211,7 +219,16 @@ public class UiApplication implements EventHandler {
 		return oldCaptureNode;
 	}
 
-	public UiNode getFocus() {
+	public UiNode getFocus(UiNode node) {
+		Asserts.requireNotNull(node);
+		UiPage page = node.getPage();
+		Asserts.requireNotNull(page);
+		LivePage p = getLivePageOf(page);
+		Asserts.assume(p != null);
+		return p.focus;
+	}
+
+	private UiNode getFocus() {
 		LivePage p = getLivePage();
 		Asserts.assume(p != null);
 		return p.focus;
@@ -236,8 +253,20 @@ public class UiApplication implements EventHandler {
 		return oldFocusNode;
 	}
 
-	public void adjustAxis(int axis) {
-		adjustAxis(getLivePage(), axis);
+	public Point getAxis(UiNode node) {
+		Asserts.requireNotNull(node);
+		UiPage page = node.getPage();
+		Asserts.requireNotNull(page);
+		LivePage p = getLivePageOf(page);
+		return new Point(p.axis);
+	}
+
+	public void adjustAxis(UiNode node, int axis) {
+		Asserts.requireNotNull(node);
+		UiPage page = node.getPage();
+		Asserts.requireNotNull(page);
+		LivePage p = getLivePageOf(page);
+		adjustAxis(p, axis);
 	}
 
 	protected void adjustAxis(LivePage p, int axis) {
@@ -302,7 +331,7 @@ public class UiApplication implements EventHandler {
 			this.onResize(screenWidth, screenHeight);
 			root.onResize(screenWidth, screenHeight);
 			refresh();
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -313,7 +342,7 @@ public class UiApplication implements EventHandler {
 			LOGGER.info("processLoad(%s, %s)", tag, params);
 			call(tag, params);
 			refresh();
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -330,13 +359,15 @@ public class UiApplication implements EventHandler {
 				result |= node.onKeyDown(target, keyCode, charCode, mods, time);
 			}
 			if ((result & EVENT_CONSUMED) == 0) {
-				result |= this.onKeyDown(target, keyCode, charCode, mods, time);
+				//UiNode側の処理でフォーカスが変化している場合があるので、再取得
+				UiNode focus = getKeyTarget();
+				result |= this.onKeyDown(focus, keyCode, charCode, mods, time);
 			}
 			if ((result & EVENT_AFFECTED) != 0) {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -353,13 +384,15 @@ public class UiApplication implements EventHandler {
 				result |= node.onKeyPress(target, keyCode, charCode, mods, time);
 			}
 			if ((result & EVENT_CONSUMED) == 0) {
-				result |= this.onKeyPress(target, keyCode, charCode, mods, time);
+				//UiNode側の処理でフォーカスが変化している場合があるので、再取得
+				UiNode focus = getKeyTarget();
+				result |= this.onKeyPress(focus, keyCode, charCode, mods, time);
 			}
 			if ((result & EVENT_AFFECTED) != 0) {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -376,13 +409,15 @@ public class UiApplication implements EventHandler {
 				result |= node.onKeyUp(target, keyCode, charCode, mods, time);
 			}
 			if ((result & EVENT_CONSUMED) == 0) {
-				result |= this.onKeyUp(target, keyCode, charCode, mods, time);
+				//UiNode側の処理でフォーカスが変化している場合があるので、再取得
+				UiNode focus = getKeyTarget();
+				result |= this.onKeyUp(focus, keyCode, charCode, mods, time);
 			}
 			if ((result & EVENT_AFFECTED) != 0) {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -406,7 +441,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -431,7 +466,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -456,7 +491,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -481,7 +516,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -506,7 +541,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -519,7 +554,7 @@ public class UiApplication implements EventHandler {
 			root.onResize(screenWidth, screenHeight);
 			refresh();
 			return UiNode.EVENT_EATEN;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -535,7 +570,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -553,7 +588,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception err) {
+		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -612,8 +647,8 @@ public class UiApplication implements EventHandler {
 	public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
 		int result = EVENT_IGNORED;
 		Rect tRect = target.getRectangleOn(root);
-		UiNode next;
-		int axis;
+		UiNode next = null;
+		int axis = AXIS_NO;
 		switch (keyCode) {
 		case KeyCodes.LEFT:
 			next = getNearestNode(target, c -> {
@@ -644,25 +679,20 @@ public class UiApplication implements EventHandler {
 			axis = AXIS_Y;
 			break;
 		case KeyCodes.TAB:
-			next = getAdjacentNode(target, (mods & KeyCodes.MOD_SHIFT) != 0 ? -1 : +1);
+			int dir = (mods & KeyCodes.MOD_SHIFT) != 0 ? -1 : +1;
+			next = getAdjacentNode(target, dir, c -> true);
 			axis = AXIS_XY;
 			result |= EVENT_CONSUMED;
 			break;
 		case KeyCodes.ENTER:
 			result |= clearClicking() | setClicking(target);
-			next = null;
-			axis = AXIS_NO;
 			break;
 		case KeyCodes.SPACE:
 			if (ClientSettings.DEBUG) {
 				LOGGER.debug(root.toString());
 			}
-			next = null;
-			axis = AXIS_NO;
 			break;
 		default:
-			next = null;
-			axis = AXIS_NO;
 			break;
 		}
 		if (next != null) {
@@ -683,7 +713,7 @@ public class UiApplication implements EventHandler {
 			if (cRect != null) {
 				UiNode blocker = c.getBlocker();
 				UiNode luca = c.getLucaWith(curr);
-				if ((blocker == null || blocker == luca)) {
+				if ((blocker == null || blocker == luca || blocker.isAncestor(luca))) {
 					int degree = curr.getDegree(luca);
 					double distance = cRect.distance(p.axis);
 					if (degree < minDegree || (degree == minDegree && distance < minDistance)) {
@@ -697,12 +727,23 @@ public class UiApplication implements EventHandler {
 		return next;
 	}
 
-	public UiNode getAdjacentNode(UiNode curr, int dir) {
+	public UiNode getAdjacentNode(UiNode curr, int dir, Predicate<UiNode> pred) {
 		LivePage p = getLivePage();
 		Asserts.assume(p != null);
 		List<UiNode> list = new ArrayList<>();
-		Iterables.addAll(list, p.page.getFocusCandidates());
-		int index = list.indexOf(curr);
+		int index = -1;
+		for (UiNode c : p.page.getFocusCandidates()) {
+			if (pred.test(c)) {
+				UiNode blocker = c.getBlocker();
+				UiNode luca = c.getLucaWith(curr);
+				if ((blocker == null || blocker == luca || blocker.isAncestor(luca))) {
+					if (c == curr) {
+						index = list.size();
+					}
+					list.add(c);
+				}
+			}
+		}
 		if (index < 0) {
 			return null;
 		}

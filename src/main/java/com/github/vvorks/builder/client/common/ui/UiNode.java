@@ -38,22 +38,34 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	public static final String HTML_CANVAS = "canvas";
 
 	/** イベント結果フラグ： イベントは無視された */
-	public static final int EVENT_IGNORED = 0x00;
+	public static final int EVENT_IGNORED = UiApplication.EVENT_IGNORED;
 
 	/** イベント結果フラグ： イベントは消費された */
-	public static final int EVENT_CONSUMED = 0x01;
+	public static final int EVENT_CONSUMED = UiApplication.EVENT_CONSUMED;
 
 	/** イベント結果フラグ： イベントによりUi要素の状態が変化した */
-	public static final int EVENT_AFFECTED = 0x02;
+	public static final int EVENT_AFFECTED = UiApplication.EVENT_AFFECTED;
 
 	/** イベント結果フラグ： イベントは消費され、かつUi要素の状態が変化した */
-	public static final int EVENT_EATEN = EVENT_CONSUMED | EVENT_AFFECTED;
+	public static final int EVENT_EATEN = UiApplication.EVENT_EATEN;
 
 	/** イベント結果フラグ： システム動作を妨げない */
-	public static final int EVENT_NOPREVENT = 0x04;
+	public static final int EVENT_NOPREVENT = UiApplication.EVENT_NOPREVENT;
 
 	/** イベント結果フラグ： イベントは消費されたがシステム動作は妨げない */
-	public static final int EVENT_THROUGH = EVENT_CONSUMED|EVENT_NOPREVENT;
+	public static final int EVENT_THROUGH = UiApplication.EVENT_THROUGH;
+
+	/** 軸設定フラグ： 軸設定しない */
+	public static final int AXIS_NO = UiApplication.AXIS_NO;
+
+	/** 軸設定フラグ： X軸を設定する */
+	public static final int AXIS_X  = UiApplication.AXIS_X;
+
+	/** 軸設定フラグ： Y軸を設定する */
+	public static final int AXIS_Y  = UiApplication.AXIS_Y;
+
+	/** 軸設定フラグ： XY軸を設定する */
+	public static final int AXIS_XY = UiApplication.AXIS_XY;
 
 	/** フォーカス可能フラグ */
 	protected static final int FLAGS_FOCUSABLE		= 0x00000001;
@@ -490,6 +502,23 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 */
 	public UiNode getFirstChild() {
 		return firstChild;
+	}
+
+	/**
+	 * 指定位置の子ノードを取得する
+	 *
+	 * @param index 位置
+	 * @return 指定位置の子ノード。index < 0 又は index >= 子ノード数の場合、null
+	 */
+	public UiNode getChild(int index) {
+		if (index < 0) {
+			return null;
+		}
+		UiNode child = firstChild;
+		for (int i = 0 ; i < index && child != null; i++) {
+			child = child.nextSibling;
+		}
+		return child;
 	}
 
 	/**
@@ -1401,11 +1430,15 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	protected UiNode getFocus() {
-		return getApplication().getFocus();
+		return getApplication().getFocus(this);
 	}
 
 	protected UiNode setFocus(UiNode node) {
 		return getApplication().setFocus(node);
+	}
+
+	protected UiNode setFocus(UiNode node, int axis) {
+		return getApplication().setFocus(node, axis);
 	}
 
 	protected boolean isFocus() {

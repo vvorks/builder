@@ -77,4 +77,16 @@ public class Asserts {
 		}
 	}
 
+	public static void checkNotNull(Object obj) {
+		if (obj == null) {
+			throw new AssertionError();
+		}
+	}
+
+	public static void checkNotNull(Object obj, String errorMessage) {
+		if (obj == null) {
+			throw new AssertionError(errorMessage);
+		}
+	}
+
 }
