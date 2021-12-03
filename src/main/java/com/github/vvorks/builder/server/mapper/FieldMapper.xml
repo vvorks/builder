@@ -22,7 +22,8 @@
 			F_NEEDS_MIN,
 			F_TITLE,
 			F_DESCRIPTION,
-			F_NOTE
+			F_NOTE,
+			F__LAST_UPDATED_AT
 		) VALUES (
 			#{ fieldId },
 			#{ ownerClassId },
@@ -41,7 +42,8 @@
 			#{ needsMin },
 			#{ title },
 			#{ description },
-			#{ note }
+			#{ note },
+			#{ _lastUpdatedAt }
 		)
 	</insert>
 
@@ -63,7 +65,8 @@
 			F_NEEDS_MIN = #{ needsMin },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
-			F_NOTE = #{ note }
+			F_NOTE = #{ note },
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 		WHERE
 			F_FIELD_ID = #{ fieldId }
 	</update>
@@ -93,7 +96,8 @@
 			F_NEEDS_MIN AS "needsMin",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_FIELD
 		WHERE
@@ -126,7 +130,8 @@
 			F_NEEDS_MIN AS "needsMin",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_FIELD
 		<if test="limit &gt; 0">
@@ -167,7 +172,8 @@
 			T1.F_NEEDS_MIN AS "needsMin",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
-			T1.F_NOTE AS "note"
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_FIELD T1
 		WHERE
@@ -189,7 +195,8 @@
 			F_CLASS_NAME AS "className",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_CLASS
 		WHERE
@@ -203,7 +210,8 @@
 			F_CLASS_NAME AS "className",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_CLASS
 		WHERE
@@ -218,7 +226,8 @@
 			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM
 		WHERE
@@ -244,7 +253,8 @@
 			F_NEEDS_MIN AS "needsMin",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_FIELD
 		WHERE

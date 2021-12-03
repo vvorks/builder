@@ -10,14 +10,16 @@
 			F_CODE,
 			F_TITLE,
 			F_DESCRIPTION,
-			F_NOTE
+			F_NOTE,
+			F__LAST_UPDATED_AT
 		) VALUES (
 			#{ valueId },
 			#{ ownerEnumId },
 			#{ code },
 			#{ title },
 			#{ description },
-			#{ note }
+			#{ note },
+			#{ _lastUpdatedAt }
 		)
 	</insert>
 
@@ -26,7 +28,8 @@
 			F_CODE = #{ code },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
-			F_NOTE = #{ note }
+			F_NOTE = #{ note },
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 		WHERE
 			F_VALUE_ID = #{ valueId } AND 
 			F_OWNER_ENUM_ID = #{ ownerEnumId }
@@ -46,7 +49,8 @@
 			F_CODE AS "code",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM_VALUE
 		WHERE
@@ -68,7 +72,8 @@
 			F_CODE AS "code",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM_VALUE
 		<if test="limit &gt; 0">
@@ -87,7 +92,8 @@
 			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM
 		WHERE

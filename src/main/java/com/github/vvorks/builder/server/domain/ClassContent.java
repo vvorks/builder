@@ -46,6 +46,12 @@ public class ClassContent {
 	private String note;
 
 	/**
+	 * _lastUpdatedAt
+	 */
+	@NotNull
+	private java.util.Date _lastUpdatedAt;
+
+	/**
 	 * 空のクラスを作成する
 	 */
 	public ClassContent() {
@@ -170,6 +176,24 @@ public class ClassContent {
 		this.note = note;
 	}
 
+	/**
+	 * _lastUpdatedAtを取得する
+	 *
+	 * @return _lastUpdatedAt
+	 */
+	public java.util.Date get_lastUpdatedAt() {
+		return this._lastUpdatedAt;
+	}
+
+	/**
+	 * _lastUpdatedAtを設定する
+	 *
+	 * @param _lastUpdatedAt 設定する_lastUpdatedAt
+	 */
+	public void set_lastUpdatedAt(java.util.Date _lastUpdatedAt) {
+		this._lastUpdatedAt = _lastUpdatedAt;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(
@@ -178,7 +202,8 @@ public class ClassContent {
 			className,
 			title,
 			description,
-			note
+			note,
+			_lastUpdatedAt
 			);
 	}
 
@@ -202,7 +227,8 @@ public class ClassContent {
 			Objects.equals(this.className, other.className) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
-			Objects.equals(this.note, other.note)
+			Objects.equals(this.note, other.note) && 
+			Objects.equals(this._lastUpdatedAt, other._lastUpdatedAt)
 			;
 	}
 
@@ -215,7 +241,8 @@ public class ClassContent {
 		sb.append("className=").append(className).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
-		sb.append("note=").append(note);
+		sb.append("note=").append(note).append(", ");
+		sb.append("_lastUpdatedAt=").append(_lastUpdatedAt);
 		sb.append("]");
 		return sb.toString();
 	}

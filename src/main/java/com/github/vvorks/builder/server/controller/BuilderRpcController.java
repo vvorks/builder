@@ -120,7 +120,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するプロジェクト型のサマリーを取得する
+	 * 名前に合致するプロジェクト型のサマリーを取得する
 	 *
 	 * @param name name
 	 * @return プロジェクト型のサマリー
@@ -135,7 +135,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するプロジェクト型を取得する
+	 * 名前に合致するプロジェクト型を取得する
 	 *
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -185,7 +185,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するクラス一覧のサマリーを取得する
+	 * 名前に合致するクラス一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト型
 	 * @return クラス一覧のサマリー
@@ -201,7 +201,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するクラス一覧を取得する
+	 * 名前に合致するクラス一覧を取得する
 	 *
 	 * @param content プロジェクト型
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -251,7 +251,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致する列挙一覧のサマリーを取得する
+	 * 名前に合致する列挙一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト型
 	 * @return 列挙一覧のサマリー
@@ -267,7 +267,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致する列挙一覧を取得する
+	 * 名前に合致する列挙一覧を取得する
 	 *
 	 * @param content プロジェクト型
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -360,7 +360,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するクラスのサマリーを取得する
+	 * 名前に合致するクラスのサマリーを取得する
 	 *
 	 * @param name name
 	 * @return クラスのサマリー
@@ -375,7 +375,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するクラスを取得する
+	 * 名前に合致するクラスを取得する
 	 *
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -438,7 +438,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するフィールド一覧のサマリーを取得する
+	 * 名前に合致するフィールド一覧のサマリーを取得する
 	 *
 	 * @param content クラス
 	 * @return フィールド一覧のサマリー
@@ -454,7 +454,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するフィールド一覧を取得する
+	 * 名前に合致するフィールド一覧を取得する
 	 *
 	 * @param content クラス
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -577,7 +577,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するフィールドのサマリーを取得する
+	 * 名前に合致するフィールドのサマリーを取得する
 	 *
 	 * @param name name
 	 * @return フィールドのサマリー
@@ -592,7 +592,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致するフィールドを取得する
+	 * 名前に合致するフィールドを取得する
 	 *
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -823,7 +823,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致する列挙のサマリーを取得する
+	 * 名前に合致する列挙のサマリーを取得する
 	 *
 	 * @param name name
 	 * @return 列挙のサマリー
@@ -838,7 +838,7 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * nameIsに合致する列挙を取得する
+	 * 名前に合致する列挙を取得する
 	 *
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）

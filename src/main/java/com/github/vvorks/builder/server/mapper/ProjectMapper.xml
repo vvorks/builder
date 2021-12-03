@@ -7,27 +7,33 @@
 		INSERT INTO T_PROJECT (
 			F_PROJECT_ID,
 			F_PROJECT_NAME,
+			F_GRADLE_NAME,
 			F_TITLE,
 			F_DESCRIPTION,
 			F_NOTE,
-			F_COPYRIGHTS
+			F_COPYRIGHTS,
+			F__LAST_UPDATED_AT
 		) VALUES (
 			#{ projectId },
 			#{ projectName },
+			#{ gradleName },
 			#{ title },
 			#{ description },
 			#{ note },
-			#{ copyrights }
+			#{ copyrights },
+			#{ _lastUpdatedAt }
 		)
 	</insert>
 
 	<update id="update" parameterType="ProjectContent">
 		UPDATE T_PROJECT SET
 			F_PROJECT_NAME = #{ projectName },
+			F_GRADLE_NAME = #{ gradleName },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
-			F_COPYRIGHTS = #{ copyrights }
+			F_COPYRIGHTS = #{ copyrights },
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 		WHERE
 			F_PROJECT_ID = #{ projectId }
 	</update>
@@ -42,10 +48,12 @@
 		SELECT
 			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
+			F_GRADLE_NAME AS "gradleName",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note",
-			F_COPYRIGHTS AS "copyrights"
+			F_COPYRIGHTS AS "copyrights",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_PROJECT
 		WHERE
@@ -63,10 +71,12 @@
 		SELECT
 			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
+			F_GRADLE_NAME AS "gradleName",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note",
-			F_COPYRIGHTS AS "copyrights"
+			F_COPYRIGHTS AS "copyrights",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_PROJECT
 		<if test="limit &gt; 0">
@@ -92,10 +102,12 @@
 		SELECT
 			T1.F_PROJECT_ID AS "projectId",
 			T1.F_PROJECT_NAME AS "projectName",
+			T1.F_GRADLE_NAME AS "gradleName",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
-			T1.F_COPYRIGHTS AS "copyrights"
+			T1.F_COPYRIGHTS AS "copyrights",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_PROJECT T1
 		WHERE
@@ -126,7 +138,8 @@
 			F_CLASS_NAME AS "className",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_CLASS
 		WHERE
@@ -158,7 +171,8 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
-			T1.F_NOTE AS "note"
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_CLASS T1
 		WHERE
@@ -191,7 +205,8 @@
 			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM
 		WHERE
@@ -224,7 +239,8 @@
 			T1.F_ENCODE_STRING AS "encodeString",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
-			T1.F_NOTE AS "note"
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM T1
 		WHERE

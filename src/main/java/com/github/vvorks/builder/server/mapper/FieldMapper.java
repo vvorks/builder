@@ -67,7 +67,7 @@ public interface FieldMapper {
 	);
 
 	/**
-	 * nameIsに合致するフィールドのサマリーを取得する
+	 * 名前に合致するフィールドのサマリーを取得する
 	 *
 	 * @param name name
 	 * @return フィールドのサマリー
@@ -77,7 +77,7 @@ public interface FieldMapper {
 	);
 
 	/**
-	 * nameIsに合致するフィールドを取得する
+	 * 名前に合致するフィールドを取得する
 	 *
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）

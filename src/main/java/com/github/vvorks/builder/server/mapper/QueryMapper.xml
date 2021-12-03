@@ -12,7 +12,8 @@
 			F_ORDER,
 			F_TITLE,
 			F_DESCRIPTION,
-			F_NOTE
+			F_NOTE,
+			F__LAST_UPDATED_AT
 		) VALUES (
 			#{ queryId },
 			#{ ownerClassId },
@@ -21,7 +22,8 @@
 			#{ order },
 			#{ title },
 			#{ description },
-			#{ note }
+			#{ note },
+			#{ _lastUpdatedAt }
 		)
 	</insert>
 
@@ -33,7 +35,8 @@
 			F_ORDER = #{ order },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
-			F_NOTE = #{ note }
+			F_NOTE = #{ note },
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 		WHERE
 			F_QUERY_ID = #{ queryId }
 	</update>
@@ -53,7 +56,8 @@
 			F_ORDER AS "order",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_QUERY
 		WHERE
@@ -76,7 +80,8 @@
 			F_ORDER AS "order",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_QUERY
 		<if test="limit &gt; 0">
@@ -94,7 +99,8 @@
 			F_CLASS_NAME AS "className",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_CLASS
 		WHERE

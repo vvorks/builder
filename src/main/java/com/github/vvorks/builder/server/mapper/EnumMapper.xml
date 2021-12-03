@@ -11,7 +11,8 @@
 			F_ENCODE_STRING,
 			F_TITLE,
 			F_DESCRIPTION,
-			F_NOTE
+			F_NOTE,
+			F__LAST_UPDATED_AT
 		) VALUES (
 			#{ enumId },
 			#{ ownerProjectId },
@@ -19,7 +20,8 @@
 			#{ encodeString },
 			#{ title },
 			#{ description },
-			#{ note }
+			#{ note },
+			#{ _lastUpdatedAt }
 		)
 	</insert>
 
@@ -30,7 +32,8 @@
 			F_ENCODE_STRING = #{ encodeString },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
-			F_NOTE = #{ note }
+			F_NOTE = #{ note },
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 		WHERE
 			F_ENUM_ID = #{ enumId }
 	</update>
@@ -49,7 +52,8 @@
 			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM
 		WHERE
@@ -71,7 +75,8 @@
 			F_ENCODE_STRING AS "encodeString",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM
 		<if test="limit &gt; 0">
@@ -101,7 +106,8 @@
 			T1.F_ENCODE_STRING AS "encodeString",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
-			T1.F_NOTE AS "note"
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM T1
 		WHERE
@@ -120,10 +126,12 @@
 		SELECT
 			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
+			F_GRADLE_NAME AS "gradleName",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note",
-			F_COPYRIGHTS AS "copyrights"
+			F_COPYRIGHTS AS "copyrights",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_PROJECT
 		WHERE
@@ -146,7 +154,8 @@
 			F_CODE AS "code",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM_VALUE
 		WHERE

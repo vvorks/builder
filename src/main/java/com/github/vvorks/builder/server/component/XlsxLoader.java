@@ -115,6 +115,8 @@ public class XlsxLoader {
 			DataType type = (a.length > 1) ? DataType.valueOf(a[1]) : DataType.STRING;
 			cols.add(new ColInfo(name, type));
 		}
+		//追加カラム
+		cols.add(new ColInfo("_lastUpdatedAt", DataType.DATE));
 		//テーブル作成
 		String tableName = SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(sheet.getSheetName());
 		StringBuilder sql = new StringBuilder();

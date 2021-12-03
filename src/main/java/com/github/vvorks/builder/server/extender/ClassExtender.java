@@ -83,7 +83,14 @@ public class ClassExtender {
 	}
 
 	public List<FieldContent> getFields(ClassContent cls) {
-		return classMapper.listFieldsContent(cls, 0, 0);
+		List<FieldContent> fields = classMapper.listFieldsContent(cls, 0, 0);
+		//追加フィールド挿入
+		FieldContent lastUpdated = new FieldContent();
+		lastUpdated.setFieldName("_lastUpdatedAt");
+		lastUpdated.setType(DataType.DATE);
+		lastUpdated.setPk(false);
+		fields.add(lastUpdated);
+		return fields;
 	}
 
 	public List<QueryContent> getQueries(ClassContent cls) {

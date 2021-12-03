@@ -67,7 +67,7 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * nameIsに合致するプロジェクト型のサマリーを取得する
+	 * 名前に合致するプロジェクト型のサマリーを取得する
 	 *
 	 * @param name name
 	 * @return プロジェクト型のサマリー
@@ -77,7 +77,7 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * nameIsに合致するプロジェクト型を取得する
+	 * 名前に合致するプロジェクト型を取得する
 	 *
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -115,7 +115,7 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * nameIsに合致するクラス一覧のサマリーを取得する
+	 * 名前に合致するクラス一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト型
 	 * @return クラス一覧のサマリー
@@ -126,7 +126,7 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * nameIsに合致するクラス一覧を取得する
+	 * 名前に合致するクラス一覧を取得する
 	 *
 	 * @param content プロジェクト型
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -165,7 +165,7 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * nameIsに合致する列挙一覧のサマリーを取得する
+	 * 名前に合致する列挙一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト型
 	 * @return 列挙一覧のサマリー
@@ -176,7 +176,7 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * nameIsに合致する列挙一覧を取得する
+	 * 名前に合致する列挙一覧を取得する
 	 *
 	 * @param content プロジェクト型
 	 * @param offset 取得開始位置（全件取得の場合は無効）

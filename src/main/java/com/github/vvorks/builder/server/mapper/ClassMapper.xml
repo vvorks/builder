@@ -10,14 +10,16 @@
 			F_CLASS_NAME,
 			F_TITLE,
 			F_DESCRIPTION,
-			F_NOTE
+			F_NOTE,
+			F__LAST_UPDATED_AT
 		) VALUES (
 			#{ classId },
 			#{ ownerProjectId },
 			#{ className },
 			#{ title },
 			#{ description },
-			#{ note }
+			#{ note },
+			#{ _lastUpdatedAt }
 		)
 	</insert>
 
@@ -27,7 +29,8 @@
 			F_CLASS_NAME = #{ className },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
-			F_NOTE = #{ note }
+			F_NOTE = #{ note },
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 		WHERE
 			F_CLASS_ID = #{ classId }
 	</update>
@@ -45,7 +48,8 @@
 			F_CLASS_NAME AS "className",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_CLASS
 		WHERE
@@ -66,7 +70,8 @@
 			F_CLASS_NAME AS "className",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_CLASS
 		<if test="limit &gt; 0">
@@ -95,7 +100,8 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
-			T1.F_NOTE AS "note"
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_CLASS T1
 		WHERE
@@ -114,10 +120,12 @@
 		SELECT
 			F_PROJECT_ID AS "projectId",
 			F_PROJECT_NAME AS "projectName",
+			F_GRADLE_NAME AS "gradleName",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note",
-			F_COPYRIGHTS AS "copyrights"
+			F_COPYRIGHTS AS "copyrights",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_PROJECT
 		WHERE
@@ -152,7 +160,8 @@
 			F_NEEDS_MIN AS "needsMin",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_FIELD
 		WHERE
@@ -196,7 +205,8 @@
 			T1.F_NEEDS_MIN AS "needsMin",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
-			T1.F_NOTE AS "note"
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_FIELD T1
 		WHERE
@@ -230,7 +240,8 @@
 			F_ORDER AS "order",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
-			F_NOTE AS "note"
+			F_NOTE AS "note",
+			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_QUERY
 		WHERE

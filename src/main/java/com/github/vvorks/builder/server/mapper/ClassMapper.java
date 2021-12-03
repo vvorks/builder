@@ -67,7 +67,7 @@ public interface ClassMapper {
 	);
 
 	/**
-	 * nameIsに合致するクラスのサマリーを取得する
+	 * 名前に合致するクラスのサマリーを取得する
 	 *
 	 * @param name name
 	 * @return クラスのサマリー
@@ -77,7 +77,7 @@ public interface ClassMapper {
 	);
 
 	/**
-	 * nameIsに合致するクラスを取得する
+	 * 名前に合致するクラスを取得する
 	 *
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -123,7 +123,7 @@ public interface ClassMapper {
 	);
 
 	/**
-	 * nameIsに合致するフィールド一覧のサマリーを取得する
+	 * 名前に合致するフィールド一覧のサマリーを取得する
 	 *
 	 * @param content クラス
 	 * @return フィールド一覧のサマリー
@@ -134,7 +134,7 @@ public interface ClassMapper {
 	);
 
 	/**
-	 * nameIsに合致するフィールド一覧を取得する
+	 * 名前に合致するフィールド一覧を取得する
 	 *
 	 * @param content クラス
 	 * @param offset 取得開始位置（全件取得の場合は無効）
