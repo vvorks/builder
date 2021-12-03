@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import com.github.vvorks.builder.client.ClientSettings;
+import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.net.WebSocket;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Creator;
@@ -96,6 +97,8 @@ public class UiApplication implements EventHandler {
 
 	private final WebSocket socket;
 
+	private final JsonRpcClient rpcClient;
+
 	private final Map<DataSource, Set<UiNode>> dataSourceMap;
 
 	public UiApplication(DomDocument doc) {
@@ -105,6 +108,7 @@ public class UiApplication implements EventHandler {
 		this.pageStack = new ArrayDeque<>();
 		this.styles = new LinkedHashMap<>();
 		this.socket = Factory.newInstance(WebSocket.class);
+		this.rpcClient = new JsonRpcClient(this.socket);
 		this.dataSourceMap = new HashMap<>();
 		try {
 			socket.open(ClientSettings.SERVER_URL);
@@ -119,6 +123,10 @@ public class UiApplication implements EventHandler {
 
 	public DomDocument getDocument() {
 		return document;
+	}
+
+	public JsonRpcClient getRpcClient() {
+		return rpcClient;
 	}
 
 	public void registerStyle(UiStyle style) {

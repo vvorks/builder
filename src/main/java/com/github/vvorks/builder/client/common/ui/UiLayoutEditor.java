@@ -10,14 +10,7 @@ import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.logging.Logger;
 
 /**
- * レイアウトエディタ
- * TODO なんかポイント位置が微妙にずれている気がする（Borderのずれ？）
- * TODO ハンドルクリック後？ハンドルだけが移動する不具合あり。要調査
- * TODO コピー＆ペースト操作（クリップボードが必要）
- * TODO ロード・セーブ
- * TODO テンプレートノード設定（レイアウトエディタ機能外）
- * TODO パレット（レイアウトエディタ機能外）
- * TODO プロパティリストによる操作（レイアウトエディタ機能外）
+ * UiLayoutEditor
  */
 public class UiLayoutEditor extends UiNode {
 

@@ -154,7 +154,7 @@ public class JsonRpcClient implements WebSocketHandler {
 					for (RequestInfo req : timeouts) {
 						try {
 							req.callback.onFailure(new TimeoutException());
-						} catch (Exception err) {
+						} catch (Exception|AssertionError err) {
 							LOGGER.error(err, "RPC CALLBACK ERROR ON REQUEST TIMEOUT");
 						}
 					}
@@ -165,7 +165,7 @@ public class JsonRpcClient implements WebSocketHandler {
 			LOGGER.error(e, "RPC: SEND REQ %s ERROR", getShortName(method, id));
 			try {
 				req.callback.onFailure(e);
-			} catch (Exception err) {
+			} catch (Exception|AssertionError err) {
 				LOGGER.error(err, "RPC CALLBACK ERROR ON REQUEST");
 			}
 		}
@@ -270,7 +270,7 @@ public class JsonRpcClient implements WebSocketHandler {
 					LOGGER.error(err, "RPC: SEND REQ %s ERROR", getShortName(req.method, item.id));
 					try {
 						req.callback.onFailure(err);
-					} catch (Exception err2) {
+					} catch (Exception|AssertionError err2) {
 						LOGGER.error(err2, "RPC CALLBACK ERROR ON OPEN");
 					}
 				}
@@ -311,19 +311,22 @@ public class JsonRpcClient implements WebSocketHandler {
 		//要求又は通知メッセージ。
 		Json params = json.get(JsonRpcs.KEY_PARAMS);
 		Handler handler = handlers.get(method);
-		if (id != NOTIFY_ID) {
-			LOGGER.info("RPC: RECV REQ %s with %s", getShortName(method, id), params);
-		} else {
-			LOGGER.info("RPC: RECV NTF %s with %s", getShortName(method, id), params);
-		}
+		String tag = (id != NOTIFY_ID) ? "REQ" : "NTF";
+		LOGGER.info("RPC: RECV %s %s with %s", tag, getShortName(method, id), params);
 		if (handler != null) {
-			invokeHandler(method, params, handler, id);
+			try {
+				if (id != 0) {
+					handler.handleRequest(params, new RequestCallback(method, id));
+				} else {
+					handler.handleNotify(params);
+				}
+			} catch (Exception|AssertionError err) {
+				LOGGER.error(err, "RPC: %s %s HANDLER ERROR", tag, getShortName(method, id));
+			}
 		} else {
+			LOGGER.error("RPC: RECV %s %s IGNORED", tag, getShortName(method, id));
 			if (id != NOTIFY_ID) {
-				LOGGER.error("RPC: RECV REQ %s IGNORED", getShortName(method, id));
 				responseError(JsonRpcs.METHOD_NOT_FOUND, method, id);
-			} else {
-				LOGGER.error("RPC: RECV NTF %s IGNORED", getShortName(method, id));
 			}
 		}
 	}
@@ -340,7 +343,7 @@ public class JsonRpcClient implements WebSocketHandler {
 				LOGGER.info("RPC: RECV RSP %s with %s", getShortName(method, id), result);
 				try {
 					req.callback.onSuccess(result);
-				} catch (Exception err) {
+				} catch (Exception|AssertionError err) {
 					LOGGER.error(err, "RPC: CALLBACK ERROR");
 				}
 			} else {
@@ -348,20 +351,12 @@ public class JsonRpcClient implements WebSocketHandler {
 				LOGGER.error("RPC: RECV RSP %s error %s", getShortName(method, id), errMsg);
 				try {
 					req.callback.onFailure(new JsonRpcException(errMsg));
-				} catch (Exception err) {
+				} catch (Exception|AssertionError err) {
 					LOGGER.error(err, "RPC: CALLBACK ERROR");
 				}
 			}
 		} else {
 			LOGGER.error("RPC: RECV RSP %s", getShortName("Missing", id));
-		}
-	}
-
-	private void invokeHandler(String method, Json params, Handler handler, int id) {
-		if (id != 0) {
-			handler.handleRequest(params, new RequestCallback(method, id));
-		} else {
-			handler.handleNotify(params);
 		}
 	}
 

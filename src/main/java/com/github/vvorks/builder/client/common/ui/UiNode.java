@@ -883,9 +883,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public UiNode clearChildren() {
+		if (firstChild == null) {
+			return null;
+		}
 		UiNode children = firstChild;
-		children.parent = null;
 		firstChild = null;
+		for (UiNode c = children; c != null; c = c.nextSibling) {
+			c.parent = null;
+		}
 		this.setChanged(CHANGED_HIERARCHY);
 		return children;
 	}
@@ -898,8 +903,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return children;
 	}
 
-	public Iterable<UiNode> removeChildrenIf(Predicate<UiNode> condition) {
-		List<UiNode> removes = new ArrayList<>();
+	public UiNode removeChildrenIf(Predicate<UiNode> condition) {
+		UiNode removes = null;
 		UiNode child = firstChild;
 		UiNode prev = null;
 		while (child != null) {
@@ -912,8 +917,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 				}
 				child = removed.nextSibling;
 				removed.parent = null;
-				removed.nextSibling = null;
-				removes.add(removed);
+				removed.nextSibling = removes;
+				removes = removed;
 			} else {
 				prev = child;
 				child = child.nextSibling;
@@ -1570,7 +1575,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	protected void syncDomElement(DomElement domElement) {
 		//削除ノードの分離
-		for (UiNode r : removeChildrenIf(e -> e.isDeleted())) {
+		for (UiNode r = removeChildrenIf(e -> e.isDeleted()); r != null; r = r.nextSibling) {
 			//削除マークのついた子ノードを取り外し、さらにDOM要素とも切断する。
 			r.getDomElement().setParent(null);
 			//再利用に備えDELETEフラグは落とす

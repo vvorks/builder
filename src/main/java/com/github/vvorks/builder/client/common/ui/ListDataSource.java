@@ -1,27 +1,20 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
-import com.github.vvorks.builder.common.util.DelayedExecuter;
 
-public class ListDataSource implements DataSource {
+public class ListDataSource extends DataSource {
 
 	public static final Class<?> THIS = ListDataSource.class;
 	public static final Logger LOGGER = Logger.createLogger(THIS);
-
-	private Set<UiApplication> apps;
 
 	private final List<Json> list;
 
 	public ListDataSource(List<Json> list) {
 		Asserts.requireNotNull(list);
-		apps = new HashSet<>();
 		this.list = list;
 	}
 
@@ -33,15 +26,6 @@ public class ListDataSource implements DataSource {
 	@Override
 	public void setCriteria(Json criteria) {
 		notifyToApps();
-	}
-
-	private void notifyToApps() {
-		DelayedExecuter executer = Factory.getInstance(DelayedExecuter.class);
-		executer.runAfter(100, () -> {
-			for (UiApplication app : apps) {
-				app.processDataSourceUpdated(this, 0);
-			}
-		});
 	}
 
 	@Override
@@ -82,20 +66,6 @@ public class ListDataSource implements DataSource {
 	@Override
 	public void remove(Json data) {
 		list.remove(data);
-	}
-
-	@Override
-	public void attach(UiApplication app) {
-		apps.add(app);
-		DelayedExecuter executer = Factory.getInstance(DelayedExecuter.class);
-		executer.runAfter(100, () -> {
-			app.processDataSourceUpdated(this, 0);
-		});
-	}
-
-	@Override
-	public void detach(UiApplication app) {
-		apps.remove(app);
 	}
 
 }

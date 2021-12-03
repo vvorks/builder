@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.ui.DataSource;
 import com.github.vvorks.builder.client.common.ui.ListDataSource;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
@@ -36,6 +37,9 @@ public class ListTestPage extends UiPage {
 
 	@Override
 	protected void initialize() {
+		UiApplication app = getApplication();
+		JsonRpcClient rpc = app.getRpcClient();
+		DataSource ds = createDataSource();
 		final double NA = UiNodeBuilder.NA;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		//全体
@@ -57,19 +61,19 @@ public class ListTestPage extends UiPage {
 			//list body
 			b.enter(new UiList("list1"));
 				b.style(BuilderUiApplication.ENABLE);
-				b.source(createDataSource());
+				b.source(ds);
 				b.locate(5.0, 5.0, 5.0, 5.0, NA, NA);
 				b.loop(true);
 				b.flushSoon(false);
-				b.enter(new UiDataField("no"));
+				b.enter(new UiDataField("projectId"));
 					b.style(BuilderUiApplication.BASIC);
 					b.locate(0.0, 0.0, NA, NA, 5.0, 4.0);
 				b.leave();
-				b.enter(new UiDataField("name"));
+				b.enter(new UiDataField("title"));
 					b.style(BuilderUiApplication.BASIC);
 					b.locate(5.0, 0.0, 0.0, NA, NA, 2.0);
 				b.leave();
-				b.enter(new UiDataField("desc"));
+				b.enter(new UiDataField("description"));
 					b.style(BuilderUiApplication.BASIC);
 					b.locate(5.0, 2.0, 0.0, NA, NA, 2.0);
 				b.leave();
@@ -88,13 +92,17 @@ public class ListTestPage extends UiPage {
 			b.leave();
 		b.leave();
 	}
+	private DataSource createDataSource(JsonRpcClient rpc) {
+		return new TestDataSource(rpc);
+	}
 
 	private DataSource createDataSource() {
 		List<Json> list = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
 			Json json = Json.createObject();
-			json.setNumber("no", i);
-			json.setString("name", "title " + i);
+			json.setNumber("projectId", i);
+			json.setString("title", "title " + i);
+			json.setString("description", "description " + i);
 			list.add(json);
 		}
 		return new ListDataSource(list);

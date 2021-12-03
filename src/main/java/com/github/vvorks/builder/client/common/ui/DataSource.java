@@ -1,22 +1,37 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.common.json.Json;
+import java.util.HashSet;
+import java.util.Set;
 
-public interface DataSource {
+import com.github.vvorks.builder.common.json.Json;
+import com.github.vvorks.builder.common.lang.Factory;
+import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.common.util.DelayedExecuter;
+
+public abstract class DataSource {
+
+	public static final Class<?> THIS = DataSource.class;
+	public static final Logger LOGGER = Logger.createLogger(THIS);
+
+	private final Set<UiApplication> apps;
+
+	protected DataSource() {
+		apps = new HashSet<>();
+	}
 
 	/**
 	 * データ読み込み状態を取得する
 	 *
 	 * @return データ読み込み済みの場合、真
 	 */
-	public boolean isLoaded();
+	public abstract boolean isLoaded();
 
 	/**
 	 * 検索条件を指定する
 	 *
 	 * @param criteria 検索条件
 	 */
-	public void setCriteria(Json criteria);
+	public abstract void setCriteria(Json criteria);
 
 	/**
 	 * データ取得範囲を設定する
@@ -24,28 +39,28 @@ public interface DataSource {
 	 * @param offset データ開始位置
 	 * @param limit データ件数
 	 */
-	public void setRange(int offset, int limit);
+	public abstract void setRange(int offset, int limit);
 
 	/**
 	 * （データ読み込み済みならば）全件数情報を返す
 	 *
 	 * @return 全件数情報
 	 */
-	public int getCount();
+	public abstract int getCount();
 
 	/**
 	 * （データ読み込み済みならば）保持中のデータ開始位置を返す
 	 *
 	 * @return データ開始位置
 	 */
-	public int getOffset();
+	public abstract int getOffset();
 
 	/**
 	 * （データ読み込み済みならば）保持中のデータ件数を返す
 	 *
 	 * @return データ件数
 	 */
-	public int getLimit();
+	public abstract int getLimit();
 
 	/**
 	 * （データ読み込み済みならば）指定位置のデータを返す
@@ -53,41 +68,60 @@ public interface DataSource {
 	 * @param index 位置
 	 * @return データ
 	 */
-	public Json getData(int index);
+	public abstract Json getData(int index);
 
 	/**
 	 * データを追加する
 	 *
 	 * @param data 追加するデータ
 	 */
-	public void insert(Json data);
+	public abstract void insert(Json data);
 
 	/**
 	 * データを更新する
 	 *
 	 * @param data 更新するデータ
 	 */
-	public void update(Json data);
+	public abstract void update(Json data);
 
 	/**
 	 * データを削除する
 	 *
 	 * @param data 削除するデータ
 	 */
-	public void remove(Json data);
+	public abstract void remove(Json data);
 
 	/**
 	 * 関連するアプリケーションを追加
 	 *
 	 * @param app アプリケーション
 	 */
-	public void attach(UiApplication app);
+	public void attach(UiApplication app) {
+		apps.add(app);
+		DelayedExecuter executer = Factory.getInstance(DelayedExecuter.class);
+		executer.runAfter(100, () -> {
+			app.processDataSourceUpdated(this, 0);
+		});
+	}
+
+	protected void notifyToApps() {
+		DelayedExecuter executer = Factory.getInstance(DelayedExecuter.class);
+		executer.runAfter(100, () -> {
+			for (UiApplication app : apps) {
+				app.processDataSourceUpdated(this, 0);
+			}
+		});
+	}
+
+
 
 	/**
 	 * 関連するアプリケーションを削除
 	 *
 	 * @param app アプリケーション
 	 */
-	public void detach(UiApplication app);
+	public void detach(UiApplication app) {
+		apps.remove(app);
+	}
 
 }
