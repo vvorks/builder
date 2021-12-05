@@ -3,10 +3,12 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import com.github.vvorks.builder.common.lang.Encodable;
+
 /**
  * データ型
  */
-public enum DataType {
+public enum DataType implements Encodable<String> {
 
 	/**
 	 * （自動）キー
@@ -97,6 +99,11 @@ public enum DataType {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public String encode() {
+		return name();
 	}
 
 }

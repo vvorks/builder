@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.server.ServerSettings;
 import com.github.vvorks.builder.server.common.util.Patterns;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.EnumContent;
@@ -52,6 +53,10 @@ public class ProjectExtender {
 
 	public List<EnumContent> getEnums(ProjectContent prj) {
 		return projectMapper.listEnumsContent(prj, 0, 10000);
+	}
+
+	public boolean isBuilderProject(ProjectContent prj) {
+		return prj.getProjectName().equals(ServerSettings.MODULE_NAME);
 	}
 
 }

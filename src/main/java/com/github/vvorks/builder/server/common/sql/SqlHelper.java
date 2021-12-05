@@ -1,10 +1,16 @@
 package com.github.vvorks.builder.server.common.sql;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class Sqls {
+import com.github.vvorks.builder.common.lang.Factory;
+import com.github.vvorks.builder.common.logging.Logger;
+
+public abstract class SqlHelper {
+
+	public static final Logger LOGGER = Logger.createLogger(SqlHelper.class);
 
 	/**
 	 * SQL予約語
@@ -194,7 +200,32 @@ public class Sqls {
 		"ZONE",
 	};
 
-	public static final Set<String> KEYWORDS = new LinkedHashSet<>(Arrays.asList(KEYWORD_ARRAY));
+	private static final Set<String> KEYWORDS = new LinkedHashSet<>(Arrays.asList(KEYWORD_ARRAY));
+
+	protected static final char SINGLE_QUOTE = '\'';
+
+	public static SqlHelper getHelper() {
+		return Factory.getInstance(SqlHelper.class);
+	}
+
+	public boolean isKeywords(String s) {
+		return KEYWORDS.contains(s);
+	}
+
+	public String getNullValue() {
+		return "NULL";
+	}
+
+	public abstract String getBooleanValue(boolean b);
+
+	public abstract String quote(String str);
+
+	public abstract String getDateValue(Date d);
+
+	public abstract String getNow();
+
+	public abstract String disableForeignKey();
+
+	public abstract String enableForeignKey();
 
 }
-

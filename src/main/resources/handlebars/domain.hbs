@@ -380,6 +380,7 @@ public class {{className}}Summary {
  */
 {{/if}}
 package {{global.project.projectName}}.server.domain;
+import {{global.project.projectName}}.common.lang.Encodable;
 
 /**
  * {{titleOrName}}
@@ -392,7 +393,7 @@ package {{global.project.projectName}}.server.domain;
  * {{note}}
 {{/if}}
  */
-public enum {{enumName}} {
+public enum {{enumName}} implements Encodable<{{encodeType}}> {
 
 	{{#each enumValues}}
 
@@ -430,6 +431,15 @@ public enum {{enumName}} {
 	 */
 	public int code() {
 		return this.code;
+	}
+
+	@Override
+	public {{encodeType}} encode() {
+		{{#if encodeString}}
+		return name();
+		{{else}}
+		return code();
+		{{/if}}
 	}
 
 	/**

@@ -258,6 +258,8 @@ public final class Strings {
 			case '%':
 				sb.append('%');
 				break;
+			default:
+				break;
 			}
 			ch = cursor.read();
 		}

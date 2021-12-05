@@ -26,6 +26,7 @@ import com.github.vvorks.builder.server.common.handlebars.SeparatorHelper;
 import com.github.vvorks.builder.server.common.handlebars.SourceHelper;
 import com.github.vvorks.builder.server.common.io.Ios;
 import com.github.vvorks.builder.server.common.io.LoggerWriter;
+import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.extender.ClassExtender;
 import com.github.vvorks.builder.server.extender.EnumExtender;
@@ -38,8 +39,12 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 @Component
 public class SourceWriter {
 
-	public static final Class<?> THIS = SourceWriter.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(SourceWriter.class);
+
+	/** hbsリソース読み込みパス */
+	private static final String HBS_RES = "/handlebars/";
+
+	private static final String HBS_EXT = ".hbs";
 
 	@Autowired
 	private ProjectMapper projectMapper;
@@ -62,22 +67,12 @@ public class SourceWriter {
 	@Autowired
 	private EnumValueExtender enumValueExtender;
 
-	/** ソースを出力する（相対）トップディレクトリ */
-	private static final String SRC_TOP = "src/main/java/";
-
-	/** リソースを出力する（相対）トップディレクトリ */
-	private static final String RES_TOP = "src/main/resources";
-
-	/** hbsリソース読み込みパス */
-	private static final String HBS_RES = "/handlebars/";
-
-	private static final String HBS_EXT = ".hbs";
+	private SqlHelper sqlHelper = SqlHelper.getHelper();
 
 	public void process() throws IOException {
 		String now = String.format("%tY%<tm%<td_%<tH%<tM%<tS", new Date());
-		File projectDir = new File("out/" + now + "/"); ////TODO for Debug
-		File javaRootDir = new File(projectDir, SRC_TOP);
-		File resRootDir = new File(projectDir, RES_TOP);
+		File outDir = new File("out/" + now + "/"); ////TODO for Debug
+		File srcDir = new File(outDir, "src");
 		List<ProjectContent> projects = projectMapper.listContent(0, 0);
 		try (
 			Writer writer = new LoggerWriter(LOGGER)
@@ -86,7 +81,10 @@ public class SourceWriter {
 			//HBSリソースの取得
 			List<String> hbsFiles = Ios.getResoureNames(this, HBS_RES, f -> f.endsWith(HBS_EXT));
 			for (ProjectContent prj : projects) {
+				String gradleName = prj.getGradleName();
+				File javaRootDir = new File(srcDir, gradleName + "/java/");
 				File javaCodeDir = new File(javaRootDir, prj.getProjectName().replace('.', '/'));
+				File resRootDir = new File(srcDir, gradleName + "/resources/");
 				Handlebars hbs = new Handlebars(loader)
 						.with(EscapingStrategy.NOOP)
 						.prettyPrint(true)
@@ -95,6 +93,8 @@ public class SourceWriter {
 						.registerHelper("resources", new SourceHelper(resRootDir));
 				Map<String, Object> globalMap = new HashMap<>();
 				globalMap.put("project", prj);
+				globalMap.put("disableForeignKey", sqlHelper.disableForeignKey());
+				globalMap.put("enableForeignKey", sqlHelper.enableForeignKey());
 				Context context = Context.newBuilder(prj)
 						.resolver(
 								new GlobalResolver("global", globalMap),
@@ -115,7 +115,7 @@ public class SourceWriter {
 				}
 			}
 		} catch (Exception err) {
-			Ios.deleteAll(projectDir);
+			Ios.deleteAll(outDir);
 			throw err;
 		}
 	}

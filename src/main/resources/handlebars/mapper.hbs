@@ -1,7 +1,7 @@
+//
+// Mapperインターフェーステンプレート
+//
 {{#each this.classes}}
-//
-// 各クラスのMapperインターフェース(.java)
-//
 {{#java this "server/mapper/" className "Mapper" ".java"}}
 {{#if global.project.copyrightLines}}
 /*

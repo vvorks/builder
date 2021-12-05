@@ -39,6 +39,23 @@ public class FieldExtender {
 		TYPE_MAP.put(DataType.STRING, String.class);
 	}
 
+	private static final EnumMap<DataType, String> SQLITE_TYPE_MAP = new EnumMap<>(DataType.class);
+	static {
+		String i = "INTEGER";
+		String r = "REAL";
+		String t = "TEXT";
+		String n = "NUMERIC";
+		SQLITE_TYPE_MAP.put(DataType.KEY, i);
+		SQLITE_TYPE_MAP.put(DataType.REF, i);
+		SQLITE_TYPE_MAP.put(DataType.ENUM, i);
+		SQLITE_TYPE_MAP.put(DataType.BOOLEAN, i);
+		SQLITE_TYPE_MAP.put(DataType.INTEGER, i);
+		SQLITE_TYPE_MAP.put(DataType.REAL, r);
+		SQLITE_TYPE_MAP.put(DataType.NUMERIC, n);
+		SQLITE_TYPE_MAP.put(DataType.DATE, i);
+		SQLITE_TYPE_MAP.put(DataType.STRING, t);
+	}
+
 	@Autowired
 	private ClassMapper classMapper;
 
@@ -166,6 +183,15 @@ public class FieldExtender {
 	public String getColumnName(FieldContent fld) {
 		return SqlWriter.COLUMN_PREFIX + Strings.toUpperSnake(fld.getFieldName());
 	}
+
+	public String getColumnType(FieldContent fld) {
+		return SQLITE_TYPE_MAP.get(fld.getType());
+	}
+
+	public boolean isNotNull(FieldContent fld) {
+		return !fld.isNullable();
+	}
+
 
 	public ClassContent getOwner(FieldContent fld) {
 		return classMapper.get(fld.getOwnerClassId());
