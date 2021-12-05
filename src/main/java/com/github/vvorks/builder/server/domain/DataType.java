@@ -2,7 +2,6 @@
  * Apache License v2.0
  */
 package com.github.vvorks.builder.server.domain;
-
 import com.github.vvorks.builder.common.lang.Encodable;
 
 /**
@@ -89,6 +88,11 @@ public enum DataType implements Encodable<String> {
 		return this.code;
 	}
 
+	@Override
+	public String encode() {
+		return name();
+	}
+
 	/**
 	 * 列挙コードから列挙オブジェクトを取得する
 	 */
@@ -99,11 +103,6 @@ public enum DataType implements Encodable<String> {
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public String encode() {
-		return name();
 	}
 
 }

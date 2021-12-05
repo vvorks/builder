@@ -4,6 +4,12 @@ spring:
     driver-class-name: org.sqlite.JDBC
 #   username: dbuser
 #   password: dbpass
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+      encoding: utf-8
 
 mybatis:
   type-aliases-package: com.github.vvorks.builder.server.domain
