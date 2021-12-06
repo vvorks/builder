@@ -127,8 +127,10 @@ public class ClassExtender {
 		//追加フィールド挿入
 		FieldContent lastUpdated = new FieldContent();
 		lastUpdated.setFieldName(LAST_UPDATED_AT);
+		lastUpdated.setTitle("最終更新時刻");
 		lastUpdated.setType(DataType.DATE);
 		lastUpdated.setPk(false);
+		lastUpdated.setNeedsMax(true);
 		fields.add(lastUpdated);
 		return fields;
 	}

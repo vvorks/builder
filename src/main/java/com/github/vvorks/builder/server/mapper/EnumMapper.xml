@@ -62,6 +62,7 @@
 
 	<select id="listSummary" resultType="EnumSummary">
 		SELECT
+			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
@@ -90,6 +91,7 @@
 
 	<select id="listSummaryIfNameIs" resultType="EnumSummary">
 		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
@@ -142,6 +144,7 @@
 
 	<select id="listValuesSummary" resultType="EnumValueSummary">
 		SELECT
+			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM

@@ -106,6 +106,7 @@
 
 	<select id="listSummary" resultType="FieldSummary">
 		SELECT
+			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
@@ -145,6 +146,7 @@
 
 	<select id="listSummaryIfNameIs" resultType="FieldSummary">
 		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM

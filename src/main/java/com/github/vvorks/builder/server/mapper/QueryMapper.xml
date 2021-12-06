@@ -66,6 +66,7 @@
 
 	<select id="listSummary" resultType="QuerySummary">
 		SELECT
+			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM

@@ -345,6 +345,7 @@ public class {{className}}Summary {
 	private boolean equals({{className}}Summary other) {
 		return
 			{{#each properties}}
+			{{#if primitiveOrEnum}}
 			{{#if needsSum}}
 			this.sum{{upperName}} == other.sum{{upperName}} &&
 			{{/if}}
@@ -356,6 +357,20 @@ public class {{className}}Summary {
 			{{/if}}
 			{{#if needsMin}}
 			this.min{{upperName}} == other.min{{upperName}} &&
+			{{/if}}
+			{{else}}
+			{{#if needsSum}}
+			Objects.equals(this.sum{{upperName}}, other.sum{{upperName}}) &&
+			{{/if}}
+			{{#if needsAvg}}
+			Objects.equals(this.avg{{upperName}}, other.avg{{upperName}}) &&
+			{{/if}}
+			{{#if needsMax}}
+			Objects.equals(this.max{{upperName}}, other.max{{upperName}}) &&
+			{{/if}}
+			{{#if needsMin}}
+			Objects.equals(this.min{{upperName}}, other.min{{upperName}}) &&
+			{{/if}}
 			{{/if}}
 			{{/each}}
 			this.count == other.count && this.focus == other.focus;
@@ -379,7 +394,7 @@ public class {{className}}Summary {
 		sb.append("min{{upperName}}=").append(min{{upperName}}).append(", ");
 		{{/if}}
 		{{/each}}
-		sb.append("count=").append(count);
+		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus);
 		sb.append("]");
 		return sb.toString();

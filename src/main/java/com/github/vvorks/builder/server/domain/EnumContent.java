@@ -53,7 +53,7 @@ public class EnumContent {
 	private String note;
 
 	/**
-	 * _lastUpdatedAt
+	 * 最終更新時刻
 	 */
 	@NotNull
 	private java.util.Date _lastUpdatedAt;
@@ -202,18 +202,18 @@ public class EnumContent {
 	}
 
 	/**
-	 * _lastUpdatedAtを取得する
+	 * 最終更新時刻を取得する
 	 *
-	 * @return _lastUpdatedAt
+	 * @return 最終更新時刻
 	 */
 	public java.util.Date get_lastUpdatedAt() {
 		return this._lastUpdatedAt;
 	}
 
 	/**
-	 * _lastUpdatedAtを設定する
+	 * 最終更新時刻を設定する
 	 *
-	 * @param _lastUpdatedAt 設定する_lastUpdatedAt
+	 * @param _lastUpdatedAt 設定する最終更新時刻
 	 */
 	public void set_lastUpdatedAt(java.util.Date _lastUpdatedAt) {
 		this._lastUpdatedAt = _lastUpdatedAt;
