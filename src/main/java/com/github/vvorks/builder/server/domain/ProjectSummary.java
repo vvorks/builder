@@ -73,6 +73,18 @@ public class ProjectSummary {
 		this.focus = focus;
 	}
 
+	/**
+	 * データが更新されているか否かを判定する
+	 *
+	 * @param lastCount 前回実行時のデータ件数
+	 * @param lastUpdatedAt 前回実行時の最終更新時刻
+	 * @return データが更新されていた場合、真
+	 */
+	public boolean isUpdated(int lastCount, java.util.Date lastUpdatedAt) {
+		return	count != lastCount ||
+				!Objects.equals(max_lastUpdatedAt, lastUpdatedAt);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(

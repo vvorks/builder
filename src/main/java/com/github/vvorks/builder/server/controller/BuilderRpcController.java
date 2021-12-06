@@ -4,17 +4,36 @@
 package com.github.vvorks.builder.server.controller;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
-import com.github.vvorks.builder.server.domain.*;
-import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.github.vvorks.builder.server.domain.ClassContent;
+import com.github.vvorks.builder.server.domain.ClassInfo;
+import com.github.vvorks.builder.server.domain.ClassSummary;
+import com.github.vvorks.builder.server.domain.EnumContent;
+import com.github.vvorks.builder.server.domain.EnumInfo;
+import com.github.vvorks.builder.server.domain.EnumSummary;
+import com.github.vvorks.builder.server.domain.EnumValueContent;
+import com.github.vvorks.builder.server.domain.EnumValueInfo;
+import com.github.vvorks.builder.server.domain.EnumValueSummary;
+import com.github.vvorks.builder.server.domain.FieldContent;
+import com.github.vvorks.builder.server.domain.FieldInfo;
+import com.github.vvorks.builder.server.domain.FieldSummary;
+import com.github.vvorks.builder.server.domain.ProjectContent;
+import com.github.vvorks.builder.server.domain.ProjectInfo;
+import com.github.vvorks.builder.server.domain.ProjectSummary;
+import com.github.vvorks.builder.server.domain.QueryContent;
+import com.github.vvorks.builder.server.domain.QueryInfo;
+import com.github.vvorks.builder.server.domain.QuerySummary;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
-import com.github.vvorks.builder.server.mapper.FieldMapper;
-import com.github.vvorks.builder.server.mapper.QueryMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
+import com.github.vvorks.builder.server.mapper.FieldMapper;
+import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.github.vvorks.builder.server.mapper.QueryMapper;
 
 /**
  * ビルダープロジェクトの Json-Rpc (on Websocket) API
@@ -99,6 +118,7 @@ public class BuilderRpcController {
 	 *
 	 * @return プロジェクト型のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectSummary")
 	public ProjectSummary listProjectSummary() {
 		return projectMapper.listSummary();
@@ -111,6 +131,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return プロジェクト型のリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectContent")
 	public List<ProjectContent> listProjectContent(
 		@JsonRpcParam("offset") int offset,
@@ -120,11 +141,41 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 全てのプロジェクト型情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return プロジェクト型情報
+	 */
+	@JsonRpcMethod("listProjectInfo")
+	public ProjectInfo listProjectInfo(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		ProjectInfo info = new ProjectInfo();
+		ProjectSummary summary = projectMapper.listSummary();
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<ProjectContent> contents = projectMapper.listContent(offset, limit);
+		info.setContents(contents);
+		return info;
+	}
+
+	/**
 	 * 名前に合致するプロジェクト型のサマリーを取得する
 	 *
 	 * @param name name
 	 * @return プロジェクト型のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectSummaryIfNameIs")
 	public ProjectSummary listProjectSummaryIfNameIs(
 		@JsonRpcParam("name") String name
@@ -142,6 +193,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return プロジェクト型のリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectContentIfNameIs")
 	public List<ProjectContent> listProjectContentIfNameIs(
 		@JsonRpcParam("name") String name,
@@ -151,7 +203,41 @@ public class BuilderRpcController {
 		return projectMapper.listContentIfNameIs(
 				name,
 				offset, limit);
+	}
 
+	/**
+	 * 名前に合致するプロジェクト型情報を取得する
+	 *
+	 * @param name name
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return プロジェクト型情報
+	 */
+	@JsonRpcMethod("listProjectInfoIfNameIs")
+	public ProjectInfo listProjectInfoIfNameIs(
+		@JsonRpcParam("name") String name,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		ProjectInfo info = new ProjectInfo();
+		ProjectSummary summary = projectMapper.listSummaryIfNameIs(
+				name
+				);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<ProjectContent> contents = projectMapper.listContentIfNameIs(
+				name,
+				offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	/**
@@ -160,6 +246,7 @@ public class BuilderRpcController {
 	 * @param content ビルダープロジェクト
 	 * @return クラス一覧のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectClassesSummary")
 	public ClassSummary listProjectClassesSummary(
 			@JsonRpcParam("content") ProjectContent content
@@ -175,6 +262,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラス一覧
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectClassesContent")
 	public List<ClassContent> listProjectClassesContent(
 		@JsonRpcParam("content") ProjectContent content,
@@ -185,11 +273,44 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * クラス一覧情報を取得する
+	 *
+	 * @param content プロジェクト型
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return クラス一覧情報
+	 */
+	@JsonRpcMethod("listProjectClassesInfo")
+	public ClassInfo listProjectClassesInfo(
+		@JsonRpcParam("content") ProjectContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		ClassInfo info = new ClassInfo();
+		ClassSummary summary = projectMapper.listClassesSummary(content);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<ClassContent> contents =
+				projectMapper.listClassesContent(content, offset, limit);
+		info.setContents(contents);
+		return info;
+	}
+
+	/**
 	 * 名前に合致するクラス一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト型
 	 * @return クラス一覧のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectClassesSummaryIfNameIs")
 	public ClassSummary listProjectClassesSummaryIfNameIs(
 		@JsonRpcParam("content") ProjectContent content,
@@ -208,6 +329,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラス一覧
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectClassesContentIfNameIs")
 	public List<ClassContent> listProjectClassesContentIfNameIs(
 		@JsonRpcParam("content") ProjectContent content,
@@ -221,11 +343,50 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 名前に合致するクラス一覧情報を取得する
+	 *
+	 * @param content プロジェクト型
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return クラス一覧情報
+	 */
+	@JsonRpcMethod("listProjectClassesInfoIfNameIs")
+	public ClassInfo listProjectClassesInfoIfNameIs(
+		@JsonRpcParam("content") ProjectContent content,
+		@JsonRpcParam("name") String name,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		ClassInfo info = new ClassInfo();
+		ClassSummary summary = projectMapper.listClassesSummaryIfNameIs(
+				content,
+				name
+				);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<ClassContent> contents = projectMapper.listClassesContentIfNameIs(
+				content,
+				name,
+				offset, limit);
+		info.setContents(contents);
+		return info;
+	}
+
+	/**
 	 * 列挙一覧のサマリーを取得する
 	 *
 	 * @param content ビルダープロジェクト
 	 * @return 列挙一覧のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectEnumsSummary")
 	public EnumSummary listProjectEnumsSummary(
 			@JsonRpcParam("content") ProjectContent content
@@ -241,6 +402,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙一覧
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectEnumsContent")
 	public List<EnumContent> listProjectEnumsContent(
 		@JsonRpcParam("content") ProjectContent content,
@@ -251,11 +413,44 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 列挙一覧情報を取得する
+	 *
+	 * @param content プロジェクト型
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return 列挙一覧情報
+	 */
+	@JsonRpcMethod("listProjectEnumsInfo")
+	public EnumInfo listProjectEnumsInfo(
+		@JsonRpcParam("content") ProjectContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		EnumInfo info = new EnumInfo();
+		EnumSummary summary = projectMapper.listEnumsSummary(content);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<EnumContent> contents =
+				projectMapper.listEnumsContent(content, offset, limit);
+		info.setContents(contents);
+		return info;
+	}
+
+	/**
 	 * 名前に合致する列挙一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト型
 	 * @return 列挙一覧のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectEnumsSummaryIfNameIs")
 	public EnumSummary listProjectEnumsSummaryIfNameIs(
 		@JsonRpcParam("content") ProjectContent content,
@@ -274,6 +469,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙一覧
 	 */
+	@Deprecated
 	@JsonRpcMethod("listProjectEnumsContentIfNameIs")
 	public List<EnumContent> listProjectEnumsContentIfNameIs(
 		@JsonRpcParam("content") ProjectContent content,
@@ -284,6 +480,44 @@ public class BuilderRpcController {
 		return projectMapper.listEnumsContentIfNameIs(content,
 				name,
 				offset, limit);
+	}
+
+	/**
+	 * 名前に合致する列挙一覧情報を取得する
+	 *
+	 * @param content プロジェクト型
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return 列挙一覧情報
+	 */
+	@JsonRpcMethod("listProjectEnumsInfoIfNameIs")
+	public EnumInfo listProjectEnumsInfoIfNameIs(
+		@JsonRpcParam("content") ProjectContent content,
+		@JsonRpcParam("name") String name,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		EnumInfo info = new EnumInfo();
+		EnumSummary summary = projectMapper.listEnumsSummaryIfNameIs(
+				content,
+				name
+				);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<EnumContent> contents = projectMapper.listEnumsContentIfNameIs(
+				content,
+				name,
+				offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	/**
@@ -339,6 +573,7 @@ public class BuilderRpcController {
 	 *
 	 * @return クラスのサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassSummary")
 	public ClassSummary listClassSummary() {
 		return classMapper.listSummary();
@@ -351,6 +586,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラスのリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassContent")
 	public List<ClassContent> listClassContent(
 		@JsonRpcParam("offset") int offset,
@@ -360,11 +596,41 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 全てのクラス情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return クラス情報
+	 */
+	@JsonRpcMethod("listClassInfo")
+	public ClassInfo listClassInfo(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		ClassInfo info = new ClassInfo();
+		ClassSummary summary = classMapper.listSummary();
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<ClassContent> contents = classMapper.listContent(offset, limit);
+		info.setContents(contents);
+		return info;
+	}
+
+	/**
 	 * 名前に合致するクラスのサマリーを取得する
 	 *
 	 * @param name name
 	 * @return クラスのサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassSummaryIfNameIs")
 	public ClassSummary listClassSummaryIfNameIs(
 		@JsonRpcParam("name") String name
@@ -382,6 +648,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラスのリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassContentIfNameIs")
 	public List<ClassContent> listClassContentIfNameIs(
 		@JsonRpcParam("name") String name,
@@ -391,7 +658,41 @@ public class BuilderRpcController {
 		return classMapper.listContentIfNameIs(
 				name,
 				offset, limit);
+	}
 
+	/**
+	 * 名前に合致するクラス情報を取得する
+	 *
+	 * @param name name
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return クラス情報
+	 */
+	@JsonRpcMethod("listClassInfoIfNameIs")
+	public ClassInfo listClassInfoIfNameIs(
+		@JsonRpcParam("name") String name,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		ClassInfo info = new ClassInfo();
+		ClassSummary summary = classMapper.listSummaryIfNameIs(
+				name
+				);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<ClassContent> contents = classMapper.listContentIfNameIs(
+				name,
+				offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	/**
@@ -413,6 +714,7 @@ public class BuilderRpcController {
 	 * @param content ビルダープロジェクト
 	 * @return フィールド一覧のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassFieldsSummary")
 	public FieldSummary listClassFieldsSummary(
 			@JsonRpcParam("content") ClassContent content
@@ -428,6 +730,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return フィールド一覧
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassFieldsContent")
 	public List<FieldContent> listClassFieldsContent(
 		@JsonRpcParam("content") ClassContent content,
@@ -438,11 +741,44 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * フィールド一覧情報を取得する
+	 *
+	 * @param content クラス
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return フィールド一覧情報
+	 */
+	@JsonRpcMethod("listClassFieldsInfo")
+	public FieldInfo listClassFieldsInfo(
+		@JsonRpcParam("content") ClassContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		FieldInfo info = new FieldInfo();
+		FieldSummary summary = classMapper.listFieldsSummary(content);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<FieldContent> contents =
+				classMapper.listFieldsContent(content, offset, limit);
+		info.setContents(contents);
+		return info;
+	}
+
+	/**
 	 * 名前に合致するフィールド一覧のサマリーを取得する
 	 *
 	 * @param content クラス
 	 * @return フィールド一覧のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassFieldsSummaryIfNameIs")
 	public FieldSummary listClassFieldsSummaryIfNameIs(
 		@JsonRpcParam("content") ClassContent content,
@@ -461,6 +797,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return フィールド一覧
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassFieldsContentIfNameIs")
 	public List<FieldContent> listClassFieldsContentIfNameIs(
 		@JsonRpcParam("content") ClassContent content,
@@ -474,11 +811,50 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 名前に合致するフィールド一覧情報を取得する
+	 *
+	 * @param content クラス
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return フィールド一覧情報
+	 */
+	@JsonRpcMethod("listClassFieldsInfoIfNameIs")
+	public FieldInfo listClassFieldsInfoIfNameIs(
+		@JsonRpcParam("content") ClassContent content,
+		@JsonRpcParam("name") String name,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		FieldInfo info = new FieldInfo();
+		FieldSummary summary = classMapper.listFieldsSummaryIfNameIs(
+				content,
+				name
+				);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<FieldContent> contents = classMapper.listFieldsContentIfNameIs(
+				content,
+				name,
+				offset, limit);
+		info.setContents(contents);
+		return info;
+	}
+
+	/**
 	 * queriesのサマリーを取得する
 	 *
 	 * @param content ビルダープロジェクト
 	 * @return queriesのサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassQueriesSummary")
 	public QuerySummary listClassQueriesSummary(
 			@JsonRpcParam("content") ClassContent content
@@ -494,6 +870,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return queries
 	 */
+	@Deprecated
 	@JsonRpcMethod("listClassQueriesContent")
 	public List<QueryContent> listClassQueriesContent(
 		@JsonRpcParam("content") ClassContent content,
@@ -501,6 +878,38 @@ public class BuilderRpcController {
 		@JsonRpcParam("limit") int limit
 	) {
 		return classMapper.listQueriesContent(content, offset, limit);
+	}
+
+	/**
+	 * queries情報を取得する
+	 *
+	 * @param content クラス
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return queries情報
+	 */
+	@JsonRpcMethod("listClassQueriesInfo")
+	public QueryInfo listClassQueriesInfo(
+		@JsonRpcParam("content") ClassContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		QueryInfo info = new QueryInfo();
+		QuerySummary summary = classMapper.listQueriesSummary(content);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<QueryContent> contents =
+				classMapper.listQueriesContent(content, offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	/**
@@ -556,6 +965,7 @@ public class BuilderRpcController {
 	 *
 	 * @return フィールドのサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listFieldSummary")
 	public FieldSummary listFieldSummary() {
 		return fieldMapper.listSummary();
@@ -568,6 +978,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return フィールドのリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listFieldContent")
 	public List<FieldContent> listFieldContent(
 		@JsonRpcParam("offset") int offset,
@@ -577,11 +988,41 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 全てのフィールド情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return フィールド情報
+	 */
+	@JsonRpcMethod("listFieldInfo")
+	public FieldInfo listFieldInfo(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		FieldInfo info = new FieldInfo();
+		FieldSummary summary = fieldMapper.listSummary();
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<FieldContent> contents = fieldMapper.listContent(offset, limit);
+		info.setContents(contents);
+		return info;
+	}
+
+	/**
 	 * 名前に合致するフィールドのサマリーを取得する
 	 *
 	 * @param name name
 	 * @return フィールドのサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listFieldSummaryIfNameIs")
 	public FieldSummary listFieldSummaryIfNameIs(
 		@JsonRpcParam("name") String name
@@ -599,6 +1040,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return フィールドのリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listFieldContentIfNameIs")
 	public List<FieldContent> listFieldContentIfNameIs(
 		@JsonRpcParam("name") String name,
@@ -608,7 +1050,41 @@ public class BuilderRpcController {
 		return fieldMapper.listContentIfNameIs(
 				name,
 				offset, limit);
+	}
 
+	/**
+	 * 名前に合致するフィールド情報を取得する
+	 *
+	 * @param name name
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return フィールド情報
+	 */
+	@JsonRpcMethod("listFieldInfoIfNameIs")
+	public FieldInfo listFieldInfoIfNameIs(
+		@JsonRpcParam("name") String name,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		FieldInfo info = new FieldInfo();
+		FieldSummary summary = fieldMapper.listSummaryIfNameIs(
+				name
+				);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<FieldContent> contents = fieldMapper.listContentIfNameIs(
+				name,
+				offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	/**
@@ -716,6 +1192,7 @@ public class BuilderRpcController {
 	 *
 	 * @return クエリーのサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listQuerySummary")
 	public QuerySummary listQuerySummary() {
 		return queryMapper.listSummary();
@@ -728,12 +1205,42 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クエリーのリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listQueryContent")
 	public List<QueryContent> listQueryContent(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
 		return queryMapper.listContent(offset, limit);
+	}
+
+	/**
+	 * 全てのクエリー情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return クエリー情報
+	 */
+	@JsonRpcMethod("listQueryInfo")
+	public QueryInfo listQueryInfo(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		QueryInfo info = new QueryInfo();
+		QuerySummary summary = queryMapper.listSummary();
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<QueryContent> contents = queryMapper.listContent(offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	/**
@@ -802,6 +1309,7 @@ public class BuilderRpcController {
 	 *
 	 * @return 列挙のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listEnumSummary")
 	public EnumSummary listEnumSummary() {
 		return enumMapper.listSummary();
@@ -814,6 +1322,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙のリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listEnumContent")
 	public List<EnumContent> listEnumContent(
 		@JsonRpcParam("offset") int offset,
@@ -823,11 +1332,41 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 全ての列挙情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return 列挙情報
+	 */
+	@JsonRpcMethod("listEnumInfo")
+	public EnumInfo listEnumInfo(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		EnumInfo info = new EnumInfo();
+		EnumSummary summary = enumMapper.listSummary();
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<EnumContent> contents = enumMapper.listContent(offset, limit);
+		info.setContents(contents);
+		return info;
+	}
+
+	/**
 	 * 名前に合致する列挙のサマリーを取得する
 	 *
 	 * @param name name
 	 * @return 列挙のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listEnumSummaryIfNameIs")
 	public EnumSummary listEnumSummaryIfNameIs(
 		@JsonRpcParam("name") String name
@@ -845,6 +1384,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙のリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listEnumContentIfNameIs")
 	public List<EnumContent> listEnumContentIfNameIs(
 		@JsonRpcParam("name") String name,
@@ -854,7 +1394,41 @@ public class BuilderRpcController {
 		return enumMapper.listContentIfNameIs(
 				name,
 				offset, limit);
+	}
 
+	/**
+	 * 名前に合致する列挙情報を取得する
+	 *
+	 * @param name name
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return 列挙情報
+	 */
+	@JsonRpcMethod("listEnumInfoIfNameIs")
+	public EnumInfo listEnumInfoIfNameIs(
+		@JsonRpcParam("name") String name,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		EnumInfo info = new EnumInfo();
+		EnumSummary summary = enumMapper.listSummaryIfNameIs(
+				name
+				);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<EnumContent> contents = enumMapper.listContentIfNameIs(
+				name,
+				offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	/**
@@ -876,6 +1450,7 @@ public class BuilderRpcController {
 	 * @param content ビルダープロジェクト
 	 * @return 列挙値一覧のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listEnumValuesSummary")
 	public EnumValueSummary listEnumValuesSummary(
 			@JsonRpcParam("content") EnumContent content
@@ -891,6 +1466,7 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙値一覧
 	 */
+	@Deprecated
 	@JsonRpcMethod("listEnumValuesContent")
 	public List<EnumValueContent> listEnumValuesContent(
 		@JsonRpcParam("content") EnumContent content,
@@ -898,6 +1474,38 @@ public class BuilderRpcController {
 		@JsonRpcParam("limit") int limit
 	) {
 		return enumMapper.listValuesContent(content, offset, limit);
+	}
+
+	/**
+	 * 列挙値一覧情報を取得する
+	 *
+	 * @param content 列挙
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return 列挙値一覧情報
+	 */
+	@JsonRpcMethod("listEnumValuesInfo")
+	public EnumValueInfo listEnumValuesInfo(
+		@JsonRpcParam("content") EnumContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		EnumValueInfo info = new EnumValueInfo();
+		EnumValueSummary summary = enumMapper.listValuesSummary(content);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<EnumValueContent> contents =
+				enumMapper.listValuesContent(content, offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	/**
@@ -942,11 +1550,11 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod("getEnumValue")
 	public EnumValueContent getEnumValue(
-		@JsonRpcParam("valueId") String valueId, 
+		@JsonRpcParam("valueId") String valueId,
 		@JsonRpcParam("ownerEnumId") int ownerEnumId
 	) {
 		return enumValueMapper.get(
-				valueId, 
+				valueId,
 				ownerEnumId
 				);
 	}
@@ -956,6 +1564,7 @@ public class BuilderRpcController {
 	 *
 	 * @return 列挙値のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("listEnumValueSummary")
 	public EnumValueSummary listEnumValueSummary() {
 		return enumValueMapper.listSummary();
@@ -968,12 +1577,42 @@ public class BuilderRpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙値のリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("listEnumValueContent")
 	public List<EnumValueContent> listEnumValueContent(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
 		return enumValueMapper.listContent(offset, limit);
+	}
+
+	/**
+	 * 全ての列挙値情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return 列挙値情報
+	 */
+	@JsonRpcMethod("listEnumValueInfo")
+	public EnumValueInfo listEnumValueInfo(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		EnumValueInfo info = new EnumValueInfo();
+		EnumValueSummary summary = enumValueMapper.listSummary();
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<EnumValueContent> contents = enumValueMapper.listContent(offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	/**

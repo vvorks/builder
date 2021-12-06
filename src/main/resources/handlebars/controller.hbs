@@ -12,6 +12,7 @@
 package {{global.project.projectName}}.server.controller;
 
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcController;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcMethod;
@@ -95,6 +96,7 @@ public class {{upperLastName}}RpcController {
 	 *
 	 * @return {{titleOrName}}のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("list{{className}}Summary")
 	public {{className}}Summary list{{className}}Summary() {
 		return {{lowerName}}Mapper.listSummary();
@@ -107,12 +109,42 @@ public class {{upperLastName}}RpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return {{titleOrName}}のリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("list{{className}}Content")
 	public List<{{className}}Content> list{{className}}Content(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
 		return {{lowerName}}Mapper.listContent(offset, limit);
+	}
+
+	/**
+	 * 全ての{{titleOrName}}情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return {{titleOrName}}情報
+	 */
+	@JsonRpcMethod("list{{className}}Info")
+	public {{className}}Info list{{className}}Info(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		{{className}}Info info = new {{className}}Info();
+		{{className}}Summary summary = {{lowerName}}Mapper.listSummary();
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<{{className}}Content> contents = {{lowerName}}Mapper.listContent(offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	{{#each queries}}
@@ -125,6 +157,7 @@ public class {{upperLastName}}RpcController {
 	{{/each}}
 	 * @return {{../titleOrName}}のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("list{{../className}}SummaryIf{{upperName}}")
 	public {{../className}}Summary list{{../className}}SummaryIf{{upperName}}(
 		{{#each arguments}}
@@ -148,6 +181,7 @@ public class {{upperLastName}}RpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return {{../titleOrName}}のリスト
 	 */
+	@Deprecated
 	@JsonRpcMethod("list{{../className}}ContentIf{{upperName}}")
 	public List<{{../className}}Content> list{{../className}}ContentIf{{upperName}}(
 		{{#each arguments}}
@@ -161,7 +195,49 @@ public class {{upperLastName}}RpcController {
 				{{fieldName}},
 				{{/each}}
 				offset, limit);
+	}
 
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}情報を取得する
+	 *
+	{{#each arguments}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return {{../titleOrName}}情報
+	 */
+	@JsonRpcMethod("list{{../className}}InfoIf{{upperName}}")
+	public {{../className}}Info list{{../className}}InfoIf{{upperName}}(
+		{{#each arguments}}
+		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		{{../className}}Info info = new {{../className}}Info();
+		{{../className}}Summary summary = {{../lowerName}}Mapper.listSummaryIf{{upperName}}(
+				{{#each arguments}}
+				{{fieldName}}{{#separator}},{{/separator}}
+				{{/each}}
+				);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<{{../className}}Content> contents = {{../lowerName}}Mapper.listContentIf{{upperName}}(
+				{{#each arguments}}
+				{{fieldName}},
+				{{/each}}
+				offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 	{{/each}}
 
@@ -189,6 +265,7 @@ public class {{upperLastName}}RpcController {
 	 * @param content {{../../titleOrName}}
 	 * @return {{titleOrName}}のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("list{{../className}}{{upperName}}Summary")
 	public {{fref.owner.className}}Summary list{{../className}}{{upperName}}Summary(
 			@JsonRpcParam("content") {{../className}}Content content
@@ -204,6 +281,7 @@ public class {{upperLastName}}RpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return {{titleOrName}}
 	 */
+	@Deprecated
 	@JsonRpcMethod("list{{../className}}{{upperName}}Content")
 	public List<{{fref.owner.className}}Content> list{{../className}}{{upperName}}Content(
 		@JsonRpcParam("content") {{../className}}Content content,
@@ -211,6 +289,38 @@ public class {{upperLastName}}RpcController {
 		@JsonRpcParam("limit") int limit
 	) {
 		return {{../lowerName}}Mapper.list{{upperName}}Content(content, offset, limit);
+	}
+
+	/**
+	 * {{titleOrName}}情報を取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return {{titleOrName}}情報
+	 */
+	@JsonRpcMethod("list{{../className}}{{upperName}}Info")
+	public {{fref.owner.className}}Info list{{../className}}{{upperName}}Info(
+		@JsonRpcParam("content") {{../className}}Content content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		{{fref.owner.className}}Info info = new {{fref.owner.className}}Info();
+		{{fref.owner.className}}Summary summary = {{../lowerName}}Mapper.list{{upperName}}Summary(content);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<{{fref.owner.className}}Content> contents =
+				{{../lowerName}}Mapper.list{{upperName}}Content(content, offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 
 	{{#each fref.owner.queries}}
@@ -221,6 +331,7 @@ public class {{upperLastName}}RpcController {
 	 * @param content {{../../titleOrName}}
 	 * @return {{../titleOrName}}のサマリー
 	 */
+	@Deprecated
 	@JsonRpcMethod("list{{../../className}}{{../upperName}}SummaryIf{{upperName}}")
 	public {{../fref.owner.className}}Summary list{{../../className}}{{../upperName}}SummaryIf{{upperName}}(
 		@JsonRpcParam("content") {{../../className}}Content content,
@@ -243,6 +354,7 @@ public class {{upperLastName}}RpcController {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return {{../titleOrName}}
 	 */
+	@Deprecated
 	@JsonRpcMethod("list{{../../className}}{{../upperName}}ContentIf{{upperName}}")
 	public List<{{../fref.owner.className}}Content> list{{../../className}}{{../upperName}}ContentIf{{upperName}}(
 		@JsonRpcParam("content") {{../../className}}Content content,
@@ -257,6 +369,50 @@ public class {{upperLastName}}RpcController {
 				{{fieldName}},
 				{{/each}}
 				offset, limit);
+	}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}情報を取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
+	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
+	 * @return {{../titleOrName}}情報
+	 */
+	@JsonRpcMethod("list{{../../className}}{{../upperName}}InfoIf{{upperName}}")
+	public {{../fref.owner.className}}Info list{{../../className}}{{../upperName}}InfoIf{{upperName}}(
+		@JsonRpcParam("content") {{../../className}}Content content,
+		{{#each arguments}}
+		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit,
+		@JsonRpcParam("lastCount") int lastCount,
+		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+	) {
+		{{fref.owner.className}}Info info = new {{fref.owner.className}}Info();
+		{{../fref.owner.className}}Summary summary = {{../../lowerName}}Mapper.list{{../upperName}}SummaryIf{{upperName}}(
+				content,
+				{{#each arguments}}
+				{{fieldName}}{{#separator}},{{/separator}}
+				{{/each}}
+				);
+		info.setSummary(summary);
+		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
+		if (info.isUpdated()) {
+			offset = summary.getFocus();
+		}
+		info.setOffset(offset);
+		List<{{fref.owner.className}}Content> contents = {{../../lowerName}}Mapper.list{{../upperName}}ContentIf{{upperName}}(
+				content,
+				{{#each arguments}}
+				{{fieldName}},
+				{{/each}}
+				offset, limit);
+		info.setContents(contents);
+		return info;
 	}
 	{{/each}}
 
