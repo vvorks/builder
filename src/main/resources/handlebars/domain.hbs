@@ -187,6 +187,9 @@ public class {{className}}Summary {
 	/** 件数 */
 	private int count;
 
+	/** （初期）フォーカス位置 */
+	private int focus;
+
 	{{#each properties}}
 
 	{{#if needsSum}}
@@ -288,6 +291,24 @@ public class {{className}}Summary {
 		this.count = count;
 	}
 
+	/**
+	 * （初期）フォーカス位置を取得する
+	 *
+	 * @return 件数
+	 */
+	public int getFocus() {
+		return focus;
+	}
+
+	/**
+	 * （初期）フォーカス位置を設定する
+	 *
+	 * @param focus （初期）フォーカス位置
+	 */
+	public void setFocus(int focus) {
+		this.focus = focus;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(
@@ -305,7 +326,7 @@ public class {{className}}Summary {
 			min{{upperName}},
 			{{/if}}
 			{{/each}}
-			count);
+			count, focus);
 	}
 
 	@Override
@@ -337,7 +358,7 @@ public class {{className}}Summary {
 			this.min{{upperName}} == other.min{{upperName}} &&
 			{{/if}}
 			{{/each}}
-			this.count == other.count;
+			this.count == other.count && this.focus == other.focus;
 	}
 
 	@Override
@@ -359,6 +380,131 @@ public class {{className}}Summary {
 		{{/if}}
 		{{/each}}
 		sb.append("count=").append(count);
+		sb.append("focus=").append(focus);
+		sb.append("]");
+		return sb.toString();
+	}
+
+}
+{{/java}}
+{{/each}}
+
+//
+// Infoクラステンプレート
+//
+{{#each this.classes}}
+{{#java this "server/domain/" className "Info" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * {{titleOrName}}情報
+ */
+public class {{className}}Info {
+
+	/** Summary情報 */
+	private {{className}}Summary summary;
+
+	/** Contentリスト情報 */
+	private List<{{className}}Content> contents;
+
+	/** オフセット */
+	private int offset;
+
+	/**
+	 * Summary情報を取得する
+	 *
+	 * @return Summary情報
+	 */
+	public {{className}}Summary getSummary() {
+		return summary;
+	}
+
+	/**
+	 * Summary情報を設定する
+	 *
+	 * @param summary サマリー情報
+	 */
+	public void setSummary({{className}}Summary summary) {
+		this.summary = summary;
+	}
+
+	/**
+	 * Contentリスト情報を取得する
+	 *
+	 * @return Contentリスト情報
+	 */
+	public List<{{className}}Content> getContents() {
+		return contents;
+	}
+
+	/**
+	 * Contentリスト情報を設定する
+	 *
+	 * @param contents Contentリスト情報
+	 */
+	public void setContents(List<{{className}}Content> contents) {
+		this.contents = contents;
+	}
+
+	/**
+	 * オフセットを取得する
+	 *
+	 * @return オフセット
+	 */
+	public int getOffset() {
+		return offset;
+	}
+
+	/**
+	 * オフセットを設定する
+	 *
+	 * @param offset オフセット
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(summary, contents, offset);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			return equals(({{className}}Info) obj);
+		}
+	}
+
+	private boolean equals({{className}}Info other) {
+		return	Objects.equals(summary, other.summary) &&
+				Objects.equals(contents, other.contents) &&
+				offset == other.offset;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{className}}Info [");
+		sb.append("summary=").append(summary).append(", ");
+		sb.append("contents=").append(contents).append(", ");
+		sb.append("offset=").append(offset);
 		sb.append("]");
 		return sb.toString();
 	}

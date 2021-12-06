@@ -60,7 +60,8 @@
 
 	<select id="listSummary" resultType="EnumValueSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_ENUM_VALUE
 	</select>

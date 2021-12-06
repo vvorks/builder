@@ -13,6 +13,9 @@ public class ProjectSummary {
 	/** 件数 */
 	private int count;
 
+	/** （初期）フォーカス位置 */
+	private int focus;
+
 	/**
 	 * 件数を取得する
 	 *
@@ -31,10 +34,28 @@ public class ProjectSummary {
 		this.count = count;
 	}
 
+	/**
+	 * （初期）フォーカス位置を取得する
+	 *
+	 * @return 件数
+	 */
+	public int getFocus() {
+		return focus;
+	}
+
+	/**
+	 * （初期）フォーカス位置を設定する
+	 *
+	 * @param focus （初期）フォーカス位置
+	 */
+	public void setFocus(int focus) {
+		this.focus = focus;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			count);
+			count, focus);
 	}
 
 	@Override
@@ -52,7 +73,7 @@ public class ProjectSummary {
 
 	private boolean equals(ProjectSummary other) {
 		return
-			this.count == other.count;
+			this.count == other.count && this.focus == other.focus;
 	}
 
 	@Override
@@ -60,6 +81,7 @@ public class ProjectSummary {
 		StringBuilder sb = new StringBuilder();
 		sb.append("ProjectContent [");
 		sb.append("count=").append(count);
+		sb.append("focus=").append(focus);
 		sb.append("]");
 		return sb.toString();
 	}

@@ -258,7 +258,8 @@ public interface {{className}}Mapper {
 			MIN({{columnName}}) AS "min{{upperName}}",
 			{{/if}}
 			{{/each}}
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			{{tableName}}
 	</select>
@@ -296,7 +297,8 @@ public interface {{className}}Mapper {
 			MIN(T1.{{columnName}}) AS "min{{upperName}}",
 			{{/if}}
 			{{/each}}
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			{{../tableName}} T1
 			{{#each joins}}
@@ -371,7 +373,8 @@ public interface {{className}}Mapper {
 			MIN({{columnName}}) AS "min{{upperName}}",
 			{{/if}}
 			{{/each}}
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			{{fref.owner.tableName}}
 		WHERE
@@ -417,7 +420,8 @@ public interface {{className}}Mapper {
 			MIN(T1.{{columnName}}) AS "min{{upperName}}",
 			{{/if}}
 			{{/each}}
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			{{../fref.owner.tableName}} T1
 			{{#each joins}}

@@ -62,7 +62,8 @@
 
 	<select id="listSummary" resultType="ProjectSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_PROJECT
 	</select>
@@ -89,7 +90,8 @@
 
 	<select id="listSummaryIfNameIs" resultType="ProjectSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_PROJECT T1
 		WHERE
@@ -124,7 +126,8 @@
 
 	<select id="listClassesSummary" resultType="ClassSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_CLASS
 		WHERE
@@ -154,7 +157,8 @@
 
 	<select id="listClassesSummaryIfNameIs" resultType="ClassSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_CLASS T1
 		WHERE
@@ -190,7 +194,8 @@
 
 	<select id="listEnumsSummary" resultType="EnumSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_ENUM
 		WHERE
@@ -221,7 +226,8 @@
 
 	<select id="listEnumsSummaryIfNameIs" resultType="EnumSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_ENUM T1
 		WHERE

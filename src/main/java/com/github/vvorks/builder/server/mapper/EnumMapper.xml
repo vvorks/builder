@@ -62,7 +62,8 @@
 
 	<select id="listSummary" resultType="EnumSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_ENUM
 	</select>
@@ -89,7 +90,8 @@
 
 	<select id="listSummaryIfNameIs" resultType="EnumSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_ENUM T1
 		WHERE
@@ -140,7 +142,8 @@
 
 	<select id="listValuesSummary" resultType="EnumValueSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_ENUM_VALUE
 		WHERE

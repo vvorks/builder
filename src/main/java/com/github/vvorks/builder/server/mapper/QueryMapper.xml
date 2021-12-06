@@ -66,7 +66,8 @@
 
 	<select id="listSummary" resultType="QuerySummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_QUERY
 	</select>

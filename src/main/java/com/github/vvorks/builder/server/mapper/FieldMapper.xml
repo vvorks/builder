@@ -106,7 +106,8 @@
 
 	<select id="listSummary" resultType="FieldSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_FIELD
 	</select>
@@ -144,7 +145,8 @@
 
 	<select id="listSummaryIfNameIs" resultType="FieldSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_FIELD T1
 		WHERE

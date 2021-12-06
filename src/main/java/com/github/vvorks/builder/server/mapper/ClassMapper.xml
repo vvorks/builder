@@ -58,7 +58,8 @@
 
 	<select id="listSummary" resultType="ClassSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_CLASS
 	</select>
@@ -84,7 +85,8 @@
 
 	<select id="listSummaryIfNameIs" resultType="ClassSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_CLASS T1
 		WHERE
@@ -134,7 +136,8 @@
 
 	<select id="listFieldsSummary" resultType="FieldSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_FIELD
 		WHERE
@@ -176,7 +179,8 @@
 
 	<select id="listFieldsSummaryIfNameIs" resultType="FieldSummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_FIELD T1
 		WHERE
@@ -224,7 +228,8 @@
 
 	<select id="listQueriesSummary" resultType="QuerySummary">
 		SELECT
-			COUNT(*) AS "count"
+			COUNT(*) AS "count",
+			0 AS "focus"
 		FROM
 			T_QUERY
 		WHERE
