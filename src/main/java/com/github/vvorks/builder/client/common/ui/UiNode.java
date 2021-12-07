@@ -1763,8 +1763,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	public Json toJson() {
 		Json json = Json.createObject();
 		json.setString("name", getFullName());
-		json.setNumber("flags", flags);
-		json.setNumber("changed",  changed);
+		json.setDouble("flags", flags);
+		json.setDouble("changed",  changed);
 		json.setString("left", left);
 		json.setString("top", top);
 		json.setString("right", right);

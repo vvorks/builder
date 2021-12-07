@@ -218,8 +218,8 @@ public class Rect extends Point {
 	@Override
 	public Json toJson() {
 		Json json = super.toJson();
-		json.setNumber("width", width);
-		json.setNumber("height", height);
+		json.setInt("width", width);
+		json.setInt("height", height);
 		return json;
 	}
 

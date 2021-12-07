@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.client.app;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
@@ -24,9 +25,9 @@ public class TestDataSource extends DataSource {
 
 	private int count;
 
-	private int offset;
+	private Date lastUpdatedAt;
 
-	private int limit;
+	private int offset;
 
 	private List<Json> block;
 
@@ -35,41 +36,32 @@ public class TestDataSource extends DataSource {
 		criteria = null;
 		loaded = false;
 		count = 0;
+		lastUpdatedAt = new Date(0L);
 		offset = 0;
-		limit = 0;
 		block = new ArrayList<>();
-		doRequest1(criteria);
+		doRequest(criteria);
 	}
 
-	private void doRequest1(Json criteria) {
-		rpc.request("listProjectSummary", null, 0, new Callback<Json>() {
+	private void doRequest(Json criteria) {
+		Json param = Json.createObject();
+		param.setInt("offset", offset);
+		param.setInt("limit", DEFAULT_LIMIT);
+		param.setInt("lastCount", -1);
+		param.setDate("lastUpdatedAt", lastUpdatedAt);
+		rpc.request("listProjectInfo", param, 0, new Callback<Json>() {
 			public void onSuccess(Json result) {
 				LOGGER.debug("result %s", result);
-				int newCount = (int) result.getNumber("count", 0);
-				setCount(newCount);
-				doRequest2(criteria, 0, Math.min(newCount, DEFAULT_LIMIT));
-			}
-			public void onFailure(Throwable caught) {
-				LOGGER.error(caught, caught.getMessage());
-			}
-		});
-	}
-
-	private void doRequest2(Json criteria, int offset, int limit) {
-		Json param = Json.createObject();
-		param.setNumber("offset", offset);
-		param.setNumber("limit", limit);
-		TestDataSource ds = this;
-		rpc.request("listProjectContent", param, 0, new Callback<Json>() {
-			public void onSuccess(Json result) {
-				int n = result.size();
-				List<Json> list = new ArrayList<>();
+				Json summary = result.get("summary");
+				Json contents = result.get("contents");
+				TestDataSource ds = TestDataSource.this;
+				ds.count = summary.getInt("count");
+				ds.offset = result.getInt("offset");
+				ds.block = new ArrayList<>();
+				int n = contents.size();
 				for (int i = 0; i < n; i++) {
-					list.add(result.get(i));
+					ds.block.add(contents.get(i));
 				}
-				ds.offset = offset;
-				ds.limit = limit;
-				ds.block = list;
+				ds.lastUpdatedAt = summary.getDate("_lastUpdatedAt");
 				ds.loaded = true;
 				notifyToApps();
 			}
@@ -77,6 +69,7 @@ public class TestDataSource extends DataSource {
 				LOGGER.error(caught, caught.getMessage());
 			}
 		});
+
 	}
 
 	@Override
@@ -87,7 +80,7 @@ public class TestDataSource extends DataSource {
 	@Override
 	public void setCriteria(Json criteria) {
 		this.criteria = criteria;
-		doRequest1(criteria);
+		doRequest(criteria);
 	}
 
 	@Override
@@ -106,7 +99,7 @@ public class TestDataSource extends DataSource {
 
 	@Override
 	public int getLimit() {
-		return limit;
+		return block.size();
 	}
 
 	@Override

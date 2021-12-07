@@ -39,7 +39,8 @@ public class ListTestPage extends UiPage {
 	protected void initialize() {
 		UiApplication app = getApplication();
 		JsonRpcClient rpc = app.getRpcClient();
-		DataSource ds = createDataSource();
+		DataSource ds = createDataSource(rpc);
+		//DataSource ds = createDataSource();
 		final double NA = UiNodeBuilder.NA;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		//全体
@@ -100,7 +101,7 @@ public class ListTestPage extends UiPage {
 		List<Json> list = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
 			Json json = Json.createObject();
-			json.setNumber("projectId", i);
+			json.setInt("projectId", i);
 			json.setString("title", "title " + i);
 			json.setString("description", "description " + i);
 			list.add(json);

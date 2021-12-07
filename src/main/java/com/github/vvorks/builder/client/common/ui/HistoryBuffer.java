@@ -65,7 +65,7 @@ public class HistoryBuffer implements Jsonizable {
 	@Override
 	public Json toJson() {
 		Json json = Json.createObject();
-		json.setNumber("position", position);
+		json.setInt("position", position);
 		Json hs = json.setNewArray("histories");
 		for (History h : histories) {
 			hs.add(h.toJson());

@@ -225,14 +225,14 @@ public class UiAtomicStyle extends UiStyle {
 	public Json toJson() {
 		Json json = super.toJson();
 		json.set("baseStyle", Json.valueOf(baseStyle));
-		json.setNumber("color", toNumber(color));
-		json.setNumber("backgroundColor", toNumber(backgroundColor));
+		json.setDouble("color", toNumber(color));
+		json.setDouble("backgroundColor", toNumber(backgroundColor));
 		json.setString("backgroundImage", backgroundImage);
 		json.set("borderLeft", Json.valueOf(borderLeft));
 		json.set("borderTop", Json.valueOf(borderTop));
 		json.set("borderRight", Json.valueOf(borderTop));
 		json.set("borderBottom", Json.valueOf(borderBottom));
-		json.setNumber("borderColor", toNumber(borderColor));
+		json.setDouble("borderColor", toNumber(borderColor));
 		json.setString("borderImage", borderImage);
 		json.set("fontSize", Json.valueOf(fontSize));
 		json.setString("fontFamily", fontFamily);

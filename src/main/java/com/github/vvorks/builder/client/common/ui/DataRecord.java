@@ -1,5 +1,8 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  * データレコードI/F
  */
@@ -11,9 +14,34 @@ public interface DataRecord {
 	public static final boolean DEFAULT_BOOLEAN = false;
 
 	/**
+	 * デフォルトint値
+	 */
+	public static final int DEFAULT_INT = 0;
+
+	/**
+	 * デフォルトlong値
+	 */
+	public static final long DEFAULT_LONG = 0L;
+
+	/**
+	 * デフォルトfloat値
+	 */
+	public static final float DEFAULT_FLOAT = 0f;
+
+	/**
 	 * デフォルトdouble値
 	 */
-	public static final double DEFAULT_NUMBER = 0.0d;
+	public static final double DEFAULT_DOUBLE = 0.0d;
+
+	/**
+	 * デフォルトdecimal値
+	 */
+	public static final BigDecimal DEFAULT_DECIMAL = BigDecimal.ZERO;
+
+	/**
+	 * デフォルトdate値
+	 */
+	public static final Date DEFAULT_DATE = new Date(0L);
 
 	/**
 	 * デフォルトString値
@@ -52,7 +80,7 @@ public interface DataRecord {
 	 * @return 値
 	 */
 	public default double getNumber(String column) {
-		return getNumber(column, DEFAULT_NUMBER);
+		return getDouble(column, DEFAULT_DOUBLE);
 	}
 
 	/**
@@ -75,13 +103,58 @@ public interface DataRecord {
 	public abstract boolean getBoolean(String column, boolean defaultValue);
 
 	/**
+	 * 指定したカラムのint値を取得する
+	 *
+	 * @param column カラム名
+	 * @param defaultValue デフォルト値
+	 * @return 値
+	 */
+	public abstract int getInt(String column, int defaultValue);
+
+	/**
+	 * 指定したカラムのlong値を取得する
+	 *
+	 * @param column カラム名
+	 * @param defaultValue デフォルト値
+	 * @return 値
+	 */
+	public abstract long getLong(String column, long defaultValue);
+
+	/**
+	 * 指定したカラムのfloat値を取得する
+	 *
+	 * @param column カラム名
+	 * @param defaultValue デフォルト値
+	 * @return 値
+	 */
+	public abstract float getFloat(String column, float defaultValue);
+
+	/**
 	 * 指定したカラムのdouble値を取得する
 	 *
 	 * @param column カラム名
 	 * @param defaultValue デフォルト値
 	 * @return 値
 	 */
-	public abstract double getNumber(String column, double defaultValue);
+	public abstract double getDouble(String column, double defaultValue);
+
+	/**
+	 * 指定したカラムのdecimal値を取得する
+	 *
+	 * @param column カラム名
+	 * @param defaultValue デフォルト値
+	 * @return 値
+	 */
+	public abstract BigDecimal getDecimal(String column, BigDecimal defaultValue);
+
+	/**
+	 * 指定したカラムのdate値を取得する
+	 *
+	 * @param column カラム名
+	 * @param defaultValue デフォルト値
+	 * @return 値
+	 */
+	public abstract Date getDate(String column, Date defaultValue);
 
 	/**
 	 * 指定したカラムのString値を取得する
@@ -108,12 +181,52 @@ public interface DataRecord {
 	public abstract void setBoolean(String column, boolean value);
 
 	/**
+	 * 指定したカラムにint値を取得する
+	 *
+	 * @param column カラム名
+	 * @param value 値
+	 */
+	public abstract void setInt(String column, int value);
+
+	/**
+	 * 指定したカラムにlong値を取得する
+	 *
+	 * @param column カラム名
+	 * @param value 値
+	 */
+	public abstract void setLong(String column, long value);
+
+	/**
+	 * 指定したカラムにfloat値を取得する
+	 *
+	 * @param column カラム名
+	 * @param value 値
+	 */
+	public abstract void setFloat(String column, float value);
+
+	/**
 	 * 指定したカラムにdouble値を取得する
 	 *
 	 * @param column カラム名
 	 * @param value 値
 	 */
-	public abstract void setNumber(String column, double value);
+	public abstract void setDouble(String column, double value);
+
+	/**
+	 * 指定したカラムにdecimal値を取得する
+	 *
+	 * @param column カラム名
+	 * @param value 値
+	 */
+	public abstract void setDecimal(String column, BigDecimal value);
+
+	/**
+	 * 指定したカラムにdate値を取得する
+	 *
+	 * @param column カラム名
+	 * @param value 値
+	 */
+	public abstract void setDate(String column, Date value);
 
 	/**
 	 * 指定したカラムにString値を取得する

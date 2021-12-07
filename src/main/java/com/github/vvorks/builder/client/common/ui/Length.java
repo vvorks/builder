@@ -317,7 +317,7 @@ public class Length implements Jsonizable {
 	@Override
 	public Json toJson() {
 		Json json = Json.createObject();
-		json.setNumber("value", value);
+		json.setDouble("value", value);
 		json.setString("unit", unit);
 		return json;
 	}

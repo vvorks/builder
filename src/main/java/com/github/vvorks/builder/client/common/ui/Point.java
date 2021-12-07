@@ -87,8 +87,8 @@ public class Point implements Jsonizable {
 	@Override
 	public Json toJson() {
 		Json json = Json.createObject();
-		json.setNumber("x", x);
-		json.setNumber("y", x);
+		json.setInt("x", x);
+		json.setInt("y", x);
 		return json;
 	}
 

@@ -141,7 +141,7 @@ public class JsonRpcClient implements WebSocketHandler {
 			json.setNull(JsonRpcs.KEY_PARAMS);
 		}
 		int id = takeNumber();
-		json.setNumber(JsonRpcs.KEY_ID, id);
+		json.setInt(JsonRpcs.KEY_ID, id);
 		String msg = json.toJsonString();
 		addWaiting(id, new RequestInfo(method, callback, timeout));
 		try {
@@ -297,7 +297,7 @@ public class JsonRpcClient implements WebSocketHandler {
 			LOGGER.error("RPC: JSONRPC ERROR");
 		}
 		String method = json.getString(JsonRpcs.KEY_METHOD, UNKNOWN_METHOD);
-		int id = (int) json.getNumber(JsonRpcs.KEY_ID, NOTIFY_ID);
+		int id = json.getInt(JsonRpcs.KEY_ID, NOTIFY_ID);
 		if (!method.equals(UNKNOWN_METHOD)) {
 			onRequest(json, id, method);
 		} else if (id != NOTIFY_ID) {
@@ -374,7 +374,7 @@ public class JsonRpcClient implements WebSocketHandler {
 		public void onSuccess(Json result) {
 			Json json = Json.createObject();
 			json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
-			json.setNumber(JsonRpcs.KEY_ID, id);
+			json.setInt(JsonRpcs.KEY_ID, id);
 			json.set(JsonRpcs.KEY_RESULT, result);
 			LOGGER.info("RPC: SEND RSP %s with %s", getShortName(method, id), result.toJsonString());
 			sendResponse(json);
@@ -383,9 +383,9 @@ public class JsonRpcClient implements WebSocketHandler {
 		public void onFailure(Throwable err) {
 			Json json = Json.createObject();
 			json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
-			json.setNumber(JsonRpcs.KEY_ID, id);
+			json.setInt(JsonRpcs.KEY_ID, id);
 			Json ej = json.setNewObject(JsonRpcs.KEY_ERROR);
-			ej.setNumber(JsonRpcs.KEY_CODE, JsonRpcs.getErrorCode(err));
+			ej.setInt(JsonRpcs.KEY_CODE, JsonRpcs.getErrorCode(err));
 			ej.setString(JsonRpcs.KEY_MESSAGE, err.getMessage());
 			LOGGER.info("RPC: SEND RSP %s failure %s", getShortName(method, id), err.getMessage());
 			sendResponse(json);
@@ -405,9 +405,9 @@ public class JsonRpcClient implements WebSocketHandler {
 	private void responseError(int errorCode, String method, int id) {
 		Json json = Json.createObject();
 		json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
-		json.setNumber(JsonRpcs.KEY_ID, id);
+		json.setInt(JsonRpcs.KEY_ID, id);
 		Json ej = json.setNewObject(JsonRpcs.KEY_ERROR);
-		ej.setNumber(JsonRpcs.KEY_CODE, errorCode);
+		ej.setInt(JsonRpcs.KEY_CODE, errorCode);
 		ej.setString(JsonRpcs.KEY_MESSAGE, method);
 		String msg = json.toString();
 		try {

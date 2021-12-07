@@ -1,5 +1,8 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
@@ -103,9 +106,39 @@ public class UiList extends UiGroup {
 		}
 
 		@Override
-		public double getNumber(String column, double defaultValue) {
+		public int getInt(String column, int defaultValue) {
 			Asserts.assume(exists());
-			return json.getNumber(column, defaultValue);
+			return json.getInt(column, defaultValue);
+		}
+
+		@Override
+		public long getLong(String column, long defaultValue) {
+			Asserts.assume(exists());
+			return json.getLong(column, defaultValue);
+		}
+
+		@Override
+		public float getFloat(String column, float defaultValue) {
+			Asserts.assume(exists());
+			return json.getFloat(column, defaultValue);
+		}
+
+		@Override
+		public double getDouble(String column, double defaultValue) {
+			Asserts.assume(exists());
+			return json.getDouble(column, defaultValue);
+		}
+
+		@Override
+		public BigDecimal getDecimal(String column, BigDecimal defaultValue) {
+			Asserts.assume(exists());
+			return json.getDecimal(column, defaultValue);
+		}
+
+		@Override
+		public Date getDate(String column, Date defaultValue) {
+			Asserts.assume(exists());
+			return json.getDate(column, defaultValue);
 		}
 
 		@Override
@@ -129,9 +162,44 @@ public class UiList extends UiGroup {
 		}
 
 		@Override
-		public void setNumber(String column, double value) {
+		public void setInt(String column, int value) {
 			Asserts.assume(exists());
-			json.setNumber(column, value);
+			json.setInt(column, value);
+			onFieldUpdated();
+		}
+
+		@Override
+		public void setLong(String column, long value) {
+			Asserts.assume(exists());
+			json.setLong(column, value);
+			onFieldUpdated();
+		}
+
+		@Override
+		public void setFloat(String column, float value) {
+			Asserts.assume(exists());
+			json.setFloat(column, value);
+			onFieldUpdated();
+		}
+
+		@Override
+		public void setDouble(String column, double value) {
+			Asserts.assume(exists());
+			json.setDouble(column, value);
+			onFieldUpdated();
+		}
+
+		@Override
+		public void setDecimal(String column, BigDecimal value) {
+			Asserts.assume(exists());
+			json.setDecimal(column, value);
+			onFieldUpdated();
+		}
+
+		@Override
+		public void setDate(String column, Date value) {
+			Asserts.assume(exists());
+			json.setDate(column, value);
 			onFieldUpdated();
 		}
 

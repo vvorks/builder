@@ -26,7 +26,7 @@ public abstract class History implements Jsonizable {
 	@Override
 	public Json toJson() {
 		Json json = Json.createObject();
-		json.setNumber("time", time);
+		json.setInt("time", time);
 		return json;
 	}
 

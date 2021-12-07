@@ -1,8 +1,10 @@
 package com.github.vvorks.builder.client.gwt.json;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import java.util.Set;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.util.SimpleEntry;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNull;
@@ -20,6 +23,8 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
 public class GwtJson extends Json {
+
+	private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat(DATE_PATTERN);
 
 	private final JSONValue nativeValue;
 
@@ -88,7 +93,58 @@ public class GwtJson extends Json {
 		}
 	}
 
-	private static double asNumber(JSONValue value, double defaultValue) {
+	private static int asInt(JSONValue value, int defaultValue) {
+		switch (getTypeOf(value)) {
+		case BOOLEAN:
+			return value.isBoolean().booleanValue() ? 1 : 0;
+		case NUMBER:
+			return (int) value.isNumber().doubleValue();
+		case STRING:
+			try {
+				return Integer.decode(value.isString().stringValue());
+			} catch (NumberFormatException err) {
+				return defaultValue;
+			}
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static long asLong(JSONValue value, long defaultValue) {
+		switch (getTypeOf(value)) {
+		case BOOLEAN:
+			return value.isBoolean().booleanValue() ? 1L : 0L;
+		case NUMBER:
+			return (long) value.isNumber().doubleValue();
+		case STRING:
+			try {
+				return Long.decode(value.isString().stringValue());
+			} catch (NumberFormatException err) {
+				return defaultValue;
+			}
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static float asFloat(JSONValue value, float defaultValue) {
+		switch (getTypeOf(value)) {
+		case BOOLEAN:
+			return value.isBoolean().booleanValue() ? 1.0f : 0.0f;
+		case NUMBER:
+			return (float) value.isNumber().doubleValue();
+		case STRING:
+			try {
+				return Float.valueOf(value.isString().stringValue());
+			} catch (NumberFormatException err) {
+				return defaultValue;
+			}
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static double asDouble(JSONValue value, double defaultValue) {
 		switch (getTypeOf(value)) {
 		case BOOLEAN:
 			return value.isBoolean().booleanValue() ? 1.0 : 0.0;
@@ -100,6 +156,39 @@ public class GwtJson extends Json {
 			} catch (NumberFormatException err) {
 				return defaultValue;
 			}
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static BigDecimal asDecimal(JSONValue value, BigDecimal defaultValue) {
+		switch (getTypeOf(value)) {
+		case BOOLEAN:
+			return BigDecimal.valueOf(value.isBoolean().booleanValue() ? 1.0 : 0.0);
+		case NUMBER:
+			return BigDecimal.valueOf(value.isNumber().doubleValue());
+		case STRING:
+			try {
+				return new BigDecimal(value.isString().stringValue());
+			} catch (NumberFormatException err) {
+				return defaultValue;
+			}
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static Date asDate(JSONValue value, Date defaultValue) {
+		switch (getTypeOf(value)) {
+		case NUMBER:
+			return new Date((long) value.isNumber().doubleValue());
+		case STRING:
+			try {
+				return DATE_FORMAT.parse(value.isString().stringValue());
+			} catch (NumberFormatException err) {
+				return defaultValue;
+			}
+		case BOOLEAN:
 		default:
 			return defaultValue;
 		}
@@ -148,6 +237,38 @@ public class GwtJson extends Json {
 		}
 	}
 
+	private static JSONValue toNativeValue(boolean value) {
+		return JSONBoolean.getInstance(value);
+	}
+
+	private static JSONValue toNativeValue(int value) {
+		return new JSONNumber(value);
+	}
+
+	private static JSONValue toNativeValue(long value) {
+		return new JSONString(String.valueOf(value));
+	}
+
+	private static JSONValue toNativeValue(float value) {
+		return new JSONNumber(value);
+	}
+
+	private static JSONValue toNativeValue(double value) {
+		return new JSONNumber(value);
+	}
+
+	private static JSONValue toNativeValue(BigDecimal value) {
+		return new JSONString(value.toString());
+	}
+
+	private static JSONValue toNativeValue(Date value) {
+		return new JSONString(DATE_FORMAT.format(value));
+	}
+
+	private static JSONValue toNativeValue(String value) {
+		return new JSONString(value);
+	}
+
 	private JSONValue getNativeValue() {
 		return nativeValue;
 	}
@@ -168,8 +289,33 @@ public class GwtJson extends Json {
 	}
 
 	@Override
-	public double getNumberValue(double defaultValue) {
-		return asNumber(nativeValue, defaultValue);
+	public int getIntValue(int defaultValue) {
+		return asInt(nativeValue, defaultValue);
+	}
+
+	@Override
+	public long getLongValue(long defaultValue) {
+		return asLong(nativeValue, defaultValue);
+	}
+
+	@Override
+	public float getFloatValue(float defaultValue) {
+		return asFloat(nativeValue, defaultValue);
+	}
+
+	@Override
+	public double getDoubleValue(double defaultValue) {
+		return asDouble(nativeValue, defaultValue);
+	}
+
+	@Override
+	public BigDecimal getDecimalValue(BigDecimal defaultValue) {
+		return asDecimal(nativeValue, defaultValue);
+	}
+
+	@Override
+	public Date getDateValue(Date defaultValue) {
+		return asDate(nativeValue, defaultValue);
 	}
 
 	@Override
@@ -193,8 +339,33 @@ public class GwtJson extends Json {
 	}
 
 	@Override
-	public double getNumber(String key, double defaultValue) {
-		return asNumber(asObject(nativeValue).get(key), defaultValue);
+	public int getInt(String key, int defaultValue) {
+		return asInt(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public long getLong(String key, long defaultValue) {
+		return asLong(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public float getFloat(String key, float defaultValue) {
+		return asFloat(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public double getDouble(String key, double defaultValue) {
+		return asDouble(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public BigDecimal getDecimal(String key, BigDecimal defaultValue) {
+		return asDecimal(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public Date getDate(String key, Date defaultValue) {
+		return asDate(asObject(nativeValue).get(key), defaultValue);
 	}
 
 	@Override
@@ -223,8 +394,33 @@ public class GwtJson extends Json {
 	}
 
 	@Override
-	public double getNumber(int index, double defaultValue) {
-		return asNumber(asArray(nativeValue).get(index), defaultValue);
+	public int getInt(int index, int defaultValue) {
+		return asInt(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public long getLong(int index, long defaultValue) {
+		return asLong(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public float getFloat(int index, float defaultValue) {
+		return asFloat(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public double getDouble(int index, double defaultValue) {
+		return asDouble(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public BigDecimal getDecimal(int index, BigDecimal defaultValue) {
+		return asDecimal(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public Date getDate(int index, Date defaultValue) {
+		return asDate(asArray(nativeValue).get(index), defaultValue);
 	}
 
 	@Override
@@ -299,18 +495,54 @@ public class GwtJson extends Json {
 
 	@Override
 	public void setBoolean(String key, boolean value) {
-		asObject(nativeValue).put(key, JSONBoolean.getInstance(value));
+		asObject(nativeValue).put(key, toNativeValue(value));
 	}
 
 	@Override
-	public void setNumber(String key, double value) {
-		asObject(nativeValue).put(key, new JSONNumber(value));
+	public void setInt(String key, int value) {
+		asObject(nativeValue).put(key, toNativeValue(value));
+	}
+
+	@Override
+	public void setLong(String key, long value) {
+		asObject(nativeValue).put(key, toNativeValue(value));
+	}
+
+	@Override
+	public void setFloat(String key, float value) {
+		asObject(nativeValue).put(key, toNativeValue(value));
+	}
+
+	@Override
+	public void setDouble(String key, double value) {
+		asObject(nativeValue).put(key, toNativeValue(value));
+	}
+
+	@Override
+	public void setDecimal(String key, BigDecimal value) {
+		if (value == null) {
+			setNull(key);
+		} else {
+			asObject(nativeValue).put(key, toNativeValue(value));
+		}
+	}
+
+	@Override
+	public void setDate(String key, Date value) {
+		if (value == null) {
+			setNull(key);
+		} else {
+			asObject(nativeValue).put(key, toNativeValue(value));
+		}
 	}
 
 	@Override
 	public void setString(String key, String value) {
-		JSONValue nv = (value == null) ? JSONNull.getInstance() : new JSONString(value);
-		asObject(nativeValue).put(key, nv);
+		if (value == null) {
+			setNull(key);
+		} else {
+			asObject(nativeValue).put(key, toNativeValue(value));
+		}
 	}
 
 	@Override
@@ -339,18 +571,54 @@ public class GwtJson extends Json {
 
 	@Override
 	public void setBoolean(int index, boolean value) {
-		asArray(nativeValue).set(index, JSONBoolean.getInstance(value));
+		asArray(nativeValue).set(index, toNativeValue(value));
 	}
 
 	@Override
-	public void setNumber(int index, double value) {
-		asArray(nativeValue).set(index, new JSONNumber(value));
+	public void setInt(int index, int value) {
+		asArray(nativeValue).set(index, toNativeValue(value));
+	}
+
+	@Override
+	public void setLong(int index, long value) {
+		asArray(nativeValue).set(index, toNativeValue(value));
+	}
+
+	@Override
+	public void setFloat(int index, float value) {
+		asArray(nativeValue).set(index, toNativeValue(value));
+	}
+
+	@Override
+	public void setDouble(int index, double value) {
+		asArray(nativeValue).set(index, toNativeValue(value));
+	}
+
+	@Override
+	public void setDecimal(int index, BigDecimal value) {
+		if (value == null) {
+			setNull(index);
+		} else {
+			asArray(nativeValue).set(index, toNativeValue(value));
+		}
+	}
+
+	@Override
+	public void setDate(int index, Date value) {
+		if (value == null) {
+			setNull(index);
+		} else {
+			asArray(nativeValue).set(index, toNativeValue(value));
+		}
 	}
 
 	@Override
 	public void setString(int index, String value) {
-		JSONValue nv = (value == null) ? JSONNull.getInstance() : new JSONString(value);
-		asArray(nativeValue).set(index, nv);
+		if (value == null) {
+			setNull(index);
+		} else {
+			asArray(nativeValue).set(index, toNativeValue(value));
+		}
 	}
 
 	@Override

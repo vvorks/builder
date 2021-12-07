@@ -1,9 +1,13 @@
 package com.github.vvorks.builder.server.common.json;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -11,9 +15,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.logging.log4j.util.Strings;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
@@ -24,7 +37,92 @@ import com.github.vvorks.builder.common.util.SimpleEntry;
 
 public class JacksonJson extends Json {
 
+	private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT =
+			ThreadLocal.withInitial(() -> new SimpleDateFormat(DATE_PATTERN));
+
+	public static class LongSerializer extends JsonSerializer<Long> {
+		public void serialize(Long value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+			if (value == null) {
+				gen.writeNull();
+			}
+			else {
+				gen.writeString(Long.toString(value));
+			}
+		}
+	}
+
+	public static class LongDeserializer extends JsonDeserializer<Long> {
+		public Long deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+			String str = p.getText();
+			if (Strings.isEmpty(str)) {
+				return null;
+			} else {
+				return Long.decode(str);
+			}
+		}
+	}
+
+	public static class DecimalSerializer extends JsonSerializer<BigDecimal> {
+		public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+			if (value == null) {
+				gen.writeNull();
+			}
+			else {
+				gen.writeString(value.toString());
+			}
+		}
+	}
+
+	public static class DecimalDeserializer extends JsonDeserializer<BigDecimal> {
+		public BigDecimal deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+			String str = p.getText();
+			if (Strings.isEmpty(str)) {
+				return null;
+			} else {
+				return new BigDecimal(str);
+			}
+		}
+	}
+
+	public static class DateSerializer extends JsonSerializer<Date> {
+		public void serialize(Date value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+			if (value == null) {
+				gen.writeNull();
+			}
+			else {
+				gen.writeString(DATE_FORMAT.get().format(value));
+			}
+		}
+	}
+
+	public static class DateDeserializer extends JsonDeserializer<Date> {
+		public Date deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+			String str = p.getText();
+			if (Strings.isEmpty(str)) {
+				return null;
+			} else {
+				try {
+					return new Date(DATE_FORMAT.get().parse(str).getTime());
+				} catch (ParseException err) {
+					throw new RuntimeException(err);
+				}
+			}
+		}
+	}
+
 	private static final ObjectMapper MAPPER = new ObjectMapper();
+	static {
+		SimpleModule module = new SimpleModule();
+        module.addSerializer(Long.class, new LongSerializer());
+        module.addSerializer(Long.TYPE, new LongSerializer());
+        module.addSerializer(BigDecimal.class, new DecimalSerializer());
+		module.addSerializer(Date.class, new DateSerializer());
+		module.addDeserializer(Long.class, new LongDeserializer());
+		module.addDeserializer(Long.TYPE, new LongDeserializer());
+		module.addDeserializer(BigDecimal.class, new DecimalDeserializer());
+		module.addDeserializer(Date.class, new DateDeserializer());
+		MAPPER.registerModule(module);
+	}
 
 	private final JsonNode nativeValue;
 
@@ -40,11 +138,11 @@ public class JacksonJson extends Json {
 		} else if (obj instanceof String) {
 			nativeValue = parse((String) obj);
 		} else if (obj instanceof Number) {
-			nativeValue = DoubleNode.valueOf(((Number)obj).doubleValue());
+			nativeValue = toNativeValue(((Number)obj).doubleValue());
 		} else if (obj instanceof Boolean) {
-			nativeValue = ((Boolean)obj).booleanValue() ? BooleanNode.TRUE : BooleanNode.FALSE;
+			nativeValue = toNativeValue(((Boolean)obj).booleanValue());
 		} else {
-			nativeValue = fromObject(obj);
+			nativeValue = toNativeValue(obj);
 		}
 	}
 
@@ -97,10 +195,53 @@ public class JacksonJson extends Json {
 		}
 	}
 
-	private static double asNumber(JsonNode value, double defaultValue) {
+	private static int asInt(JsonNode value, int defaultValue) {
 		switch (getTypeOf(value)) {
 		case BOOLEAN:
 			return value.asBoolean() ? 1 : 0;
+		case NUMBER:
+			return (int) value.asDouble();
+		case STRING:
+			return Integer.decode(value.asText());
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static long asLong(JsonNode value, long defaultValue) {
+		switch (getTypeOf(value)) {
+		case BOOLEAN:
+			return value.asBoolean() ? 1L : 0L;
+		case NUMBER:
+			return (long) value.asDouble();
+		case STRING:
+			return Long.decode(value.asText());
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static float asFloat(JsonNode value, float defaultValue) {
+		switch (getTypeOf(value)) {
+		case BOOLEAN:
+			return value.asBoolean() ? 1 : 0;
+		case NUMBER:
+			return (float) value.asDouble();
+		case STRING:
+			try {
+				return Float.valueOf(value.asText());
+			} catch (NumberFormatException err) {
+				return defaultValue;
+			}
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static double asDouble(JsonNode value, double defaultValue) {
+		switch (getTypeOf(value)) {
+		case BOOLEAN:
+			return value.asBoolean() ? 1.0 : 0.0;
 		case NUMBER:
 			return value.asDouble();
 		case STRING:
@@ -109,6 +250,39 @@ public class JacksonJson extends Json {
 			} catch (NumberFormatException err) {
 				return defaultValue;
 			}
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static BigDecimal asDecimal(JsonNode value, BigDecimal defaultValue) {
+		switch (getTypeOf(value)) {
+		case BOOLEAN:
+			return BigDecimal.valueOf(value.asBoolean() ? 1.0 : 0.0);
+		case NUMBER:
+			return BigDecimal.valueOf(value.asDouble());
+		case STRING:
+			try {
+				return new BigDecimal(value.asText());
+			} catch (NumberFormatException err) {
+				return defaultValue;
+			}
+		default:
+			return defaultValue;
+		}
+	}
+
+	private static Date asDate(JsonNode value, Date defaultValue) {
+		switch (getTypeOf(value)) {
+		case NUMBER:
+			return new Date((long)value.asDouble());
+		case STRING:
+			try {
+				return DATE_FORMAT.get().parse(value.asText());
+			} catch (ParseException err) {
+				return defaultValue;
+			}
+		case BOOLEAN:
 		default:
 			return defaultValue;
 		}
@@ -145,7 +319,39 @@ public class JacksonJson extends Json {
 		return new JacksonJson(value);
 	}
 
-	private JsonNode toNativeValue(Json value) {
+	private static JsonNode toNativeValue(boolean value) {
+		return value ? BooleanNode.TRUE : BooleanNode.FALSE;
+	}
+
+	private static JsonNode toNativeValue(int value) {
+		return new DoubleNode(value);
+	}
+
+	private static JsonNode toNativeValue(long value) {
+		return new TextNode(String.valueOf(value));
+	}
+
+	private static JsonNode toNativeValue(float value) {
+		return new DoubleNode(value);
+	}
+
+	private static JsonNode toNativeValue(double value) {
+		return new DoubleNode(value);
+	}
+
+	private static JsonNode toNativeValue(BigDecimal value) {
+		return new TextNode(value.toString());
+	}
+
+	private static JsonNode toNativeValue(Date value) {
+		return new TextNode(DATE_FORMAT.get().format(value));
+	}
+
+	private static JsonNode toNativeValue(String value) {
+		return new TextNode(value);
+	}
+
+	private static JsonNode toNativeValue(Json value) {
 		if (value == null) {
 			return null;
 		} else if (value instanceof JacksonJson) {
@@ -155,12 +361,12 @@ public class JacksonJson extends Json {
 		}
 	}
 
-	private JsonNode getNativeValue() {
-		return nativeValue;
+	private static JsonNode toNativeValue(Object obj) {
+		return MAPPER.convertValue(obj, JsonNode.class);
 	}
 
-	private static JsonNode fromObject(Object obj) {
-		return MAPPER.convertValue(obj, JsonNode.class);
+	private JsonNode getNativeValue() {
+		return nativeValue;
 	}
 
 	@Override
@@ -183,8 +389,33 @@ public class JacksonJson extends Json {
 	}
 
 	@Override
-	public double getNumberValue(double defaultValue) {
-		return asNumber(nativeValue, defaultValue);
+	public int getIntValue(int defaultValue) {
+		return asInt(nativeValue, defaultValue);
+	}
+
+	@Override
+	public long getLongValue(long defaultValue) {
+		return asLong(nativeValue, defaultValue);
+	}
+
+	@Override
+	public float getFloatValue(float defaultValue) {
+		return asFloat(nativeValue, defaultValue);
+	}
+
+	@Override
+	public double getDoubleValue(double defaultValue) {
+		return asDouble(nativeValue, defaultValue);
+	}
+
+	@Override
+	public BigDecimal getDecimalValue(BigDecimal defaultValue) {
+		return asDecimal(nativeValue, defaultValue);
+	}
+
+	@Override
+	public Date getDateValue(Date defaultValue) {
+		return asDate(nativeValue, defaultValue);
 	}
 
 	@Override
@@ -208,8 +439,33 @@ public class JacksonJson extends Json {
 	}
 
 	@Override
-	public double getNumber(String key, double defaultValue) {
-		return asNumber(asObject(nativeValue).get(key), defaultValue);
+	public int getInt(String key, int defaultValue) {
+		return asInt(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public long getLong(String key, long defaultValue) {
+		return asLong(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public float getFloat(String key, float defaultValue) {
+		return asFloat(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public double getDouble(String key, double defaultValue) {
+		return asDouble(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public BigDecimal getDecimal(String key, BigDecimal defaultValue) {
+		return asDecimal(asObject(nativeValue).get(key), defaultValue);
+	}
+
+	@Override
+	public Date getDate(String key, Date defaultValue) {
+		return asDate(asObject(nativeValue).get(key), defaultValue);
 	}
 
 	@Override
@@ -238,8 +494,33 @@ public class JacksonJson extends Json {
 	}
 
 	@Override
-	public double getNumber(int index, double defaultValue) {
-		return asNumber(asArray(nativeValue).get(index), defaultValue);
+	public int getInt(int index, int defaultValue) {
+		return asInt(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public long getLong(int index, long defaultValue) {
+		return asLong(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public float getFloat(int index, float defaultValue) {
+		return asFloat(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public double getDouble(int index, double defaultValue) {
+		return asDouble(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public BigDecimal getDecimal(int index, BigDecimal defaultValue) {
+		return asDecimal(asArray(nativeValue).get(index), defaultValue);
+	}
+
+	@Override
+	public Date getDate(int index, Date defaultValue) {
+		return asDate(asArray(nativeValue).get(index), defaultValue);
 	}
 
 	@Override
@@ -322,22 +603,64 @@ public class JacksonJson extends Json {
 
 	@Override
 	public void setBoolean(String key, boolean value) {
-		asObject(nativeValue).put(key, value);
+		asObject(nativeValue).set(key, toNativeValue(value));
+	}
+
+
+	@Override
+	public void setInt(String key, int value) {
+		asObject(nativeValue).set(key, toNativeValue(value));
 	}
 
 	@Override
-	public void setNumber(String key, double value) {
-		asObject(nativeValue).put(key, value);
+	public void setLong(String key, long value) {
+		asObject(nativeValue).set(key, toNativeValue(value));
+	}
+
+	@Override
+	public void setFloat(String key, float value) {
+		asObject(nativeValue).set(key, toNativeValue(value));
+	}
+
+	@Override
+	public void setDouble(String key, double value) {
+		asObject(nativeValue).set(key, toNativeValue(value));
+	}
+
+	@Override
+	public void setDecimal(String key, BigDecimal value) {
+		if (value == null) {
+			setNull(key);
+		} else {
+			asObject(nativeValue).set(key, toNativeValue(value));
+		}
+	}
+
+	@Override
+	public void setDate(String key, Date value) {
+		if (value == null) {
+			setNull(key);
+		} else {
+			asObject(nativeValue).set(key, toNativeValue(value));
+		}
 	}
 
 	@Override
 	public void setString(String key, String value) {
-		asObject(nativeValue).put(key, value);
+		if (value == null) {
+			setNull(key);
+		} else {
+			asObject(nativeValue).set(key, toNativeValue(value));
+		}
 	}
 
 	@Override
 	public void set(String key, Json value) {
-		asObject(nativeValue).set(key, toNativeValue(value));
+		if (value == null) {
+			setNull(key);
+		} else {
+			asObject(nativeValue).set(key, toNativeValue(value));
+		}
 	}
 
 	@Override
@@ -361,22 +684,63 @@ public class JacksonJson extends Json {
 
 	@Override
 	public void setBoolean(int index, boolean value) {
-		asArray(nativeValue).set(index, value ? BooleanNode.TRUE : BooleanNode.FALSE);
+		asArray(nativeValue).set(index, toNativeValue(value));
 	}
 
 	@Override
-	public void setNumber(int index, double value) {
-		asArray(nativeValue).set(index, DoubleNode.valueOf(value));
+	public void setInt(int index, int value) {
+		asArray(nativeValue).set(index, toNativeValue(value));
+	}
+
+	@Override
+	public void setLong(int index, long value) {
+		asArray(nativeValue).set(index, toNativeValue(value));
+	}
+
+	@Override
+	public void setFloat(int index, float value) {
+		asArray(nativeValue).set(index, toNativeValue(value));
+	}
+
+	@Override
+	public void setDouble(int index, double value) {
+		asArray(nativeValue).set(index, toNativeValue(value));
+	}
+
+	@Override
+	public void setDecimal(int index, BigDecimal value) {
+		if (value == null) {
+			setNull(index);
+		} else {
+			asArray(nativeValue).set(index, toNativeValue(value));
+		}
+	}
+
+	@Override
+	public void setDate(int index, Date value) {
+		if (value == null) {
+			setNull(index);
+		} else {
+			asArray(nativeValue).set(index, toNativeValue(value));
+		}
 	}
 
 	@Override
 	public void setString(int index, String value) {
-		asArray(nativeValue).set(index, TextNode.valueOf(value));
+		if (value == null) {
+			setNull(index);
+		} else {
+			asArray(nativeValue).set(index, toNativeValue(value));
+		}
 	}
 
 	@Override
 	public void set(int index, Json value) {
-		asArray(nativeValue).set(index, toNativeValue(value));
+		if (value == null) {
+			setNull(index);
+		} else {
+			asArray(nativeValue).set(index, toNativeValue(value));
+		}
 	}
 
 	@Override

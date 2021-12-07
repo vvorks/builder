@@ -132,7 +132,7 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 		//JsonRpcリクエストをディスパッチ
 		Json res = Json.createObject();
 		res.setString(KEY_JSONRPC, req.getString(KEY_JSONRPC));
-		res.setString(KEY_ID, req.getString(KEY_ID));
+		res.setInt(KEY_ID, req.getInt(KEY_ID));
 		URI uri = session.getUri();
 		String uriStr = uri != null ? uri.toString() : "/";
 		String path = uriStr.substring(uriStr.lastIndexOf('/'));
@@ -182,7 +182,7 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 			Json req = Json.createJson(jsonString);
 			String version = req.getString(KEY_JSONRPC, null);
 			Asserts.require(ACCEPTABLE_JSONRPC_VERSIONS.contains(version));
-			double id = req.getNumber(KEY_ID, Double.NaN);
+			double id = req.getDouble(KEY_ID, Double.NaN);
 			Asserts.require(!Double.isNaN(id));
 			String methodName = req.getString(KEY_METHOD, null);
 			Asserts.requireNotNull(methodName);
@@ -207,13 +207,13 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 
 	private void setError(Json res, int errorCode, String errorMessage) {
 		Json error = res.setNewObject(JsonRpcs.KEY_ERROR);
-		error.setNumber(JsonRpcs.KEY_CODE, errorCode);
+		error.setInt(JsonRpcs.KEY_CODE, errorCode);
 		error.setString(JsonRpcs.KEY_MESSAGE, errorMessage);
 	}
 
 	private void setError(Json res, int errorCode, Throwable err) {
 		Json error = res.setNewObject(JsonRpcs.KEY_ERROR);
-		error.setNumber(KEY_CODE, errorCode);
+		error.setInt(KEY_CODE, errorCode);
 		String msg = err.getMessage();
 		String errorMessage = (msg == null || msg.isEmpty()) ? err.getClass().getName() : msg;
 		error.setString(KEY_MESSAGE, errorMessage);

@@ -90,11 +90,11 @@ public class Metrics implements Jsonizable {
 	@Override
 	public Json toJson() {
 		Json json = Json.createObject();
-		json.setNumber("screenWidth", screenWidth);
-		json.setNumber("screenHeight", screenHeight);
-		json.setNumber("emSize", emSize);
-		json.setNumber("exSize", exSize);
-		json.setNumber("inSize", inSize);
+		json.setInt("screenWidth", screenWidth);
+		json.setInt("screenHeight", screenHeight);
+		json.setDouble("emSize", emSize);
+		json.setDouble("exSize", exSize);
+		json.setDouble("inSize", inSize);
 		return json;
 	}
 
