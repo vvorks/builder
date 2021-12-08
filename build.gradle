@@ -27,6 +27,9 @@ sourceSets {
 			srcDir compileJjtree.outputDirectory
 			srcDir compileJavacc.outputDirectory
 		}
+		resources {
+			srcDir 'src/main/java'
+		}
 	}
 }
 
