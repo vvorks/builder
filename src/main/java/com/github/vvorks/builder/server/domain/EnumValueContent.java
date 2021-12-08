@@ -70,6 +70,18 @@ public class EnumValueContent {
 	}
 
 	/**
+	 * キー文字列を取得する
+	 *
+	 * @return キー文字列
+	 */
+	public String get_key() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(valueId).append('-');
+		sb.append(ownerEnumId);
+		return sb.toString();
+	}
+
+	/**
 	 * 列挙名を取得する
 	 *
 	 * @return 列挙名

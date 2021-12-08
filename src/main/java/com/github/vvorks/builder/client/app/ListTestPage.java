@@ -101,7 +101,7 @@ public class ListTestPage extends UiPage {
 		List<Json> list = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
 			Json json = Json.createObject();
-			json.setInt("projectId", i);
+			json.setInt("_key", i);
 			json.setString("title", "title " + i);
 			json.setString("description", "description " + i);
 			list.add(json);

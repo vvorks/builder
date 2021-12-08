@@ -130,6 +130,17 @@ public class FieldContent {
 	}
 
 	/**
+	 * キー文字列を取得する
+	 *
+	 * @return キー文字列
+	 */
+	public String get_key() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(fieldId);
+		return sb.toString();
+	}
+
+	/**
 	 * フィールドIDを取得する
 	 *
 	 * @return フィールドID

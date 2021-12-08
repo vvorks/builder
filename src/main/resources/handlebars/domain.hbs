@@ -70,6 +70,19 @@ public class {{className}}Content {
 		{{/each}}
 	}
 
+	/**
+	 * キー文字列を取得する
+	 *
+	 * @return キー文字列
+	 */
+	public String get_key() {
+		StringBuilder sb = new StringBuilder();
+		{{#each keys}}
+		sb.append({{fieldName}}){{#separator}}.append('-'){{/separator}};
+		{{/each}}
+		return sb.toString();
+	}
+
 	{{#each properties}}
 
 	/**

@@ -48,7 +48,7 @@ public class TestDataSource extends DataSource {
 		param.setInt("limit", DEFAULT_LIMIT);
 		param.setInt("lastCount", -1);
 		param.setDate("lastUpdatedAt", lastUpdatedAt);
-		rpc.request("listProjectInfo", param, 0, new Callback<Json>() {
+		rpc.request("listProject", param, 0, new Callback<Json>() {
 			public void onSuccess(Json result) {
 				LOGGER.debug("result %s", result);
 				Json summary = result.get("summary");

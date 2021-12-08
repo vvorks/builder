@@ -69,6 +69,17 @@ public class ClassContent {
 	}
 
 	/**
+	 * キー文字列を取得する
+	 *
+	 * @return キー文字列
+	 */
+	public String get_key() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(classId);
+		return sb.toString();
+	}
+
+	/**
 	 * クラスIDを取得する
 	 *
 	 * @return クラスID

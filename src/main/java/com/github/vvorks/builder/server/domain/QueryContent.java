@@ -85,6 +85,17 @@ public class QueryContent {
 	}
 
 	/**
+	 * キー文字列を取得する
+	 *
+	 * @return キー文字列
+	 */
+	public String get_key() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(queryId);
+		return sb.toString();
+	}
+
+	/**
 	 * クエリーIDを取得する
 	 *
 	 * @return クエリーID

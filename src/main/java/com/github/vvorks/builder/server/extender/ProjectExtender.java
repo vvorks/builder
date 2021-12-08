@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.server.extender;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +49,17 @@ public class ProjectExtender {
 	}
 
 	public List<ClassContent> getClasses(ProjectContent prj) {
-		return projectMapper.listClassesContent(prj, 0, 10000);
+		return projectMapper.listClassesContent(prj, 0, 0);
+	}
+
+	public List<ClassContent> getClassesByName(ProjectContent prj) {
+		List<ClassContent> list = projectMapper.listClassesContent(prj, 0, 0);
+		Collections.sort(list, (a, b) -> a.getClassName().compareTo(b.getClassName()));
+		return list;
 	}
 
 	public List<EnumContent> getEnums(ProjectContent prj) {
-		return projectMapper.listEnumsContent(prj, 0, 10000);
+		return projectMapper.listEnumsContent(prj, 0, 0);
 	}
 
 	public boolean isBuilderProject(ProjectContent prj) {

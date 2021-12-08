@@ -76,6 +76,17 @@ public class EnumContent {
 	}
 
 	/**
+	 * キー文字列を取得する
+	 *
+	 * @return キー文字列
+	 */
+	public String get_key() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(enumId);
+		return sb.toString();
+	}
+
+	/**
 	 * 列挙IDを取得する
 	 *
 	 * @return 列挙ID

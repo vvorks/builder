@@ -12,13 +12,16 @@
 package {{global.project.projectName}}.server.controller;
 
 import java.util.List;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcController;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcMethod;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcParam;
-import {{global.project.projectName}}.server.domain.*;
-{{#each classes}}
+{{#each classesByName}}
+import {{global.project.projectName}}.server.domain.{{className}}Content;
+import {{global.project.projectName}}.server.domain.{{className}}Info;
+import {{global.project.projectName}}.server.domain.{{className}}Summary;
+{{/each}}
+{{#each classesByName}}
 import {{global.project.projectName}}.server.mapper.{{className}}Mapper;
 {{/each}}
 
@@ -43,7 +46,7 @@ public class {{upperLastName}}RpcController {
 	 * @param content 挿入する{{titleOrName}}
 	 * @return 処理成功の場合、真
 	 */
-	@JsonRpcMethod("insert{{className}}")
+	@JsonRpcMethod
 	public boolean insert{{className}}({{className}}Content content) {
 		return {{lowerName}}Mapper.insert(content);
 	}
@@ -54,7 +57,7 @@ public class {{upperLastName}}RpcController {
 	 * @param content 更新する{{titleOrName}}
 	 * @return 処理成功の場合、真
 	 */
-	@JsonRpcMethod("update{{className}}")
+	@JsonRpcMethod
 	public boolean update{{className}}({{className}}Content content) {
 		return {{lowerName}}Mapper.update(content);
 	}
@@ -65,7 +68,7 @@ public class {{upperLastName}}RpcController {
 	 * @param content 削除する{{titleOrName}}
 	 * @return 処理成功の場合、真
 	 */
-	@JsonRpcMethod("delete{{className}}")
+	@JsonRpcMethod
 	public boolean delete{{className}}({{className}}Content content) {
 		return {{lowerName}}Mapper.delete(content);
 	}
@@ -78,7 +81,7 @@ public class {{upperLastName}}RpcController {
 	{{/each}}
 	 * @return 取得した{{titleOrName}}
 	 */
-	@JsonRpcMethod("get{{className}}")
+	@JsonRpcMethod
 	public {{className}}Content get{{className}}(
 		{{#each keys}}
 		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}}, {{/separator}}
@@ -92,33 +95,6 @@ public class {{upperLastName}}RpcController {
 	}
 
 	/**
-	 * 全ての{{titleOrName}}のサマリーを取得する
-	 *
-	 * @return {{titleOrName}}のサマリー
-	 */
-	@Deprecated
-	@JsonRpcMethod("list{{className}}Summary")
-	public {{className}}Summary list{{className}}Summary() {
-		return {{lowerName}}Mapper.listSummary();
-	}
-
-	/**
-	 * 全ての{{titleOrName}}を取得する
-	 *
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{titleOrName}}のリスト
-	 */
-	@Deprecated
-	@JsonRpcMethod("list{{className}}Content")
-	public List<{{className}}Content> list{{className}}Content(
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		return {{lowerName}}Mapper.listContent(offset, limit);
-	}
-
-	/**
 	 * 全ての{{titleOrName}}情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -127,8 +103,8 @@ public class {{upperLastName}}RpcController {
 	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return {{titleOrName}}情報
 	 */
-	@JsonRpcMethod("list{{className}}Info")
-	public {{className}}Info list{{className}}Info(
+	@JsonRpcMethod
+	public {{className}}Info list{{className}}(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit,
 		@JsonRpcParam("lastCount") int lastCount,
@@ -150,54 +126,6 @@ public class {{upperLastName}}RpcController {
 	{{#each queries}}
 
 	/**
-	 * {{titleOrName}}に合致する{{../titleOrName}}のサマリーを取得する
-	 *
-	{{#each arguments}}
-	 * @param {{fieldName}} {{titleOrName}}
-	{{/each}}
-	 * @return {{../titleOrName}}のサマリー
-	 */
-	@Deprecated
-	@JsonRpcMethod("list{{../className}}SummaryIf{{upperName}}")
-	public {{../className}}Summary list{{../className}}SummaryIf{{upperName}}(
-		{{#each arguments}}
-		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
-		{{/each}}
-	) {
-		return {{../lowerName}}Mapper.listSummaryIf{{upperName}}(
-				{{#each arguments}}
-				{{fieldName}}{{#separator}},{{/separator}}
-				{{/each}}
-				);
-	}
-
-	/**
-	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
-	 *
-	{{#each arguments}}
-	 * @param {{fieldName}} {{titleOrName}}
-	{{/each}}
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{../titleOrName}}のリスト
-	 */
-	@Deprecated
-	@JsonRpcMethod("list{{../className}}ContentIf{{upperName}}")
-	public List<{{../className}}Content> list{{../className}}ContentIf{{upperName}}(
-		{{#each arguments}}
-		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
-		{{/each}}
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		return {{../lowerName}}Mapper.listContentIf{{upperName}}(
-				{{#each arguments}}
-				{{fieldName}},
-				{{/each}}
-				offset, limit);
-	}
-
-	/**
 	 * {{titleOrName}}に合致する{{../titleOrName}}情報を取得する
 	 *
 	{{#each arguments}}
@@ -209,8 +137,8 @@ public class {{upperLastName}}RpcController {
 	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return {{../titleOrName}}情報
 	 */
-	@JsonRpcMethod("list{{../className}}InfoIf{{upperName}}")
-	public {{../className}}Info list{{../className}}InfoIf{{upperName}}(
+	@JsonRpcMethod
+	public {{../className}}Info list{{../className}}If{{upperName}}(
 		{{#each arguments}}
 		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
 		{{/each}}
@@ -249,7 +177,7 @@ public class {{upperLastName}}RpcController {
 	 * @param content {{../../titleOrName}}
 	 * @return {{titleOrName}}
 	 */
-	@JsonRpcMethod("get{{../className}}{{upperName}}")
+	@JsonRpcMethod
 	public {{cref.className}}Content get{{../className}}{{upperName}}(
 		@JsonRpcParam("content") {{../className}}Content content
 	) {
@@ -258,38 +186,6 @@ public class {{upperLastName}}RpcController {
 	{{/each}}
 
 	{{#each sets}}
-
-	/**
-	 * {{titleOrName}}のサマリーを取得する
-	 *
-	 * @param content {{../../titleOrName}}
-	 * @return {{titleOrName}}のサマリー
-	 */
-	@Deprecated
-	@JsonRpcMethod("list{{../className}}{{upperName}}Summary")
-	public {{fref.owner.className}}Summary list{{../className}}{{upperName}}Summary(
-			@JsonRpcParam("content") {{../className}}Content content
-	) {
-		return {{../lowerName}}Mapper.list{{upperName}}Summary(content);
-	}
-
-	/**
-	 * {{titleOrName}}を取得する
-	 *
-	 * @param content {{../titleOrName}}
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{titleOrName}}
-	 */
-	@Deprecated
-	@JsonRpcMethod("list{{../className}}{{upperName}}Content")
-	public List<{{fref.owner.className}}Content> list{{../className}}{{upperName}}Content(
-		@JsonRpcParam("content") {{../className}}Content content,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		return {{../lowerName}}Mapper.list{{upperName}}Content(content, offset, limit);
-	}
 
 	/**
 	 * {{titleOrName}}情報を取得する
@@ -301,8 +197,8 @@ public class {{upperLastName}}RpcController {
 	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return {{titleOrName}}情報
 	 */
-	@JsonRpcMethod("list{{../className}}{{upperName}}Info")
-	public {{fref.owner.className}}Info list{{../className}}{{upperName}}Info(
+	@JsonRpcMethod
+	public {{fref.owner.className}}Info list{{../className}}{{upperName}}(
 		@JsonRpcParam("content") {{../className}}Content content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit,
@@ -326,52 +222,6 @@ public class {{upperLastName}}RpcController {
 	{{#each fref.owner.queries}}
 
 	/**
-	 * {{titleOrName}}に合致する{{../titleOrName}}のサマリーを取得する
-	 *
-	 * @param content {{../../titleOrName}}
-	 * @return {{../titleOrName}}のサマリー
-	 */
-	@Deprecated
-	@JsonRpcMethod("list{{../../className}}{{../upperName}}SummaryIf{{upperName}}")
-	public {{../fref.owner.className}}Summary list{{../../className}}{{../upperName}}SummaryIf{{upperName}}(
-		@JsonRpcParam("content") {{../../className}}Content content,
-		{{#each arguments}}
-		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
-		{{/each}}
-	) {
-		return {{../../lowerName}}Mapper.list{{../upperName}}SummaryIf{{upperName}}(content,
-				{{#each arguments}}
-				{{fieldName}}{{#separator}},{{/separator}}
-				{{/each}}
-				);
-	}
-
-	/**
-	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
-	 *
-	 * @param content {{../../titleOrName}}
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return {{../titleOrName}}
-	 */
-	@Deprecated
-	@JsonRpcMethod("list{{../../className}}{{../upperName}}ContentIf{{upperName}}")
-	public List<{{../fref.owner.className}}Content> list{{../../className}}{{../upperName}}ContentIf{{upperName}}(
-		@JsonRpcParam("content") {{../../className}}Content content,
-		{{#each arguments}}
-		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
-		{{/each}}
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		return {{../../lowerName}}Mapper.list{{../upperName}}ContentIf{{upperName}}(content,
-				{{#each arguments}}
-				{{fieldName}},
-				{{/each}}
-				offset, limit);
-	}
-
-	/**
 	 * {{titleOrName}}に合致する{{../titleOrName}}情報を取得する
 	 *
 	 * @param content {{../../titleOrName}}
@@ -381,8 +231,8 @@ public class {{upperLastName}}RpcController {
 	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return {{../titleOrName}}情報
 	 */
-	@JsonRpcMethod("list{{../../className}}{{../upperName}}InfoIf{{upperName}}")
-	public {{../fref.owner.className}}Info list{{../../className}}{{../upperName}}InfoIf{{upperName}}(
+	@JsonRpcMethod
+	public {{../fref.owner.className}}Info list{{../../className}}{{../upperName}}If{{upperName}}(
 		@JsonRpcParam("content") {{../../className}}Content content,
 		{{#each arguments}}
 		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
