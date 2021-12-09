@@ -12,7 +12,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class TestDataSource extends DataSource {
 
-	public static final Logger LOGGER = Logger.createLogger(TestDataSource.class);
+	private static final Logger LOGGER = Logger.createLogger(TestDataSource.class);
 
 	private static final int DEFAULT_LIMIT = 100;
 

@@ -1,11 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.common.logging.Logger;
-
 /** テスト用ノード */
 public class UiBox extends UiNode {
-
-	public static final Logger LOGGER = Logger.createLogger(UiBox.class);
 
 	public UiBox() {
 		super();

@@ -6,11 +6,8 @@ import java.util.Date;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.logging.Logger;
 
-public class UiList extends UiGroup {
-
-	public static final Logger LOGGER = Logger.createLogger(UiList.class);
+public class UiVerticalList extends UiGroup {
 
 	/** 疑似スクロール用のマージン行数 */
 	protected static final int VIEW_MARGIN	= 3;
@@ -29,13 +26,13 @@ public class UiList extends UiGroup {
 	 */
 	protected static class UiLine extends UiNode implements DataRecord {
 
-		private final UiList list;
+		private final UiVerticalList list;
 
 		private int index;
 
 		private Json json;
 
-		public UiLine(UiList list, String name) {
+		public UiLine(UiVerticalList list, String name) {
 			super(name);
 			this.list = list;
 			this.index = -1;
@@ -255,7 +252,7 @@ public class UiList extends UiGroup {
 	 *
 	 * @param name ノード名
 	 */
-	public UiList(String name) {
+	public UiVerticalList(String name) {
 		super(name);
 		hiddenIndex = -1;
 		hiddenColumn = -1;
@@ -266,7 +263,7 @@ public class UiList extends UiGroup {
 	 *
 	 * @param src コピー元
 	 */
-	public UiList(UiList src) {
+	public UiVerticalList(UiVerticalList src) {
 		super(src);
 		dataSource = src.dataSource;
 		template = src.template;
@@ -278,8 +275,8 @@ public class UiList extends UiGroup {
 	}
 
 	@Override
-	public UiList copy() {
-		return new UiList(this);
+	public UiVerticalList copy() {
+		return new UiVerticalList(this);
 	}
 
 	/**

@@ -11,7 +11,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class LayouterTestPage extends UiPage {
 
-	public static final Logger LOGGER = Logger.createLogger(LayouterTestPage.class);
+	private static final Logger LOGGER = Logger.createLogger(LayouterTestPage.class);
 
 	public LayouterTestPage(String name, UiApplication app, Map<String, String> params) {
 		super(name, app);

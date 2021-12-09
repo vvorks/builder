@@ -8,11 +8,8 @@ import java.util.function.Predicate;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiBundleStyle extends UiStyle {
-
-	public static final Logger LOGGER = Logger.createLogger(UiBundleStyle.class);
 
 	private static class Item {
 

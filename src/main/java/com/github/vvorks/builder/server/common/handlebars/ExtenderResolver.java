@@ -13,7 +13,7 @@ import com.github.vvorks.builder.server.common.util.Invoker;
 
 public class ExtenderResolver implements ValueResolver {
 
-	public static final Logger LOGGER = Logger.createLogger(ExtenderResolver.class);
+	private static final Logger LOGGER = Logger.createLogger(ExtenderResolver.class);
 
 	private final Map<Class<?>, Map<String, Invoker>> classMap;
 

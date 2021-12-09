@@ -18,11 +18,8 @@ import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Copyable;
 import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
-
-	public static final Logger LOGGER = Logger.createLogger(UiNode.class);
 
 	public static final String NS_HTML = "http://www.w3.org/1999/xhtml";
 
@@ -211,6 +208,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	/** スタイル管理マップ */
 	private Map<String, UiStyle> registerdStyles;
+
+	/** スクロールリスナーのリスト */
+	private transient List<ScrollListener> scrollListeners;
 
 	/**	親座標系における左位置 */
 	private Length left;
@@ -930,6 +930,46 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return nextSibling;
 	}
 
+	public void setHorizontalScroll(int offset) {
+		setScrollLeft(offset);
+	}
+
+	public void setVertialScroll(int offset) {
+		setScrollTop(offset);
+	}
+
+	public void addScrollListener(ScrollListener listener) {
+		if (scrollListeners == null) {
+			scrollListeners = new ArrayList<>();
+		}
+		scrollListeners.add(listener);
+	}
+
+	public void removeScrollListener(ScrollListener listener) {
+		if (scrollListeners == null) {
+			return;
+		}
+		scrollListeners.remove(listener);
+	}
+
+	protected void notifyHorizontalScroll(int offset, int limit, int count) {
+		if (scrollListeners == null) {
+			return;
+		}
+		for (ScrollListener l : scrollListeners) {
+			l.onHorizontalScroll(this, offset, limit, count);
+		}
+	}
+
+	protected void notifyVerticalScroll(int offset, int limit, int count) {
+		if (scrollListeners == null) {
+			return;
+		}
+		for (ScrollListener l : scrollListeners) {
+			l.onVerticalScroll(this, offset, limit, count);
+		}
+	}
+
 	public Length getLeft() {
 		return left;
 	}
@@ -1250,6 +1290,11 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		if (!Objects.equals(scrollLeft, newValue)) {
 			scrollLeft = newValue;
 			setChanged(CHANGED_LOCATION);
+			getRectangleOnThis();
+			int offset = getScrollLeftPx();
+			int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
+			int count = getScrollWidthPx();
+			notifyHorizontalScroll(offset, limit, count);
 		}
 	}
 
@@ -1281,6 +1326,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		if (!Objects.equals(scrollTop, newValue)) {
 			scrollTop = newValue;
 			setChanged(CHANGED_LOCATION);
+			int offset = getScrollTopPx();
+			int limit = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
+			int count = getScrollHeightPx();
+			notifyVerticalScroll(offset, limit, count);
 		}
 	}
 

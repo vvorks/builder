@@ -16,7 +16,7 @@ import com.github.vvorks.builder.common.logging.Logger;
  */
 public class Length implements Jsonizable {
 
-	public static final Logger LOGGER = Logger.createLogger(Length.class);
+	private static final Logger LOGGER = Logger.createLogger(Length.class);
 
 	public enum Unit {
 

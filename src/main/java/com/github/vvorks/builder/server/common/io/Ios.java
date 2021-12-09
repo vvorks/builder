@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -67,7 +69,7 @@ public class Ios {
 
 	public static void deleteAll(File fileOrDir) throws IOException {
 		if (fileOrDir.isDirectory()) {
-			for (File child : fileOrDir.listFiles()) {
+			for (File child : listFiles(fileOrDir)) {
 				deleteAll(child);
 			}
 			if (!fileOrDir.delete()) {
@@ -78,6 +80,11 @@ public class Ios {
 				throw new IOException("DELETE FAILED " + fileOrDir);
 			}
 		}
+	}
+
+	public static List<File> listFiles(File dir) {
+		File[] files = dir.listFiles();
+		return files == null ? Collections.emptyList() : Arrays.asList(files);
 	}
 
 }

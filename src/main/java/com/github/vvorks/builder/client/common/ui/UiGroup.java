@@ -3,11 +3,8 @@ package com.github.vvorks.builder.client.common.ui;
 import java.util.Objects;
 
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiGroup extends UiNode {
-
-	public static final Logger LOGGER = Logger.createLogger(UiGroup.class);
 
 	private Length spacingWidth;
 

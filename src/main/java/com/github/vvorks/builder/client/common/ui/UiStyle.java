@@ -6,11 +6,8 @@ import java.util.Map;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
 import com.github.vvorks.builder.common.lang.Copyable;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public abstract class UiStyle implements Copyable<UiStyle>, Jsonizable {
-
-	public static final Logger LOGGER = Logger.createLogger(UiStyle.class);
 
 	public static UiAtomicStyle.Builder newAtomicBuilder(Class<?> owner, String name, UiAtomicStyle baseStyle) {
 		return new UiAtomicStyle.Builder(owner, name, baseStyle);

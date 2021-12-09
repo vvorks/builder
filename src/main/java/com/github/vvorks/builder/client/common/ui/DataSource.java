@@ -5,12 +5,9 @@ import java.util.Set;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 
 public abstract class DataSource {
-
-	public static final Logger LOGGER = Logger.createLogger(DataSource.class);
 
 	private final Set<UiApplication> apps;
 

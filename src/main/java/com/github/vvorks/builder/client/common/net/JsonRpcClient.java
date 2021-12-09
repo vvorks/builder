@@ -20,7 +20,7 @@ import com.github.vvorks.builder.common.util.TimeoutException;
  */
 public class JsonRpcClient implements WebSocketHandler {
 
-	public static final Logger LOGGER = Logger.createLogger(JsonRpcClient.class);
+	private static final Logger LOGGER = Logger.createLogger(JsonRpcClient.class);
 
 	private static final String UNKNOWN_METHOD = "__UNKNOWN__";
 

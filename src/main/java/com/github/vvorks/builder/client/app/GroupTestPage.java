@@ -14,7 +14,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class GroupTestPage extends UiPage {
 
-	public static final Logger LOGGER = Logger.createLogger(GroupTestPage.class);
+	private static final Logger LOGGER = Logger.createLogger(GroupTestPage.class);
 
 	public GroupTestPage(String name, UiApplication app, Map<String, String> params) {
 		super(name, app);
@@ -47,7 +47,7 @@ public class GroupTestPage extends UiPage {
 					b.enter(new UiButton("item" + i));
 						b.text("項目" + i);
 						b.style(BuilderUiApplication.BASIC);
-						b.locate(NA, NA, NA, NA, NA, (i % 2) == 1 ? 2.0 : 3.0);
+						b.locate(NA, NA, NA, NA, NA, (i % 2) != 0 ? 2.0 : 3.0);
 					b.leave();
 				}
 			b.leave();
@@ -64,7 +64,7 @@ public class GroupTestPage extends UiPage {
 						b.enter(new UiButton("item" + i));
 							b.text("項目" + i);
 							b.style(BuilderUiApplication.BASIC);
-							b.locate(NA, NA, NA, NA, NA, (i % 2) == 1 ? 2.0 : 3.0);
+							b.locate(NA, NA, NA, NA, NA, (i % 2) != 0 ? 2.0 : 3.0);
 						b.leave();
 					}
 				b.leave();
@@ -78,7 +78,7 @@ public class GroupTestPage extends UiPage {
 					b.enter(new UiButton("item" + i));
 						b.text("項目" + i);
 						b.style(BuilderUiApplication.BASIC);
-						b.locate(NA, NA, NA, NA, (i % 2) == 1 ? 6.0 : 10.0, NA);
+						b.locate(NA, NA, NA, NA, (i % 2) != 0 ? 6.0 : 10.0, NA);
 					b.leave();
 				}
 			b.leave();
@@ -95,7 +95,7 @@ public class GroupTestPage extends UiPage {
 						b.enter(new UiButton("item" + i));
 							b.text("項目" + i);
 							b.style(BuilderUiApplication.BASIC);
-							b.locate(NA, NA, NA, NA, (i % 2) == 1 ? 6.0 : 10.0, NA);
+							b.locate(NA, NA, NA, NA, (i % 2) != 0 ? 6.0 : 10.0, NA);
 						b.leave();
 					}
 				b.leave();

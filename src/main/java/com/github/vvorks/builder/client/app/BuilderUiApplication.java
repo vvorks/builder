@@ -8,11 +8,8 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.client.common.ui.UiBundleStyle;
 import com.github.vvorks.builder.client.common.ui.UiStyle;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class BuilderUiApplication extends UiApplication {
-
-	public static final Logger LOGGER = Logger.createLogger(BuilderUiApplication.class);
 
 	public static final Class<?> THIS = BuilderUiApplication.class;
 

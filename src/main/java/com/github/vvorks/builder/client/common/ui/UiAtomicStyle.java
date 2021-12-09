@@ -5,11 +5,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiAtomicStyle extends UiStyle {
-
-	public static final Logger LOGGER = Logger.createLogger(UiAtomicStyle.class);
 
 	public static final String TEXT_ALIGN_CENTER = "center";
 	public static final String TEXT_ALIGN_JUSTIFY = "justify";

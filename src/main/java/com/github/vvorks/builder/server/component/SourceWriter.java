@@ -39,7 +39,7 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 @Component
 public class SourceWriter {
 
-	public static final Logger LOGGER = Logger.createLogger(SourceWriter.class);
+	private static final Logger LOGGER = Logger.createLogger(SourceWriter.class);
 
 	/** hbsリソース読み込みパス */
 	private static final String HBS_RES = "/handlebars/";

@@ -16,7 +16,7 @@ import com.github.vvorks.builder.server.common.io.Ios;
 
 public class SourceHelper implements Helper<Object> {
 
-	public static final Logger LOGGER = Logger.createLogger(SourceHelper.class);
+	private static final Logger LOGGER = Logger.createLogger(SourceHelper.class);
 
 	private final File outDir;
 

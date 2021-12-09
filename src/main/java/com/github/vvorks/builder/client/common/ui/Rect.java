@@ -4,11 +4,8 @@ import java.util.Objects;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class Rect extends Point {
-
-	public static final Logger LOGGER = Logger.createLogger(Rect.class);
 
 	protected int width;
 

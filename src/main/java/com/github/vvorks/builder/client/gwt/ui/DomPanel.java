@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Panel;
 
 public class DomPanel extends FocusPanel {
 
-	public static final Logger LOGGER = Logger.createLogger(DomPanel.class);
+	private static final Logger LOGGER = Logger.createLogger(DomPanel.class);
 
 	protected final Panel backyard;
 

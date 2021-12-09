@@ -1,11 +1,8 @@
 package com.github.vvorks.builder.client.common.ui;
 
 import com.github.vvorks.builder.client.ClientSettings;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiVerticalGroup extends UiGroup {
-
-	public static final Logger LOGGER = Logger.createLogger(UiVerticalGroup.class);
 
 	public UiVerticalGroup(String name) {
 		super(name);

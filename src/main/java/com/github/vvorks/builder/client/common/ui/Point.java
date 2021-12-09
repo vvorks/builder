@@ -5,11 +5,8 @@ import java.util.Objects;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class Point implements Jsonizable {
-
-	public static final Logger LOGGER = Logger.createLogger(Point.class);
 
 	protected int x;
 

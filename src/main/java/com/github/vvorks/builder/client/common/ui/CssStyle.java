@@ -7,11 +7,8 @@ import java.util.Set;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class CssStyle implements Jsonizable {
-
-	public static final Logger LOGGER = Logger.createLogger(CssStyle.class);
 
 	private final Map<String, Object> map;
 

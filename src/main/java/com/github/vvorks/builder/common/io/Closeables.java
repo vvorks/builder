@@ -7,7 +7,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class Closeables {
 
-	public static final Logger LOGGER = Logger.createLogger(Closeables.class);
+	private static final Logger LOGGER = Logger.createLogger(Closeables.class);
 
 	private Closeables() {
 	}

@@ -2,11 +2,8 @@ package com.github.vvorks.builder.client.common.ui;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public abstract class History implements Jsonizable {
-
-	public static final Logger LOGGER = Logger.createLogger(History.class);
 
 	private final int time;
 

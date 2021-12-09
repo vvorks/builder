@@ -15,15 +15,12 @@ import com.github.vvorks.builder.client.common.ui.Rect;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 
 public class GwtDomDocument implements DomDocument {
-
-	public static final Logger LOGGER = Logger.createLogger(GwtDomDocument.class);
 
 	private static final int LEFT_BIT	= 0x0001;
 	private static final int RIGHT_BIT	= 0x0002;

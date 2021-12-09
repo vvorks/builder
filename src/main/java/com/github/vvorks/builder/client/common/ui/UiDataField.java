@@ -1,10 +1,6 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.common.logging.Logger;
-
 public class UiDataField extends UiNode implements DataField {
-
-	public static final Logger LOGGER = Logger.createLogger(UiDataField.class);
 
 	/** 編集状態 */
 	private enum EditState {

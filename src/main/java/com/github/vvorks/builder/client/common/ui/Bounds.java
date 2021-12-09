@@ -2,11 +2,8 @@ package com.github.vvorks.builder.client.common.ui;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class Bounds implements Jsonizable {
-
-	public static final Logger LOGGER = Logger.createLogger(Bounds.class);
 
 	private final Length left;
 	private final Length top;

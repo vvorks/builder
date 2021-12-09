@@ -5,7 +5,6 @@ import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.client.gwt.ui.DomPanel;
 import com.github.vvorks.builder.client.gwt.ui.ImePanel;
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.net.URLFragment;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.google.gwt.core.client.EntryPoint;
@@ -25,12 +24,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class GwtEntryPoint implements EntryPoint {
 
-	public static Logger LOGGER;
-
 	public void onModuleLoad() {
 		//クライアント構成セットアップ
 		ClientSettings.setup();
-		LOGGER = Logger.createLogger(GwtEntryPoint.class);
 		//ルート要素の初期化
 		String bgColor = ClientSettings.DEBUG ? "#000040" : "rgba(0, 0, 0, 0.0)";
 		RootLayoutPanel root = RootLayoutPanel.get();

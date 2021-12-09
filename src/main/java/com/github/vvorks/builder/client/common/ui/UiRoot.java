@@ -1,11 +1,8 @@
 package com.github.vvorks.builder.client.common.ui;
 
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiRoot extends UiNode {
-
-	public static final Logger LOGGER = Logger.createLogger(UiRoot.class);
 
 	private DomDocument document;
 

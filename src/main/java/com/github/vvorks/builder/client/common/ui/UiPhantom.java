@@ -1,13 +1,9 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.common.logging.Logger;
-
 /**
  * ファントムノード（実ノードには現れない）
  */
 public class UiPhantom extends UiNode {
-
-	public static final Logger LOGGER = Logger.createLogger(UiPhantom.class);
 
 	private static class PhantomElement implements DomElement {
 

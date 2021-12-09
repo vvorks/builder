@@ -11,15 +11,12 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiDataField;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
-import com.github.vvorks.builder.client.common.ui.UiList;
 import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
+import com.github.vvorks.builder.client.common.ui.UiVerticalList;
 import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class ListTestPage extends UiPage {
-
-	public static final Logger LOGGER = Logger.createLogger(ListTestPage.class);
 
 	public ListTestPage(String name, UiApplication app, Map<String, String> params) {
 		super(name, app);
@@ -59,7 +56,7 @@ public class ListTestPage extends UiPage {
 				b.locate(1.0, 5.0, NA, 5.0, 3.0, NA);
 			b.leave();
 			//list body
-			b.enter(new UiList("list1"));
+			b.enter(new UiVerticalList("list1"));
 				b.style(BuilderUiApplication.ENABLE);
 				b.source(ds);
 				b.locate(5.0, 5.0, 5.0, 5.0, NA, NA);

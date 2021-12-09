@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.CacheMap;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
@@ -31,8 +30,6 @@ import com.github.vvorks.builder.server.mapper.QueryMapper;
 
 @Component
 public class QueryExtender {
-
-	public static final Logger LOGGER = Logger.createLogger(QueryExtender.class);
 
 	public static class JoinInfo {
 		private final FieldContent lastField;

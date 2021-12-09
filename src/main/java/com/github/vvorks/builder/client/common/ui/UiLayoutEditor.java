@@ -7,14 +7,11 @@ import java.util.function.Predicate;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Iterables;
-import com.github.vvorks.builder.common.logging.Logger;
 
 /**
  * UiLayoutEditor
  */
 public class UiLayoutEditor extends UiNode {
-
-	public static final Logger LOGGER = Logger.createLogger(UiLayoutEditor.class);
 
 	/** 非選択ノード内でドラッグした場合、当該ノード内での新規作成操作をするか否か */
 	private static final boolean NEW_IN_PARENT = false;

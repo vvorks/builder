@@ -6,11 +6,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public abstract class SqlHelper {
-
-	public static final Logger LOGGER = Logger.createLogger(SqlHelper.class);
 
 	/**
 	 * SQL予約語

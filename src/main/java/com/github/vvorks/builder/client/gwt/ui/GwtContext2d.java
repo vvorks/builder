@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Image;
 
 public class GwtContext2d {
 
-	public static final Logger LOGGER = Logger.createLogger(GwtContext2d.class);
+	private static final Logger LOGGER = Logger.createLogger(GwtContext2d.class);
 
 	/** 描画フラグ：中央寄せ */
 	public static final int ALIGN_CENTER	= 0x00000000;

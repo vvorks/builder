@@ -4,11 +4,8 @@ import java.util.List;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class ListDataSource extends DataSource {
-
-	public static final Logger LOGGER = Logger.createLogger(ListDataSource.class);
 
 	private final List<Json> list;
 

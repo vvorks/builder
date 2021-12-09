@@ -7,11 +7,8 @@ import java.util.Map;
 
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Iterables;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public abstract class UiPage extends UiNode {
-
-	public static final Logger LOGGER = Logger.createLogger(UiPage.class);
 
 	private UiApplication application;
 

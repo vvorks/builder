@@ -38,7 +38,7 @@ import com.github.vvorks.builder.server.mapper.QueryMapper;
 @Component
 public class ClassExtender {
 
-	public static final Logger LOGGER = Logger.createLogger(ClassExtender.class);
+	private static final Logger LOGGER = Logger.createLogger(ClassExtender.class);
 
 	@Autowired
 	private ProjectMapper projectMapper;

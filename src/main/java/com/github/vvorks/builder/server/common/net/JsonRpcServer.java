@@ -32,7 +32,7 @@ import com.github.vvorks.builder.server.common.util.Invoker;
 
 public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConstants {
 
-	public static final Logger LOGGER = Logger.createLogger(JsonRpcServer.class);
+	private static final Logger LOGGER = Logger.createLogger(JsonRpcServer.class);
 
 	private static final String[] VERSIONS = {"2.0"};
 	private static final Set<String> ACCEPTABLE_JSONRPC_VERSIONS = new HashSet<>(Arrays.asList(VERSIONS));

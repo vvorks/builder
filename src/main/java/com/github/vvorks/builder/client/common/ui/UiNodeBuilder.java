@@ -41,8 +41,8 @@ public class UiNodeBuilder {
 
 	public UiNodeBuilder loop(boolean loop) {
 		UiNode node = stack.peek();
-		if (node instanceof UiList) {
-			UiList listNode = (UiList) node;
+		if (node instanceof UiVerticalList) {
+			UiVerticalList listNode = (UiVerticalList) node;
 			listNode.setLoopMode(loop);
 		}
 		return this;
@@ -50,8 +50,8 @@ public class UiNodeBuilder {
 
 	public UiNodeBuilder flushSoon(boolean soon) {
 		UiNode node = stack.peek();
-		if (node instanceof UiList) {
-			UiList listNode = (UiList) node;
+		if (node instanceof UiVerticalList) {
+			UiVerticalList listNode = (UiVerticalList) node;
 			listNode.setFlushSoon(soon);
 		}
 		return this;
@@ -115,8 +115,8 @@ public class UiNodeBuilder {
 
 	public UiNodeBuilder source(DataSource source) {
 		UiNode node = stack.peek();
-		Asserts.assume(node instanceof UiList);
-		UiList list = (UiList) node;
+		Asserts.assume(node instanceof UiVerticalList);
+		UiVerticalList list = (UiVerticalList) node;
 		list.setDataSource(source);
 		return this;
 	}
