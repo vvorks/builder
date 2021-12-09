@@ -5,8 +5,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiHorizontalGroup extends UiGroup {
 
-	public static final Class<?> THIS = UiHorizontalGroup.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiHorizontalGroup.class);
 
 	public UiHorizontalGroup(String name) {
 		super(name);

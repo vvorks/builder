@@ -7,8 +7,7 @@ import com.github.vvorks.builder.common.logging.Logger;
  */
 public class UiPhantom extends UiNode {
 
-	public static final Class<?> THIS = UiPhantom.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiPhantom.class);
 
 	private static class PhantomElement implements DomElement {
 

@@ -9,8 +9,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiAtomicStyle extends UiStyle {
 
-	public static final Class<?> THIS = UiAtomicStyle.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiAtomicStyle.class);
 
 	public static final String TEXT_ALIGN_CENTER = "center";
 	public static final String TEXT_ALIGN_JUSTIFY = "justify";

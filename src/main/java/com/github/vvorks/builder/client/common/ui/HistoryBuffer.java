@@ -9,8 +9,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class HistoryBuffer implements Jsonizable {
 
-	public static final Class<?> THIS = HistoryBuffer.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(HistoryBuffer.class);
 
 	private final List<History> histories;
 

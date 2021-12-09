@@ -14,8 +14,7 @@ import com.github.vvorks.builder.common.logging.Logger;
  */
 public class UiLayoutEditor extends UiNode {
 
-	public static final Class<?> THIS = UiLayoutEditor.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiLayoutEditor.class);
 
 	/** 非選択ノード内でドラッグした場合、当該ノード内での新規作成操作をするか否か */
 	private static final boolean NEW_IN_PARENT = false;
@@ -36,6 +35,8 @@ public class UiLayoutEditor extends UiNode {
 	private static final int[] ARROW_KEYS	= {KeyCodes.LEFT, KeyCodes.RIGHT, KeyCodes.UP, KeyCodes.DOWN};
 	private static final int[] ARROW_X_DIRS	= {-1,+1, 0, 0};
 	private static final int[] ARROW_Y_DIRS	= { 0, 0,-1,+1};
+
+	public static final Class<?> THIS = UiLayoutEditor.class;
 
 	/** ハンドル片のスタイル */
 	private static final UiAtomicStyle HANDLE_STYLE = UiStyle.newAtomicBuilder(THIS, "handle", null)

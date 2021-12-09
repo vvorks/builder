@@ -21,8 +21,7 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 @RestController
 public class ApiController {
 
-	public static final Class<?> THIS = ApiController.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(ApiController.class);
 
 	@Autowired
 	private XlsxLoader loader;

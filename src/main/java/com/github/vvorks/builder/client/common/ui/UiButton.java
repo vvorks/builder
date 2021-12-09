@@ -6,8 +6,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiButton extends UiNode {
 
-	public static final Class<?> THIS = UiButton.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiButton.class);
 
 	/** テキスト */
 	private String text;

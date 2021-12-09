@@ -11,8 +11,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public abstract class UiPage extends UiNode {
 
-	public static final Class<?> THIS = UiPage.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiPage.class);
 
 	private UiApplication application;
 

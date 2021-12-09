@@ -7,8 +7,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiGroup extends UiNode {
 
-	public static final Class<?> THIS = UiGroup.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiGroup.class);
 
 	private Length spacingWidth;
 

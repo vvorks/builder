@@ -6,8 +6,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class Bounds implements Jsonizable {
 
-	public static final Class<?> THIS = Bounds.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(Bounds.class);
 
 	private final Length left;
 	private final Length top;

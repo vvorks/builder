@@ -12,8 +12,9 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class BuilderUiApplication extends UiApplication {
 
+	public static final Logger LOGGER = Logger.createLogger(BuilderUiApplication.class);
+
 	public static final Class<?> THIS = BuilderUiApplication.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
 
 	public static final UiAtomicStyle ENABLE = UiStyle.newAtomicBuilder(THIS, "enable", null)
 			.color(Colors.BLACK)

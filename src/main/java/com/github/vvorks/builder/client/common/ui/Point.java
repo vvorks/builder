@@ -9,8 +9,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class Point implements Jsonizable {
 
-	public static final Class<?> THIS = Point.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(Point.class);
 
 	protected int x;
 

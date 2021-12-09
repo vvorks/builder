@@ -29,8 +29,7 @@ import com.github.vvorks.builder.server.extender.SqlWriter;
 @Component
 public class XlsxLoader {
 
-	public static final Class<?> THIS = XlsxLoader.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(XlsxLoader.class);
 
 	private static final String EOL = "\n";
 

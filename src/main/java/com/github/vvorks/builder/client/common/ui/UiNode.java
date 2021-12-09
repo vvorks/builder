@@ -22,8 +22,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
-	public static final Class<?> THIS = UiNode.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiNode.class);
 
 	public static final String NS_HTML = "http://www.w3.org/1999/xhtml";
 

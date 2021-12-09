@@ -5,8 +5,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiRoot extends UiNode {
 
-	public static final Class<?> THIS = UiRoot.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiRoot.class);
 
 	private DomDocument document;
 

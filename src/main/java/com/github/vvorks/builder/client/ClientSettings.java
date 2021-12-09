@@ -19,11 +19,8 @@ public class ClientSettings {
 
 	public static final boolean DEBUG = true;
 
-	/** このクラス */
-	private static final Class<?> THIS = ClientSettings.class;
-
 	/** クラス名 */
-	private static final String CLASS_NAME = THIS.getName();
+	private static final String CLASS_NAME = ClientSettings.class.getName();
 
 	/** パッケージ名 */
 	private static final String PACKAGE_NAME = CLASS_NAME.substring(0, CLASS_NAME.lastIndexOf('.'));

@@ -15,8 +15,7 @@ import com.google.gwt.dom.client.Element;
 
 public class GwtDomElement implements DomElement {
 
-	public static final Class<?> THIS = GwtDomElement.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(GwtDomElement.class);
 
 	private static final String PROP_CLASS = "class";
 	private static final String PROP_STYLE = "style";

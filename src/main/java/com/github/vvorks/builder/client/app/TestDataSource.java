@@ -12,8 +12,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class TestDataSource extends DataSource {
 
-	public static final Class<?> THIS = TestDataSource.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(TestDataSource.class);
 
 	private static final int DEFAULT_LIMIT = 100;
 
@@ -48,7 +47,7 @@ public class TestDataSource extends DataSource {
 		param.setInt("limit", DEFAULT_LIMIT);
 		param.setInt("lastCount", -1);
 		param.setDate("lastUpdatedAt", lastUpdatedAt);
-		rpc.request("listProject", param, 0, new Callback<Json>() {
+		rpc.request("listQuery", param, 0, new Callback<Json>() {
 			public void onSuccess(Json result) {
 				LOGGER.debug("result %s", result);
 				Json summary = result.get("summary");

@@ -12,8 +12,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiBundleStyle extends UiStyle {
 
-	public static final Class<?> THIS = UiBundleStyle.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiBundleStyle.class);
 
 	private static class Item {
 

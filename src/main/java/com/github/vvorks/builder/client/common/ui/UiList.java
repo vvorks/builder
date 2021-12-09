@@ -10,8 +10,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiList extends UiGroup {
 
-	public static final Class<?> THIS = UiList.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiList.class);
 
 	/** 疑似スクロール用のマージン行数 */
 	protected static final int VIEW_MARGIN	= 3;

@@ -6,8 +6,7 @@ import com.google.gwt.core.client.Scheduler;
 
 public class GwtDelayedExecuter implements DelayedExecuter {
 
-	public static final Class<?> THIS = GwtDelayedExecuter.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(GwtDelayedExecuter.class);
 
 	@Override
 	public void runAfter(int msec, Runnable cmd) {

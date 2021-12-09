@@ -26,8 +26,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 
 public class ImePanel extends FocusPanel {
 
-	public static final Class<?> THIS = ImePanel.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(ImePanel.class);
 
 	private static final Map<String, TextAlign> ALIGN_MAP = new HashMap<>();
 	static {

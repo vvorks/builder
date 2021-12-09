@@ -19,8 +19,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class ListTestPage extends UiPage {
 
-	public static final Class<?> THIS = ListTestPage.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(ListTestPage.class);
 
 	public ListTestPage(String name, UiApplication app, Map<String, String> params) {
 		super(name, app);
@@ -66,7 +65,7 @@ public class ListTestPage extends UiPage {
 				b.locate(5.0, 5.0, 5.0, 5.0, NA, NA);
 				b.loop(true);
 				b.flushSoon(false);
-				b.enter(new UiDataField("projectId"));
+				b.enter(new UiDataField("_key"));
 					b.style(BuilderUiApplication.BASIC);
 					b.locate(0.0, 0.0, NA, NA, 5.0, 4.0);
 				b.leave();
@@ -101,7 +100,7 @@ public class ListTestPage extends UiPage {
 		List<Json> list = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
 			Json json = Json.createObject();
-			json.setInt("_key", i);
+			json.setString("_key", i);
 			json.setString("title", "title " + i);
 			json.setString("description", "description " + i);
 			list.add(json);

@@ -43,8 +43,7 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 @Component
 public class ExpressionBuilder implements ExprParserVisitor {
 
-	public static final Class<?> THIS = ExpressionBuilder.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(ExpressionBuilder.class);
 
 	private static final String UNDER_CONSTRUCTION = "under construction";
 	private static final String TYPE_UNMATCH = "type unmatch";

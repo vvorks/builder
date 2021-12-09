@@ -14,8 +14,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class GroupTestPage extends UiPage {
 
-	public static final Class<?> THIS = GroupTestPage.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(GroupTestPage.class);
 
 	public GroupTestPage(String name, UiApplication app, Map<String, String> params) {
 		super(name, app);

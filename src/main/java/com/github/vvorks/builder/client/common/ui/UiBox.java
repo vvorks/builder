@@ -5,8 +5,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 /** テスト用ノード */
 public class UiBox extends UiNode {
 
-	public static final Class<?> THIS = UiBox.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiBox.class);
 
 	public UiBox() {
 		super();

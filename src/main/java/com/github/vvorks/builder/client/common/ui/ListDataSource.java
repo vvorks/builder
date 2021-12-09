@@ -8,8 +8,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class ListDataSource extends DataSource {
 
-	public static final Class<?> THIS = ListDataSource.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(ListDataSource.class);
 
 	private final List<Json> list;
 

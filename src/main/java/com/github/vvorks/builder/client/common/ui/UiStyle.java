@@ -10,8 +10,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public abstract class UiStyle implements Copyable<UiStyle>, Jsonizable {
 
-	public static final Class<?> THIS = UiStyle.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiStyle.class);
 
 	public static UiAtomicStyle.Builder newAtomicBuilder(Class<?> owner, String name, UiAtomicStyle baseStyle) {
 		return new UiAtomicStyle.Builder(owner, name, baseStyle);

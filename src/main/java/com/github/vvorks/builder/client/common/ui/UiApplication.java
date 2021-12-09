@@ -24,8 +24,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiApplication implements EventHandler {
 
-	public static final Class<?> THIS = UiApplication.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiApplication.class);
 
 	/** イベント結果フラグ： イベントは無視された */
 	public static final int EVENT_IGNORED = 0x00;

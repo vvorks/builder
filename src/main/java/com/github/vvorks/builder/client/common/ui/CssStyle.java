@@ -11,8 +11,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class CssStyle implements Jsonizable {
 
-	public static final Class<?> THIS = CssStyle.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(CssStyle.class);
 
 	private final Map<String, Object> map;
 

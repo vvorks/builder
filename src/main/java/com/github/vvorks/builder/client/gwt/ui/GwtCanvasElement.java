@@ -18,8 +18,7 @@ import com.google.gwt.user.client.ui.Image;
 
 public class GwtCanvasElement extends GwtDomElement {
 
-	public static final Class<?> THIS = GwtCanvasElement.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(GwtCanvasElement.class);
 
 	private GwtCanvasElement parent;
 

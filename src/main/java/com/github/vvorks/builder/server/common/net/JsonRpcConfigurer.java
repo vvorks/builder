@@ -19,8 +19,7 @@ import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 @EnableWebSocket
 public class JsonRpcConfigurer implements WebSocketConfigurer {
 
-	public static final Class<?> THIS = JsonRpcConfigurer.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(JsonRpcConfigurer.class);
 
 	@Autowired
 	private ApplicationContext context;

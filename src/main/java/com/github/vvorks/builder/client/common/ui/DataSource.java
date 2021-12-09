@@ -10,8 +10,7 @@ import com.github.vvorks.builder.common.util.DelayedExecuter;
 
 public abstract class DataSource {
 
-	public static final Class<?> THIS = DataSource.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(DataSource.class);
 
 	private final Set<UiApplication> apps;
 

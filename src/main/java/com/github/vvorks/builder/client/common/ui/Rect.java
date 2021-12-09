@@ -8,8 +8,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class Rect extends Point {
 
-	public static final Class<?> THIS = Rect.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(Rect.class);
 
 	protected int width;
 

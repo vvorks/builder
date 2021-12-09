@@ -25,13 +25,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class GwtEntryPoint implements EntryPoint {
 
-	public static final Class<?> THIS = GwtEntryPoint.class;
 	public static Logger LOGGER;
 
 	public void onModuleLoad() {
 		//クライアント構成セットアップ
 		ClientSettings.setup();
-		LOGGER = Logger.createLogger(THIS);
+		LOGGER = Logger.createLogger(GwtEntryPoint.class);
 		//ルート要素の初期化
 		String bgColor = ClientSettings.DEBUG ? "#000040" : "rgba(0, 0, 0, 0.0)";
 		RootLayoutPanel root = RootLayoutPanel.get();

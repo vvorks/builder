@@ -4,8 +4,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiDataField extends UiNode implements DataField {
 
-	public static final Class<?> THIS = UiDataField.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(UiDataField.class);
 
 	/** 編集状態 */
 	private enum EditState {

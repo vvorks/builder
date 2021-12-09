@@ -23,8 +23,7 @@ import com.google.gwt.user.client.ui.Panel;
 
 public class GwtDomDocument implements DomDocument {
 
-	public static final Class<?> THIS = GwtDomDocument.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(GwtDomDocument.class);
 
 	private static final int LEFT_BIT	= 0x0001;
 	private static final int RIGHT_BIT	= 0x0002;

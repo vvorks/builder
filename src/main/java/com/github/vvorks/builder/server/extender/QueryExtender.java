@@ -32,8 +32,7 @@ import com.github.vvorks.builder.server.mapper.QueryMapper;
 @Component
 public class QueryExtender {
 
-	public static final Class<?> THIS = QueryExtender.class;
-	public static final Logger LOGGER = Logger.createLogger(THIS);
+	public static final Logger LOGGER = Logger.createLogger(QueryExtender.class);
 
 	public static class JoinInfo {
 		private final FieldContent lastField;
