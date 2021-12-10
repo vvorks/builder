@@ -205,7 +205,11 @@ public interface {{className}}Mapper {
 			{{/each}}
 		) VALUES (
 			{{#each properties}}
+			{{#if timestamp}}
+			{{timestamp}}{{#separator}},{{/separator}}
+			{{else}}
 			#{ {{fieldName}} }{{#separator}},{{/separator}}
+			{{/if}}
 			{{/each}}
 		)
 	</insert>
@@ -213,11 +217,21 @@ public interface {{className}}Mapper {
 	<update id="update" parameterType="{{className}}Content">
 		UPDATE {{tableName}} SET
 			{{#each notKeys}}
+			{{#if timestamp}}
+			{{columnName}} = {{timestamp}}{{#separator}},{{/separator}}
+			{{else}}
 			{{columnName}} = #{ {{fieldName}} }{{#separator}},{{/separator}}
+			{{/if}}
 			{{/each}}
 		WHERE
 			{{#each keys}}
 			{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+			AND
+			{{#each notKeys}}
+			{{#if timestamp}}
+			{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
+			{{/if}}
 			{{/each}}
 	</update>
 
@@ -226,6 +240,12 @@ public interface {{className}}Mapper {
 		WHERE
 			{{#each keys}}
 			{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+			AND
+			{{#each notKeys}}
+			{{#if timestamp}}
+			{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
+			{{/if}}
 			{{/each}}
 	</delete>
 
