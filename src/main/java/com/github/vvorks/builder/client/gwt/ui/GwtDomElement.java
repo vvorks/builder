@@ -8,14 +8,11 @@ import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 
 public class GwtDomElement implements DomElement {
-
-	private static final Logger LOGGER = Logger.createLogger(GwtDomElement.class);
 
 	private static final String PROP_CLASS = "class";
 	private static final String PROP_STYLE = "style";

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.EnumContent;
@@ -64,6 +65,8 @@ public class FieldExtender {
 
 	@Autowired
 	private EnumMapper enumMapper;
+
+	private SqlHelper sqlHelper = SqlHelper.getHelper();
 
 	public String getTitleOrName(FieldContent fld) {
 		if (!Strings.isEmpty(fld.getTitle())) {
@@ -192,6 +195,13 @@ public class FieldExtender {
 		return !fld.isNullable();
 	}
 
+	public String getTimestamp(FieldContent fld) {
+		if (ClassExtender.LAST_UPDATED_AT.equals(fld.getFieldName())) {
+			return sqlHelper.getNow();
+		} else {
+			return null;
+		}
+	}
 
 	public ClassContent getOwner(FieldContent fld) {
 		return classMapper.get(fld.getOwnerClassId());

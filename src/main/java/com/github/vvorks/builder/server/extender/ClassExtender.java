@@ -61,7 +61,7 @@ public class ClassExtender {
 	@Autowired
 	private FieldExtender fieldExtender;
 
-	private static final String LAST_UPDATED_AT = "_lastUpdatedAt";
+	public static final String LAST_UPDATED_AT = "_lastUpdatedAt";
 
 	private SqlHelper sqlHelper = SqlHelper.getHelper();
 

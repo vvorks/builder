@@ -7,9 +7,11 @@ import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiCanvasFrame;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalGroup;
+import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiVerticalGroup;
+import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public class GroupTestPage extends UiPage {
@@ -33,13 +35,14 @@ public class GroupTestPage extends UiPage {
 	protected void initialize() {
 		LOGGER.trace("%s.initialize()", getFullName());
 		final double NA = UiNodeBuilder.NA;
+		UiNode g1;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		//全体
 		b.enter(new UiGroup("group"));
 			b.style(BuilderUiApplication.NOBORDER);
 			b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
 			//DOMの縦グループ
-			b.enter(new UiVerticalGroup("group1"));
+			b.enter(g1 = new UiVerticalGroup("group1"));
 				b.style(BuilderUiApplication.ENABLE);
 				b.spacing(1.0);
 				b.locate(1.0, 1.0, NA, 1.0, 10.0, NA);
@@ -51,10 +54,14 @@ public class GroupTestPage extends UiPage {
 					b.leave();
 				}
 			b.leave();
+			b.enter(new UiVerticalScrollBar("sb1", g1));
+				b.style(BuilderUiApplication.ENABLE);
+				b.locate(12.0, 1.0, NA, 1.0, 1.0, NA);
+			b.leave();
 			//CANVAS枠
 			b.enter(new UiCanvasFrame("canvasFrame1"));
 				b.style(BuilderUiApplication.NOBORDER);
-				b.locate(12.0, 1.0, NA, 1.0, 10.0, NA);
+				b.locate(14.0, 1.0, NA, 1.0, 10.0, NA);
 				//CANVAS枠中の縦グループ
 				b.enter(new UiVerticalGroup("group2"));
 					b.style(BuilderUiApplication.ENABLE);
@@ -73,7 +80,7 @@ public class GroupTestPage extends UiPage {
 			b.enter(new UiHorizontalGroup("group3"));
 				b.style(BuilderUiApplication.ENABLE);
 				b.spacing(1.0);
-				b.locate(23.0, 1.0, 1.0, NA, NA, 4.0);
+				b.locate(25.0, 1.0, 1.0, NA, NA, 4.0);
 				for (int i = 1; i <= 20; i++) {
 					b.enter(new UiButton("item" + i));
 						b.text("項目" + i);
@@ -85,7 +92,7 @@ public class GroupTestPage extends UiPage {
 			//CANVAS枠
 			b.enter(new UiCanvasFrame("canvasFrame2"));
 				b.style(BuilderUiApplication.NOBORDER);
-				b.locate(23.0, 6.0, 1.0, NA, NA, 4.0);
+				b.locate(25.0, 6.0, 1.0, NA, NA, 4.0);
 				//CANVAS枠中の横グループ
 				b.enter(new UiHorizontalGroup("group4"));
 					b.style(BuilderUiApplication.ENABLE);

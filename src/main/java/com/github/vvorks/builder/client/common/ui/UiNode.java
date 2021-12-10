@@ -1290,7 +1290,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		if (!Objects.equals(scrollLeft, newValue)) {
 			scrollLeft = newValue;
 			setChanged(CHANGED_LOCATION);
-			getRectangleOnThis();
 			int offset = getScrollLeftPx();
 			int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
 			int count = getScrollWidthPx();
@@ -1794,6 +1793,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			child.onMount();
 			child = child.getNextSibling();
 		}
+		Rect r = getRectangleOnThis();
+		notifyHorizontalScroll(r.getLeft(), r.getWidth(), getScrollWidthPx());
+		notifyVerticalScroll(r.getTop(), r.getHeight(), getScrollHeightPx());
 	}
 
 	public void onUnmount() {
