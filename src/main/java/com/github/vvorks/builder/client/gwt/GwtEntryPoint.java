@@ -7,6 +7,8 @@ import com.github.vvorks.builder.client.gwt.ui.ImePanel;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.net.URLFragment;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
+import com.google.gwt.animation.client.AnimationScheduler;
+import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -97,6 +99,13 @@ public class GwtEntryPoint implements EntryPoint {
 		p.addDoubleClickHandler(event -> domPanel.onDoubleClick(event));
 		p.addMouseWheelHandler(event -> domPanel.onMouseWheel(event));
 		Window.addResizeHandler(event -> domPanel.onResize(event));
+		final AnimationScheduler scheduler = AnimationScheduler.get();
+		scheduler.requestAnimationFrame(new AnimationCallback() {
+			public void execute(double timestamp) {
+				domPanel.onAnimationFrame();
+				scheduler.requestAnimationFrame(this);
+			}
+		});
 		//フォーカス設定
 		p.setFocus(true);
 		//起動パラメータの取得

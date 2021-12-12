@@ -87,10 +87,6 @@ public class TestDataSource extends DataSource {
 		return count;
 	}
 
-	private void setCount(int count) {
-		this.count = count;
-	}
-
 	@Override
 	public int getOffset() {
 		return offset;

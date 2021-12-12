@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.ui.DataSource;
 import com.github.vvorks.builder.client.common.ui.ListDataSource;
@@ -11,9 +12,11 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiDataField;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
+import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiVerticalList;
+import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
 import com.github.vvorks.builder.common.json.Json;
 
 public class ListTestPage extends UiPage {
@@ -35,10 +38,10 @@ public class ListTestPage extends UiPage {
 	protected void initialize() {
 		UiApplication app = getApplication();
 		JsonRpcClient rpc = app.getRpcClient();
-		DataSource ds = createDataSource(rpc);
-		//DataSource ds = createDataSource();
+		DataSource ds = ClientSettings.DEBUG ? createDataSource(rpc) : createDataSource();
 		final double NA = UiNodeBuilder.NA;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
+		UiNode list;
 		//全体
 		b.enter(new UiGroup("group"));
 			b.style(BuilderUiApplication.NOBORDER);
@@ -56,7 +59,7 @@ public class ListTestPage extends UiPage {
 				b.locate(1.0, 5.0, NA, 5.0, 3.0, NA);
 			b.leave();
 			//list body
-			b.enter(new UiVerticalList("list1"));
+			b.enter(list = new UiVerticalList("list1"));
 				b.style(BuilderUiApplication.ENABLE);
 				b.source(ds);
 				b.locate(5.0, 5.0, 5.0, 5.0, NA, NA);
@@ -76,9 +79,9 @@ public class ListTestPage extends UiPage {
 				b.leave();
 			b.leave();
 			//right side
-			b.enter(new UiButton("rightSide"));
-				b.text("rightSide");
-				b.style(BuilderUiApplication.BASIC);
+			b.enter(new UiVerticalScrollBar("rightSide", list));
+				b.style(BuilderUiApplication.SB);
+				b.focusable(true);
 				b.locate(NA, 5.0, 1.0, 5.0, 3.0, NA);
 			b.leave();
 			//footer
@@ -89,13 +92,14 @@ public class ListTestPage extends UiPage {
 			b.leave();
 		b.leave();
 	}
+
 	private DataSource createDataSource(JsonRpcClient rpc) {
 		return new TestDataSource(rpc);
 	}
 
 	private DataSource createDataSource() {
 		List<Json> list = new ArrayList<>();
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 20; i++) {
 			Json json = Json.createObject();
 			json.setString("_key", i);
 			json.setString("title", "title " + i);

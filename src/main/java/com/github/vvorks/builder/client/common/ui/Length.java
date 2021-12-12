@@ -45,6 +45,10 @@ public class Length implements Jsonizable {
 			this.cssName = cssName;
 		}
 
+		public Length of(double value) {
+			return new Length(value, this);
+		}
+
 		@Override
 		public String toString() {
 			return cssName;
@@ -311,6 +315,10 @@ public class Length implements Jsonizable {
 			throw new IllegalArgumentException();
 		}
 		return new Length(value, unit);
+	}
+
+	public static Length pxOf(double value) {
+		return new Length(value, Unit.PX);
 	}
 
 	@Override

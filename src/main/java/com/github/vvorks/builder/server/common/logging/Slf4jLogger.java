@@ -7,12 +7,16 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 
 	private final Logger logger;
 
+	private boolean feedNext;
+
 	public Slf4jLogger(Class<?> cls) {
 		logger = LoggerFactory.getLogger(cls.getPackage().getName());
 	}
+
 	@Override
 	public void trace(String format, Object... args) {
 		if (logger.isTraceEnabled()) {
+			insertFeed();
 			logger.trace(format(format, args));
 		}
 	}
@@ -20,6 +24,7 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 	@Override
 	public void verbose(String format, Object... args) {
 		if (logger.isTraceEnabled()) {
+			insertFeed();
 			logger.trace(format(format, args));
 		}
 	}
@@ -27,6 +32,7 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 	@Override
 	public void debug(String format, Object... args) {
 		if (logger.isDebugEnabled()) {
+			insertFeed();
 			logger.debug(format(format, args));
 		}
 	}
@@ -34,6 +40,7 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 	@Override
 	public void info(String format, Object... args) {
 		if (logger.isInfoEnabled()) {
+			insertFeed();
 			logger.info(format(format, args));
 		}
 	}
@@ -41,6 +48,7 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 	@Override
 	public void warn(String format, Object... args) {
 		if (logger.isWarnEnabled()) {
+			insertFeed();
 			logger.warn(format(format, args));
 		}
 	}
@@ -48,6 +56,7 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 	@Override
 	public void error(String format, Object... args) {
 		if (logger.isErrorEnabled()) {
+			insertFeed();
 			logger.error(format(format, args));
 		}
 	}
@@ -55,6 +64,7 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 	@Override
 	public void error(Throwable err) {
 		if (logger.isErrorEnabled()) {
+			insertFeed();
 			logger.error(err.getMessage(), err);
 		}
 	}
@@ -62,6 +72,7 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 	@Override
 	public void error(Throwable err, String format, Object... args) {
 		if (logger.isErrorEnabled()) {
+			insertFeed();
 			logger.error(format(format, args), err);
 		}
 	}
@@ -71,6 +82,17 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 			return format;
 		}
 		return String.format(format, args);
+	}
+
+	public void feed() {
+		feedNext = true;
+	}
+
+	private void insertFeed() {
+		if (feedNext) {
+			logger.info(FEED_STRING);
+			feedNext = false;
+		}
 	}
 
 }

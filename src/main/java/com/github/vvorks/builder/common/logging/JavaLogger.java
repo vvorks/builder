@@ -35,6 +35,8 @@ public class JavaLogger implements com.github.vvorks.builder.common.logging.Logg
 
 	private final Logger logger;
 
+	private boolean feedNext;
+
 	public JavaLogger(Class<?> cls) {
 		logger = Logger.getLogger(cls.getName());
 		Formatter formatter = new TinyFormatter();
@@ -100,6 +102,7 @@ public class JavaLogger implements com.github.vvorks.builder.common.logging.Logg
 		if (!logger.isLoggable(level)) {
 			return;
 		}
+		insertFeed();
 		StringBuilder sb = new StringBuilder();
 		Date time = new Date();
 		sb.append(Strings.sprintf(
@@ -177,6 +180,18 @@ public class JavaLogger implements com.github.vvorks.builder.common.logging.Logg
 			if (err != null) {
 				sb.append("cause: ");
 			}
+		}
+	}
+
+	@Override
+	public void feed() {
+		feedNext = true;
+	}
+
+	private void insertFeed() {
+		if (feedNext) {
+			logger.log(Level.INFO, FEED_STRING);
+			feedNext = false;
 		}
 	}
 

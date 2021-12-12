@@ -157,6 +157,11 @@ public class UiBundleStyle extends UiStyle {
 			return this;
 		}
 
+		public Builder named(String name, UiStyle s) {
+			style.add(node -> Objects.equals(name, node.getName()), s);
+			return this;
+		}
+
 		public Builder when(Predicate<UiNode> cond, UiStyle s) {
 			style.add(cond, s);
 			return this;

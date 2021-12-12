@@ -4,6 +4,8 @@ import com.github.vvorks.builder.common.lang.Factory;
 
 public interface Logger {
 
+	public static final String FEED_STRING = "----------";
+
 	public static Logger createLogger(Class<?> cls) {
 		return Factory.newInstance(Logger.class, cls);
 	}
@@ -72,5 +74,10 @@ public interface Logger {
 	 * @param args 引数
 	 */
 	public void error(Throwable err, String format, Object... args);
+
+	/**
+	 * 改ページする
+	 */
+	public void feed();
 
 }

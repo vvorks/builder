@@ -3,6 +3,7 @@ package com.github.vvorks.builder.client.common.ui;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -84,21 +85,35 @@ public class UiApplication implements EventHandler {
 		}
 	}
 
+	/** ルートノード */
 	private final UiRoot root;
 
+	/** DOMドキュメント */
 	private final DomDocument document;
 
+	/** 登録ページマップ */
 	private Map<String, Creator<UiPage>> pages;
 
+	/**実行中ページスタック */
 	private Deque<LivePage> pageStack;
 
+	/** スタイルマップ */
 	private Map<String, UiStyle> styles;
 
+	/** Webソケット */
 	private final WebSocket socket;
 
+	/** JsonRpcクライアント */
 	private final JsonRpcClient rpcClient;
 
+	/** データソースマップ */
 	private final Map<DataSource, Set<UiNode>> dataSourceMap;
+
+	/** キー押下マップ（リピートフラグ算出用） */
+	private final BitSet keyDowns;
+
+	/** ビジーフラグ */
+	private boolean busy;
 
 	public UiApplication(DomDocument doc) {
 		this.document = doc;
@@ -109,6 +124,7 @@ public class UiApplication implements EventHandler {
 		this.socket = Factory.newInstance(WebSocket.class);
 		this.rpcClient = new JsonRpcClient(this.socket);
 		this.dataSourceMap = new HashMap<>();
+		this.keyDowns = new BitSet(KeyCodes.MAX_KEY_CODE);
 		try {
 			socket.open(ClientSettings.SERVER_URL);
 		} catch (IOException err) {
@@ -251,13 +267,15 @@ public class UiApplication implements EventHandler {
 		Asserts.requireNotNull(page);
 		LivePage p = getLivePageOf(page);
 		UiNode oldFocusNode = p.focus;
-		if (oldFocusNode != newFocusNode) {
+		if (!newFocusNode.isFocusable()) {
+			newFocusNode = oldFocusNode;
+		} else if (oldFocusNode != newFocusNode) {
 			LOGGER.debug("FOCUS %s -> %s", getQualifiedName(oldFocusNode, page), getQualifiedName(newFocusNode, page));
 			notifyFocus(oldFocusNode, newFocusNode);
 			p.focus = newFocusNode;
 			adjustAxis(p, axis);
 		}
-		return oldFocusNode;
+		return newFocusNode;
 	}
 
 	public Point getAxis(UiNode node) {
@@ -332,8 +350,8 @@ public class UiApplication implements EventHandler {
 	}
 
 	public void processInitialize(int screenWidth, int screenHeight) {
+		LOGGER.info("processInitialize(%d, %d)", screenWidth, screenHeight);
 		try {
-			LOGGER.info("processInitialize(%d, %d)", screenWidth, screenHeight);
 			injectRegisteredStyles();
 			this.onResize(screenWidth, screenHeight);
 			root.onResize(screenWidth, screenHeight);
@@ -341,23 +359,38 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public void processLoad(String tag, Map<String, String> params) {
+		LOGGER.info("processLoad(%s, %s)", tag, params);
 		try {
-			LOGGER.info("processLoad(%s, %s)", tag, params);
 			call(tag, params);
 			refresh();
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processKeyDown(int keyCode, int charCode, int mods, int time) {
+		LOGGER.info("processKeyDown(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
 		try {
-			LOGGER.info("processKeyDown(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
+			//busyチェック
+			if (busy) {
+				LOGGER.warn("BUSY");
+				return EVENT_CONSUMED;
+			}
+			//リピートフラグ処理
+			if (keyDowns.get(keyCode)) {
+				mods |= KeyCodes.MOD_REPEAT;
+			}
+			keyDowns.set(keyCode, true);
+			//イベント配信処理
 			UiNode target = getKeyTarget();
 			UiNode node = target;
 			int result = node.onKeyDown(target, keyCode, charCode, mods, time);
@@ -373,16 +406,25 @@ public class UiApplication implements EventHandler {
 			if ((result & EVENT_AFFECTED) != 0) {
 				refresh();
 			}
+			LOGGER.info("processKeyDown() -> %d", result);
 			return result;
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processKeyPress(int keyCode, int charCode, int mods, int time) {
+		LOGGER.info("processKeyPress(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
 		try {
-			LOGGER.info("processKeyPress(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
+			//busyチェック
+			if (busy) {
+				LOGGER.warn("BUSY");
+				return EVENT_CONSUMED;
+			}
+			//イベント配信処理
 			UiNode target = getKeyTarget();
 			UiNode node = target;
 			int result = node.onKeyPress(target, keyCode, charCode, mods, time);
@@ -402,12 +444,21 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processKeyUp(int keyCode, int charCode, int mods, int time) {
+		LOGGER.info("processKeyUp(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
 		try {
-			LOGGER.info("processKeyUp(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
+			//リピートフラグ処理
+			if (!keyDowns.get(keyCode)) {
+				LOGGER.warn("INVALID");
+				return EVENT_CONSUMED;
+			}
+			keyDowns.set(keyCode, false);
+			//イベント配信処理
 			UiNode target = getKeyTarget();
 			UiNode node = target;
 			int result = node.onKeyUp(target, keyCode, charCode, mods, time);
@@ -427,11 +478,19 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processMouseMove(int x, int y, int mods, int time) {
 		try {
+			//busyチェック
+			if (busy) {
+				LOGGER.warn("BUSY");
+				return EVENT_CONSUMED;
+			}
+			//イベント配信処理
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
 			UiNode node = target;
@@ -451,12 +510,20 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processMouseDown(int x, int y, int mods, int time) {
+		LOGGER.info("processMouseDown(%d, %d, 0x%x, %d)", x, y, mods, time);
 		try {
-			LOGGER.info("processMouseDown(%d, %d, 0x%x, %d)", x, y, mods, time);
+			//busyチェック
+			if (busy) {
+				LOGGER.warn("BUSY");
+				return EVENT_CONSUMED;
+			}
+			//イベント配信処理
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
 			UiNode node = target;
@@ -476,12 +543,15 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processMouseUp(int x, int y, int mods, int time) {
+		LOGGER.info("processMouseUp(%d, %d, 0x%x, %d)", x, y, mods, time);
 		try {
-			LOGGER.info("processMouseUp(%d, %d, 0x%x, %d)", x, y, mods, time);
+			//イベント配信処理
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
 			UiNode node = target;
@@ -501,12 +571,15 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processMouseClick(int x, int y, int mods, int time) {
+		LOGGER.info("processMouseClick(%d, %d, 0x%x, %d)", x, y, mods, time);
 		try {
-			LOGGER.info("processMouseClick(%d, %d, 0x%x, %d)", x, y, mods, time);
+			//イベント配信処理
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
 			UiNode node = target;
@@ -526,12 +599,15 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processMouseWheel(int x, int y, int dx, int dy, int mods, int time) {
+		LOGGER.info("processMouseWheel(%d, %d, %d, %d, 0x%x, %d)", x, y, dx, dy, mods, time);
 		try {
-			LOGGER.info("processMouseWheel(%d, %d, %d, %d, 0x%x, %d)", x, y, dx, dy, mods, time);
+			//イベント配信処理
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
 			UiNode node = target;
@@ -551,15 +627,32 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processResize(int screenWidth, int screenHeight, int time) {
+		LOGGER.info("processResize(%d, %d, %d)", screenWidth, screenHeight, time);
 		try {
-			LOGGER.info("processResize(%d, %d, %d)", screenWidth, screenHeight, time);
 			this.onResize(screenWidth, screenHeight);
 			root.onResize(screenWidth, screenHeight);
 			refresh();
+			return UiNode.EVENT_EATEN;
+		} catch (Exception|AssertionError err) {
+			LOGGER.error(err);
+			throw err;
+		} finally {
+			LOGGER.feed();
+		}
+	}
+
+	public int processAnimationFrame(int time) {
+		try {
+			if (busy) {
+				LOGGER.info("processAnimationFrame(%d) reset busy", time);
+			}
+			busy = false;
 			return UiNode.EVENT_EATEN;
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
@@ -568,8 +661,8 @@ public class UiApplication implements EventHandler {
 	}
 
 	public int processImageLoaded(String url, int time) {
+		LOGGER.info("processImageLoaded(%s, %d)", url, time);
 		try {
-			LOGGER.info("processImageLoaded(%s, %d)", url, time);
 			int result = EVENT_IGNORED;
 			result |= root.onImageLoaded(url);
 			result |= this.onImageLoaded(url);
@@ -580,12 +673,14 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
 	}
 
 	public int processDataSourceUpdated(DataSource ds, int time) {
+		LOGGER.info("processDataSourceUpdated(%s, %d)", ds, time);
 		try {
-			LOGGER.info("processDataSourceUpdated(%s, %d)", ds, time);
 			int result = EVENT_IGNORED;
 			for (UiNode node : getAttachedNodes(ds)) {
 				result |= node.onDataSourceUpdated(ds);
@@ -598,10 +693,10 @@ public class UiApplication implements EventHandler {
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
+		} finally {
+			LOGGER.feed();
 		}
-
 	}
-
 
 	private UiNode getKeyTarget() {
 		return getFocus();
@@ -648,6 +743,7 @@ public class UiApplication implements EventHandler {
 //			}
 //		}
 		root.sync();
+		busy = true;
 	}
 
 	@Override

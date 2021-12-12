@@ -113,6 +113,12 @@ public class UiNodeBuilder {
 		return this;
 	}
 
+	public UiNodeBuilder focusable(boolean value) {
+		UiNode node = stack.peek();
+		node.setFocusable(value);
+		return this;
+	}
+
 	public UiNodeBuilder source(DataSource source) {
 		UiNode node = stack.peek();
 		Asserts.assume(node instanceof UiVerticalList);

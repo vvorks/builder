@@ -37,6 +37,7 @@ public class GroupTestPage extends UiPage {
 		final double NA = UiNodeBuilder.NA;
 		UiNode g1;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
+		int numChild = 100;
 		//全体
 		b.enter(new UiGroup("group"));
 			b.style(BuilderUiApplication.NOBORDER);
@@ -46,7 +47,7 @@ public class GroupTestPage extends UiPage {
 				b.style(BuilderUiApplication.ENABLE);
 				b.spacing(1.0);
 				b.locate(1.0, 1.0, NA, 1.0, 10.0, NA);
-				for (int i = 1; i <= 20; i++) {
+				for (int i = 1; i <= numChild; i++) {
 					b.enter(new UiButton("item" + i));
 						b.text("項目" + i);
 						b.style(BuilderUiApplication.BASIC);
@@ -54,8 +55,10 @@ public class GroupTestPage extends UiPage {
 					b.leave();
 				}
 			b.leave();
+			//スクロールバー
 			b.enter(new UiVerticalScrollBar("sb1", g1));
-				b.style(BuilderUiApplication.ENABLE);
+				b.style(BuilderUiApplication.SB);
+				b.focusable(true);
 				b.locate(12.0, 1.0, NA, 1.0, 1.0, NA);
 			b.leave();
 			//CANVAS枠
@@ -67,7 +70,7 @@ public class GroupTestPage extends UiPage {
 					b.style(BuilderUiApplication.ENABLE);
 					b.spacing(1.0);
 					b.locate(0.0, 0.0, 0.0, 0.0, NA, NA);
-					for (int i = 1; i <= 20; i++) {
+					for (int i = 1; i <= numChild; i++) {
 						b.enter(new UiButton("item" + i));
 							b.text("項目" + i);
 							b.style(BuilderUiApplication.BASIC);
@@ -81,7 +84,7 @@ public class GroupTestPage extends UiPage {
 				b.style(BuilderUiApplication.ENABLE);
 				b.spacing(1.0);
 				b.locate(25.0, 1.0, 1.0, NA, NA, 4.0);
-				for (int i = 1; i <= 20; i++) {
+				for (int i = 1; i <= numChild; i++) {
 					b.enter(new UiButton("item" + i));
 						b.text("項目" + i);
 						b.style(BuilderUiApplication.BASIC);
@@ -98,7 +101,7 @@ public class GroupTestPage extends UiPage {
 					b.style(BuilderUiApplication.ENABLE);
 					b.spacing(1.0);
 					b.locate(0.0, 0.0, 0.0, 0.0, NA, NA);
-					for (int i = 1; i <= 20; i++) {
+					for (int i = 1; i <= numChild; i++) {
 						b.enter(new UiButton("item" + i));
 							b.text("項目" + i);
 							b.style(BuilderUiApplication.BASIC);

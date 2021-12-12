@@ -128,9 +128,7 @@ public class GwtCanvasElement extends GwtDomElement {
 	protected void paintBorder(GwtContext2d con) {
 		String bdUrl = definedStyle.getBorderImage();
 		String bkUrl = definedStyle.getBackgroundImage();
-		if (bdUrl != null) {
-		} else if (bkUrl != null) {
-		} else {
+		if (bdUrl == null && bkUrl != null) {
 			int l = definedStyle.getBorderLeft().px(width);
 			int t = definedStyle.getBorderTop().px(height);
 			int r = definedStyle.getBorderRight().px(width);

@@ -135,8 +135,8 @@ public final class KeyCodes {
 	public static final int MAX_KEY_CODE		= 0x100;
 
 	public static final int MOD_LBUTTON			= 0x0001;
-	public static final int MOD_MBUTTON			= 0x0002;
-	public static final int MOD_RBUTTON			= 0x0004;
+	public static final int MOD_RBUTTON			= 0x0002;
+	public static final int MOD_MBUTTON			= 0x0004;
 	public static final int MOD_DOUBLECLICK		= 0x0008;
 
 	public static final int MOD_SHIFT			= 0x0100;
@@ -148,7 +148,7 @@ public final class KeyCodes {
 	public static final int MOD_CS				= MOD_CTRL|MOD_SHIFT;
 	public static final int MOD_AC				= MOD_META|MOD_ALT|MOD_CTRL;
 	public static final int MOD_ACS				= MOD_META|MOD_ALT|MOD_CTRL|MOD_SHIFT;
-	public static final int MOD_BUTTON			= MOD_LBUTTON|MOD_MBUTTON|MOD_RBUTTON;
+	public static final int MOD_BUTTONS			= MOD_LBUTTON|MOD_MBUTTON|MOD_RBUTTON;
 
 	/** インスタンス化抑止用コンストラクタ */
 	private KeyCodes() {

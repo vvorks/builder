@@ -42,6 +42,30 @@ public class BuilderUiApplication extends UiApplication {
 			.borderWidth("0px")
 			.build();
 
+	public static final UiAtomicStyle SB_OUTER = UiStyle.newAtomicBuilder(THIS, "sbouter", null)
+			.backgroundColor(Colors.GRAY)
+			.borderWidth("2px")
+			.borderColor(Colors.PINK)
+			.build();
+
+	public static final UiAtomicStyle SB_NORMAL = UiStyle.newAtomicBuilder(THIS, "sbnormal", null)
+			.backgroundColor(Colors.WHITE)
+			.borderWidth("0px")
+			.build();
+
+	public static final UiAtomicStyle SB_FOCUS = UiStyle.newAtomicBuilder(THIS, "sbfocus", null)
+			.backgroundColor(Colors.ORANGE)
+			.borderWidth("0px")
+			.build();
+
+	public static final UiBundleStyle SB_INNER = UiStyle.newBundleBuilder(THIS, "sbinner", SB_NORMAL)
+			.when(node -> node.getParent().isFocus(), SB_FOCUS)
+			.build();
+
+	public static final UiBundleStyle SB = UiStyle.newBundleBuilder(THIS, "sb", SB_OUTER)
+			.named("thumb", SB_INNER)
+			.build();
+
 	@SuppressWarnings("unchecked")
 	public BuilderUiApplication(DomDocument doc) {
 		super(doc);
@@ -51,6 +75,7 @@ public class BuilderUiApplication extends UiApplication {
 		addPage("#layout", args -> new LayouterTestPage("layoutPage", app, (Map<String, String>)args[0]));
 		registerStyle(BASIC);
 		registerStyle(NOBORDER);
+		registerStyle(SB);
 	}
 
 }

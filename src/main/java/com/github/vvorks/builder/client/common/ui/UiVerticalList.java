@@ -330,6 +330,42 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	@Override
+	protected void notifyHorizontalScroll(int offset, int limit, int count) {
+		//NOP
+	}
+
+	@Override
+	protected void notifyVerticalScroll(int _offset, int _limit, int _count) {
+		if (size() >= linesPerView) {
+			UiLine first = (UiLine) getFirstChild();
+			int count = dataSource.getCount() * lineHeight;
+			int offset = (first.getIndex() * lineHeight + getScrollTopPx()) % count;
+			super.notifyVerticalScroll(offset, pageHeight, count);
+		} else {
+			super.notifyVerticalScroll(0, pageHeight, pageHeight);
+		}
+	}
+
+	@Override
+	public int setHorizontalScroll(int offset) {
+		return EVENT_IGNORED;
+	}
+
+	@Override
+	public int setVerticalScroll(int offset) {
+		int count = dataSource.getCount() * lineHeight;
+		int len = count - pageHeight;
+		int index = ((UiLine) getFirstChild()).getIndex();
+		int oldOffset = (index * lineHeight + getScrollTopPx()) % count;
+		if (!isLoopMode() || !(0 == oldOffset || oldOffset == len)) {
+			offset = Math.min(Math.max(0, offset), len);
+		}
+		int newTop = offset - index * lineHeight;
+		scrollVirtual(newTop);
+		return EVENT_EATEN;
+	}
+
+	@Override
 	public void onMount() {
 		if (template == null) {
 			template = new UiLine(this, "template");
@@ -695,14 +731,16 @@ public class UiVerticalList extends UiGroup {
 				rollUp();
 				scrollTop += lineHeight;
 			}
-		} else {
+			setScrollTop(scrollTop);
+			relocateChildren();
+		} else if (scrollHeight - (scrollTop + pageHeight) < margin) {
 			while (scrollHeight - (scrollTop + pageHeight) < margin) {
 				rollDown();
 				scrollTop -= lineHeight;
 			}
+			setScrollTop(scrollTop);
+			relocateChildren();
 		}
-		setScrollTop(scrollTop);
-		relocateChildren();
 	}
 
 	private void rollUp() {

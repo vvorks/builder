@@ -43,7 +43,7 @@ gwt {
 		/** The level of logging detail (ERROR, WARN, INFO, TRACE, DEBUG, SPAM, ALL) */
 		logLevel = "INFO"
 		/** Script output style. (OBF, PRETTY, DETAILED)*/
-		style = "PRETTY"
+		style = "OBF"
 		/** Sets the optimization level used by the compiler. 0=none 9=maximum. */
 		optimize = 5
 		/** avoid classpath too long problem */

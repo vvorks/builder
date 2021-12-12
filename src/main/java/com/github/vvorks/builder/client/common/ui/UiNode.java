@@ -19,7 +19,7 @@ import com.github.vvorks.builder.common.lang.Copyable;
 import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.lang.Strings;
 
-public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
+public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrollable {
 
 	public static final String NS_HTML = "http://www.w3.org/1999/xhtml";
 
@@ -930,14 +930,31 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return nextSibling;
 	}
 
-	public void setHorizontalScroll(int offset) {
-		setScrollLeft(offset);
+	public int setHorizontalScroll(int offset) {
+		int result = EVENT_IGNORED;
+		int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
+		int count = getScrollWidthPx();
+		offset = Math.min(Math.max(0, offset), count - limit);
+		if (offset != getScrollLeftPx()) {
+			setScrollLeft(offset);
+			result = EVENT_AFFECTED;
+		}
+		return result;
 	}
 
-	public void setVertialScroll(int offset) {
-		setScrollTop(offset);
+	public int setVerticalScroll(int offset) {
+		int result = EVENT_IGNORED;
+		int limit = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
+		int count = getScrollHeightPx();
+		offset = Math.min(Math.max(0, offset), count - limit);
+		if (offset != getScrollTopPx()) {
+			setScrollTop(offset);
+			result = EVENT_AFFECTED;
+		}
+		return result;
 	}
 
+	@Override
 	public void addScrollListener(ScrollListener listener) {
 		if (scrollListeners == null) {
 			scrollListeners = new ArrayList<>();
@@ -945,6 +962,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		scrollListeners.add(listener);
 	}
 
+	@Override
 	public void removeScrollListener(ScrollListener listener) {
 		if (scrollListeners == null) {
 			return;
@@ -968,6 +986,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		for (ScrollListener l : scrollListeners) {
 			l.onVerticalScroll(this, offset, limit, count);
 		}
+	}
+
+	private void notifyScroll() {
+		Rect r = getRectangleOnThis();
+		notifyHorizontalScroll(r.getLeft(), r.getWidth(), getScrollWidthPx());
+		notifyVerticalScroll(r.getTop(), r.getHeight(), getScrollHeightPx());
 	}
 
 	public Length getLeft() {
@@ -1493,12 +1517,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return getApplication().setFocus(node, axis);
 	}
 
-	protected boolean isFocus() {
+	public boolean isFocus() {
 		UiNode focus = getFocus();
 		return this == focus;
 	}
 
-	protected boolean hasFocus() {
+	public boolean hasFocus() {
 		UiNode focus = getFocus();
 		return this == focus || this.isAncestor(focus);
 	}
@@ -1757,6 +1781,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			child.onResize(screenWidth, screenHeight);
 			child = child.getNextSibling();
 		}
+		notifyScroll();
 	}
 
 	@Override
@@ -1793,9 +1818,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			child.onMount();
 			child = child.getNextSibling();
 		}
-		Rect r = getRectangleOnThis();
-		notifyHorizontalScroll(r.getLeft(), r.getWidth(), getScrollWidthPx());
-		notifyVerticalScroll(r.getTop(), r.getHeight(), getScrollHeightPx());
+		notifyScroll();
 	}
 
 	public void onUnmount() {

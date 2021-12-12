@@ -30,12 +30,30 @@ public class DomPanel extends FocusPanel {
 
 	private static final Logger LOGGER = Logger.createLogger(DomPanel.class);
 
+	/** getModifier()の動作パラメータ：キー修飾子を取得する */
+	private static final int GM_KEY     = 1;
+
+	/** getModifier()の動作パラメータ：マウス修飾子を取得する */
+	private static final int GM_MOUSE   = 2;
+
+	/** getModifier()の動作パラメータ：マウスUP修飾子を取得する */
+	private static final int GM_MOUSEUP = 4;
+
+	/** バックヤードパネル（画像取得・保持用パネル） */
 	protected final Panel backyard;
 
+	/** IMEパネル（文字入力用） */
 	protected final ImePanel imePanel;
 
+	/** UIアプリケーション */
 	protected final UiApplication app;
 
+	/**
+	 * DOMパネルを作成する
+	 *
+	 * @param backyard バックヤードパネル
+	 * @param imePanel IMEパネル
+	 */
 	public DomPanel(Panel backyard, ImePanel imePanel) {
 		//sub panels初期化
 		this.backyard = backyard;
@@ -50,13 +68,18 @@ public class DomPanel extends FocusPanel {
 		panelElement.appendChild(e);
 	}
 
+	/**
+	 * バックヤードパネルを取得する
+	 *
+	 * @return バックヤードパネル
+	 */
 	public Panel getBackyard() {
 		return backyard;
 	}
 
 	public void onKeyDown(KeyDownEvent event) {
 		int keyCode = event.getNativeKeyCode();
-		int mods = getModifier(event) & ~KeyCodes.MOD_BUTTON;
+		int mods = getModifier(event, GM_KEY);
 		int timestamp = getTimeStamp(event);
 		int result = app.processKeyDown(keyCode, 0, mods, timestamp);
 		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
@@ -64,9 +87,16 @@ public class DomPanel extends FocusPanel {
 		}
 	}
 
+	private static native void flush(Element element)/*-{
+  		var disp = element.style.display;
+		element.style.display = 'none';
+		var trick = element.offsetHeight;
+  		element.style.display = disp;
+	}-*/;
+
 	public void onKeyPress(KeyPressEvent event) {
 		int charCode = event.getCharCode();
-		int mods = getModifier(event) & ~KeyCodes.MOD_BUTTON;
+		int mods = getModifier(event, GM_KEY);
 		int timestamp = getTimeStamp(event);
 		int result = app.processKeyPress(0, charCode, mods, timestamp);
 		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
@@ -76,7 +106,7 @@ public class DomPanel extends FocusPanel {
 
 	public void onKeyUp(KeyUpEvent event) {
 		int keyCode = event.getNativeKeyCode();
-		int mods = getModifier(event) & ~KeyCodes.MOD_BUTTON;
+		int mods = getModifier(event, GM_KEY);
 		int timestamp = getTimeStamp(event);
 		int result = app.processKeyUp(keyCode, 0, mods, timestamp);
 		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
@@ -87,7 +117,7 @@ public class DomPanel extends FocusPanel {
 	public void onMouseDown(MouseDownEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
-		int mods = getModifier(event);
+		int mods = getModifier(event, GM_KEY|GM_MOUSE);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseDown(x, y, mods, timestamp);
 		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
@@ -98,7 +128,7 @@ public class DomPanel extends FocusPanel {
 	public void onMouseMove(MouseMoveEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
-		int mods = getModifier(event);
+		int mods = getModifier(event, GM_KEY|GM_MOUSE);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseMove(x, y, mods, timestamp);
 		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
@@ -109,7 +139,7 @@ public class DomPanel extends FocusPanel {
 	public void onMouseUp(MouseUpEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
-		int mods = getModifier(event);
+		int mods = getModifier(event, GM_KEY|GM_MOUSEUP);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseUp(x, y, mods, timestamp);
 		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
@@ -120,7 +150,7 @@ public class DomPanel extends FocusPanel {
 	public void onClick(ClickEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
-		int mods = getModifier(event);
+		int mods = getModifier(event, GM_KEY|GM_MOUSEUP);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseClick(x, y, mods, timestamp);
 		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
@@ -131,7 +161,7 @@ public class DomPanel extends FocusPanel {
 	public void onDoubleClick(DoubleClickEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
-		int mods = getModifier(event) | KeyCodes.MOD_DOUBLECLICK;
+		int mods = getModifier(event, GM_KEY|GM_MOUSEUP) | KeyCodes.MOD_DOUBLECLICK;
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseClick(x, y, mods, timestamp);
 		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
@@ -144,7 +174,7 @@ public class DomPanel extends FocusPanel {
 		int y = event.getClientY();
 		int deltaX = 0;
 		int deltaY = event.getDeltaY();
-		int mods = getModifier(event);
+		int mods = getModifier(event, GM_KEY|GM_MOUSE);
 		int timestamp = getTimeStamp(event);
 		int result = app.processMouseWheel(x, y, deltaX, deltaY, mods, timestamp);
 		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
@@ -157,6 +187,11 @@ public class DomPanel extends FocusPanel {
 		int screenHeight = event.getHeight();
 		int timestamp = newTimestamp();
 		app.processResize(screenWidth, screenHeight, timestamp);
+	}
+
+	public void onAnimationFrame() {
+		int timestamp = newTimestamp();
+		app.processAnimationFrame(timestamp);
 	}
 
 	public void onImageLoaded(String url) {
@@ -178,38 +213,41 @@ public class DomPanel extends FocusPanel {
 		return Math.round(event.timeStamp);
 	}-*/;
 
-	private int getModifier(DomEvent<?> event) {
+	/**
+	 * イベントからキー／マウスの修飾子を取得する
+	 *
+	 * @param event 発生イベント
+	 * @param flags GM_*の組み合わせ
+	 * @return 修飾子のビット列（KeyCodes.MOD_*）
+	 */
+	private int getModifier(DomEvent<?> event, int flags) {
 		NativeEvent e = event.getNativeEvent();
 		int mod = 0;
-		//Browserイベント状態からApplicationのキーイベント修飾子を算出
-		if (e.getShiftKey()) {
-			mod |= KeyCodes.MOD_SHIFT;
+		if ((flags & GM_KEY) != 0) {
+			if (e.getShiftKey()) {
+				mod |= KeyCodes.MOD_SHIFT;
+			}
+			if (e.getCtrlKey()) {
+				mod |= KeyCodes.MOD_CTRL;
+			}
+			if (e.getAltKey()) {
+				mod |= KeyCodes.MOD_ALT;
+			}
+			if (e.getMetaKey()) {
+				mod |= KeyCodes.MOD_META;
+			}
 		}
-		if (e.getCtrlKey()) {
-			mod |= KeyCodes.MOD_CTRL;
-		}
-		if (e.getAltKey()) {
-			mod |= KeyCodes.MOD_ALT;
-		}
-		if (e.getMetaKey()) {
-			mod |= KeyCodes.MOD_META;
-		}
-		//Browserイベント状態からApplicationのボタンイベント修飾子を算出
-		switch (e.getButton()) {
-		case NativeEvent.BUTTON_LEFT:
-			mod |= KeyCodes.MOD_LBUTTON;
-			break;
-		case NativeEvent.BUTTON_MIDDLE:
-			mod |= KeyCodes.MOD_MBUTTON;
-			break;
-		case NativeEvent.BUTTON_RIGHT:
-			mod |= KeyCodes.MOD_RBUTTON;
-			break;
-		default:
-			break;
+		if ((flags & GM_MOUSE) != 0) {
+			mod |= (getButtons(e) & KeyCodes.MOD_BUTTONS);
+		} else if ((flags & GM_MOUSEUP) != 0) {
+			mod |= (e.getButton() & KeyCodes.MOD_BUTTONS);
 		}
 		return mod;
 	}
+
+	private static native int getButtons(NativeEvent e)/*-{
+		return e.buttons | 0;
+	}-*/;
 
 	public void load(String tag, Map<String, String> parameters) {
 		int screenWidth = Window.getClientWidth();

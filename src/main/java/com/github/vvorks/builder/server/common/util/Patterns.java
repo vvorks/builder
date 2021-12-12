@@ -6,4 +6,7 @@ public class Patterns {
 
 	public static final Pattern EOL = Pattern.compile("\r\n|\r|\n");
 
+	private Patterns() {
+	}
+
 }
