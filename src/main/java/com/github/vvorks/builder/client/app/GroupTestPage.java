@@ -7,6 +7,7 @@ import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiCanvasFrame;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalGroup;
+import com.github.vvorks.builder.client.common.ui.UiHorizontalScrollBar;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
@@ -35,7 +36,7 @@ public class GroupTestPage extends UiPage {
 	protected void initialize() {
 		LOGGER.trace("%s.initialize()", getFullName());
 		final double NA = UiNodeBuilder.NA;
-		UiNode g1;
+		UiNode g1, g3;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		int numChild = 100;
 		//全体
@@ -80,7 +81,7 @@ public class GroupTestPage extends UiPage {
 				b.leave();
 			b.leave();
 			//DOMの横グループ
-			b.enter(new UiHorizontalGroup("group3"));
+			b.enter(g3 = new UiHorizontalGroup("group3"));
 				b.style(BuilderUiApplication.ENABLE);
 				b.spacing(1.0);
 				b.locate(25.0, 1.0, 1.0, NA, NA, 4.0);
@@ -92,10 +93,16 @@ public class GroupTestPage extends UiPage {
 					b.leave();
 				}
 			b.leave();
+			//スクロールバー
+			b.enter(new UiHorizontalScrollBar("sb1", g3));
+				b.style(BuilderUiApplication.SB);
+				b.focusable(true);
+				b.locate(25.0, 6.0, 1.0, NA, NA, 1.0);
+			b.leave();
 			//CANVAS枠
 			b.enter(new UiCanvasFrame("canvasFrame2"));
 				b.style(BuilderUiApplication.NOBORDER);
-				b.locate(25.0, 6.0, 1.0, NA, NA, 4.0);
+				b.locate(25.0, 8.0, 1.0, NA, NA, 4.0);
 				//CANVAS枠中の横グループ
 				b.enter(new UiHorizontalGroup("group4"));
 					b.style(BuilderUiApplication.ENABLE);
