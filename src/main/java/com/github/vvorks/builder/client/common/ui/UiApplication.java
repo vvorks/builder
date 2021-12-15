@@ -200,7 +200,7 @@ public class UiApplication implements EventHandler {
 		LivePage p = getLivePage();
 		p.page.onUnmount();
 		pageStack.pop();
-		root.removeChild(p.page);
+		root.deleteChild(p.page);
 	}
 
 	private LivePage getLivePage() {
@@ -220,7 +220,7 @@ public class UiApplication implements EventHandler {
 				return p;
 			}
 		}
-		throw new IllegalStateException();
+		return null;
 	}
 
 	public UiNode getCapture() {
@@ -247,8 +247,7 @@ public class UiApplication implements EventHandler {
 		UiPage page = node.getPage();
 		Asserts.requireNotNull(page);
 		LivePage p = getLivePageOf(page);
-		Asserts.assume(p != null);
-		return p.focus;
+		return p != null ? p.focus : null;
 	}
 
 	private UiNode getFocus() {
@@ -266,7 +265,7 @@ public class UiApplication implements EventHandler {
 		UiPage page = newFocusNode.getPage();
 		Asserts.requireNotNull(page);
 		LivePage p = getLivePageOf(page);
-		UiNode oldFocusNode = p.focus;
+		UiNode oldFocusNode = p != null ? p.focus : null;
 		if (!newFocusNode.isFocusable()) {
 			newFocusNode = oldFocusNode;
 		} else if (oldFocusNode != newFocusNode) {
@@ -278,11 +277,16 @@ public class UiApplication implements EventHandler {
 		return newFocusNode;
 	}
 
+	private static Point DUMMY_POINT = new Point();
+
 	public Point getAxis(UiNode node) {
 		Asserts.requireNotNull(node);
 		UiPage page = node.getPage();
 		Asserts.requireNotNull(page);
 		LivePage p = getLivePageOf(page);
+		if (p == null) {
+			return DUMMY_POINT;
+		}
 		return new Point(p.axis);
 	}
 
@@ -291,7 +295,9 @@ public class UiApplication implements EventHandler {
 		UiPage page = node.getPage();
 		Asserts.requireNotNull(page);
 		LivePage p = getLivePageOf(page);
-		adjustAxis(p, axis);
+		if (p != null) {
+			adjustAxis(p, axis);
+		}
 	}
 
 	protected void adjustAxis(LivePage p, int axis) {

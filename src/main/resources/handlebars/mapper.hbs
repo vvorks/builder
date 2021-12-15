@@ -291,6 +291,10 @@ public interface {{className}}Mapper {
 			{{/each}}
 		FROM
 			{{tableName}}
+		{{#if sqlOrder}}
+		ORDER BY
+			{{#each sqlOrder}}{{this}}{{#separator}}, {{/separator}}{{/each}}
+		{{/if}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -350,6 +354,10 @@ public interface {{className}}Mapper {
 			<![CDATA[
 			{{sqlExpr}}
 			]]>
+		{{#if sqlOrder}}
+		ORDER BY
+			{{#each sqlOrder}}T1.{{this}}{{#separator}}, {{/separator}}{{/each}}
+		{{/if}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -414,6 +422,10 @@ public interface {{className}}Mapper {
 			{{#each invKeyFields}}
 			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
+		{{#if fref.owner.sqlOrder}}
+		ORDER BY
+			{{#each fref.owner.sqlOrder}}{{this}}{{#separator}}, {{/separator}}{{/each}}
+		{{/if}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -479,6 +491,10 @@ public interface {{className}}Mapper {
 			<![CDATA[
 			AND {{sqlExpr}}
 			]]>
+		{{#if ../fref.owner.sqlOrder}}
+		ORDER BY
+			{{#each ../fref.owner.sqlOrder}}T1.{{this}}{{#separator}}, {{/separator}}{{/each}}
+		{{/if}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

@@ -39,7 +39,7 @@ import com.github.vvorks.builder.server.mapper.QueryMapper;
 @JsonRpcController("/builder")
 public class BuilderRpcController {
 
-	/** プロジェクト型のMapper */
+	/** プロジェクトのMapper */
 	@Autowired
 	private ProjectMapper projectMapper;
 
@@ -64,9 +64,9 @@ public class BuilderRpcController {
 	private EnumValueMapper enumValueMapper;
 
 	/**
-	 * プロジェクト型を挿入する
+	 * プロジェクトを挿入する
 	 *
-	 * @param content 挿入するプロジェクト型
+	 * @param content 挿入するプロジェクト
 	 * @return 処理成功の場合、真
 	 */
 	@JsonRpcMethod
@@ -75,9 +75,9 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * プロジェクト型を更新する
+	 * プロジェクトを更新する
 	 *
-	 * @param content 更新するプロジェクト型
+	 * @param content 更新するプロジェクト
 	 * @return 処理成功の場合、真
 	 */
 	@JsonRpcMethod
@@ -86,9 +86,9 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * プロジェクト型を削除する
+	 * プロジェクトを削除する
 	 *
-	 * @param content 削除するプロジェクト型
+	 * @param content 削除するプロジェクト
 	 * @return 処理成功の場合、真
 	 */
 	@JsonRpcMethod
@@ -97,10 +97,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * プロジェクト型を取得する
+	 * プロジェクトを取得する
 	 *
 	 * @param projectId プロジェクトID
-	 * @return 取得したプロジェクト型
+	 * @return 取得したプロジェクト
 	 */
 	@JsonRpcMethod
 	public ProjectContent getProject(
@@ -112,13 +112,13 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * 全てのプロジェクト型情報を取得する
+	 * 全てのプロジェクト情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
 	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
-	 * @return プロジェクト型情報
+	 * @return プロジェクト情報
 	 */
 	@JsonRpcMethod
 	public ProjectInfo listProject(
@@ -141,14 +141,14 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * 名前に合致するプロジェクト型情報を取得する
+	 * 名前に合致するプロジェクト情報を取得する
 	 *
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
 	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
-	 * @return プロジェクト型情報
+	 * @return プロジェクト情報
 	 */
 	@JsonRpcMethod
 	public ProjectInfo listProjectIfNameIs(
@@ -178,7 +178,7 @@ public class BuilderRpcController {
 	/**
 	 * クラス一覧情報を取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
@@ -210,7 +210,7 @@ public class BuilderRpcController {
 	/**
 	 * 名前に合致するクラス一覧情報を取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
@@ -248,7 +248,7 @@ public class BuilderRpcController {
 	/**
 	 * 列挙一覧情報を取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
@@ -280,7 +280,7 @@ public class BuilderRpcController {
 	/**
 	 * 名前に合致する列挙一覧情報を取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
@@ -989,18 +989,18 @@ public class BuilderRpcController {
 	/**
 	 * 列挙値を取得する
 	 *
-	 * @param valueId 列挙名
 	 * @param ownerEnumId 所属列挙の列挙ID
+	 * @param valueId 列挙名
 	 * @return 取得した列挙値
 	 */
 	@JsonRpcMethod
 	public EnumValueContent getEnumValue(
-		@JsonRpcParam("valueId") String valueId, 
-		@JsonRpcParam("ownerEnumId") int ownerEnumId
+		@JsonRpcParam("ownerEnumId") int ownerEnumId, 
+		@JsonRpcParam("valueId") String valueId
 	) {
 		return enumValueMapper.get(
-				valueId, 
-				ownerEnumId
+				ownerEnumId, 
+				valueId
 				);
 	}
 

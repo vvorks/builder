@@ -89,7 +89,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	}
 
 	private EnumValueContent getEnumValue(String rName, EnumContent enm) {
-		return enumValueMapper.get(rName, enm.getEnumId());
+		return enumValueMapper.get(enm.getEnumId(), rName);
 	}
 
 	public Expression visitChildren(ExprNode node, Expression unused) throws ParseException {

@@ -83,6 +83,11 @@ public class JavaLogger implements com.github.vvorks.builder.common.logging.Logg
 	}
 
 	@Override
+	public void warn(Throwable err, String format, Object... args) {
+		log(Level.WARNING, err, format, args);
+	}
+
+	@Override
 	public void error(String format, Object... args) {
 		log(Level.SEVERE, null, format, args);
 	}

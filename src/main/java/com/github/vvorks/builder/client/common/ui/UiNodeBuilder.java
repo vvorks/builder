@@ -2,6 +2,7 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.function.Function;
 
 import com.github.vvorks.builder.common.lang.Asserts;
 
@@ -35,6 +36,15 @@ public class UiNodeBuilder {
 		if (node instanceof UiButton) {
 			UiButton textNode = (UiButton) node;
 			textNode.setText(text);
+		}
+		return this;
+	}
+
+	public UiNodeBuilder action(Function<UiNode, Integer> action) {
+		UiNode node = stack.peek();
+		if (node instanceof UiButton) {
+			UiButton textNode = (UiButton) node;
+			textNode.setAction(action);
 		}
 		return this;
 	}

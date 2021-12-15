@@ -51,6 +51,15 @@ public interface Logger {
 	public void warn(String format, Object... args);
 
 	/**
+	 * 警告ログを出力する.
+	 *
+	 * @param err 例外
+	 * @param format 出力フォーマット
+	 * @param args 引数
+	 */
+	public void warn(Throwable err, String format, Object... args);
+
+	/**
 	 * エラーログを出力する.
 	 *
 	 * @param format 出力フォーマット
@@ -61,8 +70,7 @@ public interface Logger {
 	/**
 	 * エラーログを出力する.
 	 *
-	 * @param err
-	 * 		例外
+	 * @param err 例外
 	 */
 	public void error(Throwable err);
 

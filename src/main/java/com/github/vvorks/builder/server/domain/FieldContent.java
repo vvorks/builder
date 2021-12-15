@@ -141,6 +141,15 @@ public class FieldContent {
 	}
 
 	/**
+	 * 見出し文字列を取得する
+	 *
+	 * @return 見出し文字列
+	 */
+	public String get_title() {
+		return title;
+	}
+
+	/**
 	 * フィールドIDを取得する
 	 *
 	 * @return フィールドID

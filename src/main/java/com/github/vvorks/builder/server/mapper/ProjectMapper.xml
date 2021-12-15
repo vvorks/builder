@@ -21,7 +21,7 @@
 			#{ description },
 			#{ note },
 			#{ copyrights },
-			#{ _lastUpdatedAt }
+			(strftime('%s', 'now') * 1000)
 		)
 	</insert>
 
@@ -33,15 +33,19 @@
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
 			F_COPYRIGHTS = #{ copyrights },
-			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
 		WHERE
 			F_PROJECT_ID = #{ projectId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</update>
 
 	<delete id="delete" parameterType="ProjectContent">
 		DELETE FROM T_PROJECT
 		WHERE
 			F_PROJECT_ID = #{ projectId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</delete>
 
 	<select id="get" resultType="ProjectContent">
@@ -81,6 +85,8 @@
 			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_PROJECT
+		ORDER BY
+			F_PROJECT_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -118,6 +124,8 @@
 			<![CDATA[
 			T1.F_PROJECT_NAME = #{name}
 			]]>
+		ORDER BY
+			T1.F_PROJECT_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -142,6 +150,8 @@
 			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_CLASS_NAME AS "className",
+			F_ORDER_EXPR AS "orderExpr",
+			F_TITLE_EXPR AS "titleExpr",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note",
@@ -150,6 +160,8 @@
 			T_CLASS
 		WHERE
 			F_OWNER_PROJECT_ID = #{ content.projectId }
+		ORDER BY
+			F_CLASS_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -177,6 +189,8 @@
 			T1.F_CLASS_ID AS "classId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
 			T1.F_CLASS_NAME AS "className",
+			T1.F_ORDER_EXPR AS "orderExpr",
+			T1.F_TITLE_EXPR AS "titleExpr",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -188,6 +202,8 @@
 			<![CDATA[
 			AND T1.F_CLASS_NAME = #{name}
 			]]>
+		ORDER BY
+			T1.F_CLASS_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -221,6 +237,8 @@
 			T_ENUM
 		WHERE
 			F_OWNER_PROJECT_ID = #{ content.projectId }
+		ORDER BY
+			F_ENUM_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -260,6 +278,8 @@
 			<![CDATA[
 			AND T1.F_ENUM_NAME = #{name}
 			]]>
+		ORDER BY
+			T1.F_ENUM_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

@@ -96,6 +96,15 @@ public class QueryContent {
 	}
 
 	/**
+	 * 見出し文字列を取得する
+	 *
+	 * @return 見出し文字列
+	 */
+	public String get_title() {
+		return title;
+	}
+
+	/**
 	 * クエリーIDを取得する
 	 *
 	 * @return クエリーID

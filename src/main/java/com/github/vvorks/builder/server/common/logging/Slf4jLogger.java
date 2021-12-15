@@ -54,6 +54,14 @@ public class Slf4jLogger implements com.github.vvorks.builder.common.logging.Log
 	}
 
 	@Override
+	public void warn(Throwable err, String format, Object... args) {
+		if (logger.isWarnEnabled()) {
+			insertFeed();
+			logger.warn(format(format, args), err);
+		}
+	}
+
+	@Override
 	public void error(String format, Object... args) {
 		if (logger.isErrorEnabled()) {
 			insertFeed();
