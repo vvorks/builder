@@ -7,7 +7,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 /**
- * プロジェクト型
+ * プロジェクト
  */
 public class ProjectContent {
 
@@ -60,13 +60,13 @@ public class ProjectContent {
 	private java.util.Date _lastUpdatedAt;
 
 	/**
-	 * 空のプロジェクト型を作成する
+	 * 空のプロジェクトを作成する
 	 */
 	public ProjectContent() {
 	}
 
 	/**
-	 * 指定のキー項目を持つプロジェクト型を作成する
+	 * 指定のキー項目を持つプロジェクトを作成する
 	 *
 	 * @param projectId プロジェクトID
 	 */

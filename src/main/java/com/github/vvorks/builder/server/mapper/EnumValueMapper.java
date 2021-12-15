@@ -40,13 +40,13 @@ public interface EnumValueMapper {
 	/**
 	 * 列挙値を取得する
 	 *
-	 * @param valueId 列挙名
 	 * @param ownerEnumId 所属列挙の列挙ID
+	 * @param valueId 列挙名
 	 * @return 取得した列挙値
 	 */
 	public EnumValueContent get(
-		@Param("valueId") String valueId, 
-		@Param("ownerEnumId") int ownerEnumId
+		@Param("ownerEnumId") int ownerEnumId, 
+		@Param("valueId") String valueId
 	);
 
 	/**

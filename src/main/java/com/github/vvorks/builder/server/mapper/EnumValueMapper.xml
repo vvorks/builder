@@ -5,21 +5,21 @@
 
 	<insert id="insert" parameterType="EnumValueContent">
 		INSERT INTO T_ENUM_VALUE (
-			F_VALUE_ID,
 			F_OWNER_ENUM_ID,
+			F_VALUE_ID,
 			F_CODE,
 			F_TITLE,
 			F_DESCRIPTION,
 			F_NOTE,
 			F__LAST_UPDATED_AT
 		) VALUES (
-			#{ valueId },
 			#{ ownerEnumId },
+			#{ valueId },
 			#{ code },
 			#{ title },
 			#{ description },
 			#{ note },
-			#{ _lastUpdatedAt }
+			(strftime('%s', 'now') * 1000)
 		)
 	</insert>
 
@@ -29,23 +29,27 @@
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
-			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
 		WHERE
-			F_VALUE_ID = #{ valueId } AND 
-			F_OWNER_ENUM_ID = #{ ownerEnumId }
+			F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
+			F_VALUE_ID = #{ valueId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</update>
 
 	<delete id="delete" parameterType="EnumValueContent">
 		DELETE FROM T_ENUM_VALUE
 		WHERE
-			F_VALUE_ID = #{ valueId } AND 
-			F_OWNER_ENUM_ID = #{ ownerEnumId }
+			F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
+			F_VALUE_ID = #{ valueId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</delete>
 
 	<select id="get" resultType="EnumValueContent">
 		SELECT
-			F_VALUE_ID AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
+			F_VALUE_ID AS "valueId",
 			F_CODE AS "code",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
@@ -54,8 +58,8 @@
 		FROM
 			T_ENUM_VALUE
 		WHERE
-			F_VALUE_ID = #{ valueId } AND 
-			F_OWNER_ENUM_ID = #{ ownerEnumId }
+			F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
+			F_VALUE_ID = #{ valueId }
 	</select>
 
 	<select id="listSummary" resultType="EnumValueSummary">
@@ -69,8 +73,8 @@
 
 	<select id="listContent" resultType="EnumValueContent">
 		SELECT
-			F_VALUE_ID AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
+			F_VALUE_ID AS "valueId",
 			F_CODE AS "code",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
@@ -78,6 +82,8 @@
 			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM_VALUE
+		ORDER BY
+			F_CODE
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

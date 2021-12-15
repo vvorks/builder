@@ -23,7 +23,7 @@
 			#{ title },
 			#{ description },
 			#{ note },
-			#{ _lastUpdatedAt }
+			(strftime('%s', 'now') * 1000)
 		)
 	</insert>
 
@@ -36,15 +36,19 @@
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
-			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
 		WHERE
 			F_QUERY_ID = #{ queryId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</update>
 
 	<delete id="delete" parameterType="QueryContent">
 		DELETE FROM T_QUERY
 		WHERE
 			F_QUERY_ID = #{ queryId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</delete>
 
 	<select id="get" resultType="QueryContent">
@@ -86,6 +90,8 @@
 			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_QUERY
+		ORDER BY
+			F_QUERY_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -99,6 +105,8 @@
 			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_CLASS_NAME AS "className",
+			F_ORDER_EXPR AS "orderExpr",
+			F_TITLE_EXPR AS "titleExpr",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note",

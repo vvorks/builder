@@ -83,6 +83,15 @@ public class {{className}}Content {
 		return sb.toString();
 	}
 
+	/**
+	 * 見出し文字列を取得する
+	 *
+	 * @return 見出し文字列
+	 */
+	public String get_title() {
+		return {{validTitle}};
+	}
+
 	{{#each properties}}
 
 	/**

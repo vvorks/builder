@@ -1,5 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import com.github.vvorks.builder.client.app.BuilderUiApplication;
+
 public class UiDataField extends UiNode implements DataField {
 
 	/** 編集状態 */
@@ -86,6 +88,10 @@ public class UiDataField extends UiNode implements DataField {
 			setText("");
 			doc.startEditing(this, "");
 			result = EVENT_AFFECTED;
+		} else if (isPopupKey(keyCode, mods)) {
+			showPopup();
+			result = EVENT_EATEN;
+
 		} else if (isEditKey(keyCode, mods)) {
 			editState = EditState.FULL;
 			saveText = getText();
@@ -210,6 +216,10 @@ public class UiDataField extends UiNode implements DataField {
 				(keyCode == KeyCodes.TAB   )  ;
 	}
 
+	protected boolean isPopupKey(int keyCode, int mods) {
+		return keyCode == KeyCodes.DOWN && (mods & KeyCodes.MOD_ALT) != 0;
+	}
+
 	/**
 	 * 決定キーか否かを判定する
 	 *
@@ -242,6 +252,27 @@ public class UiDataField extends UiNode implements DataField {
 			return false;
 		}
 		return keyCode == KeyCodes.ESCAPE;
+	}
+
+	private static class Test extends UiPage {
+		public Test(UiApplication app) {
+			super("test", app);
+		}
+		@Override
+		protected void initialize() {
+			final double NA = UiNodeBuilder.NA;
+			UiNodeBuilder b = new UiNodeBuilder(this, "px");
+			b.enter(new UiButton("group"));
+				b.style(BuilderUiApplication.BASIC);
+				b.locate(NA, NA, NA, NA, 200, 40);
+				b.action(node -> {node.getApplication().back();return EVENT_EATEN;});
+			b.leave();
+		}
+	}
+
+	protected void showPopup() {
+		UiApplication app = getApplication();
+		app.call(new Test(app));
 	}
 
 }

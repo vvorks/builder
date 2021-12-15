@@ -14,52 +14,52 @@ import com.github.vvorks.builder.server.domain.*;
 public interface ProjectMapper {
 
 	/**
-	 * プロジェクト型を挿入する
+	 * プロジェクトを挿入する
 	 *
-	 * @param content 挿入するプロジェクト型
+	 * @param content 挿入するプロジェクト
 	 * @return 処理成功の場合、真
 	 */
 	public boolean insert(ProjectContent content);
 
 	/**
-	 * プロジェクト型を更新する
+	 * プロジェクトを更新する
 	 *
-	 * @param content 更新するプロジェクト型
+	 * @param content 更新するプロジェクト
 	 * @return 処理成功の場合、真
 	 */
 	public boolean update(ProjectContent content);
 
 	/**
-	 * プロジェクト型を削除する
+	 * プロジェクトを削除する
 	 *
-	 * @param content 削除するプロジェクト型
+	 * @param content 削除するプロジェクト
 	 * @return 処理成功の場合、真
 	 */
 	public boolean delete(ProjectContent content);
 
 	/**
-	 * プロジェクト型を取得する
+	 * プロジェクトを取得する
 	 *
 	 * @param projectId プロジェクトID
-	 * @return 取得したプロジェクト型
+	 * @return 取得したプロジェクト
 	 */
 	public ProjectContent get(
 		@Param("projectId") int projectId
 	);
 
 	/**
-	 * 全てのプロジェクト型のサマリーを取得する
+	 * 全てのプロジェクトのサマリーを取得する
 	 *
-	 * @return プロジェクト型のサマリー
+	 * @return プロジェクトのサマリー
 	 */
 	public ProjectSummary listSummary();
 
 	/**
-	 * 全てのプロジェクト型を取得する
+	 * 全てのプロジェクトを取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return プロジェクト型のリスト
+	 * @return プロジェクトのリスト
 	 */
 	public List<ProjectContent> listContent(
 		@Param("offset") int offset,
@@ -67,22 +67,22 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * 名前に合致するプロジェクト型のサマリーを取得する
+	 * 名前に合致するプロジェクトのサマリーを取得する
 	 *
 	 * @param name name
-	 * @return プロジェクト型のサマリー
+	 * @return プロジェクトのサマリー
 	 */
 	public ProjectSummary listSummaryIfNameIs(
 		@Param("name") String name
 	);
 
 	/**
-	 * 名前に合致するプロジェクト型を取得する
+	 * 名前に合致するプロジェクトを取得する
 	 *
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return プロジェクト型のリスト
+	 * @return プロジェクトのリスト
 	 */
 	public List<ProjectContent> listContentIfNameIs(
 		@Param("name") String name,
@@ -93,7 +93,7 @@ public interface ProjectMapper {
 	/**
 	 * クラス一覧のサマリーを取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @return クラス一覧のサマリー
 	 */
 	public ClassSummary listClassesSummary(
@@ -103,7 +103,7 @@ public interface ProjectMapper {
 	/**
 	 * クラス一覧を取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラス一覧
@@ -117,7 +117,7 @@ public interface ProjectMapper {
 	/**
 	 * 名前に合致するクラス一覧のサマリーを取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @return クラス一覧のサマリー
 	 */
 	public ClassSummary listClassesSummaryIfNameIs(
@@ -128,7 +128,7 @@ public interface ProjectMapper {
 	/**
 	 * 名前に合致するクラス一覧を取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラス一覧
@@ -143,7 +143,7 @@ public interface ProjectMapper {
 	/**
 	 * 列挙一覧のサマリーを取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @return 列挙一覧のサマリー
 	 */
 	public EnumSummary listEnumsSummary(
@@ -153,7 +153,7 @@ public interface ProjectMapper {
 	/**
 	 * 列挙一覧を取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙一覧
@@ -167,7 +167,7 @@ public interface ProjectMapper {
 	/**
 	 * 名前に合致する列挙一覧のサマリーを取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @return 列挙一覧のサマリー
 	 */
 	public EnumSummary listEnumsSummaryIfNameIs(
@@ -178,7 +178,7 @@ public interface ProjectMapper {
 	/**
 	 * 名前に合致する列挙一覧を取得する
 	 *
-	 * @param content プロジェクト型
+	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙一覧

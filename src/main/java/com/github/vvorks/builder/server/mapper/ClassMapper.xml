@@ -8,6 +8,8 @@
 			F_CLASS_ID,
 			F_OWNER_PROJECT_ID,
 			F_CLASS_NAME,
+			F_ORDER_EXPR,
+			F_TITLE_EXPR,
 			F_TITLE,
 			F_DESCRIPTION,
 			F_NOTE,
@@ -16,10 +18,12 @@
 			#{ classId },
 			#{ ownerProjectId },
 			#{ className },
+			#{ orderExpr },
+			#{ titleExpr },
 			#{ title },
 			#{ description },
 			#{ note },
-			#{ _lastUpdatedAt }
+			(strftime('%s', 'now') * 1000)
 		)
 	</insert>
 
@@ -27,18 +31,24 @@
 		UPDATE T_CLASS SET
 			F_OWNER_PROJECT_ID = #{ ownerProjectId },
 			F_CLASS_NAME = #{ className },
+			F_ORDER_EXPR = #{ orderExpr },
+			F_TITLE_EXPR = #{ titleExpr },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
-			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
 		WHERE
 			F_CLASS_ID = #{ classId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</update>
 
 	<delete id="delete" parameterType="ClassContent">
 		DELETE FROM T_CLASS
 		WHERE
 			F_CLASS_ID = #{ classId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</delete>
 
 	<select id="get" resultType="ClassContent">
@@ -46,6 +56,8 @@
 			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_CLASS_NAME AS "className",
+			F_ORDER_EXPR AS "orderExpr",
+			F_TITLE_EXPR AS "titleExpr",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note",
@@ -70,12 +82,16 @@
 			F_CLASS_ID AS "classId",
 			F_OWNER_PROJECT_ID AS "ownerProjectId",
 			F_CLASS_NAME AS "className",
+			F_ORDER_EXPR AS "orderExpr",
+			F_TITLE_EXPR AS "titleExpr",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
 			F_NOTE AS "note",
 			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_CLASS
+		ORDER BY
+			F_CLASS_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -102,6 +118,8 @@
 			T1.F_CLASS_ID AS "classId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
 			T1.F_CLASS_NAME AS "className",
+			T1.F_ORDER_EXPR AS "orderExpr",
+			T1.F_TITLE_EXPR AS "titleExpr",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -112,6 +130,8 @@
 			<![CDATA[
 			T1.F_CLASS_NAME = #{name}
 			]]>
+		ORDER BY
+			T1.F_CLASS_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -172,6 +192,8 @@
 			T_FIELD
 		WHERE
 			F_OWNER_CLASS_ID = #{ content.classId }
+		ORDER BY
+			F_FIELD_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -222,6 +244,8 @@
 			<![CDATA[
 			AND T1.F_FIELD_NAME = #{name}
 			]]>
+		ORDER BY
+			T1.F_FIELD_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -256,6 +280,8 @@
 			T_QUERY
 		WHERE
 			F_OWNER_CLASS_ID = #{ content.classId }
+		ORDER BY
+			F_QUERY_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

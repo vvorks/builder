@@ -30,6 +30,22 @@ public class ClassContent {
 	private String className;
 
 	/**
+	 * オーダー式
+	 *
+	 * デフォルトの表示順を表す式
+	 */
+	@NotNull
+	private String orderExpr;
+
+	/**
+	 * タイトル表示式
+	 *
+	 * オブジェクトのタイトルを表現する式
+	 */
+	@NotNull
+	private String titleExpr;
+
+	/**
 	 * タイトル
 	 */
 	@NotNull
@@ -134,6 +150,42 @@ public class ClassContent {
 	}
 
 	/**
+	 * オーダー式を取得する
+	 *
+	 * @return オーダー式
+	 */
+	public String getOrderExpr() {
+		return this.orderExpr;
+	}
+
+	/**
+	 * オーダー式を設定する
+	 *
+	 * @param orderExpr 設定するオーダー式
+	 */
+	public void setOrderExpr(String orderExpr) {
+		this.orderExpr = orderExpr;
+	}
+
+	/**
+	 * タイトル表示式を取得する
+	 *
+	 * @return タイトル表示式
+	 */
+	public String getTitleExpr() {
+		return this.titleExpr;
+	}
+
+	/**
+	 * タイトル表示式を設定する
+	 *
+	 * @param titleExpr 設定するタイトル表示式
+	 */
+	public void setTitleExpr(String titleExpr) {
+		this.titleExpr = titleExpr;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
@@ -211,6 +263,8 @@ public class ClassContent {
 			classId,
 			ownerProjectId,
 			className,
+			orderExpr,
+			titleExpr,
 			title,
 			description,
 			note,
@@ -236,6 +290,8 @@ public class ClassContent {
 			this.classId == other.classId && 
 			this.ownerProjectId == other.ownerProjectId && 
 			Objects.equals(this.className, other.className) && 
+			Objects.equals(this.orderExpr, other.orderExpr) && 
+			Objects.equals(this.titleExpr, other.titleExpr) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note) && 
@@ -250,6 +306,8 @@ public class ClassContent {
 		sb.append("classId=").append(classId).append(", ");
 		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
 		sb.append("className=").append(className).append(", ");
+		sb.append("orderExpr=").append(orderExpr).append(", ");
+		sb.append("titleExpr=").append(titleExpr).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note).append(", ");

@@ -81,6 +81,24 @@ public class ClassExtender {
 		return SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(cls.getClassName());
 	}
 
+	public List<String> getSqlOrder(ClassContent cls) {
+		String expr = cls.getOrderExpr();
+		if (Strings.isEmpty(expr)) {
+			return Collections.emptyList();
+		}
+		//TODO 仮。本当は式を解釈した上でSQLのORDER BYで有効な形式にしないとダメ
+		List<String> cols = new ArrayList<>();
+		for (String f : expr.split(",")) {
+			cols.add(SqlWriter.COLUMN_PREFIX + Strings.toUpperSnake(f));
+		}
+		return cols;
+	}
+
+	public String getValidTitle(ClassContent cls) {
+		//TODO 仮。本当は式を解釈した上で正しいJavaの式を返す事
+		return cls.getTitleExpr();
+	}
+
 	public List<FieldContent> getProperties(ClassContent cls) {
 		return getProperties(cls, fld -> true);
 	}
@@ -202,8 +220,8 @@ public class ClassExtender {
 			try {
 				getters[i] = joint.type.getMethod(getterName);
 			} catch (NoSuchMethodException|SecurityException err) {
-				LOGGER.error(err, "getter %s not found.", getterName);
-				throw new RuntimeException(err);
+				LOGGER.warn(err, "getter %s not found.", getterName);
+				getters[i] = null;
 			}
 		}
 		joint.fields = fields;
@@ -214,7 +232,11 @@ public class ClassExtender {
 		Object value;
 		Method m = joint.getters[index];
 		try {
-			value = m.invoke(rec);
+			if (m == null) {
+				value = null;
+			} else {
+				value = m.invoke(rec);
+			}
 		} catch (IllegalAccessException|IllegalArgumentException|InvocationTargetException err) {
 			LOGGER.error(err, "getter %s invoke error.", m.getName());
 			throw new RuntimeException(err);

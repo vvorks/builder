@@ -6,7 +6,7 @@ package com.github.vvorks.builder.server.domain;
 import java.util.Objects;
 
 /**
- * プロジェクト型のサマリー情報
+ * プロジェクトのサマリー情報
  */
 public class ProjectSummary {
 

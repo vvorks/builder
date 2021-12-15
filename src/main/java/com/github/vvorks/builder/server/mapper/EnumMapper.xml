@@ -21,7 +21,7 @@
 			#{ title },
 			#{ description },
 			#{ note },
-			#{ _lastUpdatedAt }
+			(strftime('%s', 'now') * 1000)
 		)
 	</insert>
 
@@ -33,15 +33,19 @@
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
-			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
 		WHERE
 			F_ENUM_ID = #{ enumId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</update>
 
 	<delete id="delete" parameterType="EnumContent">
 		DELETE FROM T_ENUM
 		WHERE
 			F_ENUM_ID = #{ enumId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</delete>
 
 	<select id="get" resultType="EnumContent">
@@ -81,6 +85,8 @@
 			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
 		FROM
 			T_ENUM
+		ORDER BY
+			F_ENUM_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -118,6 +124,8 @@
 			<![CDATA[
 			T1.F_ENUM_NAME = #{name}
 			]]>
+		ORDER BY
+			T1.F_ENUM_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -155,8 +163,8 @@
 
 	<select id="listValuesContent" resultType="EnumValueContent">
 		SELECT
-			F_VALUE_ID AS "valueId",
 			F_OWNER_ENUM_ID AS "ownerEnumId",
+			F_VALUE_ID AS "valueId",
 			F_CODE AS "code",
 			F_TITLE AS "title",
 			F_DESCRIPTION AS "description",
@@ -166,6 +174,8 @@
 			T_ENUM_VALUE
 		WHERE
 			F_OWNER_ENUM_ID = #{ content.enumId }
+		ORDER BY
+			F_CODE
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

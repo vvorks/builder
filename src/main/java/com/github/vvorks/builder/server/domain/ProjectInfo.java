@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * プロジェクト型情報
+ * プロジェクト情報
  */
 public class ProjectInfo {
 

@@ -12,15 +12,15 @@ import javax.validation.constraints.NotNull;
 public class EnumValueContent {
 
 	/**
+	 * 所属列挙の列挙ID
+	 */
+	private int ownerEnumId;
+
+	/**
 	 * 列挙名
 	 */
 	@NotNull
 	private String valueId;
-
-	/**
-	 * 所属列挙の列挙ID
-	 */
-	private int ownerEnumId;
 
 	/**
 	 * 列挙コード
@@ -58,15 +58,15 @@ public class EnumValueContent {
 	/**
 	 * 指定のキー項目を持つ列挙値を作成する
 	 *
-	 * @param valueId 列挙名
 	 * @param ownerEnumId 所属列挙の列挙ID
+	 * @param valueId 列挙名
 	 */
 	public EnumValueContent(
-		String valueId,
-		int ownerEnumId
+		int ownerEnumId,
+		String valueId
 	) {
-		this.valueId = valueId;
 		this.ownerEnumId = ownerEnumId;
+		this.valueId = valueId;
 	}
 
 	/**
@@ -76,27 +76,9 @@ public class EnumValueContent {
 	 */
 	public String get_key() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(valueId).append('-');
-		sb.append(ownerEnumId);
+		sb.append(ownerEnumId).append('-');
+		sb.append(valueId);
 		return sb.toString();
-	}
-
-	/**
-	 * 列挙名を取得する
-	 *
-	 * @return 列挙名
-	 */
-	public String getValueId() {
-		return this.valueId;
-	}
-
-	/**
-	 * 列挙名を設定する
-	 *
-	 * @param valueId 設定する列挙名
-	 */
-	public void setValueId(String valueId) {
-		this.valueId = valueId;
 	}
 
 	/**
@@ -115,6 +97,24 @@ public class EnumValueContent {
 	 */
 	public void setOwnerEnumId(int ownerEnumId) {
 		this.ownerEnumId = ownerEnumId;
+	}
+
+	/**
+	 * 列挙名を取得する
+	 *
+	 * @return 列挙名
+	 */
+	public String getValueId() {
+		return this.valueId;
+	}
+
+	/**
+	 * 列挙名を設定する
+	 *
+	 * @param valueId 設定する列挙名
+	 */
+	public void setValueId(String valueId) {
+		this.valueId = valueId;
 	}
 
 	/**
@@ -210,8 +210,8 @@ public class EnumValueContent {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			valueId,
 			ownerEnumId,
+			valueId,
 			code,
 			title,
 			description,
@@ -235,8 +235,8 @@ public class EnumValueContent {
 
 	private boolean equals(EnumValueContent other) {
 		return
-			Objects.equals(this.valueId, other.valueId) && 
 			this.ownerEnumId == other.ownerEnumId && 
+			Objects.equals(this.valueId, other.valueId) && 
 			this.code == other.code && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
@@ -249,8 +249,8 @@ public class EnumValueContent {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("EnumValueContent [");
-		sb.append("valueId=").append(valueId).append(", ");
 		sb.append("ownerEnumId=").append(ownerEnumId).append(", ");
+		sb.append("valueId=").append(valueId).append(", ");
 		sb.append("code=").append(code).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
