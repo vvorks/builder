@@ -18,6 +18,7 @@ import com.github.vvorks.builder.server.expression.LongLiteral;
 import com.github.vvorks.builder.server.expression.NullLiteral;
 import com.github.vvorks.builder.server.expression.NumericLiteral;
 import com.github.vvorks.builder.server.expression.Operation;
+import com.github.vvorks.builder.server.expression.OrderByExpression;
 import com.github.vvorks.builder.server.expression.StringLiteral;
 
 public class JavaTextWriter implements Expression.Visitor<Object, String> {
@@ -36,6 +37,7 @@ public class JavaTextWriter implements Expression.Visitor<Object, String> {
 		SYMBOL_MAP.put(Operation.Code.ADD, "+");
 		SYMBOL_MAP.put(Operation.Code.SUB, "-");
 		SYMBOL_MAP.put(Operation.Code.CONCAT, "+");
+		SYMBOL_MAP.put(Operation.Code.COMMA, ",");
 		SYMBOL_MAP.put(Operation.Code.MUL, "*");
 		SYMBOL_MAP.put(Operation.Code.DIV, "/");
 		SYMBOL_MAP.put(Operation.Code.MOD, "%");
@@ -45,6 +47,15 @@ public class JavaTextWriter implements Expression.Visitor<Object, String> {
 		//SYMBOL_MAP.put(Operation.Code.NOT, "~");
 		SYMBOL_MAP.put(Operation.Code.GET, ".");
 		SYMBOL_MAP.put(Operation.Code.CALL, ".");
+	}
+
+	@Override
+	public String visit(OrderByExpression exp, Object option) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(exp.getExpr().accept(this, option));
+		sb.append(" ");
+		sb.append(exp.isAsc() ? "/*ASC*/" : "/*DESC*/");
+		return sb.toString();
 	}
 
 	@Override

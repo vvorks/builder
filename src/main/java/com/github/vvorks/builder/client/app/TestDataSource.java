@@ -1,74 +1,110 @@
 package com.github.vvorks.builder.client.app;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.ui.DataSource;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Callback;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.common.util.CacheMap;
+import com.github.vvorks.builder.common.util.IntRange;
 
 public class TestDataSource extends DataSource {
 
 	private static final Logger LOGGER = Logger.createLogger(TestDataSource.class);
 
-	private static final int DEFAULT_LIMIT = 100;
-
+	/** rpcクライアント */
 	private final JsonRpcClient rpc;
 
+	/** API名 */
+	private String apiName;
+
+	/** 画面あたりの行数 */
+	private final int pageSize;
+
+	/** データキャッシュ */
+	private CacheMap<Integer, Json> cache;
+
+	/** 検索条件 */
 	private Json criteria;
 
+	/** 検索中の値範囲リスト */
+	private List<IntRange> requests;
+
+	/** ロード済みフラグ */
 	private boolean loaded;
 
-	private int count;
+	/** 最新ロード時の総データ数 */
+	private int lastCount;
 
+	/** 最新ロード時刻 */
 	private Date lastUpdatedAt;
 
-	private int offset;
-
-	private List<Json> block;
-
-	public TestDataSource(JsonRpcClient rpc) {
+	public TestDataSource(JsonRpcClient rpc, String apiName, int pageSize, int cacheSize) {
 		this.rpc = rpc;
+		this.apiName = apiName;
+		this.pageSize = pageSize;
+		cache = new CacheMap<>(Math.max(cacheSize, pageSize * 4));
 		criteria = null;
-		loaded = false;
-		count = 0;
-		lastUpdatedAt = new Date(0L);
-		offset = 0;
-		block = new ArrayList<>();
-		doRequest(criteria);
+		reload();
 	}
 
-	private void doRequest(Json criteria) {
+	private void reload() {
+		loaded = false;
+		lastCount = -1;
+		lastUpdatedAt = null;
+		doRequest(criteria, -1, pageSize);
+	}
+
+	private void doRequest(Json criteria, int offset, int limit) {
 		Json param = Json.createObject();
-		param.setInt("offset", offset);
-		param.setInt("limit", DEFAULT_LIMIT);
-		param.setInt("lastCount", -1);
-		param.setDate("lastUpdatedAt", lastUpdatedAt);
-		rpc.request("listQuery", param, 0, new Callback<Json>() {
+		param.setInt("_offset", offset);
+		param.setInt("_limit", limit);
+		if (criteria != null) {
+			for (Entry<String, Json> e : criteria.entrySet()) {
+				param.set(e.getKey(), e.getValue());
+			}
+		}
+		IntRange requestRange = new IntRange(offset, offset + limit - 1);
+		rpc.request(apiName, param, 0, new Callback<Json>() {
 			public void onSuccess(Json result) {
-				LOGGER.debug("result %s", result);
-				Json summary = result.get("summary");
-				Json contents = result.get("contents");
-				TestDataSource ds = TestDataSource.this;
-				ds.count = summary.getInt("count");
-				ds.offset = result.getInt("offset");
-				ds.block = new ArrayList<>();
-				int n = contents.size();
-				for (int i = 0; i < n; i++) {
-					ds.block.add(contents.get(i));
-				}
-				ds.lastUpdatedAt = summary.getDate("_lastUpdatedAt");
-				ds.loaded = true;
-				notifyToApps();
+				requests.remove(requestRange);
+				doResponse(result);
 			}
 			public void onFailure(Throwable caught) {
+				requests.remove(requestRange);
 				LOGGER.error(caught, caught.getMessage());
 			}
 		});
+		requests.add(requestRange);
+	}
 
+	private void doResponse(Json result) {
+		LOGGER.debug("result %s", result);
+		Json summary = result.get("summary");
+		int newCount = summary.getInt("count");
+		Date newLast = summary.getDate("lastUpdatedAt");
+		//到着データが古かった場合、無視する
+		if (lastUpdatedAt != null && lastUpdatedAt.getTime() > newLast.getTime()) {
+			return;
+		}
+		//到着データが新しかった場合、キャッシュを破棄
+		if (lastUpdatedAt == null || lastUpdatedAt.getTime() < newLast.getTime() || lastCount != newCount) {
+			cache.clear();
+		}
+		lastCount = newCount;
+		lastUpdatedAt = newLast;
+		Json contents = result.get("contents");
+		int offset = result.getInt("offset");
+		int n = contents.size();
+		for (int i = 0; i < n; i++) {
+			cache.put(offset + i, contents.get(i));
+		}
+		loaded = true;
+		notifyToApps();
 	}
 
 	@Override
@@ -79,32 +115,42 @@ public class TestDataSource extends DataSource {
 	@Override
 	public void setCriteria(Json criteria) {
 		this.criteria = criteria;
-		doRequest(criteria);
+		reload();
 	}
 
 	@Override
 	public int getCount() {
-		return count;
-	}
-
-	@Override
-	public int getOffset() {
-		return offset;
-	}
-
-	@Override
-	public int getLimit() {
-		return block.size();
-	}
-
-	@Override
-	public void setRange(int offset, int limit) {
-		// TODO 自動生成されたメソッド・スタブ
+		if (!loaded) {
+			return 0;
+		}
+		return lastCount;
 	}
 
 	@Override
 	public Json getData(int index) {
-		return block.get(offset + index);
+		Json data = cache.get(index);
+		if (data == null) {
+			if (!isRequested(index)) {
+				requestAround(index);
+			}
+		}
+		return data;
+	}
+
+	private boolean isRequested(int index) {
+		for (IntRange r : requests) {
+			if (r.contains(index)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void requestAround(int index) {
+		int count = loaded ? this.lastCount : Integer.MAX_VALUE;
+		int offset = Math.max(0, index - pageSize);
+		int limit = Math.min(offset + pageSize * 2, count) - offset;
+		doRequest(criteria, offset, limit);
 	}
 
 	@Override

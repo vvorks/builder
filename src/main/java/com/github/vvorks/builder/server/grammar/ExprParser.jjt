@@ -29,6 +29,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExprParser {
 
+	public static final int CODE_TYPE_SELECT = 0;
+
+	public static final int CODE_TYPE_WHERE = 1;
+
+	public static final int CODE_TYPE_ORDER = 2;
+
 	public static final Token newToken(int ofKind, String tokenImage) {
 		return new ExprToken(ofKind, tokenImage);
 	}
@@ -37,9 +43,18 @@ public class ExprParser {
 		this(System.in);
 	}
 
-	public ExprNode parse(String code) throws ParseException {
+	public ExprNode parse(String code, int codeType) throws ParseException {
 		this.ReInit(new StringReader(code));
-		return this.Main();
+		switch (codeType) {
+		case CODE_TYPE_SELECT:
+			return this.SelectExpression();
+		case CODE_TYPE_WHERE:
+			return this.WhereExpression();
+		case CODE_TYPE_ORDER:
+			return this.OrderExpressions();
+		default:
+			throw new IllegalArgumentException();
+		}
 	}
 
 	private boolean matchAfterRepeat(int rept, int term) {
@@ -185,12 +200,40 @@ TOKEN : {
 /*
  * PARSER BLOCK(Expression)
  */
-ExprNode Main(): {} {
+ExprNode SelectExpression(): {} {
 	Expression()
 	<EOF>
 	{
 		return jjtThis;
 	}
+}
+
+ExprNode WhereExpression(): {} {
+	Expression()
+	<EOF>
+	{
+		return jjtThis;
+	}
+}
+
+ExprNode OrderExpressions(): {} {
+	OrderExpression()
+	(
+		","
+		OrderExpression()
+	)*
+	<EOF>
+	{
+		return jjtThis;
+	}
+}
+
+void OrderExpression(): {} {
+	[OrderOperator()] Expression()
+}
+
+void OrderOperator() #UnaryOperator : {} {
+	"<" | ">"
 }
 
 void Expression() #void: {} {

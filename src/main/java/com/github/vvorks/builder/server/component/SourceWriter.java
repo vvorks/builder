@@ -101,12 +101,12 @@ public class SourceWriter {
 								MapValueResolver.INSTANCE,
 								JavaBeanValueResolver.INSTANCE,
 								new ExtenderResolver(
-										projectExtender,
-										classExtender,
-										fieldExtender,
-										queryExtender,
-										enumExtender,
-										enumValueExtender))
+										projectExtender.init(),
+										classExtender.init(),
+										fieldExtender.init(),
+										queryExtender.init(),
+										enumExtender.init(),
+										enumValueExtender.init()))
 						.build();
 				//とりあえず全部適用
 				for (String s : hbsFiles) {

@@ -1,8 +1,13 @@
 package com.github.vvorks.builder.server.extender;
 
+import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.server.expression.Expression;
 
 public abstract class SqlWriter implements Expression.Visitor<Object, String> {
+
+	public static SqlWriter getWriter() {
+		return Factory.getInstance(SqlWriter.class);
+	}
 
 	public static final String TABLE_PREFIX = "T_";
 

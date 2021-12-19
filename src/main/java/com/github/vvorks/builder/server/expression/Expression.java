@@ -10,6 +10,7 @@ public abstract class Expression {
 	public static interface Visitor<A,R> {
 
 		public R visit(Operation exp, A option);
+		public R visit(OrderByExpression exp, A option);
 		public R visit(ClassRef exp, A option);
 		public R visit(FieldRef exp, A option);
 		public R visit(EnumRef exp, A option);

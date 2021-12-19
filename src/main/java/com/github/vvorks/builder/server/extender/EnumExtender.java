@@ -16,6 +16,13 @@ public class EnumExtender {
 	@Autowired
 	private EnumMapper enumTypeMapper;
 
+	/**
+	 * （再）初期化
+	 */
+	public EnumExtender init() {
+		return this;
+	}
+
 	public String getTitleOrName(EnumContent e) {
 		if (!Strings.isEmpty(e.getTitle())) {
 			return e.getTitle();
@@ -27,7 +34,7 @@ public class EnumExtender {
 	public List<EnumValueContent> getEnumValues(EnumContent e) {
 		return enumTypeMapper.listValuesContent(e, 0, 0);
 	}
-	
+
 	public String getEncodeType(EnumContent e) {
 		return e.isEncodeString() ? "String" : "Integer";
 	}

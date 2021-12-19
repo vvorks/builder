@@ -30,33 +30,11 @@ public abstract class DataSource {
 	public abstract void setCriteria(Json criteria);
 
 	/**
-	 * データ取得範囲を設定する
-	 *
-	 * @param offset データ開始位置
-	 * @param limit データ件数
-	 */
-	public abstract void setRange(int offset, int limit);
-
-	/**
 	 * （データ読み込み済みならば）全件数情報を返す
 	 *
 	 * @return 全件数情報
 	 */
 	public abstract int getCount();
-
-	/**
-	 * （データ読み込み済みならば）保持中のデータ開始位置を返す
-	 *
-	 * @return データ開始位置
-	 */
-	public abstract int getOffset();
-
-	/**
-	 * （データ読み込み済みならば）保持中のデータ件数を返す
-	 *
-	 * @return データ件数
-	 */
-	public abstract int getLimit();
 
 	/**
 	 * （データ読み込み済みならば）指定位置のデータを返す

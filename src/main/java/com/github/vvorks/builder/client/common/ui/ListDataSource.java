@@ -25,23 +25,8 @@ public class ListDataSource extends DataSource {
 	}
 
 	@Override
-	public void setRange(int offset, int limit) {
-		notifyToApps();
-	}
-
-	@Override
 	public int getCount() {
 		return list.size();
-	}
-
-	@Override
-	public int getOffset() {
-		return 0;
-	}
-
-	@Override
-	public int getLimit() {
-		return getCount();
 	}
 
 	@Override

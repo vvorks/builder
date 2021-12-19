@@ -16,6 +16,7 @@ import com.github.vvorks.builder.server.expression.LongLiteral;
 import com.github.vvorks.builder.server.expression.NullLiteral;
 import com.github.vvorks.builder.server.expression.NumericLiteral;
 import com.github.vvorks.builder.server.expression.Operation;
+import com.github.vvorks.builder.server.expression.OrderByExpression;
 import com.github.vvorks.builder.server.expression.StringLiteral;
 
 public class DebugWriter implements Expression.Visitor<Integer, String> {
@@ -32,6 +33,15 @@ public class DebugWriter implements Expression.Visitor<Integer, String> {
 		sb.append(" ");
 		sb.append(trailer.toString());
 		sb.append("\n");
+		return sb.toString();
+	}
+
+	@Override
+	public String visit(OrderByExpression exp, Integer depth) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(exp.getExpr().accept(this, depth));
+		sb.append(" ");
+		sb.append(exp.isAsc() ? "ASC" : "DESC");
 		return sb.toString();
 	}
 

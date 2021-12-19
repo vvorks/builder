@@ -7,6 +7,8 @@ import com.github.vvorks.builder.server.common.json.JacksonJson;
 import com.github.vvorks.builder.server.common.logging.Slf4jLogger;
 import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.common.sql.SqliteHelper;
+import com.github.vvorks.builder.server.extender.SqlWriter;
+import com.github.vvorks.builder.server.extender.SqliteWriter;
 
 public class ServerSettings {
 
@@ -27,9 +29,10 @@ public class ServerSettings {
 
 	public static void setup() {
 		Factory.configure()
-			.bindTo(Logger.class,	a -> new Slf4jLogger((Class<?>) a[0]))
-			.bindTo(Json.class,		a -> new JacksonJson(a[0]))
-			.bindIn(SqlHelper.class,  a -> new SqliteHelper())
+			.bindTo(Logger.class,		a -> new Slf4jLogger((Class<?>) a[0]))
+			.bindTo(Json.class,			a -> new JacksonJson(a[0]))
+			.bindIn(SqlHelper.class,	a -> new SqliteHelper())
+			.bindIn(SqlWriter.class,	a -> new SqliteWriter())
 			;
 	}
 

@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -28,6 +30,14 @@ import com.github.vvorks.builder.server.domain.EnumValueContent;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.QueryContent;
+import com.github.vvorks.builder.server.expression.Argument;
+import com.github.vvorks.builder.server.expression.Expression;
+import com.github.vvorks.builder.server.expression.FieldRef;
+import com.github.vvorks.builder.server.expression.Operation;
+import com.github.vvorks.builder.server.grammar.ExprNode;
+import com.github.vvorks.builder.server.grammar.ExprParser;
+import com.github.vvorks.builder.server.grammar.ExpressionBuilder;
+import com.github.vvorks.builder.server.grammar.ParseException;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
@@ -39,6 +49,72 @@ import com.github.vvorks.builder.server.mapper.QueryMapper;
 public class ClassExtender {
 
 	private static final Logger LOGGER = Logger.createLogger(ClassExtender.class);
+
+	public static final String LAST_UPDATED_AT = "_lastUpdatedAt";
+
+	private static class ExprEntry {
+		private final Map<List<FieldContent>, Integer> joinMap;
+		private final Map<String, ExprInfo> exprs;
+		private ExprEntry() {
+			joinMap = new LinkedHashMap<>();
+			exprs = new LinkedHashMap<>();
+		}
+	}
+
+	public static class ExprInfo {
+		private final Expression expr;
+		private final Map<List<FieldContent>, Integer> joinMap;
+		private final List<FieldContent> arguments;
+		public ExprInfo(Expression expr, Map<List<FieldContent>, Integer> entryJoinMap) {
+			this.expr = expr;
+			this.joinMap = new LinkedHashMap<>(entryJoinMap);
+			this.arguments = new ArrayList<>();
+		}
+		public Expression getExpr() {
+			return expr;
+		}
+		public List<FieldContent> getArguments() {
+			return arguments;
+		}
+		public Map<List<FieldContent>, Integer> getJoinMap() {
+			return joinMap;
+		}
+	}
+
+	public static class JoinInfo {
+		private final FieldContent lastField;
+		private final int lastNo;
+		private final ClassContent nextClass;
+		private final int nextNo;
+		public JoinInfo(FieldContent lastField, int lastNo, ClassContent nextClass, int nextNo) {
+			this.lastField = lastField;
+			this.lastNo = lastNo;
+			this.nextClass = nextClass;
+			this.nextNo = nextNo;
+		}
+		public FieldContent getLastField() {
+			return lastField;
+		}
+		public int getLastNo() {
+			return lastNo;
+		}
+		public ClassContent getNextClass() {
+			return nextClass;
+		}
+		public int getNextNo() {
+			return nextNo;
+		}
+	}
+
+	private static final EnumSet<DataType> SCALER_TYPES = EnumSet.of(
+			DataType.KEY,
+			DataType.ENUM,
+			DataType.BOOLEAN,
+			DataType.INTEGER,
+			DataType.REAL,
+			DataType.NUMERIC,
+			DataType.DATE,
+			DataType.STRING);
 
 	@Autowired
 	private ProjectMapper projectMapper;
@@ -61,9 +137,46 @@ public class ClassExtender {
 	@Autowired
 	private FieldExtender fieldExtender;
 
-	public static final String LAST_UPDATED_AT = "_lastUpdatedAt";
+	@Autowired
+	private ExprParser parser;
+
+	@Autowired
+	private ExpressionBuilder builder;
+
+	private SqlWriter sqlWriter = SqlWriter.getWriter();
 
 	private SqlHelper sqlHelper = SqlHelper.getHelper();
+
+	private final Map<Integer, ExprEntry> entries = new LinkedHashMap<>();
+
+	/**
+	 * （再）初期化
+	 */
+	public ClassExtender init() {
+		entries.clear();
+		for (ClassContent cls : classMapper.listContent(0, 0)) {
+			String titleExpr = cls.getTitleExpr();
+			if (!Strings.isEmpty(titleExpr)) {
+				referExpr(cls, titleExpr, ExprParser.CODE_TYPE_SELECT);
+			}
+			String orderExpr = cls.getOrderExpr();
+			if (!Strings.isEmpty(orderExpr)) {
+				referExpr(cls, orderExpr, ExprParser.CODE_TYPE_ORDER);
+			}
+			for (FieldContent fld : getRefs(cls)) {
+				ClassContent ref = fieldExtender.getCref(fld);
+				String refExpr = ref.getTitleExpr() + "//" + fld.getFieldName();
+				referExpr(cls, fld, refExpr, ExprParser.CODE_TYPE_SELECT);
+			}
+			for (QueryContent q : classMapper.listQueriesContent(cls, 0, 0)) {
+				String filter = q.getFilter();
+				if (!Strings.isEmpty(filter)) {
+					referExpr(cls, filter, ExprParser.CODE_TYPE_WHERE);
+				}
+			}
+		}
+		return this;
+	}
 
 	public String getTitleOrName(ClassContent cls) {
 		if (!Strings.isEmpty(cls.getTitle())) {
@@ -81,42 +194,47 @@ public class ClassExtender {
 		return SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(cls.getClassName());
 	}
 
-	public List<String> getSqlOrder(ClassContent cls) {
-		String expr = cls.getOrderExpr();
-		if (Strings.isEmpty(expr)) {
-			return Collections.emptyList();
+	public String getSqlOrder(ClassContent cls) {
+		String orderExpr = cls.getOrderExpr();
+		if (Strings.isEmpty(orderExpr)) {
+			return null;
 		}
-		//TODO 仮。本当は式を解釈した上でSQLのORDER BYで有効な形式にしないとダメ
-		List<String> cols = new ArrayList<>();
-		for (String f : expr.split(",")) {
-			cols.add(SqlWriter.COLUMN_PREFIX + Strings.toUpperSnake(f));
-		}
-		return cols;
+		ExprInfo info = referExpr(cls, orderExpr, ExprParser.CODE_TYPE_ORDER);
+		String result = info.expr.accept(sqlWriter, null);
+		return result;
 	}
 
-	public String getValidTitle(ClassContent cls) {
-		//TODO 仮。本当は式を解釈した上で正しいJavaの式を返す事
-		return cls.getTitleExpr();
+	public String getSqlTitle(ClassContent cls) {
+		String title = cls.getTitleExpr();
+		if (Strings.isEmpty(title)) {
+			return "";
+		}
+		ExprInfo info = referExpr(cls, title, ExprParser.CODE_TYPE_SELECT);
+		return info.expr.accept(sqlWriter, null);
+	}
+
+	public List<FieldContent> getPropertiesWithTitle(ClassContent cls) {
+		return getProperties(cls, true, fld -> true);
 	}
 
 	public List<FieldContent> getProperties(ClassContent cls) {
-		return getProperties(cls, fld -> true);
+		return getProperties(cls, false, fld -> true);
 	}
 
 	public List<FieldContent> getKeys(ClassContent cls) {
-		return getProperties(cls, fld ->  fld.isPk());
+		return getProperties(cls, false, fld ->  fld.isPk());
 	}
 
 	public List<FieldContent> getNotKeys(ClassContent cls) {
-		return getProperties(cls, fld -> !fld.isPk());
+		return getProperties(cls, false, fld -> !fld.isPk());
 	}
 
-	private List<FieldContent> getProperties(ClassContent cls, Predicate<FieldContent> filter) {
+	private List<FieldContent> getProperties(ClassContent cls, boolean addTitle, Predicate<FieldContent> filter) {
 		List<FieldContent> props = new ArrayList<>();
 		Deque<FieldContent> stack = new ArrayDeque<>();
 		for (FieldContent field : getFields(cls)) {
 			if (filter.test(field)) {
-				fieldExtender.extractKey(field, stack, props);
+				fieldExtender.extractKey(field, addTitle, stack, props);
 			}
 		}
 		return props;
@@ -311,6 +429,105 @@ public class ClassExtender {
 		default:
 			result = "0";
 			break;
+		}
+		return result;
+	}
+
+	public ExprInfo referExpr(ClassContent cls, String exprString, int codeType) {
+		ExprEntry entry = entries.computeIfAbsent(cls.getClassId(), id -> new ExprEntry());
+		return entry.exprs.computeIfAbsent(exprString, s -> createExpr(cls, null, s, codeType, entry));
+	}
+
+	public ExprInfo referExpr(ClassContent cls, FieldContent owner, String exprString, int codeType) {
+		ExprEntry entry = entries.computeIfAbsent(cls.getClassId(), id -> new ExprEntry());
+		return entry.exprs.computeIfAbsent(exprString, s -> createExpr(cls, owner, s, codeType, entry));
+
+	}
+
+	private ExprInfo createExpr(ClassContent cls, FieldContent owner, String exprString, int codeType, ExprEntry entry) {
+		try {
+			ExprNode exprNode = parser.parse(exprString, codeType);
+			ClassContent ctx;
+			if (owner != null) {
+				ctx = fieldExtender.getCref(owner);
+			} else {
+				ctx = cls;
+			}
+			ProjectContent prj = classMapper.getOwner(ctx);
+			Expression expr = builder.build(exprNode, prj, ctx);
+			ExprInfo info = new ExprInfo(expr, entry.joinMap);
+			//exprType == 1はQueryでしか使用されないため、判定に流用
+			Map<List<FieldContent>, Integer> joinMap = (codeType == 1) ? info.joinMap : entry.joinMap;
+			expr.accept(e -> visitExpr(e, owner, info, joinMap));
+			return info;
+		} catch (ParseException err) {
+			throw new RuntimeException(err);
+		}
+	}
+
+	private void visitExpr(Expression expr, FieldContent owner, ExprInfo info, Map<List<FieldContent>, Integer> joinMap) {
+		if (expr instanceof Operation) {
+			Operation op = (Operation) expr;
+			//フィールド参照Operation以外は無視
+			List<Expression> operands = op.getOperands();
+			for (Expression c : operands) {
+				if (!(c instanceof FieldRef)) {
+					return;
+				}
+			}
+			//演算結果タイプがSCALER型でない場合は無視
+			int n = operands.size();
+			FieldRef last = (FieldRef) operands.get(n - 1);
+			if (!SCALER_TYPES.contains(last.getType())) {
+				return;
+			}
+			//join番号の参照（又は存在しない場合新たに定義）
+			List<FieldContent> flds = new ArrayList<>();
+			if (owner != null) {
+				flds.add(owner);
+			}
+			Integer no = 1;
+			for (int i = 0; i < n; i++) {
+				FieldContent fld = ((FieldRef)operands.get(i)).getContent();
+				flds.add(fld);
+				int m = flds.size();
+				if (m > 1) {
+					List<FieldContent> subList = flds.subList(0, m - 1);
+					no = joinMap.computeIfAbsent(subList, s -> joinMap.size() + 2);
+				}
+			}
+			//opにjoin番号を設定
+			op.setJoinNo(no);
+		} else if (expr instanceof Argument) {
+			//引数を疑似フィールドとして格納
+			Argument arg = (Argument) expr;
+			FieldContent fld = new FieldContent();
+			fld.setFieldName(arg.getName());
+			fld.setType(arg.getType());
+			fld.setWidth(arg.getWidth());
+			fld.setScale(arg.getScale());
+			if (fld.getType() == DataType.ENUM) {
+				fld.setErefEnumId(arg.getErefId());
+			}
+			info.arguments.add(fld);
+		}
+	}
+
+	public List<JoinInfo> getJoins(ClassContent cls) {
+		ExprEntry entry = entries.get(cls.getClassId());
+		return toJoins(entry.joinMap);
+	}
+
+	public List<JoinInfo> toJoins(Map<List<FieldContent>, Integer> joinMap) {
+		List<JoinInfo> result = new ArrayList<>();
+		for (Map.Entry<List<FieldContent>, Integer> e : joinMap.entrySet()) {
+			List<FieldContent> fields = e.getKey();
+			int n = fields.size();
+			FieldContent lastField = fields.get(n - 1);
+			int lastNo = n <= 1 ? 1 : joinMap.get(fields.subList(0, n - 1));
+			ClassContent nextClass = fieldMapper.getCref(lastField);
+			int nextNo = e.getValue();
+			result.add(new JoinInfo(lastField, lastNo, nextClass, nextNo));
 		}
 		return result;
 	}

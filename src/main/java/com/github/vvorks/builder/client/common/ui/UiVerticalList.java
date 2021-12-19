@@ -226,6 +226,9 @@ public class UiVerticalList extends UiGroup {
 	/** データソース */
 	private DataSource dataSource;
 
+	/** 注目位置 */
+	private int attentionIndex;
+
 	/** テンプレートノード */
 	private UiLine template;
 
@@ -254,6 +257,7 @@ public class UiVerticalList extends UiGroup {
 	 */
 	public UiVerticalList(String name) {
 		super(name);
+		attentionIndex = 0;
 		hiddenIndex = -1;
 		hiddenColumn = -1;
 	}
@@ -266,6 +270,7 @@ public class UiVerticalList extends UiGroup {
 	public UiVerticalList(UiVerticalList src) {
 		super(src);
 		dataSource = src.dataSource;
+		attentionIndex = src.attentionIndex;
 		template = src.template;
 		pageHeight = src.pageHeight;
 		lineHeight = src.lineHeight;
@@ -408,7 +413,11 @@ public class UiVerticalList extends UiGroup {
 		updateMetrics();
 		DataSource ds = dataSource;
 		if (ds.isLoaded()) {
-			prepareLines(ds.getCount(), ds.getOffset());
+			int count = ds.getCount();
+			if (attentionIndex >= count) {
+				attentionIndex = count - 1;
+			}
+			prepareLines(count, attentionIndex);
 		} else {
 			prepareLines(0, 0);
 		}
@@ -418,7 +427,11 @@ public class UiVerticalList extends UiGroup {
 	public int onDataSourceUpdated(DataSource ds) {
 		int result = super.onDataSourceUpdated(ds);
 		if (ds.isLoaded()) {
-			prepareLines(ds.getCount(), ds.getOffset());
+			int count = ds.getCount();
+			if (attentionIndex >= count) {
+				attentionIndex = count - 1;
+			}
+			prepareLines(count, attentionIndex);
 		} else {
 			prepareLines(0, 0);
 		}

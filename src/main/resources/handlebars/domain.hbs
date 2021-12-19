@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
  */
 public class {{className}}Content {
 
-	{{#each properties}}
+	{{#each propertiesWithTitle}}
 
 	/**
 	 * {{titleOrName}}
@@ -70,29 +70,7 @@ public class {{className}}Content {
 		{{/each}}
 	}
 
-	/**
-	 * キー文字列を取得する
-	 *
-	 * @return キー文字列
-	 */
-	public String get_key() {
-		StringBuilder sb = new StringBuilder();
-		{{#each keys}}
-		sb.append({{fieldName}}){{#separator}}.append('-'){{/separator}};
-		{{/each}}
-		return sb.toString();
-	}
-
-	/**
-	 * 見出し文字列を取得する
-	 *
-	 * @return 見出し文字列
-	 */
-	public String get_title() {
-		return {{validTitle}};
-	}
-
-	{{#each properties}}
+	{{#each propertiesWithTitle}}
 
 	/**
 	 * {{titleOrName}}を取得する
@@ -116,7 +94,7 @@ public class {{className}}Content {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			{{#each properties}}
+			{{#each propertiesWithTitle}}
 			{{fieldName}}{{#separator}},{{/separator}}
 			{{/each}}
 			);
@@ -137,7 +115,7 @@ public class {{className}}Content {
 
 	private boolean equals({{className}}Content other) {
 		return
-			{{#each properties}}
+			{{#each propertiesWithTitle}}
 			{{#if primitiveOrEnum}}
 			this.{{fieldName}} == other.{{fieldName}}{{#separator}} && {{/separator}}
 			{{else}}
@@ -151,7 +129,7 @@ public class {{className}}Content {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{{className}}Content [");
-		{{#each properties}}
+		{{#each propertiesWithTitle}}
 		sb.append("{{fieldName}}=").append({{fieldName}}){{#separator}}.append(", "){{/separator}};
 		{{/each}}
 		sb.append("]");

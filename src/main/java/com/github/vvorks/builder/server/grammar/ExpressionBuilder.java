@@ -34,6 +34,7 @@ import com.github.vvorks.builder.server.expression.LongLiteral;
 import com.github.vvorks.builder.server.expression.NullLiteral;
 import com.github.vvorks.builder.server.expression.NumericLiteral;
 import com.github.vvorks.builder.server.expression.Operation;
+import com.github.vvorks.builder.server.expression.OrderByExpression;
 import com.github.vvorks.builder.server.expression.StringLiteral;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
@@ -107,8 +108,39 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	}
 
 	@Override
-	public Expression visit(ASTMain node, Expression unused) throws ParseException {
+	public Expression visit(ASTSelectExpression node, Expression unused) throws ParseException {
 		return visitChildren(node, unused);
+	}
+
+	@Override
+	public Expression visit(ASTWhereExpression node, Expression unused) throws ParseException {
+		return visitChildren(node, unused);
+	}
+
+	@Override
+	public Expression visit(ASTOrderExpressions node, Expression unused) throws ParseException {
+		Operation result = new Operation(Operation.Code.COMMA);
+		result.setType(DataType.BOOLEAN); //TODO 仮。VOIDを定義して設定すべき
+		for (ExprNode c : node.getChildren()) {
+			result.addOperand(c.jjtAccept(this, unused));
+		}
+		return result;
+	}
+
+	@Override
+	public Expression visit(ASTOrderExpression node, Expression unused) throws ParseException {
+		Expression lValue;
+		if (node.size() == 1) {
+			ExprNode orderNode = node.getChild(0);
+			Expression expr = orderNode.jjtAccept(this, unused);
+			lValue = new OrderByExpression(expr, true);
+		} else {
+			Operation.Code op = getUnaryOperator(node.getChild(0));
+			ExprNode orderNode = node.getChild(1);
+			Expression expr = orderNode.jjtAccept(this, unused);
+			lValue = new OrderByExpression(expr, op == Operation.Code.LT);
+		}
+		return lValue;
 	}
 
 	@Override
@@ -402,6 +434,8 @@ public class ExpressionBuilder implements ExprParserVisitor {
 		UNARY_OP_MAP.put(ExprParserConstants.NOT, Operation.Code.NOT);
 		UNARY_OP_MAP.put(ExprParserConstants.BANG, Operation.Code.NOT);
 		UNARY_OP_MAP.put(ExprParserConstants.TILDE, Operation.Code.NOT);
+		UNARY_OP_MAP.put(ExprParserConstants.LT, Operation.Code.LT);
+		UNARY_OP_MAP.put(ExprParserConstants.GT, Operation.Code.GT);
 	}
 
 	@Override
@@ -648,15 +682,14 @@ public class ExpressionBuilder implements ExprParserVisitor {
 					if (i % 2 == 0) {
 						op.addOperand(new StringLiteral(str));
 					} else {
-						ExprNode subNode = parser.parse(str);
+						ExprNode subNode = parser.parse(str, ExprParser.CODE_TYPE_SELECT);
 						Expression subExpr = subNode.jjtAccept(this, unused);
 						op.addOperand(subExpr);
 					}
 				}
 			}
 			return op;
-		}
-		else if (Strings.endsWith(image, "t", "T")) {
+		} else if (Strings.endsWith(image, "t", "T")) {
 			image = image.substring(0, image.length() - 1);
 			String text = image.substring(1, image.length() - 1);
 			Date date = parseDate(text);

@@ -15,7 +15,7 @@ public class Operation extends Expression {
 		EQ, NE,
 		LIKE, MATCH,
 		LT, GT, LE, GE,
-		ADD, SUB, CONCAT,
+		ADD, SUB, CONCAT, COMMA,
 		MUL, DIV, MOD,
 		PLUS, MINUS,
 		NOT,

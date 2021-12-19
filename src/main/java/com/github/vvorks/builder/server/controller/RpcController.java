@@ -42,7 +42,7 @@ public class RpcController {
 	@JsonRpcMethod("parse")
 	public String parse(@JsonRpcParam("code") String code) {
 		try {
-			ExprNode result = parser.parse(code);
+			ExprNode result = parser.parse(code, ExprParser.CODE_TYPE_SELECT);
 			//test
 			ProjectContent prj = projectMapper.listContentIfNameIs("com.github.vvorks.builder", 0, 0).get(0);
 			ClassContent cls = projectMapper.listClassesContentIfNameIs(prj, "Field", 0, 0).get(0);

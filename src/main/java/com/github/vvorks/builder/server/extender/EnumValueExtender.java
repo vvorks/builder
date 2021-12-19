@@ -8,6 +8,13 @@ import com.github.vvorks.builder.server.domain.EnumValueContent;
 @Component
 public class EnumValueExtender {
 
+	/**
+	 * （再）初期化
+	 */
+	public EnumValueExtender init() {
+		return this;
+	}
+
 	public String getTitleOrName(EnumValueContent v) {
 		if (!Strings.isEmpty(v.getTitle())) {
 			return v.getTitle();

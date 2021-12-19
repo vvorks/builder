@@ -252,13 +252,20 @@ public interface {{className}}Mapper {
 	<select id="get" resultType="{{className}}Content">
 		SELECT
 			{{#each properties}}
-			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
+			{{sqlTitle}} AS "_title"
 		FROM
-			{{tableName}}
+			{{tableName}} T1
+		{{#each joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+			{{/each}}
+		{{/each}}
 		WHERE
 			{{#each keys}}
-			{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
+			T1.{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
 	</select>
 
@@ -287,13 +294,20 @@ public interface {{className}}Mapper {
 	<select id="listContent" resultType="{{className}}Content">
 		SELECT
 			{{#each properties}}
-			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
+			{{sqlTitle}} AS "_title"
 		FROM
-			{{tableName}}
+			{{tableName}} T1
+		{{#each joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+			{{/each}}
+		{{/each}}
 		{{#if sqlOrder}}
 		ORDER BY
-			{{#each sqlOrder}}{{this}}{{#separator}}, {{/separator}}{{/each}}
+			{{sqlOrder}}
 		{{/if}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
@@ -325,12 +339,12 @@ public interface {{className}}Mapper {
 			0 AS "focus"
 		FROM
 			{{../tableName}} T1
-			{{#each joins}}
-			LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
-				{{#each lastField.refKeyFields}}
-				T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
-				{{/each}}
+		{{#each joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
+		{{/each}}
 		WHERE
 			<![CDATA[
 			{{sqlExpr}}
@@ -340,23 +354,24 @@ public interface {{className}}Mapper {
 	<select id="listContentIf{{upperName}}" resultType="{{../className}}Content">
 		SELECT
 			{{#each ../properties}}
-			T1.{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
+			{{sqlTitle}} AS "_title"
 		FROM
 			{{../tableName}} T1
-			{{#each joins}}
-			LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
-				{{#each lastField.refKeyFields}}
-				T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
-				{{/each}}
+		{{#each joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
+		{{/each}}
 		WHERE
 			<![CDATA[
 			{{sqlExpr}}
 			]]>
 		{{#if sqlOrder}}
 		ORDER BY
-			{{#each sqlOrder}}T1.{{this}}{{#separator}}, {{/separator}}{{/each}}
+			{{sqlOrder}}
 		{{/if}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
@@ -372,13 +387,20 @@ public interface {{className}}Mapper {
 	<select id="get{{upperName}}" resultType="{{cref.className}}Content">
 		SELECT
 			{{#each cref.properties}}
-			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
+			{{cref.sqlTitle}} AS "_title"
 		FROM
-			{{cref.tableName}}
+			{{cref.tableName}} T1
+		{{#each cref.joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+			{{/each}}
+		{{/each}}
 		WHERE
 			{{#each refKeyFields}}
-			{{refKeyColumnName}} = #{ {{refKeyFieldName}} }{{#separator}} AND {{/separator}}
+			T1.{{refKeyColumnName}} = #{ {{refKeyFieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
 	</select>
 	{{/each}}
@@ -414,17 +436,24 @@ public interface {{className}}Mapper {
 	<select id="list{{upperName}}Content" resultType="{{fref.owner.className}}Content">
 		SELECT
 			{{#each fref.owner.properties}}
-			{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
+			{{fref.owner.sqlTitle}} AS "_title"
 		FROM
-			{{fref.owner.tableName}}
+			{{fref.owner.tableName}} T1
+		{{#each fref.owner.joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+			{{/each}}
+		{{/each}}
 		WHERE
 			{{#each invKeyFields}}
-			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
+			T1.{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{#if fref.owner.sqlOrder}}
 		ORDER BY
-			{{#each fref.owner.sqlOrder}}{{this}}{{#separator}}, {{/separator}}{{/each}}
+			{{fref.owner.sqlOrder}}
 		{{/if}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
@@ -456,12 +485,12 @@ public interface {{className}}Mapper {
 			0 AS "focus"
 		FROM
 			{{../fref.owner.tableName}} T1
-			{{#each joins}}
-			LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
-				{{#each lastField.refKeyFields}}
-				T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
-				{{/each}}
+		{{#each joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
+		{{/each}}
 		WHERE
 			{{#each ../invKeyFields}}
 			T1.{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
@@ -474,16 +503,17 @@ public interface {{className}}Mapper {
 	<select id="list{{../upperName}}ContentIf{{upperName}}" resultType="{{../fref.owner.className}}Content">
 		SELECT
 			{{#each ../fref.owner.properties}}
-			T1.{{columnName}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
+			{{../fref.owner.sqlTitle}} AS "_title"
 		FROM
 			{{../fref.owner.tableName}} T1
-			{{#each joins}}
-			LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
-				{{#each lastField.refKeyFields}}
-				T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
-				{{/each}}
+		{{#each joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
+		{{/each}}
 		WHERE
 			{{#each ../invKeyFields}}
 			T1.{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
@@ -493,7 +523,7 @@ public interface {{className}}Mapper {
 			]]>
 		{{#if ../fref.owner.sqlOrder}}
 		ORDER BY
-			{{#each ../fref.owner.sqlOrder}}T1.{{this}}{{#separator}}, {{/separator}}{{/each}}
+			{{../fref.owner.sqlOrder}}
 		{{/if}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}

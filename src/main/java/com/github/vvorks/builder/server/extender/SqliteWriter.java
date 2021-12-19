@@ -26,6 +26,7 @@ import com.github.vvorks.builder.server.expression.LongLiteral;
 import com.github.vvorks.builder.server.expression.NullLiteral;
 import com.github.vvorks.builder.server.expression.NumericLiteral;
 import com.github.vvorks.builder.server.expression.Operation;
+import com.github.vvorks.builder.server.expression.OrderByExpression;
 import com.github.vvorks.builder.server.expression.StringLiteral;
 
 public class SqliteWriter extends SqlWriter {
@@ -58,6 +59,15 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
+	public String visit(OrderByExpression exp, Object option) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(exp.getExpr().accept(this, option));
+		sb.append(" ");
+		sb.append(exp.isAsc() ? "ASC" : "DESC");
+		return sb.toString();
+	}
+
+	@Override
 	public String visit(Operation exp, Object option) {
 		Operation.Code code = exp.getCode();
 		String result;
@@ -84,6 +94,9 @@ public class SqliteWriter extends SqlWriter {
 			break;
 		case MATCH:
 			result = visitMatchOperation(exp, option);
+			break;
+		case COMMA:
+			result = visitCommaOperation(exp, option);
 			break;
 		default:
 			result = visitBinaryOperation(exp, option);
@@ -184,6 +197,17 @@ public class SqliteWriter extends SqlWriter {
 		String lValue = operands.get(0).accept(this, option);
 		String rValue = operands.get(1).accept(this, option);
 		sb.append(lValue).append(" REGEXP ").append(rValue);
+		return sb.toString();
+	}
+
+	private String visitCommaOperation(Operation exp, Object option) {
+		StringBuilder sb = new StringBuilder();
+		List<Expression> operands = exp.getOperands();
+		sb.append(operands.get(0).accept(this, option));
+		for (int i = 1; i < operands.size(); i++) {
+			sb.append(", ");
+			sb.append(operands.get(i).accept(this, option));
+		}
 		return sb.toString();
 	}
 
