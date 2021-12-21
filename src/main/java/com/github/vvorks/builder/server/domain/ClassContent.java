@@ -68,6 +68,16 @@ public class ClassContent {
 	private java.util.Date _lastUpdatedAt;
 
 	/**
+	 * タイトル
+	 */
+	private String _title;
+
+	/**
+	 * 所属プロジェクトのタイトル
+	 */
+	private String owner_title;
+
+	/**
 	 * 空のクラスを作成する
 	 */
 	public ClassContent() {
@@ -82,26 +92,6 @@ public class ClassContent {
 		int classId
 	) {
 		this.classId = classId;
-	}
-
-	/**
-	 * キー文字列を取得する
-	 *
-	 * @return キー文字列
-	 */
-	public String get_key() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(classId);
-		return sb.toString();
-	}
-
-	/**
-	 * 見出し文字列を取得する
-	 *
-	 * @return 見出し文字列
-	 */
-	public String get_title() {
-		return title;
 	}
 
 	/**
@@ -264,6 +254,42 @@ public class ClassContent {
 	 */
 	public void set_lastUpdatedAt(java.util.Date _lastUpdatedAt) {
 		this._lastUpdatedAt = _lastUpdatedAt;
+	}
+
+	/**
+	 * タイトルを取得する
+	 *
+	 * @return タイトル
+	 */
+	public String get_title() {
+		return this._title;
+	}
+
+	/**
+	 * タイトルを設定する
+	 *
+	 * @param _title 設定するタイトル
+	 */
+	public void set_title(String _title) {
+		this._title = _title;
+	}
+
+	/**
+	 * 所属プロジェクトのタイトルを取得する
+	 *
+	 * @return 所属プロジェクトのタイトル
+	 */
+	public String getOwner_title() {
+		return this.owner_title;
+	}
+
+	/**
+	 * 所属プロジェクトのタイトルを設定する
+	 *
+	 * @param owner_title 設定する所属プロジェクトのタイトル
+	 */
+	public void setOwner_title(String owner_title) {
+		this.owner_title = owner_title;
 	}
 
 	@Override

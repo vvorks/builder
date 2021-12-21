@@ -254,7 +254,9 @@ public interface {{className}}Mapper {
 			{{#each properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{sqlTitle}} AS "_title"
+			{{#each titles}}
+			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
 		FROM
 			{{tableName}} T1
 		{{#each joins}}
@@ -296,7 +298,9 @@ public interface {{className}}Mapper {
 			{{#each properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{sqlTitle}} AS "_title"
+			{{#each titles}}
+			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
 		FROM
 			{{tableName}} T1
 		{{#each joins}}
@@ -356,7 +360,9 @@ public interface {{className}}Mapper {
 			{{#each ../properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{sqlTitle}} AS "_title"
+			{{#each ../titles}}
+			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
 		FROM
 			{{../tableName}} T1
 		{{#each joins}}
@@ -389,7 +395,9 @@ public interface {{className}}Mapper {
 			{{#each cref.properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{cref.sqlTitle}} AS "_title"
+			{{#each cref.titles}}
+			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
 		FROM
 			{{cref.tableName}} T1
 		{{#each cref.joins}}
@@ -438,7 +446,9 @@ public interface {{className}}Mapper {
 			{{#each fref.owner.properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{fref.owner.sqlTitle}} AS "_title"
+			{{#each fref.owner.titles}}
+			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
 		FROM
 			{{fref.owner.tableName}} T1
 		{{#each fref.owner.joins}}
@@ -505,7 +515,9 @@ public interface {{className}}Mapper {
 			{{#each ../fref.owner.properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{../fref.owner.sqlTitle}} AS "_title"
+			{{#each ../fref.owner.titles}}
+			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
 		FROM
 			{{../fref.owner.tableName}} T1
 		{{#each joins}}

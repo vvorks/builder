@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
  */
 public class {{className}}Content {
 
-	{{#each propertiesWithTitle}}
+	{{#each properties}}
 
 	/**
 	 * {{titleOrName}}
@@ -44,6 +44,14 @@ public class {{className}}Content {
 	{{#if notNullObject}}
 	@NotNull
 	{{/if}}
+	private {{javaType}} {{fieldName}};
+	{{/each}}
+
+	{{#each titles}}
+
+	/**
+	 * {{titleOrName}}
+	 */
 	private {{javaType}} {{fieldName}};
 	{{/each}}
 
@@ -70,7 +78,28 @@ public class {{className}}Content {
 		{{/each}}
 	}
 
-	{{#each propertiesWithTitle}}
+	{{#each properties}}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @return {{titleOrName}}
+	 */
+	public {{javaType}} {{getterName}}() {
+		return this.{{fieldName}};
+	}
+
+	/**
+	 * {{titleOrName}}を設定する
+	 *
+	 * @param {{fieldName}} 設定する{{titleOrName}}
+	 */
+	public void {{setterName}}({{javaType}} {{fieldName}}) {
+		this.{{fieldName}} = {{fieldName}};
+	}
+	{{/each}}
+
+	{{#each titles}}
 
 	/**
 	 * {{titleOrName}}を取得する
@@ -94,7 +123,7 @@ public class {{className}}Content {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			{{#each propertiesWithTitle}}
+			{{#each properties}}
 			{{fieldName}}{{#separator}},{{/separator}}
 			{{/each}}
 			);
@@ -115,7 +144,7 @@ public class {{className}}Content {
 
 	private boolean equals({{className}}Content other) {
 		return
-			{{#each propertiesWithTitle}}
+			{{#each properties}}
 			{{#if primitiveOrEnum}}
 			this.{{fieldName}} == other.{{fieldName}}{{#separator}} && {{/separator}}
 			{{else}}
@@ -129,7 +158,7 @@ public class {{className}}Content {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{{className}}Content [");
-		{{#each propertiesWithTitle}}
+		{{#each properties}}
 		sb.append("{{fieldName}}=").append({{fieldName}}){{#separator}}.append(", "){{/separator}};
 		{{/each}}
 		sb.append("]");
@@ -309,18 +338,6 @@ public class {{className}}Summary {
 		this.focus = focus;
 	}
 
-	/**
-	 * データが更新されているか否かを判定する
-	 *
-	 * @param lastCount 前回実行時のデータ件数
-	 * @param lastUpdatedAt 前回実行時の最終更新時刻
-	 * @return データが更新されていた場合、真
-	 */
-	public boolean isUpdated(int lastCount, java.util.Date lastUpdatedAt) {
-		return	count != lastCount ||
-				!Objects.equals(max_lastUpdatedAt, lastUpdatedAt);
-	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(
@@ -447,9 +464,6 @@ public class {{className}}Info {
 	/** オフセット */
 	private int offset;
 
-	/** データ更新フラグ */
-	private boolean updated;
-
 	/**
 	 * Summary情報を取得する
 	 *
@@ -504,27 +518,9 @@ public class {{className}}Info {
 		this.offset = offset;
 	}
 
-	/**
-	 * データ更新フラグを取得する
-	 *
-	 * @return データ更新フラグ
-	 */
-	public boolean isUpdated() {
-		return updated;
-	}
-
-	/**
-	 * データ更新フラグを設定する
-	 *
-	 * @param updated データ更新フラグ
-	 */
-	public void setUpdated(boolean updated) {
-		this.updated = updated;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(summary, contents, offset, updated);
+		return Objects.hash(summary, contents, offset);
 	}
 
 	@Override
@@ -543,8 +539,7 @@ public class {{className}}Info {
 	private boolean equals({{className}}Info other) {
 		return	Objects.equals(summary, other.summary) &&
 				Objects.equals(contents, other.contents) &&
-				offset == other.offset &&
-				updated == other.updated;
+				offset == other.offset;
 	}
 
 	@Override
@@ -554,7 +549,6 @@ public class {{className}}Info {
 		sb.append("summary=").append(summary).append(", ");
 		sb.append("contents=").append(contents).append(", ");
 		sb.append("offset=").append(offset).append(", ");
-		sb.append("updated=").append(updated);
 		sb.append("]");
 		return sb.toString();
 	}

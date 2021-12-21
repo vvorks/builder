@@ -20,9 +20,6 @@ public class QueryInfo {
 	/** オフセット */
 	private int offset;
 
-	/** データ更新フラグ */
-	private boolean updated;
-
 	/**
 	 * Summary情報を取得する
 	 *
@@ -77,27 +74,9 @@ public class QueryInfo {
 		this.offset = offset;
 	}
 
-	/**
-	 * データ更新フラグを取得する
-	 *
-	 * @return データ更新フラグ
-	 */
-	public boolean isUpdated() {
-		return updated;
-	}
-
-	/**
-	 * データ更新フラグを設定する
-	 *
-	 * @param updated データ更新フラグ
-	 */
-	public void setUpdated(boolean updated) {
-		this.updated = updated;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(summary, contents, offset, updated);
+		return Objects.hash(summary, contents, offset);
 	}
 
 	@Override
@@ -116,8 +95,7 @@ public class QueryInfo {
 	private boolean equals(QueryInfo other) {
 		return	Objects.equals(summary, other.summary) &&
 				Objects.equals(contents, other.contents) &&
-				offset == other.offset &&
-				updated == other.updated;
+				offset == other.offset;
 	}
 
 	@Override
@@ -127,7 +105,6 @@ public class QueryInfo {
 		sb.append("summary=").append(summary).append(", ");
 		sb.append("contents=").append(contents).append(", ");
 		sb.append("offset=").append(offset).append(", ");
-		sb.append("updated=").append(updated);
 		sb.append("]");
 		return sb.toString();
 	}

@@ -269,10 +269,6 @@ public class FieldExtender {
 	}
 
 	public void extractKey(FieldContent fld, Deque<FieldContent> stack, List<FieldContent> into) {
-		extractKey(fld, false, stack, into);
-	}
-
-	public void extractKey(FieldContent fld, boolean addTitle, Deque<FieldContent> stack, List<FieldContent> into) {
 		DataType type = fld.getType();
 		switch (type) {
 		case SET:
@@ -286,16 +282,6 @@ public class FieldExtender {
 				}
 			}
 			stack.pop();
-			//タイトルプロパティの追加
-			if (addTitle) {
-				FieldContent title = new FieldContent();
-				title.setFieldName(fld.getFieldName() + "_title");
-				title.setTitle(getTitleOrName(fld) + "の見出し");
-				title.setType(DataType.STRING);
-				title.setWidth(0);
-				title.setScale(0);
-				into.add(title);
-			}
 			break;
 		default:
 			if (stack.isEmpty()) {

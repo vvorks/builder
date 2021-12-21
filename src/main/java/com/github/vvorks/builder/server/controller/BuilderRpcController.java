@@ -116,22 +116,17 @@ public class BuilderRpcController {
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return プロジェクト情報
 	 */
 	@JsonRpcMethod
 	public ProjectInfo listProject(
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		ProjectInfo info = new ProjectInfo();
 		ProjectSummary summary = projectMapper.listSummary();
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -146,25 +141,20 @@ public class BuilderRpcController {
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return プロジェクト情報
 	 */
 	@JsonRpcMethod
 	public ProjectInfo listProjectIfNameIs(
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		ProjectInfo info = new ProjectInfo();
 		ProjectSummary summary = projectMapper.listSummaryIfNameIs(
 				name
 				);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -181,23 +171,18 @@ public class BuilderRpcController {
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return クラス一覧情報
 	 */
 	@JsonRpcMethod
 	public ClassInfo listProjectClasses(
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		ClassInfo info = new ClassInfo();
 		ClassSummary summary = projectMapper.listClassesSummary(content);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -213,8 +198,6 @@ public class BuilderRpcController {
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return クラス一覧情報
 	 */
 	@JsonRpcMethod
@@ -222,9 +205,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		ClassInfo info = new ClassInfo();
 		ClassSummary summary = projectMapper.listClassesSummaryIfNameIs(
@@ -232,8 +213,7 @@ public class BuilderRpcController {
 				name
 				);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -251,23 +231,18 @@ public class BuilderRpcController {
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return 列挙一覧情報
 	 */
 	@JsonRpcMethod
 	public EnumInfo listProjectEnums(
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		EnumInfo info = new EnumInfo();
 		EnumSummary summary = projectMapper.listEnumsSummary(content);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -283,8 +258,6 @@ public class BuilderRpcController {
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return 列挙一覧情報
 	 */
 	@JsonRpcMethod
@@ -292,9 +265,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		EnumInfo info = new EnumInfo();
 		EnumSummary summary = projectMapper.listEnumsSummaryIfNameIs(
@@ -302,8 +273,7 @@ public class BuilderRpcController {
 				name
 				);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -368,22 +338,17 @@ public class BuilderRpcController {
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return クラス情報
 	 */
 	@JsonRpcMethod
 	public ClassInfo listClass(
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		ClassInfo info = new ClassInfo();
 		ClassSummary summary = classMapper.listSummary();
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -398,25 +363,20 @@ public class BuilderRpcController {
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return クラス情報
 	 */
 	@JsonRpcMethod
 	public ClassInfo listClassIfNameIs(
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		ClassInfo info = new ClassInfo();
 		ClassSummary summary = classMapper.listSummaryIfNameIs(
 				name
 				);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -446,23 +406,18 @@ public class BuilderRpcController {
 	 * @param content クラス
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return フィールド一覧情報
 	 */
 	@JsonRpcMethod
 	public FieldInfo listClassFields(
 		@JsonRpcParam("content") ClassContent content,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		FieldInfo info = new FieldInfo();
 		FieldSummary summary = classMapper.listFieldsSummary(content);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -478,8 +433,6 @@ public class BuilderRpcController {
 	 * @param content クラス
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return フィールド一覧情報
 	 */
 	@JsonRpcMethod
@@ -487,9 +440,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("content") ClassContent content,
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		FieldInfo info = new FieldInfo();
 		FieldSummary summary = classMapper.listFieldsSummaryIfNameIs(
@@ -497,8 +448,7 @@ public class BuilderRpcController {
 				name
 				);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -516,23 +466,18 @@ public class BuilderRpcController {
 	 * @param content クラス
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return queries情報
 	 */
 	@JsonRpcMethod
 	public QueryInfo listClassQueries(
 		@JsonRpcParam("content") ClassContent content,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		QueryInfo info = new QueryInfo();
 		QuerySummary summary = classMapper.listQueriesSummary(content);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -595,22 +540,17 @@ public class BuilderRpcController {
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return フィールド情報
 	 */
 	@JsonRpcMethod
 	public FieldInfo listField(
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		FieldInfo info = new FieldInfo();
 		FieldSummary summary = fieldMapper.listSummary();
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -625,25 +565,20 @@ public class BuilderRpcController {
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return フィールド情報
 	 */
 	@JsonRpcMethod
 	public FieldInfo listFieldIfNameIs(
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		FieldInfo info = new FieldInfo();
 		FieldSummary summary = fieldMapper.listSummaryIfNameIs(
 				name
 				);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -759,22 +694,17 @@ public class BuilderRpcController {
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return クエリー情報
 	 */
 	@JsonRpcMethod
 	public QueryInfo listQuery(
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		QueryInfo info = new QueryInfo();
 		QuerySummary summary = queryMapper.listSummary();
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -849,22 +779,17 @@ public class BuilderRpcController {
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return 列挙情報
 	 */
 	@JsonRpcMethod
 	public EnumInfo listEnum(
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		EnumInfo info = new EnumInfo();
 		EnumSummary summary = enumMapper.listSummary();
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -879,25 +804,20 @@ public class BuilderRpcController {
 	 * @param name name
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return 列挙情報
 	 */
 	@JsonRpcMethod
 	public EnumInfo listEnumIfNameIs(
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		EnumInfo info = new EnumInfo();
 		EnumSummary summary = enumMapper.listSummaryIfNameIs(
 				name
 				);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -927,23 +847,18 @@ public class BuilderRpcController {
 	 * @param content 列挙
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return 列挙値一覧情報
 	 */
 	@JsonRpcMethod
 	public EnumValueInfo listEnumValues(
 		@JsonRpcParam("content") EnumContent content,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		EnumValueInfo info = new EnumValueInfo();
 		EnumValueSummary summary = enumMapper.listValuesSummary(content);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -1009,22 +924,17 @@ public class BuilderRpcController {
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return 列挙値情報
 	 */
 	@JsonRpcMethod
 	public EnumValueInfo listEnumValue(
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		EnumValueInfo info = new EnumValueInfo();
 		EnumValueSummary summary = enumValueMapper.listSummary();
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);

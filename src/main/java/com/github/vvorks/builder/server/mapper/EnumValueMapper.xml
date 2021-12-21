@@ -48,18 +48,22 @@
 
 	<select id="get" resultType="EnumValueContent">
 		SELECT
-			F_OWNER_ENUM_ID AS "ownerEnumId",
-			F_VALUE_ID AS "valueId",
-			F_CODE AS "code",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_OWNER_ENUM_ID AS "ownerEnumId",
+			T1.F_VALUE_ID AS "valueId",
+			T1.F_CODE AS "code",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_VALUE_ID AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_ENUM_VALUE
+			T_ENUM_VALUE T1
+		LEFT JOIN T_ENUM T2 ON
+			T1.F_OWNER_ENUM_ID = T2.F_ENUM_ID
 		WHERE
-			F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
-			F_VALUE_ID = #{ valueId }
+			T1.F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
+			T1.F_VALUE_ID = #{ valueId }
 	</select>
 
 	<select id="listSummary" resultType="EnumValueSummary">
@@ -73,17 +77,21 @@
 
 	<select id="listContent" resultType="EnumValueContent">
 		SELECT
-			F_OWNER_ENUM_ID AS "ownerEnumId",
-			F_VALUE_ID AS "valueId",
-			F_CODE AS "code",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_OWNER_ENUM_ID AS "ownerEnumId",
+			T1.F_VALUE_ID AS "valueId",
+			T1.F_CODE AS "code",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_VALUE_ID AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_ENUM_VALUE
+			T_ENUM_VALUE T1
+		LEFT JOIN T_ENUM T2 ON
+			T1.F_OWNER_ENUM_ID = T2.F_ENUM_ID
 		ORDER BY
-			F_CODE
+			T1.F_CODE ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -94,18 +102,22 @@
 
 	<select id="getOwner" resultType="EnumContent">
 		SELECT
-			F_ENUM_ID AS "enumId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_ENUM_NAME AS "enumName",
-			F_ENCODE_STRING AS "encodeString",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_ENUM_NAME AS "enumName",
+			T1.F_ENCODE_STRING AS "encodeString",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_ENUM
+			T_ENUM T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
-			F_ENUM_ID = #{ ownerEnumId }
+			T1.F_ENUM_ID = #{ ownerEnumId }
 	</select>
 
 </mapper>

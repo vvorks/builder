@@ -83,29 +83,42 @@
 
 	<select id="get" resultType="FieldContent">
 		SELECT
-			F_FIELD_ID AS "fieldId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_FIELD_NAME AS "fieldName",
-			F_TYPE AS "type",
-			F_WIDTH AS "width",
-			F_SCALE AS "scale",
-			F_CREF_CLASS_ID AS "crefClassId",
-			F_EREF_ENUM_ID AS "erefEnumId",
-			F_FREF_FIELD_ID AS "frefFieldId",
-			F_PK AS "pk",
-			F_NULLABLE AS "nullable",
-			F_NEEDS_SUM AS "needsSum",
-			F_NEEDS_AVG AS "needsAvg",
-			F_NEEDS_MAX AS "needsMax",
-			F_NEEDS_MIN AS "needsMin",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_FIELD_ID AS "fieldId",
+			T1.F_OWNER_CLASS_ID AS "ownerClassId",
+			T1.F_FIELD_NAME AS "fieldName",
+			T1.F_TYPE AS "type",
+			T1.F_WIDTH AS "width",
+			T1.F_SCALE AS "scale",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_PK AS "pk",
+			T1.F_NULLABLE AS "nullable",
+			T1.F_NEEDS_SUM AS "needsSum",
+			T1.F_NEEDS_AVG AS "needsAvg",
+			T1.F_NEEDS_MAX AS "needsMax",
+			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title",
+			T3.F_TITLE AS "cref_title",
+			T4.F_TITLE AS "eref_title",
+			T5.F_TITLE AS "fref_title"
 		FROM
-			T_FIELD
+			T_FIELD T1
+		LEFT JOIN T_CLASS T2 ON
+			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
+		LEFT JOIN T_CLASS T3 ON
+			T1.F_CREF_CLASS_ID = T3.F_CLASS_ID
+		LEFT JOIN T_ENUM T4 ON
+			T1.F_EREF_ENUM_ID = T4.F_ENUM_ID
+		LEFT JOIN T_FIELD T5 ON
+			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		WHERE
-			F_FIELD_ID = #{ fieldId }
+			T1.F_FIELD_ID = #{ fieldId }
 	</select>
 
 	<select id="listSummary" resultType="FieldSummary">
@@ -119,29 +132,42 @@
 
 	<select id="listContent" resultType="FieldContent">
 		SELECT
-			F_FIELD_ID AS "fieldId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_FIELD_NAME AS "fieldName",
-			F_TYPE AS "type",
-			F_WIDTH AS "width",
-			F_SCALE AS "scale",
-			F_CREF_CLASS_ID AS "crefClassId",
-			F_EREF_ENUM_ID AS "erefEnumId",
-			F_FREF_FIELD_ID AS "frefFieldId",
-			F_PK AS "pk",
-			F_NULLABLE AS "nullable",
-			F_NEEDS_SUM AS "needsSum",
-			F_NEEDS_AVG AS "needsAvg",
-			F_NEEDS_MAX AS "needsMax",
-			F_NEEDS_MIN AS "needsMin",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_FIELD_ID AS "fieldId",
+			T1.F_OWNER_CLASS_ID AS "ownerClassId",
+			T1.F_FIELD_NAME AS "fieldName",
+			T1.F_TYPE AS "type",
+			T1.F_WIDTH AS "width",
+			T1.F_SCALE AS "scale",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_PK AS "pk",
+			T1.F_NULLABLE AS "nullable",
+			T1.F_NEEDS_SUM AS "needsSum",
+			T1.F_NEEDS_AVG AS "needsAvg",
+			T1.F_NEEDS_MAX AS "needsMax",
+			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title",
+			T3.F_TITLE AS "cref_title",
+			T4.F_TITLE AS "eref_title",
+			T5.F_TITLE AS "fref_title"
 		FROM
-			T_FIELD
+			T_FIELD T1
+		LEFT JOIN T_CLASS T2 ON
+			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
+		LEFT JOIN T_CLASS T3 ON
+			T1.F_CREF_CLASS_ID = T3.F_CLASS_ID
+		LEFT JOIN T_ENUM T4 ON
+			T1.F_EREF_ENUM_ID = T4.F_ENUM_ID
+		LEFT JOIN T_FIELD T5 ON
+			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		ORDER BY
-			F_FIELD_ID
+			T1.F_FIELD_ID ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -157,6 +183,14 @@
 			0 AS "focus"
 		FROM
 			T_FIELD T1
+		LEFT JOIN T_CLASS T2 ON
+			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
+		LEFT JOIN T_CLASS T3 ON
+			T1.F_CREF_CLASS_ID = T3.F_CLASS_ID
+		LEFT JOIN T_ENUM T4 ON
+			T1.F_EREF_ENUM_ID = T4.F_ENUM_ID
+		LEFT JOIN T_FIELD T5 ON
+			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		WHERE
 			<![CDATA[
 			T1.F_FIELD_NAME = #{name}
@@ -183,15 +217,28 @@
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
-			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title",
+			T3.F_TITLE AS "cref_title",
+			T4.F_TITLE AS "eref_title",
+			T5.F_TITLE AS "fref_title"
 		FROM
 			T_FIELD T1
+		LEFT JOIN T_CLASS T2 ON
+			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
+		LEFT JOIN T_CLASS T3 ON
+			T1.F_CREF_CLASS_ID = T3.F_CLASS_ID
+		LEFT JOIN T_ENUM T4 ON
+			T1.F_EREF_ENUM_ID = T4.F_ENUM_ID
+		LEFT JOIN T_FIELD T5 ON
+			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		WHERE
 			<![CDATA[
 			T1.F_FIELD_NAME = #{name}
 			]]>
 		ORDER BY
-			T1.F_FIELD_ID
+			T1.F_FIELD_ID ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -202,79 +249,104 @@
 
 	<select id="getOwner" resultType="ClassContent">
 		SELECT
-			F_CLASS_ID AS "classId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_CLASS_NAME AS "className",
-			F_ORDER_EXPR AS "orderExpr",
-			F_TITLE_EXPR AS "titleExpr",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_CLASS_ID AS "classId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_CLASS_NAME AS "className",
+			T1.F_ORDER_EXPR AS "orderExpr",
+			T1.F_TITLE_EXPR AS "titleExpr",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_CLASS
+			T_CLASS T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
-			F_CLASS_ID = #{ ownerClassId }
+			T1.F_CLASS_ID = #{ ownerClassId }
 	</select>
 
 	<select id="getCref" resultType="ClassContent">
 		SELECT
-			F_CLASS_ID AS "classId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_CLASS_NAME AS "className",
-			F_ORDER_EXPR AS "orderExpr",
-			F_TITLE_EXPR AS "titleExpr",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_CLASS_ID AS "classId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_CLASS_NAME AS "className",
+			T1.F_ORDER_EXPR AS "orderExpr",
+			T1.F_TITLE_EXPR AS "titleExpr",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_CLASS
+			T_CLASS T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
-			F_CLASS_ID = #{ crefClassId }
+			T1.F_CLASS_ID = #{ crefClassId }
 	</select>
 
 	<select id="getEref" resultType="EnumContent">
 		SELECT
-			F_ENUM_ID AS "enumId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_ENUM_NAME AS "enumName",
-			F_ENCODE_STRING AS "encodeString",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_ENUM_NAME AS "enumName",
+			T1.F_ENCODE_STRING AS "encodeString",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_ENUM
+			T_ENUM T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
-			F_ENUM_ID = #{ erefEnumId }
+			T1.F_ENUM_ID = #{ erefEnumId }
 	</select>
 
 	<select id="getFref" resultType="FieldContent">
 		SELECT
-			F_FIELD_ID AS "fieldId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_FIELD_NAME AS "fieldName",
-			F_TYPE AS "type",
-			F_WIDTH AS "width",
-			F_SCALE AS "scale",
-			F_CREF_CLASS_ID AS "crefClassId",
-			F_EREF_ENUM_ID AS "erefEnumId",
-			F_FREF_FIELD_ID AS "frefFieldId",
-			F_PK AS "pk",
-			F_NULLABLE AS "nullable",
-			F_NEEDS_SUM AS "needsSum",
-			F_NEEDS_AVG AS "needsAvg",
-			F_NEEDS_MAX AS "needsMax",
-			F_NEEDS_MIN AS "needsMin",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_FIELD_ID AS "fieldId",
+			T1.F_OWNER_CLASS_ID AS "ownerClassId",
+			T1.F_FIELD_NAME AS "fieldName",
+			T1.F_TYPE AS "type",
+			T1.F_WIDTH AS "width",
+			T1.F_SCALE AS "scale",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_PK AS "pk",
+			T1.F_NULLABLE AS "nullable",
+			T1.F_NEEDS_SUM AS "needsSum",
+			T1.F_NEEDS_AVG AS "needsAvg",
+			T1.F_NEEDS_MAX AS "needsMax",
+			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title",
+			T3.F_TITLE AS "cref_title",
+			T4.F_TITLE AS "eref_title",
+			T5.F_TITLE AS "fref_title"
 		FROM
-			T_FIELD
+			T_FIELD T1
+		LEFT JOIN T_CLASS T2 ON
+			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
+		LEFT JOIN T_CLASS T3 ON
+			T1.F_CREF_CLASS_ID = T3.F_CLASS_ID
+		LEFT JOIN T_ENUM T4 ON
+			T1.F_EREF_ENUM_ID = T4.F_ENUM_ID
+		LEFT JOIN T_FIELD T5 ON
+			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		WHERE
-			F_FIELD_ID = #{ frefFieldId }
+			T1.F_FIELD_ID = #{ frefFieldId }
 	</select>
 
 </mapper>

@@ -68,6 +68,16 @@ public class QueryContent {
 	private java.util.Date _lastUpdatedAt;
 
 	/**
+	 * タイトル
+	 */
+	private String _title;
+
+	/**
+	 * 所属クラスのタイトル
+	 */
+	private String owner_title;
+
+	/**
 	 * 空のクエリーを作成する
 	 */
 	public QueryContent() {
@@ -82,26 +92,6 @@ public class QueryContent {
 		int queryId
 	) {
 		this.queryId = queryId;
-	}
-
-	/**
-	 * キー文字列を取得する
-	 *
-	 * @return キー文字列
-	 */
-	public String get_key() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(queryId);
-		return sb.toString();
-	}
-
-	/**
-	 * 見出し文字列を取得する
-	 *
-	 * @return 見出し文字列
-	 */
-	public String get_title() {
-		return title;
 	}
 
 	/**
@@ -264,6 +254,42 @@ public class QueryContent {
 	 */
 	public void set_lastUpdatedAt(java.util.Date _lastUpdatedAt) {
 		this._lastUpdatedAt = _lastUpdatedAt;
+	}
+
+	/**
+	 * タイトルを取得する
+	 *
+	 * @return タイトル
+	 */
+	public String get_title() {
+		return this._title;
+	}
+
+	/**
+	 * タイトルを設定する
+	 *
+	 * @param _title 設定するタイトル
+	 */
+	public void set_title(String _title) {
+		this._title = _title;
+	}
+
+	/**
+	 * 所属クラスのタイトルを取得する
+	 *
+	 * @return 所属クラスのタイトル
+	 */
+	public String getOwner_title() {
+		return this.owner_title;
+	}
+
+	/**
+	 * 所属クラスのタイトルを設定する
+	 *
+	 * @param owner_title 設定する所属クラスのタイトル
+	 */
+	public void setOwner_title(String owner_title) {
+		this.owner_title = owner_title;
 	}
 
 	@Override

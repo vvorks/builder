@@ -50,18 +50,22 @@
 
 	<select id="get" resultType="EnumContent">
 		SELECT
-			F_ENUM_ID AS "enumId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_ENUM_NAME AS "enumName",
-			F_ENCODE_STRING AS "encodeString",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_ENUM_NAME AS "enumName",
+			T1.F_ENCODE_STRING AS "encodeString",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_ENUM
+			T_ENUM T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
-			F_ENUM_ID = #{ enumId }
+			T1.F_ENUM_ID = #{ enumId }
 	</select>
 
 	<select id="listSummary" resultType="EnumSummary">
@@ -75,18 +79,22 @@
 
 	<select id="listContent" resultType="EnumContent">
 		SELECT
-			F_ENUM_ID AS "enumId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_ENUM_NAME AS "enumName",
-			F_ENCODE_STRING AS "encodeString",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_ENUM_NAME AS "enumName",
+			T1.F_ENCODE_STRING AS "encodeString",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_ENUM
+			T_ENUM T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		ORDER BY
-			F_ENUM_ID
+			T1.F_ENUM_ID ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -102,6 +110,8 @@
 			0 AS "focus"
 		FROM
 			T_ENUM T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
 			<![CDATA[
 			T1.F_ENUM_NAME = #{name}
@@ -117,15 +127,19 @@
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
-			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
 			T_ENUM T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
 			<![CDATA[
 			T1.F_ENUM_NAME = #{name}
 			]]>
 		ORDER BY
-			T1.F_ENUM_ID
+			T1.F_ENUM_ID ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -136,18 +150,19 @@
 
 	<select id="getOwner" resultType="ProjectContent">
 		SELECT
-			F_PROJECT_ID AS "projectId",
-			F_PROJECT_NAME AS "projectName",
-			F_GRADLE_NAME AS "gradleName",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F_COPYRIGHTS AS "copyrights",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_PROJECT_ID AS "projectId",
+			T1.F_PROJECT_NAME AS "projectName",
+			T1.F_GRADLE_NAME AS "gradleName",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F_COPYRIGHTS AS "copyrights",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title"
 		FROM
-			T_PROJECT
+			T_PROJECT T1
 		WHERE
-			F_PROJECT_ID = #{ ownerProjectId }
+			T1.F_PROJECT_ID = #{ ownerProjectId }
 	</select>
 
 	<select id="listValuesSummary" resultType="EnumValueSummary">
@@ -163,19 +178,23 @@
 
 	<select id="listValuesContent" resultType="EnumValueContent">
 		SELECT
-			F_OWNER_ENUM_ID AS "ownerEnumId",
-			F_VALUE_ID AS "valueId",
-			F_CODE AS "code",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_OWNER_ENUM_ID AS "ownerEnumId",
+			T1.F_VALUE_ID AS "valueId",
+			T1.F_CODE AS "code",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_VALUE_ID AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_ENUM_VALUE
+			T_ENUM_VALUE T1
+		LEFT JOIN T_ENUM T2 ON
+			T1.F_OWNER_ENUM_ID = T2.F_ENUM_ID
 		WHERE
-			F_OWNER_ENUM_ID = #{ content.enumId }
+			T1.F_OWNER_ENUM_ID = #{ content.enumId }
 		ORDER BY
-			F_CODE
+			T1.F_CODE ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

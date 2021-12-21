@@ -99,22 +99,17 @@ public class {{upperLastName}}RpcController {
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return {{titleOrName}}情報
 	 */
 	@JsonRpcMethod
 	public {{className}}Info list{{className}}(
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		{{className}}Info info = new {{className}}Info();
 		{{className}}Summary summary = {{lowerName}}Mapper.listSummary();
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -133,8 +128,6 @@ public class {{upperLastName}}RpcController {
 	{{/each}}
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return {{../titleOrName}}情報
 	 */
 	@JsonRpcMethod
@@ -143,9 +136,7 @@ public class {{upperLastName}}RpcController {
 		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
 		{{/each}}
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		{{../className}}Info info = new {{../className}}Info();
 		{{../className}}Summary summary = {{../lowerName}}Mapper.listSummaryIf{{upperName}}(
@@ -154,8 +145,7 @@ public class {{upperLastName}}RpcController {
 				{{/each}}
 				);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -193,23 +183,18 @@ public class {{upperLastName}}RpcController {
 	 * @param content {{../titleOrName}}
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return {{titleOrName}}情報
 	 */
 	@JsonRpcMethod
 	public {{fref.owner.className}}Info list{{../className}}{{upperName}}(
 		@JsonRpcParam("content") {{../className}}Content content,
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		{{fref.owner.className}}Info info = new {{fref.owner.className}}Info();
 		{{fref.owner.className}}Summary summary = {{../lowerName}}Mapper.list{{upperName}}Summary(content);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);
@@ -227,8 +212,6 @@ public class {{upperLastName}}RpcController {
 	 * @param content {{../../titleOrName}}
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @param lastCount 前回検索時に取得した件数（データ更新チェックに使用する）
-	 * @param lastUpdatedAt 前回検索時のデータ更新時刻（データ更新チェックに使用する）
 	 * @return {{../titleOrName}}情報
 	 */
 	@JsonRpcMethod
@@ -238,9 +221,7 @@ public class {{upperLastName}}RpcController {
 		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
 		{{/each}}
 		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit,
-		@JsonRpcParam("lastCount") int lastCount,
-		@JsonRpcParam("lastUpdatedAt") java.util.Date lastUpdatedAt
+		@JsonRpcParam("limit") int limit
 	) {
 		{{fref.owner.className}}Info info = new {{fref.owner.className}}Info();
 		{{../fref.owner.className}}Summary summary = {{../../lowerName}}Mapper.list{{../upperName}}SummaryIf{{upperName}}(
@@ -250,8 +231,7 @@ public class {{upperLastName}}RpcController {
 				{{/each}}
 				);
 		info.setSummary(summary);
-		info.setUpdated(summary.isUpdated(lastCount, lastUpdatedAt));
-		if (info.isUpdated()) {
+		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		info.setOffset(offset);

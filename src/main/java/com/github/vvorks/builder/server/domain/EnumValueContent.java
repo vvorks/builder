@@ -50,6 +50,16 @@ public class EnumValueContent {
 	private java.util.Date _lastUpdatedAt;
 
 	/**
+	 * タイトル
+	 */
+	private String _title;
+
+	/**
+	 * 所属列挙のタイトル
+	 */
+	private String owner_title;
+
+	/**
 	 * 空の列挙値を作成する
 	 */
 	public EnumValueContent() {
@@ -67,27 +77,6 @@ public class EnumValueContent {
 	) {
 		this.ownerEnumId = ownerEnumId;
 		this.valueId = valueId;
-	}
-
-	/**
-	 * キー文字列を取得する
-	 *
-	 * @return キー文字列
-	 */
-	public String get_key() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(ownerEnumId).append('-');
-		sb.append(valueId);
-		return sb.toString();
-	}
-
-	/**
-	 * 見出し文字列を取得する
-	 *
-	 * @return 見出し文字列
-	 */
-	public String get_title() {
-		return valueId;
 	}
 
 	/**
@@ -214,6 +203,42 @@ public class EnumValueContent {
 	 */
 	public void set_lastUpdatedAt(java.util.Date _lastUpdatedAt) {
 		this._lastUpdatedAt = _lastUpdatedAt;
+	}
+
+	/**
+	 * タイトルを取得する
+	 *
+	 * @return タイトル
+	 */
+	public String get_title() {
+		return this._title;
+	}
+
+	/**
+	 * タイトルを設定する
+	 *
+	 * @param _title 設定するタイトル
+	 */
+	public void set_title(String _title) {
+		this._title = _title;
+	}
+
+	/**
+	 * 所属列挙のタイトルを取得する
+	 *
+	 * @return 所属列挙のタイトル
+	 */
+	public String getOwner_title() {
+		return this.owner_title;
+	}
+
+	/**
+	 * 所属列挙のタイトルを設定する
+	 *
+	 * @param owner_title 設定する所属列挙のタイトル
+	 */
+	public void setOwner_title(String owner_title) {
+		this.owner_title = owner_title;
 	}
 
 	@Override

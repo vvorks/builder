@@ -53,19 +53,23 @@
 
 	<select id="get" resultType="QueryContent">
 		SELECT
-			F_QUERY_ID AS "queryId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_QUERY_NAME AS "queryName",
-			F_FILTER AS "filter",
-			F_ORDER AS "order",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_QUERY_ID AS "queryId",
+			T1.F_OWNER_CLASS_ID AS "ownerClassId",
+			T1.F_QUERY_NAME AS "queryName",
+			T1.F_FILTER AS "filter",
+			T1.F_ORDER AS "order",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_QUERY
+			T_QUERY T1
+		LEFT JOIN T_CLASS T2 ON
+			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
 		WHERE
-			F_QUERY_ID = #{ queryId }
+			T1.F_QUERY_ID = #{ queryId }
 	</select>
 
 	<select id="listSummary" resultType="QuerySummary">
@@ -79,19 +83,23 @@
 
 	<select id="listContent" resultType="QueryContent">
 		SELECT
-			F_QUERY_ID AS "queryId",
-			F_OWNER_CLASS_ID AS "ownerClassId",
-			F_QUERY_NAME AS "queryName",
-			F_FILTER AS "filter",
-			F_ORDER AS "order",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_QUERY_ID AS "queryId",
+			T1.F_OWNER_CLASS_ID AS "ownerClassId",
+			T1.F_QUERY_NAME AS "queryName",
+			T1.F_FILTER AS "filter",
+			T1.F_ORDER AS "order",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_QUERY
+			T_QUERY T1
+		LEFT JOIN T_CLASS T2 ON
+			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
 		ORDER BY
-			F_QUERY_ID
+			T1.F_QUERY_ID ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -102,19 +110,23 @@
 
 	<select id="getOwner" resultType="ClassContent">
 		SELECT
-			F_CLASS_ID AS "classId",
-			F_OWNER_PROJECT_ID AS "ownerProjectId",
-			F_CLASS_NAME AS "className",
-			F_ORDER_EXPR AS "orderExpr",
-			F_TITLE_EXPR AS "titleExpr",
-			F_TITLE AS "title",
-			F_DESCRIPTION AS "description",
-			F_NOTE AS "note",
-			F__LAST_UPDATED_AT AS "_lastUpdatedAt"
+			T1.F_CLASS_ID AS "classId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_CLASS_NAME AS "className",
+			T1.F_ORDER_EXPR AS "orderExpr",
+			T1.F_TITLE_EXPR AS "titleExpr",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_TITLE AS "owner_title"
 		FROM
-			T_CLASS
+			T_CLASS T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
-			F_CLASS_ID = #{ ownerClassId }
+			T1.F_CLASS_ID = #{ ownerClassId }
 	</select>
 
 </mapper>

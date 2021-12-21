@@ -61,8 +61,8 @@ public class TestDataSource extends DataSource {
 
 	private void doRequest(Json criteria, int offset, int limit) {
 		Json param = Json.createObject();
-		param.setInt("_offset", offset);
-		param.setInt("_limit", limit);
+		param.setInt("offset", offset);
+		param.setInt("limit", limit);
 		if (criteria != null) {
 			for (Entry<String, Json> e : criteria.entrySet()) {
 				param.set(e.getKey(), e.getValue());

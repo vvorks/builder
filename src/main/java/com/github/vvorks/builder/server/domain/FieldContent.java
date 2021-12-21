@@ -113,6 +113,31 @@ public class FieldContent {
 	private java.util.Date _lastUpdatedAt;
 
 	/**
+	 * タイトル
+	 */
+	private String _title;
+
+	/**
+	 * 所属クラスのタイトル
+	 */
+	private String owner_title;
+
+	/**
+	 * クラス参照先のタイトル
+	 */
+	private String cref_title;
+
+	/**
+	 * 列挙参照先のタイトル
+	 */
+	private String eref_title;
+
+	/**
+	 * フィールド参照先のタイトル
+	 */
+	private String fref_title;
+
+	/**
 	 * 空のフィールドを作成する
 	 */
 	public FieldContent() {
@@ -127,26 +152,6 @@ public class FieldContent {
 		int fieldId
 	) {
 		this.fieldId = fieldId;
-	}
-
-	/**
-	 * キー文字列を取得する
-	 *
-	 * @return キー文字列
-	 */
-	public String get_key() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(fieldId);
-		return sb.toString();
-	}
-
-	/**
-	 * 見出し文字列を取得する
-	 *
-	 * @return 見出し文字列
-	 */
-	public String get_title() {
-		return title;
 	}
 
 	/**
@@ -489,6 +494,96 @@ public class FieldContent {
 	 */
 	public void set_lastUpdatedAt(java.util.Date _lastUpdatedAt) {
 		this._lastUpdatedAt = _lastUpdatedAt;
+	}
+
+	/**
+	 * タイトルを取得する
+	 *
+	 * @return タイトル
+	 */
+	public String get_title() {
+		return this._title;
+	}
+
+	/**
+	 * タイトルを設定する
+	 *
+	 * @param _title 設定するタイトル
+	 */
+	public void set_title(String _title) {
+		this._title = _title;
+	}
+
+	/**
+	 * 所属クラスのタイトルを取得する
+	 *
+	 * @return 所属クラスのタイトル
+	 */
+	public String getOwner_title() {
+		return this.owner_title;
+	}
+
+	/**
+	 * 所属クラスのタイトルを設定する
+	 *
+	 * @param owner_title 設定する所属クラスのタイトル
+	 */
+	public void setOwner_title(String owner_title) {
+		this.owner_title = owner_title;
+	}
+
+	/**
+	 * クラス参照先のタイトルを取得する
+	 *
+	 * @return クラス参照先のタイトル
+	 */
+	public String getCref_title() {
+		return this.cref_title;
+	}
+
+	/**
+	 * クラス参照先のタイトルを設定する
+	 *
+	 * @param cref_title 設定するクラス参照先のタイトル
+	 */
+	public void setCref_title(String cref_title) {
+		this.cref_title = cref_title;
+	}
+
+	/**
+	 * 列挙参照先のタイトルを取得する
+	 *
+	 * @return 列挙参照先のタイトル
+	 */
+	public String getEref_title() {
+		return this.eref_title;
+	}
+
+	/**
+	 * 列挙参照先のタイトルを設定する
+	 *
+	 * @param eref_title 設定する列挙参照先のタイトル
+	 */
+	public void setEref_title(String eref_title) {
+		this.eref_title = eref_title;
+	}
+
+	/**
+	 * フィールド参照先のタイトルを取得する
+	 *
+	 * @return フィールド参照先のタイトル
+	 */
+	public String getFref_title() {
+		return this.fref_title;
+	}
+
+	/**
+	 * フィールド参照先のタイトルを設定する
+	 *
+	 * @param fref_title 設定するフィールド参照先のタイトル
+	 */
+	public void setFref_title(String fref_title) {
+		this.fref_title = fref_title;
 	}
 
 	@Override

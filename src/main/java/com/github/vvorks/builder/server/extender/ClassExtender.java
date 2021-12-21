@@ -106,6 +106,39 @@ public class ClassExtender {
 		}
 	}
 
+	public class TitleInfo {
+		private final String fieldName;
+		private final String title;
+		private final ExprInfo info;
+		private TitleInfo(String fieldName, String title, ExprInfo info) {
+			this.fieldName = fieldName;
+			this.title = title;
+			this.info = info;
+		}
+		public String getTitleOrName() {
+			return title;
+		}
+		public String getJavaType() {
+			return "String";
+		}
+		public String getFieldName() {
+			return fieldName;
+		}
+		public String getGetterName() {
+			return "get" + Strings.toFirstUpper(fieldName);
+		}
+		public String getSetterName() {
+			return "set" + Strings.toFirstUpper(fieldName);
+		}
+		public String getTitleExpr() {
+			if (info != null) {
+				return info.expr.accept(sqlWriter, null);
+			} else {
+				return "''";
+			}
+		}
+	}
+
 	private static final EnumSet<DataType> SCALER_TYPES = EnumSet.of(
 			DataType.KEY,
 			DataType.ENUM,
@@ -165,8 +198,10 @@ public class ClassExtender {
 			}
 			for (FieldContent fld : getRefs(cls)) {
 				ClassContent ref = fieldExtender.getCref(fld);
-				String refExpr = ref.getTitleExpr() + "//" + fld.getFieldName();
-				referExpr(cls, fld, refExpr, ExprParser.CODE_TYPE_SELECT);
+				String refExpr = ref.getTitleExpr();
+				if (!Strings.isEmpty(refExpr)) {
+					referExpr(cls, fld, refExpr, ExprParser.CODE_TYPE_SELECT);
+				}
 			}
 			for (QueryContent q : classMapper.listQueriesContent(cls, 0, 0)) {
 				String filter = q.getFilter();
@@ -204,37 +239,53 @@ public class ClassExtender {
 		return result;
 	}
 
-	public String getSqlTitle(ClassContent cls) {
-		String title = cls.getTitleExpr();
-		if (Strings.isEmpty(title)) {
-			return "";
+	public List<TitleInfo> getTitles(ClassContent cls) {
+		List<TitleInfo> result = new ArrayList<>();
+		//本クラスのタイトルフィールド
+		String titleExpr = cls.getTitleExpr();
+		String name = "_title";
+		String title = "タイトル";
+		ExprInfo info;
+		if (!Strings.isEmpty(titleExpr)) {
+			info = referExpr(cls, titleExpr, ExprParser.CODE_TYPE_SELECT);
+		} else {
+			info = null;
 		}
-		ExprInfo info = referExpr(cls, title, ExprParser.CODE_TYPE_SELECT);
-		return info.expr.accept(sqlWriter, null);
-	}
-
-	public List<FieldContent> getPropertiesWithTitle(ClassContent cls) {
-		return getProperties(cls, true, fld -> true);
+		result.add(new TitleInfo(name, title, info));
+		//参照フィールドのタイトルフィールド
+		for (FieldContent fld : getRefs(cls)) {
+			name = fld.getFieldName() + "_title";
+			title = fieldExtender.getTitleOrName(fld) + "のタイトル";
+			ClassContent ref = fieldExtender.getCref(fld);
+			String refExpr = ref.getTitleExpr();
+			if (!Strings.isEmpty(refExpr)) {
+				info = referExpr(cls, fld, refExpr, ExprParser.CODE_TYPE_SELECT);
+			} else {
+				info = null;
+			}
+			result.add(new TitleInfo(name, title, info));
+		}
+		return result;
 	}
 
 	public List<FieldContent> getProperties(ClassContent cls) {
-		return getProperties(cls, false, fld -> true);
+		return getProperties(cls, fld -> true);
 	}
 
 	public List<FieldContent> getKeys(ClassContent cls) {
-		return getProperties(cls, false, fld ->  fld.isPk());
+		return getProperties(cls, fld ->  fld.isPk());
 	}
 
 	public List<FieldContent> getNotKeys(ClassContent cls) {
-		return getProperties(cls, false, fld -> !fld.isPk());
+		return getProperties(cls, fld -> !fld.isPk());
 	}
 
-	private List<FieldContent> getProperties(ClassContent cls, boolean addTitle, Predicate<FieldContent> filter) {
+	private List<FieldContent> getProperties(ClassContent cls, Predicate<FieldContent> filter) {
 		List<FieldContent> props = new ArrayList<>();
 		Deque<FieldContent> stack = new ArrayDeque<>();
 		for (FieldContent field : getFields(cls)) {
 			if (filter.test(field)) {
-				fieldExtender.extractKey(field, addTitle, stack, props);
+				fieldExtender.extractKey(field, stack, props);
 			}
 		}
 		return props;
@@ -434,41 +485,51 @@ public class ClassExtender {
 	}
 
 	public ExprInfo referExpr(ClassContent cls, String exprString, int codeType) {
-		ExprEntry entry = entries.computeIfAbsent(cls.getClassId(), id -> new ExprEntry());
-		return entry.exprs.computeIfAbsent(exprString, s -> createExpr(cls, null, s, codeType, entry));
+		return referExpr(cls, null, exprString, codeType);
 	}
 
-	public ExprInfo referExpr(ClassContent cls, FieldContent owner, String exprString, int codeType) {
-		ExprEntry entry = entries.computeIfAbsent(cls.getClassId(), id -> new ExprEntry());
-		return entry.exprs.computeIfAbsent(exprString, s -> createExpr(cls, owner, s, codeType, entry));
-
+	public ExprInfo referExpr(ClassContent cls,
+			FieldContent ctxRef, String exprString, int codeType) {
+		ExprEntry entry = entries.computeIfAbsent(
+				cls.getClassId(), id -> new ExprEntry());
+		String key;
+		ClassContent ctx;
+		if (ctxRef != null) {
+			key = ctxRef.getFieldName() + ":" + exprString;
+			ctx = fieldExtender.getCref(ctxRef);
+		} else {
+			key = exprString;
+			ctx = cls;
+		}
+		return entry.exprs.computeIfAbsent(
+				key, k -> createExpr(ctx, ctxRef, exprString, codeType, entry));
 	}
 
-	private ExprInfo createExpr(ClassContent cls, FieldContent owner, String exprString, int codeType, ExprEntry entry) {
+	private ExprInfo createExpr(ClassContent ctx,
+			FieldContent ctxRef, String exprString, int codeType, ExprEntry entry) {
 		try {
 			ExprNode exprNode = parser.parse(exprString, codeType);
-			ClassContent ctx;
-			if (owner != null) {
-				ctx = fieldExtender.getCref(owner);
-			} else {
-				ctx = cls;
-			}
 			ProjectContent prj = classMapper.getOwner(ctx);
 			Expression expr = builder.build(exprNode, prj, ctx);
 			ExprInfo info = new ExprInfo(expr, entry.joinMap);
 			//exprType == 1はQueryでしか使用されないため、判定に流用
-			Map<List<FieldContent>, Integer> joinMap = (codeType == 1) ? info.joinMap : entry.joinMap;
-			expr.accept(e -> visitExpr(e, owner, info, joinMap));
+			Map<List<FieldContent>, Integer> joinMap =
+					(codeType == 1) ? info.joinMap : entry.joinMap;
+			expr.accept(e -> visitExpr(e, ctxRef, info, joinMap));
 			return info;
 		} catch (ParseException err) {
 			throw new RuntimeException(err);
 		}
 	}
 
-	private void visitExpr(Expression expr, FieldContent owner, ExprInfo info, Map<List<FieldContent>, Integer> joinMap) {
+	private void visitExpr(Expression expr,
+			FieldContent ctxRef, ExprInfo info, Map<List<FieldContent>, Integer> joinMap) {
 		if (expr instanceof Operation) {
 			Operation op = (Operation) expr;
 			//フィールド参照Operation以外は無視
+			if (op.getCode() != Operation.Code.GET) {
+				return;
+			}
 			List<Expression> operands = op.getOperands();
 			for (Expression c : operands) {
 				if (!(c instanceof FieldRef)) {
@@ -483,8 +544,8 @@ public class ClassExtender {
 			}
 			//join番号の参照（又は存在しない場合新たに定義）
 			List<FieldContent> flds = new ArrayList<>();
-			if (owner != null) {
-				flds.add(owner);
+			if (ctxRef != null) {
+				flds.add(ctxRef);
 			}
 			Integer no = 1;
 			for (int i = 0; i < n; i++) {
@@ -515,6 +576,9 @@ public class ClassExtender {
 
 	public List<JoinInfo> getJoins(ClassContent cls) {
 		ExprEntry entry = entries.get(cls.getClassId());
+		if (entry == null) {
+			LOGGER.debug("what?");
+		}
 		return toJoins(entry.joinMap);
 	}
 

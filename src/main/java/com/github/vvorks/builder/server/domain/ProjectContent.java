@@ -60,6 +60,11 @@ public class ProjectContent {
 	private java.util.Date _lastUpdatedAt;
 
 	/**
+	 * タイトル
+	 */
+	private String _title;
+
+	/**
 	 * 空のプロジェクトを作成する
 	 */
 	public ProjectContent() {
@@ -74,26 +79,6 @@ public class ProjectContent {
 		int projectId
 	) {
 		this.projectId = projectId;
-	}
-
-	/**
-	 * キー文字列を取得する
-	 *
-	 * @return キー文字列
-	 */
-	public String get_key() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(projectId);
-		return sb.toString();
-	}
-
-	/**
-	 * 見出し文字列を取得する
-	 *
-	 * @return 見出し文字列
-	 */
-	public String get_title() {
-		return title;
 	}
 
 	/**
@@ -238,6 +223,24 @@ public class ProjectContent {
 	 */
 	public void set_lastUpdatedAt(java.util.Date _lastUpdatedAt) {
 		this._lastUpdatedAt = _lastUpdatedAt;
+	}
+
+	/**
+	 * タイトルを取得する
+	 *
+	 * @return タイトル
+	 */
+	public String get_title() {
+		return this._title;
+	}
+
+	/**
+	 * タイトルを設定する
+	 *
+	 * @param _title 設定するタイトル
+	 */
+	public void set_title(String _title) {
+		this._title = _title;
 	}
 
 	@Override
