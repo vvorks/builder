@@ -94,7 +94,7 @@ public class ListTestPage extends UiPage {
 	}
 
 	private DataSource createDataSource(JsonRpcClient rpc) {
-		return new TestDataSource(rpc, "listField", 20, 100);
+		return new TestDataSource(rpc, "listClass", 20, 100);
 	}
 
 	private DataSource createDataSource() {

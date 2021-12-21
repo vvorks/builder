@@ -1,8 +1,9 @@
 package com.github.vvorks.builder.client.app;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.ui.DataSource;
@@ -32,7 +33,7 @@ public class TestDataSource extends DataSource {
 	private Json criteria;
 
 	/** 検索中の値範囲リスト */
-	private List<IntRange> requests;
+	private Set<IntRange> requests;
 
 	/** ロード済みフラグ */
 	private boolean loaded;
@@ -49,6 +50,7 @@ public class TestDataSource extends DataSource {
 		this.pageSize = pageSize;
 		cache = new CacheMap<>(Math.max(cacheSize, pageSize * 4));
 		criteria = null;
+		requests = new HashSet<>();
 		reload();
 	}
 
