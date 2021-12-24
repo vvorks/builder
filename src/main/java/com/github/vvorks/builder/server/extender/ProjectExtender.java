@@ -21,13 +21,6 @@ public class ProjectExtender {
     @Autowired
     private ProjectMapper projectMapper;
 
-	/**
-	 * （再）初期化
-	 */
-	public ProjectExtender init() {
-		return this;
-	}
-
 	public String getTitleOrName(ProjectContent prj) {
 		if (!Strings.isEmpty(prj.getTitle())) {
 			return prj.getTitle();

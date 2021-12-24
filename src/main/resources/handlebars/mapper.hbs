@@ -198,6 +198,7 @@ public interface {{className}}Mapper {
 
 <mapper namespace="{{global.project.projectName}}.server.mapper.{{className}}Mapper">
 
+	{{sql}}
 	<insert id="insert" parameterType="{{className}}Content">
 		INSERT INTO {{tableName}} (
 			{{#each properties}}
@@ -214,6 +215,7 @@ public interface {{className}}Mapper {
 		)
 	</insert>
 
+	{{sql}}
 	<update id="update" parameterType="{{className}}Content">
 		UPDATE {{tableName}} SET
 			{{#each notKeys}}
@@ -235,6 +237,7 @@ public interface {{className}}Mapper {
 			{{/each}}
 	</update>
 
+	{{sql}}
 	<delete id="delete" parameterType="{{className}}Content">
 		DELETE FROM {{tableName}}
 		WHERE
@@ -249,6 +252,7 @@ public interface {{className}}Mapper {
 			{{/each}}
 	</delete>
 
+	{{sql}}
 	<select id="get" resultType="{{className}}Content">
 		SELECT
 			{{#each properties}}
@@ -259,40 +263,45 @@ public interface {{className}}Mapper {
 			{{/each}}
 		FROM
 			{{tableName}} T1
+		{{#reverse}}
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
+		{{^}}
 		WHERE
 			{{#each keys}}
 			T1.{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
+		{{/reverse}}
 	</select>
 
+	{{sql}}
 	<select id="listSummary" resultType="{{className}}Summary">
 		SELECT
 			{{#each properties}}
 			{{#if needsSum}}
-			SUM({{columnName}}) AS "sum{{upperName}}",
+			SUM(T1.{{columnName}}) AS "sum{{upperName}}",
 			{{/if}}
 			{{#if needsAvg}}
-			AVG({{columnName}}) AS "avg{{upperName}}",
+			AVG(T1.{{columnName}}) AS "avg{{upperName}}",
 			{{/if}}
 			{{#if needsMax}}
-			MAX({{columnName}}) AS "max{{upperName}}",
+			MAX(T1.{{columnName}}) AS "max{{upperName}}",
 			{{/if}}
 			{{#if needsMin}}
-			MIN({{columnName}}) AS "min{{upperName}}",
+			MIN(T1.{{columnName}}) AS "min{{upperName}}",
 			{{/if}}
 			{{/each}}
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			{{tableName}}
+			{{tableName}} T1
 	</select>
 
+	{{sql}}
 	<select id="listContent" resultType="{{className}}Content">
 		SELECT
 			{{#each properties}}
@@ -303,16 +312,19 @@ public interface {{className}}Mapper {
 			{{/each}}
 		FROM
 			{{tableName}} T1
+		{{#reverse}}
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
+		{{^}}
 		{{#if sqlOrder}}
 		ORDER BY
 			{{sqlOrder}}
 		{{/if}}
+		{{/reverse}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -322,7 +334,7 @@ public interface {{className}}Mapper {
 	</select>
 
 	{{#each queries}}
-
+	{{sql}}
 	<select id="listSummaryIf{{upperName}}" resultType="{{../className}}Summary">
 		SELECT
 			{{#each ../properties}}
@@ -343,18 +355,22 @@ public interface {{className}}Mapper {
 			0 AS "focus"
 		FROM
 			{{../tableName}} T1
+		{{#reverse}}
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
+		{{^}}
 		WHERE
 			<![CDATA[
 			{{sqlExpr}}
 			]]>
+		{{/reverse}}
 	</select>
 
+	{{sql}}
 	<select id="listContentIf{{upperName}}" resultType="{{../className}}Content">
 		SELECT
 			{{#each ../properties}}
@@ -365,12 +381,14 @@ public interface {{className}}Mapper {
 			{{/each}}
 		FROM
 			{{../tableName}} T1
+		{{#reverse}}
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
+		{{^}}
 		WHERE
 			<![CDATA[
 			{{sqlExpr}}
@@ -379,6 +397,7 @@ public interface {{className}}Mapper {
 		ORDER BY
 			{{sqlOrder}}
 		{{/if}}
+		{{/reverse}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -389,7 +408,7 @@ public interface {{className}}Mapper {
 	{{/each}}
 
 	{{#each refs}}
-
+	{{sql}}
 	<select id="get{{upperName}}" resultType="{{cref.className}}Content">
 		SELECT
 			{{#each cref.properties}}
@@ -400,47 +419,51 @@ public interface {{className}}Mapper {
 			{{/each}}
 		FROM
 			{{cref.tableName}} T1
+		{{#reverse}}
 		{{#each cref.joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
+		{{^}}
 		WHERE
 			{{#each refKeyFields}}
 			T1.{{refKeyColumnName}} = #{ {{refKeyFieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
+		{{/reverse}}
 	</select>
 	{{/each}}
 
 	{{#each sets}}
-
+	{{sql}}
 	<select id="list{{upperName}}Summary" resultType="{{fref.owner.className}}Summary">
 		SELECT
 			{{#each fref.owner.properties}}
 			{{#if needsSum}}
-			SUM({{columnName}}) AS "sum{{upperName}}",
+			SUM(T1.{{columnName}}) AS "sum{{upperName}}",
 			{{/if}}
 			{{#if needsAvg}}
-			AVG({{columnName}}) AS "avg{{upperName}}",
+			AVG(T1.{{columnName}}) AS "avg{{upperName}}",
 			{{/if}}
 			{{#if needsMax}}
-			MAX({{columnName}}) AS "max{{upperName}}",
+			MAX(T1.{{columnName}}) AS "max{{upperName}}",
 			{{/if}}
 			{{#if needsMin}}
-			MIN({{columnName}}) AS "min{{upperName}}",
+			MIN(T1.{{columnName}}) AS "min{{upperName}}",
 			{{/if}}
 			{{/each}}
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			{{fref.owner.tableName}}
+			{{fref.owner.tableName}} T1
 		WHERE
 			{{#each invKeyFields}}
 			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
 	</select>
 
+	{{sql}}
 	<select id="list{{upperName}}Content" resultType="{{fref.owner.className}}Content">
 		SELECT
 			{{#each fref.owner.properties}}
@@ -451,12 +474,14 @@ public interface {{className}}Mapper {
 			{{/each}}
 		FROM
 			{{fref.owner.tableName}} T1
+		{{#reverse}}
 		{{#each fref.owner.joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
+		{{^}}
 		WHERE
 			{{#each invKeyFields}}
 			T1.{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
@@ -465,6 +490,7 @@ public interface {{className}}Mapper {
 		ORDER BY
 			{{fref.owner.sqlOrder}}
 		{{/if}}
+		{{/reverse}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -474,7 +500,8 @@ public interface {{className}}Mapper {
 	</select>
 
 	{{#each fref.owner.queries}}
-
+	{{sql}}
+	{{log "begin q list-summaryIf" level="error"}}
 	<select id="list{{../upperName}}SummaryIf{{upperName}}" resultType="{{../fref.owner.className}}Summary">
 		SELECT
 			{{#each ../fref.owner.properties}}
@@ -495,12 +522,14 @@ public interface {{className}}Mapper {
 			0 AS "focus"
 		FROM
 			{{../fref.owner.tableName}} T1
+		{{#reverse}}
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
+		{{^}}
 		WHERE
 			{{#each ../invKeyFields}}
 			T1.{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
@@ -508,8 +537,10 @@ public interface {{className}}Mapper {
 			<![CDATA[
 			AND {{sqlExpr}}
 			]]>
+		{{/reverse}}
 	</select>
 
+	{{sql}}
 	<select id="list{{../upperName}}ContentIf{{upperName}}" resultType="{{../fref.owner.className}}Content">
 		SELECT
 			{{#each ../fref.owner.properties}}
@@ -520,12 +551,14 @@ public interface {{className}}Mapper {
 			{{/each}}
 		FROM
 			{{../fref.owner.tableName}} T1
+		{{#reverse}}
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
+		{{^}}
 		WHERE
 			{{#each ../invKeyFields}}
 			T1.{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
@@ -537,6 +570,7 @@ public interface {{className}}Mapper {
 		ORDER BY
 			{{../fref.owner.sqlOrder}}
 		{{/if}}
+		{{/reverse}}
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -545,7 +579,6 @@ public interface {{className}}Mapper {
 		</if>
 	</select>
 	{{/each}}
-
 	{{/each}}
 
 </mapper>

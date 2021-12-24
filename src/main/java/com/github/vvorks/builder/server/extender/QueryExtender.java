@@ -17,19 +17,11 @@ public class QueryExtender {
 
 	private SqlWriter sqlWriter = SqlWriter.getWriter();
 
-
 	@Autowired
 	private QueryMapper queryMapper;
 
 	@Autowired
 	private ClassExtender classExtender;
-
-	/**
-	 * （再）初期化
-	 */
-	public QueryExtender init() {
-		return this;
-	}
 
 	public String getTitleOrName(QueryContent q) {
 		if (!Strings.isEmpty(q.getTitle())) {
@@ -44,9 +36,7 @@ public class QueryExtender {
 	}
 
 	public List<ClassExtender.JoinInfo> getJoins(QueryContent q) {
-		ClassContent cls = queryMapper.getOwner(q);
-		ClassExtender.ExprInfo info = classExtender.referExpr(cls, q.getFilter(), ExprParser.CODE_TYPE_WHERE);
-		return classExtender.toJoins(info.getJoinMap());
+		return classExtender.getJoins(queryMapper.getOwner(q));
 	}
 
 	public String getSqlExpr(QueryContent q) {

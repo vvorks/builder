@@ -67,11 +67,11 @@
 
 	<select id="listSummary" resultType="ProjectSummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_PROJECT
+			T_PROJECT T1
 	</select>
 
 	<select id="listContent" resultType="ProjectContent">
@@ -139,11 +139,11 @@
 
 	<select id="listClassesSummary" resultType="ClassSummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_CLASS
+			T_CLASS T1
 		WHERE
 			F_OWNER_PROJECT_ID = #{ content.projectId }
 	</select>
@@ -184,8 +184,6 @@
 			0 AS "focus"
 		FROM
 			T_CLASS T1
-		LEFT JOIN T_PROJECT T2 ON
-			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
 			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
 			<![CDATA[
@@ -224,14 +222,14 @@
 		</if>
 		</if>
 	</select>
-
+	
 	<select id="listEnumsSummary" resultType="EnumSummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_ENUM
+			T_ENUM T1
 		WHERE
 			F_OWNER_PROJECT_ID = #{ content.projectId }
 	</select>
@@ -271,8 +269,6 @@
 			0 AS "focus"
 		FROM
 			T_ENUM T1
-		LEFT JOIN T_PROJECT T2 ON
-			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
 			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
 			<![CDATA[

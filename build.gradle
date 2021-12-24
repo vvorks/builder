@@ -71,8 +71,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	compileOnly group: "org.fusesource.restygwt", name: "restygwt", version: "2.2.0"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.apache.poi:poi:5.0.0'
-	implementation 'org.apache.poi:poi-ooxml:5.0.0'
+	implementation 'org.apache.poi:poi:5.1.0'
+	implementation 'org.apache.poi:poi-ooxml:5.1.0'
 	implementation 'com.github.jknack:handlebars:4.2.0'
 	implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'

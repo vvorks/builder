@@ -22,6 +22,7 @@ import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.handlebars.ExtenderResolver;
 import com.github.vvorks.builder.server.common.handlebars.GlobalResolver;
+import com.github.vvorks.builder.server.common.handlebars.ReverseHelper;
 import com.github.vvorks.builder.server.common.handlebars.SeparatorHelper;
 import com.github.vvorks.builder.server.common.handlebars.SourceHelper;
 import com.github.vvorks.builder.server.common.io.Ios;
@@ -89,6 +90,7 @@ public class SourceWriter {
 						.with(EscapingStrategy.NOOP)
 						.prettyPrint(true)
 						.registerHelper("separator", new SeparatorHelper())
+						.registerHelper("reverse", new ReverseHelper())
 						.registerHelper("java", new SourceHelper(javaCodeDir))
 						.registerHelper("resources", new SourceHelper(resRootDir));
 				Map<String, Object> globalMap = new HashMap<>();
@@ -101,12 +103,12 @@ public class SourceWriter {
 								MapValueResolver.INSTANCE,
 								JavaBeanValueResolver.INSTANCE,
 								new ExtenderResolver(
-										projectExtender.init(),
-										classExtender.init(),
-										fieldExtender.init(),
-										queryExtender.init(),
-										enumExtender.init(),
-										enumValueExtender.init()))
+										projectExtender,
+										classExtender,
+										fieldExtender,
+										queryExtender,
+										enumExtender,
+										enumValueExtender))
 						.build();
 				//とりあえず全部適用
 				for (String s : hbsFiles) {

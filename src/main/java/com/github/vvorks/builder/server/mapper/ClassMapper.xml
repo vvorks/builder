@@ -74,11 +74,11 @@
 
 	<select id="listSummary" resultType="ClassSummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_CLASS
+			T_CLASS T1
 	</select>
 
 	<select id="listContent" resultType="ClassContent">
@@ -115,8 +115,6 @@
 			0 AS "focus"
 		FROM
 			T_CLASS T1
-		LEFT JOIN T_PROJECT T2 ON
-			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
 			<![CDATA[
 			T1.F_CLASS_NAME = #{name}
@@ -173,11 +171,11 @@
 
 	<select id="listFieldsSummary" resultType="FieldSummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_FIELD
+			T_FIELD T1
 		WHERE
 			F_OWNER_CLASS_ID = #{ content.classId }
 	</select>
@@ -237,14 +235,6 @@
 			0 AS "focus"
 		FROM
 			T_FIELD T1
-		LEFT JOIN T_CLASS T2 ON
-			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
-		LEFT JOIN T_CLASS T3 ON
-			T1.F_CREF_CLASS_ID = T3.F_CLASS_ID
-		LEFT JOIN T_ENUM T4 ON
-			T1.F_EREF_ENUM_ID = T4.F_ENUM_ID
-		LEFT JOIN T_FIELD T5 ON
-			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		WHERE
 			T1.F_OWNER_CLASS_ID = #{ content.classId }
 			<![CDATA[
@@ -302,14 +292,14 @@
 		</if>
 		</if>
 	</select>
-
+	
 	<select id="listQueriesSummary" resultType="QuerySummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_QUERY
+			T_QUERY T1
 		WHERE
 			F_OWNER_CLASS_ID = #{ content.classId }
 	</select>

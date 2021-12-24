@@ -68,11 +68,11 @@
 
 	<select id="listSummary" resultType="EnumValueSummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_ENUM_VALUE
+			T_ENUM_VALUE T1
 	</select>
 
 	<select id="listContent" resultType="EnumValueContent">

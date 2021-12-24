@@ -70,11 +70,11 @@
 
 	<select id="listSummary" resultType="EnumSummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_ENUM
+			T_ENUM T1
 	</select>
 
 	<select id="listContent" resultType="EnumContent">
@@ -110,8 +110,6 @@
 			0 AS "focus"
 		FROM
 			T_ENUM T1
-		LEFT JOIN T_PROJECT T2 ON
-			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
 			<![CDATA[
 			T1.F_ENUM_NAME = #{name}
@@ -167,11 +165,11 @@
 
 	<select id="listValuesSummary" resultType="EnumValueSummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_ENUM_VALUE
+			T_ENUM_VALUE T1
 		WHERE
 			F_OWNER_ENUM_ID = #{ content.enumId }
 	</select>

@@ -123,11 +123,11 @@
 
 	<select id="listSummary" resultType="FieldSummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_FIELD
+			T_FIELD T1
 	</select>
 
 	<select id="listContent" resultType="FieldContent">
@@ -183,14 +183,6 @@
 			0 AS "focus"
 		FROM
 			T_FIELD T1
-		LEFT JOIN T_CLASS T2 ON
-			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
-		LEFT JOIN T_CLASS T3 ON
-			T1.F_CREF_CLASS_ID = T3.F_CLASS_ID
-		LEFT JOIN T_ENUM T4 ON
-			T1.F_EREF_ENUM_ID = T4.F_ENUM_ID
-		LEFT JOIN T_FIELD T5 ON
-			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		WHERE
 			<![CDATA[
 			T1.F_FIELD_NAME = #{name}
@@ -267,7 +259,7 @@
 		WHERE
 			T1.F_CLASS_ID = #{ ownerClassId }
 	</select>
-
+	
 	<select id="getCref" resultType="ClassContent">
 		SELECT
 			T1.F_CLASS_ID AS "classId",
@@ -288,7 +280,7 @@
 		WHERE
 			T1.F_CLASS_ID = #{ crefClassId }
 	</select>
-
+	
 	<select id="getEref" resultType="EnumContent">
 		SELECT
 			T1.F_ENUM_ID AS "enumId",
@@ -308,7 +300,7 @@
 		WHERE
 			T1.F_ENUM_ID = #{ erefEnumId }
 	</select>
-
+	
 	<select id="getFref" resultType="FieldContent">
 		SELECT
 			T1.F_FIELD_ID AS "fieldId",

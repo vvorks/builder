@@ -74,11 +74,11 @@
 
 	<select id="listSummary" resultType="QuerySummary">
 		SELECT
-			MAX(F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_QUERY
+			T_QUERY T1
 	</select>
 
 	<select id="listContent" resultType="QueryContent">

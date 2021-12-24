@@ -63,11 +63,9 @@ public class ClassExtender {
 
 	public static class ExprInfo {
 		private final Expression expr;
-		private final Map<List<FieldContent>, Integer> joinMap;
 		private final List<FieldContent> arguments;
-		public ExprInfo(Expression expr, Map<List<FieldContent>, Integer> entryJoinMap) {
+		public ExprInfo(Expression expr) {
 			this.expr = expr;
-			this.joinMap = new LinkedHashMap<>(entryJoinMap);
 			this.arguments = new ArrayList<>();
 		}
 		public Expression getExpr() {
@@ -75,9 +73,6 @@ public class ClassExtender {
 		}
 		public List<FieldContent> getArguments() {
 			return arguments;
-		}
-		public Map<List<FieldContent>, Integer> getJoinMap() {
-			return joinMap;
 		}
 	}
 
@@ -132,7 +127,7 @@ public class ClassExtender {
 		}
 		public String getTitleExpr() {
 			if (info != null) {
-				return info.expr.accept(sqlWriter, null);
+				return info.getExpr().accept(sqlWriter, null);
 			} else {
 				return "''";
 			}
@@ -182,35 +177,10 @@ public class ClassExtender {
 
 	private final Map<Integer, ExprEntry> entries = new LinkedHashMap<>();
 
-	/**
-	 * （再）初期化
-	 */
-	public ClassExtender init() {
+	public String getSql(ClassContent cls) {
 		entries.clear();
-		for (ClassContent cls : classMapper.listContent(0, 0)) {
-			String titleExpr = cls.getTitleExpr();
-			if (!Strings.isEmpty(titleExpr)) {
-				referExpr(cls, titleExpr, ExprParser.CODE_TYPE_SELECT);
-			}
-			String orderExpr = cls.getOrderExpr();
-			if (!Strings.isEmpty(orderExpr)) {
-				referExpr(cls, orderExpr, ExprParser.CODE_TYPE_ORDER);
-			}
-			for (FieldContent fld : getRefs(cls)) {
-				ClassContent ref = fieldExtender.getCref(fld);
-				String refExpr = ref.getTitleExpr();
-				if (!Strings.isEmpty(refExpr)) {
-					referExpr(cls, fld, refExpr, ExprParser.CODE_TYPE_SELECT);
-				}
-			}
-			for (QueryContent q : classMapper.listQueriesContent(cls, 0, 0)) {
-				String filter = q.getFilter();
-				if (!Strings.isEmpty(filter)) {
-					referExpr(cls, filter, ExprParser.CODE_TYPE_WHERE);
-				}
-			}
-		}
-		return this;
+		LOGGER.debug("----- SQL %s -----", cls.getClassName());
+		return null;
 	}
 
 	public String getTitleOrName(ClassContent cls) {
@@ -235,7 +205,7 @@ public class ClassExtender {
 			return null;
 		}
 		ExprInfo info = referExpr(cls, orderExpr, ExprParser.CODE_TYPE_ORDER);
-		String result = info.expr.accept(sqlWriter, null);
+		String result = info.getExpr().accept(sqlWriter, null);
 		return result;
 	}
 
@@ -511,11 +481,8 @@ public class ClassExtender {
 			ExprNode exprNode = parser.parse(exprString, codeType);
 			ProjectContent prj = classMapper.getOwner(ctx);
 			Expression expr = builder.build(exprNode, prj, ctx);
-			ExprInfo info = new ExprInfo(expr, entry.joinMap);
-			//exprType == 1はQueryでしか使用されないため、判定に流用
-			Map<List<FieldContent>, Integer> joinMap =
-					(codeType == 1) ? info.joinMap : entry.joinMap;
-			expr.accept(e -> visitExpr(e, ctxRef, info, joinMap));
+			ExprInfo info = new ExprInfo(expr);
+			expr.accept(e -> visitExpr(e, ctxRef, info, entry.joinMap));
 			return info;
 		} catch (ParseException err) {
 			throw new RuntimeException(err);
@@ -555,6 +522,7 @@ public class ClassExtender {
 				if (m > 1) {
 					List<FieldContent> subList = flds.subList(0, m - 1);
 					no = joinMap.computeIfAbsent(subList, s -> joinMap.size() + 2);
+					LOGGER.debug("visitExpr joinMap %d", joinMap.size());
 				}
 			}
 			//opにjoin番号を設定
@@ -570,19 +538,20 @@ public class ClassExtender {
 			if (fld.getType() == DataType.ENUM) {
 				fld.setErefEnumId(arg.getErefId());
 			}
-			info.arguments.add(fld);
+			info.getArguments().add(fld);
 		}
 	}
 
 	public List<JoinInfo> getJoins(ClassContent cls) {
 		ExprEntry entry = entries.get(cls.getClassId());
-		if (entry == null) {
-			LOGGER.debug("what?");
+		if (entry == null || entry.joinMap.isEmpty()) {
+			return Collections.emptyList();
 		}
 		return toJoins(entry.joinMap);
 	}
 
 	public List<JoinInfo> toJoins(Map<List<FieldContent>, Integer> joinMap) {
+		LOGGER.debug("toJoins joinMap %d", joinMap.size());
 		List<JoinInfo> result = new ArrayList<>();
 		for (Map.Entry<List<FieldContent>, Integer> e : joinMap.entrySet()) {
 			List<FieldContent> fields = e.getKey();

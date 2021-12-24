@@ -68,13 +68,6 @@ public class FieldExtender {
 
 	private SqlHelper sqlHelper = SqlHelper.getHelper();
 
-	/**
-	 * （再）初期化
-	 */
-	public FieldExtender init() {
-		return this;
-	}
-
 	public String getTitleOrName(FieldContent fld) {
 		if (!Strings.isEmpty(fld.getTitle())) {
 			return fld.getTitle();
