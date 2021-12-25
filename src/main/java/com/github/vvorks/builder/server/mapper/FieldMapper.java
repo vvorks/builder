@@ -101,26 +101,30 @@ public interface FieldMapper {
 	/**
 	 * 所属クラスの候補サマリーを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content フィールド
+	 * @param hint ヒント情報
 	 * @return 所属クラスの候補サマリー
 	 */
-//	public ClassSummary<ClassContent> listOwnerCandidateSummary(
-//		@Param("content") FieldContent content,
-//		@Param("hint") String hint
-//	);
+	public ClassSummary<ClassSubject> listOwnerCandidateSummary(
+		@Param("content") FieldContent content,
+		@Param("hint") String hint
+	);
 
 	/**
 	 * 所属クラスの候補一覧を取得する
 	 *
 	 * @param content フィールド
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 所属クラスの候補一覧
 	 */
-//	public List<ClassSubject> listOwnerCandidateSubject(
-//		@Param("content") FieldContent content,
-//		@Param("hint") String hint,
-//		@Param("offset") int offset,
-//		@Param("limit") int limit
-//	);
+	public List<ClassSubject> listOwnerCandidateSubject(
+		@Param("content") FieldContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
 
 	/**
 	 * クラス参照先を取得する
@@ -133,26 +137,30 @@ public interface FieldMapper {
 	/**
 	 * クラス参照先の候補サマリーを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content フィールド
+	 * @param hint ヒント情報
 	 * @return クラス参照先の候補サマリー
 	 */
-//	public ClassSummary<ClassContent> listCrefCandidateSummary(
-//		@Param("content") FieldContent content,
-//		@Param("hint") String hint
-//	);
+	public ClassSummary<ClassSubject> listCrefCandidateSummary(
+		@Param("content") FieldContent content,
+		@Param("hint") String hint
+	);
 
 	/**
 	 * クラス参照先の候補一覧を取得する
 	 *
 	 * @param content フィールド
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return クラス参照先の候補一覧
 	 */
-//	public List<ClassSubject> listCrefCandidateSubject(
-//		@Param("content") FieldContent content,
-//		@Param("hint") String hint,
-//		@Param("offset") int offset,
-//		@Param("limit") int limit
-//	);
+	public List<ClassSubject> listCrefCandidateSubject(
+		@Param("content") FieldContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
 
 	/**
 	 * 列挙参照先を取得する
@@ -165,26 +173,30 @@ public interface FieldMapper {
 	/**
 	 * 列挙参照先の候補サマリーを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content フィールド
+	 * @param hint ヒント情報
 	 * @return 列挙参照先の候補サマリー
 	 */
-//	public EnumSummary<EnumContent> listErefCandidateSummary(
-//		@Param("content") FieldContent content,
-//		@Param("hint") String hint
-//	);
+	public EnumSummary<EnumSubject> listErefCandidateSummary(
+		@Param("content") FieldContent content,
+		@Param("hint") String hint
+	);
 
 	/**
 	 * 列挙参照先の候補一覧を取得する
 	 *
 	 * @param content フィールド
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 列挙参照先の候補一覧
 	 */
-//	public List<EnumSubject> listErefCandidateSubject(
-//		@Param("content") FieldContent content,
-//		@Param("hint") String hint,
-//		@Param("offset") int offset,
-//		@Param("limit") int limit
-//	);
+	public List<EnumSubject> listErefCandidateSubject(
+		@Param("content") FieldContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
 
 	/**
 	 * フィールド参照先を取得する
@@ -197,25 +209,29 @@ public interface FieldMapper {
 	/**
 	 * フィールド参照先の候補サマリーを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content フィールド
+	 * @param hint ヒント情報
 	 * @return フィールド参照先の候補サマリー
 	 */
-//	public FieldSummary<FieldContent> listFrefCandidateSummary(
-//		@Param("content") FieldContent content,
-//		@Param("hint") String hint
-//	);
+	public FieldSummary<FieldSubject> listFrefCandidateSummary(
+		@Param("content") FieldContent content,
+		@Param("hint") String hint
+	);
 
 	/**
 	 * フィールド参照先の候補一覧を取得する
 	 *
 	 * @param content フィールド
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return フィールド参照先の候補一覧
 	 */
-//	public List<FieldSubject> listFrefCandidateSubject(
-//		@Param("content") FieldContent content,
-//		@Param("hint") String hint,
-//		@Param("offset") int offset,
-//		@Param("limit") int limit
-//	);
+	public List<FieldSubject> listFrefCandidateSubject(
+		@Param("content") FieldContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
 
 }

@@ -9,16 +9,22 @@ import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
 import com.github.vvorks.builder.server.domain.ClassContent;
+import com.github.vvorks.builder.server.domain.ClassSubject;
 import com.github.vvorks.builder.server.domain.ClassSummary;
 import com.github.vvorks.builder.server.domain.EnumContent;
+import com.github.vvorks.builder.server.domain.EnumSubject;
 import com.github.vvorks.builder.server.domain.EnumSummary;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
+import com.github.vvorks.builder.server.domain.EnumValueSubject;
 import com.github.vvorks.builder.server.domain.EnumValueSummary;
 import com.github.vvorks.builder.server.domain.FieldContent;
+import com.github.vvorks.builder.server.domain.FieldSubject;
 import com.github.vvorks.builder.server.domain.FieldSummary;
 import com.github.vvorks.builder.server.domain.ProjectContent;
+import com.github.vvorks.builder.server.domain.ProjectSubject;
 import com.github.vvorks.builder.server.domain.ProjectSummary;
 import com.github.vvorks.builder.server.domain.QueryContent;
+import com.github.vvorks.builder.server.domain.QuerySubject;
 import com.github.vvorks.builder.server.domain.QuerySummary;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
@@ -368,7 +374,7 @@ public class BuilderRpcController {
 	/**
 	 * 所属プロジェクトを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content クラス
 	 * @return 所属プロジェクト
 	 */
 	@JsonRpcMethod
@@ -376,6 +382,32 @@ public class BuilderRpcController {
 		@JsonRpcParam("content") ClassContent content
 	) {
 		return classMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属プロジェクトの候補一覧を取得する
+	 *
+	 * @param content クラス
+	 * @return 所属プロジェクトの候補一覧
+	 */
+	@JsonRpcMethod
+	public ProjectSummary<ProjectSubject> listClassOwnerCandidate(
+		@JsonRpcParam("content") ClassContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ProjectSummary<ProjectSubject> summary = classMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ProjectSubject> contents = classMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -560,7 +592,7 @@ public class BuilderRpcController {
 	/**
 	 * 所属クラスを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content フィールド
 	 * @return 所属クラス
 	 */
 	@JsonRpcMethod
@@ -571,9 +603,35 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 所属クラスの候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return 所属クラスの候補一覧
+	 */
+	@JsonRpcMethod
+	public ClassSummary<ClassSubject> listFieldOwnerCandidate(
+		@JsonRpcParam("content") FieldContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ClassSummary<ClassSubject> summary = fieldMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ClassSubject> contents = fieldMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * クラス参照先を取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content フィールド
 	 * @return クラス参照先
 	 */
 	@JsonRpcMethod
@@ -584,9 +642,35 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * クラス参照先の候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return クラス参照先の候補一覧
+	 */
+	@JsonRpcMethod
+	public ClassSummary<ClassSubject> listFieldCrefCandidate(
+		@JsonRpcParam("content") FieldContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ClassSummary<ClassSubject> summary = fieldMapper.listCrefCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ClassSubject> contents = fieldMapper.listCrefCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * 列挙参照先を取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content フィールド
 	 * @return 列挙参照先
 	 */
 	@JsonRpcMethod
@@ -597,9 +681,35 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 列挙参照先の候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return 列挙参照先の候補一覧
+	 */
+	@JsonRpcMethod
+	public EnumSummary<EnumSubject> listFieldErefCandidate(
+		@JsonRpcParam("content") FieldContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		EnumSummary<EnumSubject> summary = fieldMapper.listErefCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<EnumSubject> contents = fieldMapper.listErefCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * フィールド参照先を取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content フィールド
 	 * @return フィールド参照先
 	 */
 	@JsonRpcMethod
@@ -607,6 +717,32 @@ public class BuilderRpcController {
 		@JsonRpcParam("content") FieldContent content
 	) {
 		return fieldMapper.getFref(content);
+	}
+
+	/**
+	 * フィールド参照先の候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return フィールド参照先の候補一覧
+	 */
+	@JsonRpcMethod
+	public FieldSummary<FieldSubject> listFieldFrefCandidate(
+		@JsonRpcParam("content") FieldContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		FieldSummary<FieldSubject> summary = fieldMapper.listFrefCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<FieldSubject> contents = fieldMapper.listFrefCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -682,7 +818,7 @@ public class BuilderRpcController {
 	/**
 	 * 所属クラスを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content クエリー
 	 * @return 所属クラス
 	 */
 	@JsonRpcMethod
@@ -690,6 +826,32 @@ public class BuilderRpcController {
 		@JsonRpcParam("content") QueryContent content
 	) {
 		return queryMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属クラスの候補一覧を取得する
+	 *
+	 * @param content クエリー
+	 * @return 所属クラスの候補一覧
+	 */
+	@JsonRpcMethod
+	public ClassSummary<ClassSubject> listQueryOwnerCandidate(
+		@JsonRpcParam("content") QueryContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ClassSummary<ClassSubject> summary = queryMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ClassSubject> contents = queryMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -793,7 +955,7 @@ public class BuilderRpcController {
 	/**
 	 * 所属プロジェクトを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content 列挙
 	 * @return 所属プロジェクト
 	 */
 	@JsonRpcMethod
@@ -801,6 +963,32 @@ public class BuilderRpcController {
 		@JsonRpcParam("content") EnumContent content
 	) {
 		return enumMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属プロジェクトの候補一覧を取得する
+	 *
+	 * @param content 列挙
+	 * @return 所属プロジェクトの候補一覧
+	 */
+	@JsonRpcMethod
+	public ProjectSummary<ProjectSubject> listEnumOwnerCandidate(
+		@JsonRpcParam("content") EnumContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ProjectSummary<ProjectSubject> summary = enumMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ProjectSubject> contents = enumMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -904,7 +1092,7 @@ public class BuilderRpcController {
 	/**
 	 * 所属列挙を取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content 列挙値
 	 * @return 所属列挙
 	 */
 	@JsonRpcMethod
@@ -912,6 +1100,32 @@ public class BuilderRpcController {
 		@JsonRpcParam("content") EnumValueContent content
 	) {
 		return enumValueMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属列挙の候補一覧を取得する
+	 *
+	 * @param content 列挙値
+	 * @return 所属列挙の候補一覧
+	 */
+	@JsonRpcMethod
+	public EnumSummary<EnumSubject> listEnumValueOwnerCandidate(
+		@JsonRpcParam("content") EnumValueContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		EnumSummary<EnumSubject> summary = enumValueMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<EnumSubject> contents = enumValueMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
 	}
 
 }

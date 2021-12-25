@@ -127,26 +127,30 @@ public interface {{className}}Mapper {
 	/**
 	 * {{titleOrName}}の候補サマリーを取得する
 	 *
-	 * @param content {{../../titleOrName}}
+	 * @param content {{../titleOrName}}
+	 * @param hint ヒント情報
 	 * @return {{titleOrName}}の候補サマリー
 	 */
-//	public {{cref.className}}Summary<{{cref.className}}Content> list{{upperName}}CandidateSummary(
-//		@Param("content") {{../className}}Content content,
-//		@Param("hint") String hint
-//	);
+	public {{cref.className}}Summary<{{cref.className}}Subject> list{{upperName}}CandidateSummary(
+		@Param("content") {{../className}}Content content,
+		@Param("hint") String hint
+	);
 
 	/**
 	 * {{titleOrName}}の候補一覧を取得する
 	 *
 	 * @param content {{../titleOrName}}
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return {{titleOrName}}の候補一覧
 	 */
-//	public List<{{cref.className}}Subject> list{{upperName}}CandidateSubject(
-//		@Param("content") {{../className}}Content content,
-//		@Param("hint") String hint,
-//		@Param("offset") int offset,
-//		@Param("limit") int limit
-//	);
+	public List<{{cref.className}}Subject> list{{upperName}}CandidateSubject(
+		@Param("content") {{../className}}Content content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
 	{{/each}}
 
 	{{#each sets}}
@@ -456,6 +460,80 @@ public interface {{className}}Mapper {
 			T1.{{refKeyColumnName}} = #{ {{refKeyFieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/reverse}}
+	</select>
+
+	{{sql}}
+	<select id="list{{upperName}}CandidateSummary" resultType="{{cref.className}}Summary">
+		SELECT
+			{{#each cref.properties}}
+			{{#if needsSum}}
+			SUM(T1.{{columnName}}) AS "sum{{upperName}}",
+			{{/if}}
+			{{#if needsAvg}}
+			AVG(T1.{{columnName}}) AS "avg{{upperName}}",
+			{{/if}}
+			{{#if needsMax}}
+			MAX(T1.{{columnName}}) AS "max{{upperName}}",
+			{{/if}}
+			{{#if needsMin}}
+			MIN(T1.{{columnName}}) AS "min{{upperName}}",
+			{{/if}}
+			{{/each}}
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			{{cref.tableName}} T1
+		{{#reverse}}
+		{{#each joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+			{{/each}}
+		{{/each}}
+		{{^}}
+		<where>
+			<if test="hint != null">
+				{{#with cref._titleField}}
+				{{titleExpr}} LIKE '%' || #{hint} || '%'
+				{{/with}}
+			</if>
+		</where>
+		{{/reverse}}
+	</select>
+
+	{{sql}}
+	<select id="list{{upperName}}CandidateSubject" resultType="{{cref.className}}Subject">
+		SELECT
+			{{#each cref.keys}}
+			T1.{{columnName}} AS "{{fieldName}}",
+			{{/each}}
+			{{#with cref._titleField}}
+			{{titleExpr}} AS "{{fieldName}}"
+			{{/with}}
+		FROM
+			{{cref.tableName}} T1
+		{{#reverse}}
+		{{#each cref.joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+			{{/each}}
+		{{/each}}
+		{{^}}
+		<where>
+			<if test="hint != null">
+				{{#with cref._titleField}}
+				{{titleExpr}} LIKE '%' || #{hint} || '%'
+				{{/with}}
+			</if>
+		</where>
+		{{/reverse}}
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
 	</select>
 	{{/each}}
 

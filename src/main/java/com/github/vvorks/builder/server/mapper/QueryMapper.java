@@ -77,25 +77,29 @@ public interface QueryMapper {
 	/**
 	 * 所属クラスの候補サマリーを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content クエリー
+	 * @param hint ヒント情報
 	 * @return 所属クラスの候補サマリー
 	 */
-//	public ClassSummary<ClassContent> listOwnerCandidateSummary(
-//		@Param("content") QueryContent content,
-//		@Param("hint") String hint
-//	);
+	public ClassSummary<ClassSubject> listOwnerCandidateSummary(
+		@Param("content") QueryContent content,
+		@Param("hint") String hint
+	);
 
 	/**
 	 * 所属クラスの候補一覧を取得する
 	 *
 	 * @param content クエリー
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 所属クラスの候補一覧
 	 */
-//	public List<ClassSubject> listOwnerCandidateSubject(
-//		@Param("content") QueryContent content,
-//		@Param("hint") String hint,
-//		@Param("offset") int offset,
-//		@Param("limit") int limit
-//	);
+	public List<ClassSubject> listOwnerCandidateSubject(
+		@Param("content") QueryContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
 
 }

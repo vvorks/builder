@@ -259,6 +259,39 @@
 		WHERE
 			T1.F_CLASS_ID = #{ ownerClassId }
 	</select>
+
+	<select id="listOwnerCandidateSummary" resultType="ClassSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listOwnerCandidateSubject" resultType="ClassSubject">
+		SELECT
+			T1.F_CLASS_ID AS "classId",
+			T1.F_TITLE AS "_title"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
 	
 	<select id="getCref" resultType="ClassContent">
 		SELECT
@@ -280,6 +313,39 @@
 		WHERE
 			T1.F_CLASS_ID = #{ crefClassId }
 	</select>
+
+	<select id="listCrefCandidateSummary" resultType="ClassSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listCrefCandidateSubject" resultType="ClassSubject">
+		SELECT
+			T1.F_CLASS_ID AS "classId",
+			T1.F_TITLE AS "_title"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
 	
 	<select id="getEref" resultType="EnumContent">
 		SELECT
@@ -299,6 +365,39 @@
 			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
 			T1.F_ENUM_ID = #{ erefEnumId }
+	</select>
+
+	<select id="listErefCandidateSummary" resultType="EnumSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_ENUM T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listErefCandidateSubject" resultType="EnumSubject">
+		SELECT
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_TITLE AS "_title"
+		FROM
+			T_ENUM T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
 	</select>
 	
 	<select id="getFref" resultType="FieldContent">
@@ -339,6 +438,39 @@
 			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		WHERE
 			T1.F_FIELD_ID = #{ frefFieldId }
+	</select>
+
+	<select id="listFrefCandidateSummary" resultType="FieldSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_FIELD T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listFrefCandidateSubject" resultType="FieldSubject">
+		SELECT
+			T1.F_FIELD_ID AS "fieldId",
+			T1.F_TITLE AS "_title"
+		FROM
+			T_FIELD T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
 	</select>
 
 </mapper>

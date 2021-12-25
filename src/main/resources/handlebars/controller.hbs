@@ -18,6 +18,7 @@ import {{global.project.projectName}}.server.common.net.annotation.JsonRpcMethod
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcParam;
 {{#each classesByName}}
 import {{global.project.projectName}}.server.domain.{{className}}Content;
+import {{global.project.projectName}}.server.domain.{{className}}Subject;
 import {{global.project.projectName}}.server.domain.{{className}}Summary;
 {{/each}}
 {{#each classesByName}}
@@ -159,7 +160,7 @@ public class {{upperLastName}}RpcController {
 	/**
 	 * {{titleOrName}}を取得する
 	 *
-	 * @param content {{../../titleOrName}}
+	 * @param content {{../titleOrName}}
 	 * @return {{titleOrName}}
 	 */
 	@JsonRpcMethod
@@ -167,6 +168,32 @@ public class {{upperLastName}}RpcController {
 		@JsonRpcParam("content") {{../className}}Content content
 	) {
 		return {{../lowerName}}Mapper.get{{upperName}}(content);
+	}
+
+	/**
+	 * {{titleOrName}}の候補一覧を取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @return {{titleOrName}}の候補一覧
+	 */
+	@JsonRpcMethod
+	public {{cref.className}}Summary<{{cref.className}}Subject> list{{../className}}{{upperName}}Candidate(
+		@JsonRpcParam("content") {{../className}}Content content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		{{cref.className}}Summary<{{cref.className}}Subject> summary = {{../lowerName}}Mapper.list{{upperName}}CandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<{{cref.className}}Subject> contents = {{../lowerName}}Mapper.list{{upperName}}CandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
 	}
 	{{/each}}
 

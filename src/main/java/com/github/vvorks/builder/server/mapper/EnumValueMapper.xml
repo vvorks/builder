@@ -120,4 +120,37 @@
 			T1.F_ENUM_ID = #{ ownerEnumId }
 	</select>
 
+	<select id="listOwnerCandidateSummary" resultType="EnumSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_ENUM T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listOwnerCandidateSubject" resultType="EnumSubject">
+		SELECT
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_TITLE AS "_title"
+		FROM
+			T_ENUM T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
 </mapper>

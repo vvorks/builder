@@ -101,26 +101,30 @@ public interface ClassMapper {
 	/**
 	 * 所属プロジェクトの候補サマリーを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content クラス
+	 * @param hint ヒント情報
 	 * @return 所属プロジェクトの候補サマリー
 	 */
-//	public ProjectSummary<ProjectContent> listOwnerCandidateSummary(
-//		@Param("content") ClassContent content,
-//		@Param("hint") String hint
-//	);
+	public ProjectSummary<ProjectSubject> listOwnerCandidateSummary(
+		@Param("content") ClassContent content,
+		@Param("hint") String hint
+	);
 
 	/**
 	 * 所属プロジェクトの候補一覧を取得する
 	 *
 	 * @param content クラス
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 所属プロジェクトの候補一覧
 	 */
-//	public List<ProjectSubject> listOwnerCandidateSubject(
-//		@Param("content") ClassContent content,
-//		@Param("hint") String hint,
-//		@Param("offset") int offset,
-//		@Param("limit") int limit
-//	);
+	public List<ProjectSubject> listOwnerCandidateSubject(
+		@Param("content") ClassContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
 
 	/**
 	 * フィールド一覧のサマリーを取得する

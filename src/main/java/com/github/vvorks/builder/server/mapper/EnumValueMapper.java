@@ -79,25 +79,29 @@ public interface EnumValueMapper {
 	/**
 	 * 所属列挙の候補サマリーを取得する
 	 *
-	 * @param content ビルダープロジェクト
+	 * @param content 列挙値
+	 * @param hint ヒント情報
 	 * @return 所属列挙の候補サマリー
 	 */
-//	public EnumSummary<EnumContent> listOwnerCandidateSummary(
-//		@Param("content") EnumValueContent content,
-//		@Param("hint") String hint
-//	);
+	public EnumSummary<EnumSubject> listOwnerCandidateSummary(
+		@Param("content") EnumValueContent content,
+		@Param("hint") String hint
+	);
 
 	/**
 	 * 所属列挙の候補一覧を取得する
 	 *
 	 * @param content 列挙値
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 所属列挙の候補一覧
 	 */
-//	public List<EnumSubject> listOwnerCandidateSubject(
-//		@Param("content") EnumValueContent content,
-//		@Param("hint") String hint,
-//		@Param("offset") int offset,
-//		@Param("limit") int limit
-//	);
+	public List<EnumSubject> listOwnerCandidateSubject(
+		@Param("content") EnumValueContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
 
 }

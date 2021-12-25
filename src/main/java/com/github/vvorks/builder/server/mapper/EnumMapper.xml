@@ -163,6 +163,39 @@
 			T1.F_PROJECT_ID = #{ ownerProjectId }
 	</select>
 
+	<select id="listOwnerCandidateSummary" resultType="ProjectSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_PROJECT T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listOwnerCandidateSubject" resultType="ProjectSubject">
+		SELECT
+			T1.F_PROJECT_ID AS "projectId",
+			T1.F_TITLE AS "_title"
+		FROM
+			T_PROJECT T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
 	<select id="listValuesSummary" resultType="EnumValueSummary">
 		SELECT
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",

@@ -129,4 +129,37 @@
 			T1.F_CLASS_ID = #{ ownerClassId }
 	</select>
 
+	<select id="listOwnerCandidateSummary" resultType="ClassSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listOwnerCandidateSubject" resultType="ClassSubject">
+		SELECT
+			T1.F_CLASS_ID AS "classId",
+			T1.F_TITLE AS "_title"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
 </mapper>
