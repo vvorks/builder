@@ -9,22 +9,16 @@ import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
 import com.github.vvorks.builder.server.domain.ClassContent;
-import com.github.vvorks.builder.server.domain.ClassInfo;
 import com.github.vvorks.builder.server.domain.ClassSummary;
 import com.github.vvorks.builder.server.domain.EnumContent;
-import com.github.vvorks.builder.server.domain.EnumInfo;
 import com.github.vvorks.builder.server.domain.EnumSummary;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
-import com.github.vvorks.builder.server.domain.EnumValueInfo;
 import com.github.vvorks.builder.server.domain.EnumValueSummary;
 import com.github.vvorks.builder.server.domain.FieldContent;
-import com.github.vvorks.builder.server.domain.FieldInfo;
 import com.github.vvorks.builder.server.domain.FieldSummary;
 import com.github.vvorks.builder.server.domain.ProjectContent;
-import com.github.vvorks.builder.server.domain.ProjectInfo;
 import com.github.vvorks.builder.server.domain.ProjectSummary;
 import com.github.vvorks.builder.server.domain.QueryContent;
-import com.github.vvorks.builder.server.domain.QueryInfo;
 import com.github.vvorks.builder.server.domain.QuerySummary;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
@@ -119,20 +113,18 @@ public class BuilderRpcController {
 	 * @return プロジェクト情報
 	 */
 	@JsonRpcMethod
-	public ProjectInfo listProject(
+	public ProjectSummary<ProjectContent> listProject(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectInfo info = new ProjectInfo();
-		ProjectSummary summary = projectMapper.listSummary();
-		info.setSummary(summary);
+		ProjectSummary<ProjectContent> summary = projectMapper.listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<ProjectContent> contents = projectMapper.listContent(offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -144,25 +136,23 @@ public class BuilderRpcController {
 	 * @return プロジェクト情報
 	 */
 	@JsonRpcMethod
-	public ProjectInfo listProjectIfNameIs(
+	public ProjectSummary<ProjectContent> listProjectIfNameIs(
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectInfo info = new ProjectInfo();
-		ProjectSummary summary = projectMapper.listSummaryIfNameIs(
+		ProjectSummary<ProjectContent> summary = projectMapper.listSummaryIfNameIs(
 				name
 				);
-		info.setSummary(summary);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<ProjectContent> contents = projectMapper.listContentIfNameIs(
 				name,
 				offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -174,22 +164,20 @@ public class BuilderRpcController {
 	 * @return クラス一覧情報
 	 */
 	@JsonRpcMethod
-	public ClassInfo listProjectClasses(
+	public ClassSummary<ClassContent> listProjectClasses(
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassInfo info = new ClassInfo();
-		ClassSummary summary = projectMapper.listClassesSummary(content);
-		info.setSummary(summary);
+		ClassSummary<ClassContent> summary = projectMapper.listClassesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<ClassContent> contents =
 				projectMapper.listClassesContent(content, offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -201,28 +189,26 @@ public class BuilderRpcController {
 	 * @return クラス一覧情報
 	 */
 	@JsonRpcMethod
-	public ClassInfo listProjectClassesIfNameIs(
+	public ClassSummary<ClassContent> listProjectClassesIfNameIs(
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassInfo info = new ClassInfo();
-		ClassSummary summary = projectMapper.listClassesSummaryIfNameIs(
+		ClassSummary<ClassContent> summary = projectMapper.listClassesSummaryIfNameIs(
 				content,
 				name
 				);
-		info.setSummary(summary);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<ClassContent> contents = projectMapper.listClassesContentIfNameIs(
 				content,
 				name,
 				offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -234,22 +220,20 @@ public class BuilderRpcController {
 	 * @return 列挙一覧情報
 	 */
 	@JsonRpcMethod
-	public EnumInfo listProjectEnums(
+	public EnumSummary<EnumContent> listProjectEnums(
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumInfo info = new EnumInfo();
-		EnumSummary summary = projectMapper.listEnumsSummary(content);
-		info.setSummary(summary);
+		EnumSummary<EnumContent> summary = projectMapper.listEnumsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<EnumContent> contents =
 				projectMapper.listEnumsContent(content, offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -261,28 +245,26 @@ public class BuilderRpcController {
 	 * @return 列挙一覧情報
 	 */
 	@JsonRpcMethod
-	public EnumInfo listProjectEnumsIfNameIs(
+	public EnumSummary<EnumContent> listProjectEnumsIfNameIs(
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumInfo info = new EnumInfo();
-		EnumSummary summary = projectMapper.listEnumsSummaryIfNameIs(
+		EnumSummary<EnumContent> summary = projectMapper.listEnumsSummaryIfNameIs(
 				content,
 				name
 				);
-		info.setSummary(summary);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<EnumContent> contents = projectMapper.listEnumsContentIfNameIs(
 				content,
 				name,
 				offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -341,20 +323,18 @@ public class BuilderRpcController {
 	 * @return クラス情報
 	 */
 	@JsonRpcMethod
-	public ClassInfo listClass(
+	public ClassSummary<ClassContent> listClass(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassInfo info = new ClassInfo();
-		ClassSummary summary = classMapper.listSummary();
-		info.setSummary(summary);
+		ClassSummary<ClassContent> summary = classMapper.listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<ClassContent> contents = classMapper.listContent(offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -366,25 +346,23 @@ public class BuilderRpcController {
 	 * @return クラス情報
 	 */
 	@JsonRpcMethod
-	public ClassInfo listClassIfNameIs(
+	public ClassSummary<ClassContent> listClassIfNameIs(
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassInfo info = new ClassInfo();
-		ClassSummary summary = classMapper.listSummaryIfNameIs(
+		ClassSummary<ClassContent> summary = classMapper.listSummaryIfNameIs(
 				name
 				);
-		info.setSummary(summary);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<ClassContent> contents = classMapper.listContentIfNameIs(
 				name,
 				offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -409,22 +387,20 @@ public class BuilderRpcController {
 	 * @return フィールド一覧情報
 	 */
 	@JsonRpcMethod
-	public FieldInfo listClassFields(
+	public FieldSummary<FieldContent> listClassFields(
 		@JsonRpcParam("content") ClassContent content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldInfo info = new FieldInfo();
-		FieldSummary summary = classMapper.listFieldsSummary(content);
-		info.setSummary(summary);
+		FieldSummary<FieldContent> summary = classMapper.listFieldsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<FieldContent> contents =
 				classMapper.listFieldsContent(content, offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -436,28 +412,26 @@ public class BuilderRpcController {
 	 * @return フィールド一覧情報
 	 */
 	@JsonRpcMethod
-	public FieldInfo listClassFieldsIfNameIs(
+	public FieldSummary<FieldContent> listClassFieldsIfNameIs(
 		@JsonRpcParam("content") ClassContent content,
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldInfo info = new FieldInfo();
-		FieldSummary summary = classMapper.listFieldsSummaryIfNameIs(
+		FieldSummary<FieldContent> summary = classMapper.listFieldsSummaryIfNameIs(
 				content,
 				name
 				);
-		info.setSummary(summary);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<FieldContent> contents = classMapper.listFieldsContentIfNameIs(
 				content,
 				name,
 				offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -469,22 +443,20 @@ public class BuilderRpcController {
 	 * @return queries情報
 	 */
 	@JsonRpcMethod
-	public QueryInfo listClassQueries(
+	public QuerySummary<QueryContent> listClassQueries(
 		@JsonRpcParam("content") ClassContent content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		QueryInfo info = new QueryInfo();
-		QuerySummary summary = classMapper.listQueriesSummary(content);
-		info.setSummary(summary);
+		QuerySummary<QueryContent> summary = classMapper.listQueriesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<QueryContent> contents =
 				classMapper.listQueriesContent(content, offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -543,20 +515,18 @@ public class BuilderRpcController {
 	 * @return フィールド情報
 	 */
 	@JsonRpcMethod
-	public FieldInfo listField(
+	public FieldSummary<FieldContent> listField(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldInfo info = new FieldInfo();
-		FieldSummary summary = fieldMapper.listSummary();
-		info.setSummary(summary);
+		FieldSummary<FieldContent> summary = fieldMapper.listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<FieldContent> contents = fieldMapper.listContent(offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -568,25 +538,23 @@ public class BuilderRpcController {
 	 * @return フィールド情報
 	 */
 	@JsonRpcMethod
-	public FieldInfo listFieldIfNameIs(
+	public FieldSummary<FieldContent> listFieldIfNameIs(
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldInfo info = new FieldInfo();
-		FieldSummary summary = fieldMapper.listSummaryIfNameIs(
+		FieldSummary<FieldContent> summary = fieldMapper.listSummaryIfNameIs(
 				name
 				);
-		info.setSummary(summary);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<FieldContent> contents = fieldMapper.listContentIfNameIs(
 				name,
 				offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -697,20 +665,18 @@ public class BuilderRpcController {
 	 * @return クエリー情報
 	 */
 	@JsonRpcMethod
-	public QueryInfo listQuery(
+	public QuerySummary<QueryContent> listQuery(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		QueryInfo info = new QueryInfo();
-		QuerySummary summary = queryMapper.listSummary();
-		info.setSummary(summary);
+		QuerySummary<QueryContent> summary = queryMapper.listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<QueryContent> contents = queryMapper.listContent(offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -782,20 +748,18 @@ public class BuilderRpcController {
 	 * @return 列挙情報
 	 */
 	@JsonRpcMethod
-	public EnumInfo listEnum(
+	public EnumSummary<EnumContent> listEnum(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumInfo info = new EnumInfo();
-		EnumSummary summary = enumMapper.listSummary();
-		info.setSummary(summary);
+		EnumSummary<EnumContent> summary = enumMapper.listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<EnumContent> contents = enumMapper.listContent(offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -807,25 +771,23 @@ public class BuilderRpcController {
 	 * @return 列挙情報
 	 */
 	@JsonRpcMethod
-	public EnumInfo listEnumIfNameIs(
+	public EnumSummary<EnumContent> listEnumIfNameIs(
 		@JsonRpcParam("name") String name,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumInfo info = new EnumInfo();
-		EnumSummary summary = enumMapper.listSummaryIfNameIs(
+		EnumSummary<EnumContent> summary = enumMapper.listSummaryIfNameIs(
 				name
 				);
-		info.setSummary(summary);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<EnumContent> contents = enumMapper.listContentIfNameIs(
 				name,
 				offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -850,22 +812,20 @@ public class BuilderRpcController {
 	 * @return 列挙値一覧情報
 	 */
 	@JsonRpcMethod
-	public EnumValueInfo listEnumValues(
+	public EnumValueSummary<EnumValueContent> listEnumValues(
 		@JsonRpcParam("content") EnumContent content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumValueInfo info = new EnumValueInfo();
-		EnumValueSummary summary = enumMapper.listValuesSummary(content);
-		info.setSummary(summary);
+		EnumValueSummary<EnumValueContent> summary = enumMapper.listValuesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<EnumValueContent> contents =
 				enumMapper.listValuesContent(content, offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**
@@ -927,20 +887,18 @@ public class BuilderRpcController {
 	 * @return 列挙値情報
 	 */
 	@JsonRpcMethod
-	public EnumValueInfo listEnumValue(
+	public EnumValueSummary<EnumValueContent> listEnumValue(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumValueInfo info = new EnumValueInfo();
-		EnumValueSummary summary = enumValueMapper.listSummary();
-		info.setSummary(summary);
+		EnumValueSummary<EnumValueContent> summary = enumValueMapper.listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<EnumValueContent> contents = enumValueMapper.listContent(offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	/**

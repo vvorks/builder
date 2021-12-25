@@ -179,7 +179,6 @@ public class ClassExtender {
 
 	public String getSql(ClassContent cls) {
 		entries.clear();
-		LOGGER.debug("----- SQL %s -----", cls.getClassName());
 		return null;
 	}
 
@@ -209,9 +208,26 @@ public class ClassExtender {
 		return result;
 	}
 
-	public List<TitleInfo> getTitles(ClassContent cls) {
+	/**
+	 * 指定クラスのタイトル一覧を取得する
+	 *
+	 * @param cls
+	 * @return タイトル一覧
+	 */
+	public List<TitleInfo> get_titleFields(ClassContent cls) {
 		List<TitleInfo> result = new ArrayList<>();
-		//本クラスのタイトルフィールド
+		result.add(get_titleField(cls));
+		result.addAll(get_refTitleFields(cls));
+		return result;
+	}
+
+	/**
+	 * 指定クラスのタイトルフィールドを取得する
+	 *
+	 * @param cls
+	 * @return タイトルフィールド
+	 */
+	public TitleInfo get_titleField(ClassContent cls) {
 		String titleExpr = cls.getTitleExpr();
 		String name = "_title";
 		String title = "タイトル";
@@ -221,13 +237,23 @@ public class ClassExtender {
 		} else {
 			info = null;
 		}
-		result.add(new TitleInfo(name, title, info));
-		//参照フィールドのタイトルフィールド
+		return new TitleInfo(name, title, info);
+	}
+
+	/**
+	 * 指定クラスの参照フィールドのタイトルフィールド一覧を取得する
+	 *
+	 * @param cls
+	 * @return 参照フィールドのタイトルフィールド一覧
+	 */
+	public List<TitleInfo> get_refTitleFields(ClassContent cls) {
+		List<TitleInfo> result = new ArrayList<>();
 		for (FieldContent fld : getRefs(cls)) {
-			name = fld.getFieldName() + "_title";
-			title = fieldExtender.getTitleOrName(fld) + "のタイトル";
+			String name = fld.getFieldName() + "_title";
+			String title = fieldExtender.getTitleOrName(fld) + "のタイトル";
 			ClassContent ref = fieldExtender.getCref(fld);
 			String refExpr = ref.getTitleExpr();
+			ExprInfo info;
 			if (!Strings.isEmpty(refExpr)) {
 				info = referExpr(cls, fld, refExpr, ExprParser.CODE_TYPE_SELECT);
 			} else {
@@ -522,7 +548,6 @@ public class ClassExtender {
 				if (m > 1) {
 					List<FieldContent> subList = flds.subList(0, m - 1);
 					no = joinMap.computeIfAbsent(subList, s -> joinMap.size() + 2);
-					LOGGER.debug("visitExpr joinMap %d", joinMap.size());
 				}
 			}
 			//opにjoin番号を設定
@@ -551,7 +576,6 @@ public class ClassExtender {
 	}
 
 	public List<JoinInfo> toJoins(Map<List<FieldContent>, Integer> joinMap) {
-		LOGGER.debug("toJoins joinMap %d", joinMap.size());
 		List<JoinInfo> result = new ArrayList<>();
 		for (Map.Entry<List<FieldContent>, Integer> e : joinMap.entrySet()) {
 			List<FieldContent> fields = e.getKey();

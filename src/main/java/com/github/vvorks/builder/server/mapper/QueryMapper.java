@@ -52,7 +52,7 @@ public interface QueryMapper {
 	 *
 	 * @return クエリーのサマリー
 	 */
-	public QuerySummary listSummary();
+	public QuerySummary<QueryContent> listSummary();
 
 	/**
 	 * 全てのクエリーを取得する
@@ -73,5 +73,29 @@ public interface QueryMapper {
 	 * @return 所属クラス
 	 */
 	public ClassContent getOwner(QueryContent content);
+
+	/**
+	 * 所属クラスの候補サマリーを取得する
+	 *
+	 * @param content ビルダープロジェクト
+	 * @return 所属クラスの候補サマリー
+	 */
+//	public ClassSummary<ClassContent> listOwnerCandidateSummary(
+//		@Param("content") QueryContent content,
+//		@Param("hint") String hint
+//	);
+
+	/**
+	 * 所属クラスの候補一覧を取得する
+	 *
+	 * @param content クエリー
+	 * @return 所属クラスの候補一覧
+	 */
+//	public List<ClassSubject> listOwnerCandidateSubject(
+//		@Param("content") QueryContent content,
+//		@Param("hint") String hint,
+//		@Param("offset") int offset,
+//		@Param("limit") int limit
+//	);
 
 }

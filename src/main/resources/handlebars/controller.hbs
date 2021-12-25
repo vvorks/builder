@@ -18,7 +18,6 @@ import {{global.project.projectName}}.server.common.net.annotation.JsonRpcMethod
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcParam;
 {{#each classesByName}}
 import {{global.project.projectName}}.server.domain.{{className}}Content;
-import {{global.project.projectName}}.server.domain.{{className}}Info;
 import {{global.project.projectName}}.server.domain.{{className}}Summary;
 {{/each}}
 {{#each classesByName}}
@@ -102,20 +101,18 @@ public class {{upperLastName}}RpcController {
 	 * @return {{titleOrName}}情報
 	 */
 	@JsonRpcMethod
-	public {{className}}Info list{{className}}(
+	public {{className}}Summary<{{className}}Content> list{{className}}(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		{{className}}Info info = new {{className}}Info();
-		{{className}}Summary summary = {{lowerName}}Mapper.listSummary();
-		info.setSummary(summary);
+		{{className}}Summary<{{className}}Content> summary = {{lowerName}}Mapper.listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<{{className}}Content> contents = {{lowerName}}Mapper.listContent(offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	{{#each queries}}
@@ -131,31 +128,29 @@ public class {{upperLastName}}RpcController {
 	 * @return {{../titleOrName}}情報
 	 */
 	@JsonRpcMethod
-	public {{../className}}Info list{{../className}}If{{upperName}}(
+	public {{../className}}Summary<{{../className}}Content> list{{../className}}If{{upperName}}(
 		{{#each arguments}}
 		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
 		{{/each}}
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		{{../className}}Info info = new {{../className}}Info();
-		{{../className}}Summary summary = {{../lowerName}}Mapper.listSummaryIf{{upperName}}(
+		{{../className}}Summary<{{../className}}Content> summary = {{../lowerName}}Mapper.listSummaryIf{{upperName}}(
 				{{#each arguments}}
 				{{fieldName}}{{#separator}},{{/separator}}
 				{{/each}}
 				);
-		info.setSummary(summary);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<{{../className}}Content> contents = {{../lowerName}}Mapper.listContentIf{{upperName}}(
 				{{#each arguments}}
 				{{fieldName}},
 				{{/each}}
 				offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 	{{/each}}
 
@@ -186,22 +181,20 @@ public class {{upperLastName}}RpcController {
 	 * @return {{titleOrName}}情報
 	 */
 	@JsonRpcMethod
-	public {{fref.owner.className}}Info list{{../className}}{{upperName}}(
+	public {{fref.owner.className}}Summary<{{fref.owner.className}}Content> list{{../className}}{{upperName}}(
 		@JsonRpcParam("content") {{../className}}Content content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		{{fref.owner.className}}Info info = new {{fref.owner.className}}Info();
-		{{fref.owner.className}}Summary summary = {{../lowerName}}Mapper.list{{upperName}}Summary(content);
-		info.setSummary(summary);
+		{{fref.owner.className}}Summary<{{fref.owner.className}}Content> summary = {{../lowerName}}Mapper.list{{upperName}}Summary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<{{fref.owner.className}}Content> contents =
 				{{../lowerName}}Mapper.list{{upperName}}Content(content, offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 
 	{{#each fref.owner.queries}}
@@ -215,7 +208,7 @@ public class {{upperLastName}}RpcController {
 	 * @return {{../titleOrName}}情報
 	 */
 	@JsonRpcMethod
-	public {{../fref.owner.className}}Info list{{../../className}}{{../upperName}}If{{upperName}}(
+	public {{../fref.owner.className}}Summary<{{fref.owner.className}}Content> list{{../../className}}{{../upperName}}If{{upperName}}(
 		@JsonRpcParam("content") {{../../className}}Content content,
 		{{#each arguments}}
 		@JsonRpcParam("{{fieldName}}") {{javaType}} {{fieldName}},
@@ -223,26 +216,24 @@ public class {{upperLastName}}RpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		{{fref.owner.className}}Info info = new {{fref.owner.className}}Info();
-		{{../fref.owner.className}}Summary summary = {{../../lowerName}}Mapper.list{{../upperName}}SummaryIf{{upperName}}(
+		{{../fref.owner.className}}Summary<{{fref.owner.className}}Content> summary = {{../../lowerName}}Mapper.list{{../upperName}}SummaryIf{{upperName}}(
 				content,
 				{{#each arguments}}
 				{{fieldName}}{{#separator}},{{/separator}}
 				{{/each}}
 				);
-		info.setSummary(summary);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
-		info.setOffset(offset);
+		summary.setOffset(offset);
 		List<{{fref.owner.className}}Content> contents = {{../../lowerName}}Mapper.list{{../upperName}}ContentIf{{upperName}}(
 				content,
 				{{#each arguments}}
 				{{fieldName}},
 				{{/each}}
 				offset, limit);
-		info.setContents(contents);
-		return info;
+		summary.setContents(contents);
+		return summary;
 	}
 	{{/each}}
 

@@ -3,12 +3,13 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
  * フィールドのサマリー情報
  */
-public class FieldSummary {
+public class FieldSummary<T> {
 
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
@@ -18,6 +19,12 @@ public class FieldSummary {
 
 	/** （初期）フォーカス位置 */
 	private int focus;
+
+	/** オフセット */
+	private int offset;
+
+	/** Contentリスト情報 */
+	private List<T> contents;
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -73,11 +80,47 @@ public class FieldSummary {
 		this.focus = focus;
 	}
 
+	/**
+	 * オフセットを取得する
+	 *
+	 * @return オフセット
+	 */
+	public int getOffset() {
+		return offset;
+	}
+
+	/**
+	 * オフセットを設定する
+	 *
+	 * @param offset オフセット
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	/**
+	 * Contentリスト情報を取得する
+	 *
+	 * @return Contentリスト情報
+	 */
+	public List<T> getContents() {
+		return contents;
+	}
+
+	/**
+	 * Contentリスト情報を設定する
+	 *
+	 * @param contents Contentリスト情報
+	 */
+	public void setContents(List<T> contents) {
+		this.contents = contents;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(
 			max_lastUpdatedAt,
-			count, focus);
+			count, focus, offset, contents);
 	}
 
 	@Override
@@ -96,7 +139,10 @@ public class FieldSummary {
 	private boolean equals(FieldSummary other) {
 		return
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
-			this.count == other.count && this.focus == other.focus;
+			this.count == other.count &&
+			this.focus == other.focus &&
+			this.offset == other.offset &&
+			Objects.equals(this.contents, other.contents);
 	}
 
 	@Override
@@ -105,7 +151,9 @@ public class FieldSummary {
 		sb.append("FieldContent [");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
-		sb.append("focus=").append(focus);
+		sb.append("focus=").append(focus).append(", ");
+		sb.append("offset=").append(offset).append(", ");
+		sb.append("contents=").append(contents);
 		sb.append("]");
 		return sb.toString();
 	}

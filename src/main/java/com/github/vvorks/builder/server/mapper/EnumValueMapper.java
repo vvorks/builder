@@ -54,7 +54,7 @@ public interface EnumValueMapper {
 	 *
 	 * @return 列挙値のサマリー
 	 */
-	public EnumValueSummary listSummary();
+	public EnumValueSummary<EnumValueContent> listSummary();
 
 	/**
 	 * 全ての列挙値を取得する
@@ -75,5 +75,29 @@ public interface EnumValueMapper {
 	 * @return 所属列挙
 	 */
 	public EnumContent getOwner(EnumValueContent content);
+
+	/**
+	 * 所属列挙の候補サマリーを取得する
+	 *
+	 * @param content ビルダープロジェクト
+	 * @return 所属列挙の候補サマリー
+	 */
+//	public EnumSummary<EnumContent> listOwnerCandidateSummary(
+//		@Param("content") EnumValueContent content,
+//		@Param("hint") String hint
+//	);
+
+	/**
+	 * 所属列挙の候補一覧を取得する
+	 *
+	 * @param content 列挙値
+	 * @return 所属列挙の候補一覧
+	 */
+//	public List<EnumSubject> listOwnerCandidateSubject(
+//		@Param("content") EnumValueContent content,
+//		@Param("hint") String hint,
+//		@Param("offset") int offset,
+//		@Param("limit") int limit
+//	);
 
 }

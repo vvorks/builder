@@ -52,7 +52,7 @@ public interface ClassMapper {
 	 *
 	 * @return クラスのサマリー
 	 */
-	public ClassSummary listSummary();
+	public ClassSummary<ClassContent> listSummary();
 
 	/**
 	 * 全てのクラスを取得する
@@ -72,7 +72,7 @@ public interface ClassMapper {
 	 * @param name name
 	 * @return クラスのサマリー
 	 */
-	public ClassSummary listSummaryIfNameIs(
+	public ClassSummary<ClassContent> listSummaryIfNameIs(
 		@Param("name") String name
 	);
 
@@ -99,12 +99,36 @@ public interface ClassMapper {
 	public ProjectContent getOwner(ClassContent content);
 
 	/**
+	 * 所属プロジェクトの候補サマリーを取得する
+	 *
+	 * @param content ビルダープロジェクト
+	 * @return 所属プロジェクトの候補サマリー
+	 */
+//	public ProjectSummary<ProjectContent> listOwnerCandidateSummary(
+//		@Param("content") ClassContent content,
+//		@Param("hint") String hint
+//	);
+
+	/**
+	 * 所属プロジェクトの候補一覧を取得する
+	 *
+	 * @param content クラス
+	 * @return 所属プロジェクトの候補一覧
+	 */
+//	public List<ProjectSubject> listOwnerCandidateSubject(
+//		@Param("content") ClassContent content,
+//		@Param("hint") String hint,
+//		@Param("offset") int offset,
+//		@Param("limit") int limit
+//	);
+
+	/**
 	 * フィールド一覧のサマリーを取得する
 	 *
 	 * @param content クラス
 	 * @return フィールド一覧のサマリー
 	 */
-	public FieldSummary listFieldsSummary(
+	public FieldSummary<FieldContent> listFieldsSummary(
 		@Param("content") ClassContent content
 	);
 
@@ -128,7 +152,7 @@ public interface ClassMapper {
 	 * @param content クラス
 	 * @return フィールド一覧のサマリー
 	 */
-	public FieldSummary listFieldsSummaryIfNameIs(
+	public FieldSummary<FieldContent> listFieldsSummaryIfNameIs(
 		@Param("content") ClassContent content,
 		@Param("name") String name
 	);
@@ -154,7 +178,7 @@ public interface ClassMapper {
 	 * @param content クラス
 	 * @return queriesのサマリー
 	 */
-	public QuerySummary listQueriesSummary(
+	public QuerySummary<QueryContent> listQueriesSummary(
 		@Param("content") ClassContent content
 	);
 

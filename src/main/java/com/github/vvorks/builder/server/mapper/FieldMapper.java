@@ -52,7 +52,7 @@ public interface FieldMapper {
 	 *
 	 * @return フィールドのサマリー
 	 */
-	public FieldSummary listSummary();
+	public FieldSummary<FieldContent> listSummary();
 
 	/**
 	 * 全てのフィールドを取得する
@@ -72,7 +72,7 @@ public interface FieldMapper {
 	 * @param name name
 	 * @return フィールドのサマリー
 	 */
-	public FieldSummary listSummaryIfNameIs(
+	public FieldSummary<FieldContent> listSummaryIfNameIs(
 		@Param("name") String name
 	);
 
@@ -99,12 +99,60 @@ public interface FieldMapper {
 	public ClassContent getOwner(FieldContent content);
 
 	/**
+	 * 所属クラスの候補サマリーを取得する
+	 *
+	 * @param content ビルダープロジェクト
+	 * @return 所属クラスの候補サマリー
+	 */
+//	public ClassSummary<ClassContent> listOwnerCandidateSummary(
+//		@Param("content") FieldContent content,
+//		@Param("hint") String hint
+//	);
+
+	/**
+	 * 所属クラスの候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return 所属クラスの候補一覧
+	 */
+//	public List<ClassSubject> listOwnerCandidateSubject(
+//		@Param("content") FieldContent content,
+//		@Param("hint") String hint,
+//		@Param("offset") int offset,
+//		@Param("limit") int limit
+//	);
+
+	/**
 	 * クラス参照先を取得する
 	 *
 	 * @param content フィールド
 	 * @return クラス参照先
 	 */
 	public ClassContent getCref(FieldContent content);
+
+	/**
+	 * クラス参照先の候補サマリーを取得する
+	 *
+	 * @param content ビルダープロジェクト
+	 * @return クラス参照先の候補サマリー
+	 */
+//	public ClassSummary<ClassContent> listCrefCandidateSummary(
+//		@Param("content") FieldContent content,
+//		@Param("hint") String hint
+//	);
+
+	/**
+	 * クラス参照先の候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return クラス参照先の候補一覧
+	 */
+//	public List<ClassSubject> listCrefCandidateSubject(
+//		@Param("content") FieldContent content,
+//		@Param("hint") String hint,
+//		@Param("offset") int offset,
+//		@Param("limit") int limit
+//	);
 
 	/**
 	 * 列挙参照先を取得する
@@ -115,11 +163,59 @@ public interface FieldMapper {
 	public EnumContent getEref(FieldContent content);
 
 	/**
+	 * 列挙参照先の候補サマリーを取得する
+	 *
+	 * @param content ビルダープロジェクト
+	 * @return 列挙参照先の候補サマリー
+	 */
+//	public EnumSummary<EnumContent> listErefCandidateSummary(
+//		@Param("content") FieldContent content,
+//		@Param("hint") String hint
+//	);
+
+	/**
+	 * 列挙参照先の候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return 列挙参照先の候補一覧
+	 */
+//	public List<EnumSubject> listErefCandidateSubject(
+//		@Param("content") FieldContent content,
+//		@Param("hint") String hint,
+//		@Param("offset") int offset,
+//		@Param("limit") int limit
+//	);
+
+	/**
 	 * フィールド参照先を取得する
 	 *
 	 * @param content フィールド
 	 * @return フィールド参照先
 	 */
 	public FieldContent getFref(FieldContent content);
+
+	/**
+	 * フィールド参照先の候補サマリーを取得する
+	 *
+	 * @param content ビルダープロジェクト
+	 * @return フィールド参照先の候補サマリー
+	 */
+//	public FieldSummary<FieldContent> listFrefCandidateSummary(
+//		@Param("content") FieldContent content,
+//		@Param("hint") String hint
+//	);
+
+	/**
+	 * フィールド参照先の候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return フィールド参照先の候補一覧
+	 */
+//	public List<FieldSubject> listFrefCandidateSubject(
+//		@Param("content") FieldContent content,
+//		@Param("hint") String hint,
+//		@Param("offset") int offset,
+//		@Param("limit") int limit
+//	);
 
 }

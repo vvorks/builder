@@ -86,9 +86,8 @@ public class TestDataSource extends DataSource {
 
 	private void doResponse(Json result) {
 		LOGGER.debug("result %s", result);
-		Json summary = result.get("summary");
-		int newCount = summary.getInt("count");
-		Date newLast = summary.getDate("lastUpdatedAt");
+		int newCount = result.getInt("count");
+		Date newLast = result.getDate("lastUpdatedAt");
 		//到着データが古かった場合、無視する
 		if (lastUpdatedAt != null && lastUpdatedAt.getTime() > newLast.getTime()) {
 			return;

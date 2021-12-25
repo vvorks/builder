@@ -52,7 +52,7 @@ public interface EnumMapper {
 	 *
 	 * @return 列挙のサマリー
 	 */
-	public EnumSummary listSummary();
+	public EnumSummary<EnumContent> listSummary();
 
 	/**
 	 * 全ての列挙を取得する
@@ -72,7 +72,7 @@ public interface EnumMapper {
 	 * @param name name
 	 * @return 列挙のサマリー
 	 */
-	public EnumSummary listSummaryIfNameIs(
+	public EnumSummary<EnumContent> listSummaryIfNameIs(
 		@Param("name") String name
 	);
 
@@ -99,12 +99,36 @@ public interface EnumMapper {
 	public ProjectContent getOwner(EnumContent content);
 
 	/**
+	 * 所属プロジェクトの候補サマリーを取得する
+	 *
+	 * @param content ビルダープロジェクト
+	 * @return 所属プロジェクトの候補サマリー
+	 */
+//	public ProjectSummary<ProjectContent> listOwnerCandidateSummary(
+//		@Param("content") EnumContent content,
+//		@Param("hint") String hint
+//	);
+
+	/**
+	 * 所属プロジェクトの候補一覧を取得する
+	 *
+	 * @param content 列挙
+	 * @return 所属プロジェクトの候補一覧
+	 */
+//	public List<ProjectSubject> listOwnerCandidateSubject(
+//		@Param("content") EnumContent content,
+//		@Param("hint") String hint,
+//		@Param("offset") int offset,
+//		@Param("limit") int limit
+//	);
+
+	/**
 	 * 列挙値一覧のサマリーを取得する
 	 *
 	 * @param content 列挙
 	 * @return 列挙値一覧のサマリー
 	 */
-	public EnumValueSummary listValuesSummary(
+	public EnumValueSummary<EnumValueContent> listValuesSummary(
 		@Param("content") EnumContent content
 	);
 

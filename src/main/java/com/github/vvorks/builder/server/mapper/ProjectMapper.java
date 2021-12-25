@@ -52,7 +52,7 @@ public interface ProjectMapper {
 	 *
 	 * @return プロジェクトのサマリー
 	 */
-	public ProjectSummary listSummary();
+	public ProjectSummary<ProjectContent> listSummary();
 
 	/**
 	 * 全てのプロジェクトを取得する
@@ -72,7 +72,7 @@ public interface ProjectMapper {
 	 * @param name name
 	 * @return プロジェクトのサマリー
 	 */
-	public ProjectSummary listSummaryIfNameIs(
+	public ProjectSummary<ProjectContent> listSummaryIfNameIs(
 		@Param("name") String name
 	);
 
@@ -96,7 +96,7 @@ public interface ProjectMapper {
 	 * @param content プロジェクト
 	 * @return クラス一覧のサマリー
 	 */
-	public ClassSummary listClassesSummary(
+	public ClassSummary<ClassContent> listClassesSummary(
 		@Param("content") ProjectContent content
 	);
 
@@ -120,7 +120,7 @@ public interface ProjectMapper {
 	 * @param content プロジェクト
 	 * @return クラス一覧のサマリー
 	 */
-	public ClassSummary listClassesSummaryIfNameIs(
+	public ClassSummary<ClassContent> listClassesSummaryIfNameIs(
 		@Param("content") ProjectContent content,
 		@Param("name") String name
 	);
@@ -146,7 +146,7 @@ public interface ProjectMapper {
 	 * @param content プロジェクト
 	 * @return 列挙一覧のサマリー
 	 */
-	public EnumSummary listEnumsSummary(
+	public EnumSummary<EnumContent> listEnumsSummary(
 		@Param("content") ProjectContent content
 	);
 
@@ -170,7 +170,7 @@ public interface ProjectMapper {
 	 * @param content プロジェクト
 	 * @return 列挙一覧のサマリー
 	 */
-	public EnumSummary listEnumsSummaryIfNameIs(
+	public EnumSummary<EnumContent> listEnumsSummaryIfNameIs(
 		@Param("content") ProjectContent content,
 		@Param("name") String name
 	);

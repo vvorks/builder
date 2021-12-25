@@ -47,7 +47,7 @@ public class {{className}}Content {
 	private {{javaType}} {{fieldName}};
 	{{/each}}
 
-	{{#each titles}}
+	{{#each _titleFields}}
 
 	/**
 	 * {{titleOrName}}
@@ -99,7 +99,7 @@ public class {{className}}Content {
 	}
 	{{/each}}
 
-	{{#each titles}}
+	{{#each _titleFields}}
 
 	/**
 	 * {{titleOrName}}を取得する
@@ -170,6 +170,156 @@ public class {{className}}Content {
 {{/each}}
 
 //
+// Subjectクラステンプレート
+//
+{{#each this.classes}}
+{{#java this "server/domain/" className "Subject" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+import java.util.Objects;
+import javax.validation.constraints.NotNull;
+
+/**
+ * {{titleOrName}}の見出し
+{{#if description}}
+ *
+ * {{description}}
+{{/if}}
+{{#if note}}
+ *
+ * {{note}}
+{{/if}}
+ */
+public class {{className}}Subject {
+
+	{{#each keys}}
+
+	/**
+	 * {{titleOrName}}
+	{{#if description}}
+	 *
+	 * {{description}}
+	{{/if}}
+	{{#if note}}
+	 *
+	 * {{note}}
+	{{/if}}
+	 */
+	{{#if notNullObject}}
+	@NotNull
+	{{/if}}
+	private {{javaType}} {{fieldName}};
+	{{/each}}
+
+	{{#with _titleField}}
+
+	/**
+	 * {{titleOrName}}
+	 */
+	private {{javaType}} {{fieldName}};
+	{{/with}}
+
+	/**
+	 * 空の{{titleOrName}}の見出しを作成する
+	 */
+	public {{className}}Subject() {
+	}
+
+	/**
+	 * 指定のキー項目を持つ{{titleOrName}}の見出しを作成する
+	 *
+	{{#each keys}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 */
+	public {{className}}Subject(
+		{{#each keys}}
+		{{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
+	) {
+		{{#each keys}}
+		this.{{fieldName}} = {{fieldName}};
+		{{/each}}
+	}
+
+	{{#with _titleField}}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @return {{titleOrName}}
+	 */
+	public {{javaType}} {{getterName}}() {
+		return this.{{fieldName}};
+	}
+
+	/**
+	 * {{titleOrName}}を設定する
+	 *
+	 * @param {{fieldName}} 設定する{{titleOrName}}
+	 */
+	public void {{setterName}}({{javaType}} {{fieldName}}) {
+		this.{{fieldName}} = {{fieldName}};
+	}
+	{{/with}}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(
+			{{#each keys}}
+			{{fieldName}}{{#separator}},{{/separator}}
+			{{/each}}
+			);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			return equals(({{className}}Subject) obj);
+		}
+	}
+
+	private boolean equals({{className}}Subject other) {
+		return
+			{{#each keys}}
+			{{#if primitiveOrEnum}}
+			this.{{fieldName}} == other.{{fieldName}}{{#separator}} && {{/separator}}
+			{{else}}
+			Objects.equals(this.{{fieldName}}, other.{{fieldName}}){{#separator}} && {{/separator}}
+			{{/if}}
+			{{/each}}
+			;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{className}}Subject [");
+		{{#each keys}}
+		sb.append("{{fieldName}}=").append({{fieldName}}){{#separator}}.append(", "){{/separator}};
+		{{/each}}
+		sb.append("]");
+		return sb.toString();
+	}
+
+}
+{{/java}}
+{{/each}}
+
+//
 // Summaryクラステンプレート
 //
 {{#each this.classes}}
@@ -183,12 +333,13 @@ public class {{className}}Content {
 {{/if}}
 package {{global.project.projectName}}.server.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
  * {{titleOrName}}のサマリー情報
  */
-public class {{className}}Summary {
+public class {{className}}Summary<T> {
 
 	{{#each properties}}
 
@@ -218,6 +369,12 @@ public class {{className}}Summary {
 
 	/** （初期）フォーカス位置 */
 	private int focus;
+
+	/** オフセット */
+	private int offset;
+
+	/** Contentリスト情報 */
+	private List<T> contents;
 
 	{{#each properties}}
 
@@ -338,6 +495,42 @@ public class {{className}}Summary {
 		this.focus = focus;
 	}
 
+	/**
+	 * オフセットを取得する
+	 *
+	 * @return オフセット
+	 */
+	public int getOffset() {
+		return offset;
+	}
+
+	/**
+	 * オフセットを設定する
+	 *
+	 * @param offset オフセット
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	/**
+	 * Contentリスト情報を取得する
+	 *
+	 * @return Contentリスト情報
+	 */
+	public List<T> getContents() {
+		return contents;
+	}
+
+	/**
+	 * Contentリスト情報を設定する
+	 *
+	 * @param contents Contentリスト情報
+	 */
+	public void setContents(List<T> contents) {
+		this.contents = contents;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(
@@ -355,7 +548,7 @@ public class {{className}}Summary {
 			min{{upperName}},
 			{{/if}}
 			{{/each}}
-			count, focus);
+			count, focus, offset, contents);
 	}
 
 	@Override
@@ -402,7 +595,10 @@ public class {{className}}Summary {
 			{{/if}}
 			{{/if}}
 			{{/each}}
-			this.count == other.count && this.focus == other.focus;
+			this.count == other.count &&
+			this.focus == other.focus &&
+			this.offset == other.offset &&
+			Objects.equals(this.contents, other.contents);
 	}
 
 	@Override
@@ -424,131 +620,9 @@ public class {{className}}Summary {
 		{{/if}}
 		{{/each}}
 		sb.append("count=").append(count).append(", ");
-		sb.append("focus=").append(focus);
-		sb.append("]");
-		return sb.toString();
-	}
-
-}
-{{/java}}
-{{/each}}
-
-//
-// Infoクラステンプレート
-//
-{{#each this.classes}}
-{{#java this "server/domain/" className "Info" ".java"}}
-{{#if global.project.copyrightLines}}
-/*
-{{#each global.project.copyrightLines}}
- * {{this}}
-{{/each}}
- */
-{{/if}}
-package {{global.project.projectName}}.server.domain;
-
-import java.util.List;
-import java.util.Objects;
-
-/**
- * {{titleOrName}}情報
- */
-public class {{className}}Info {
-
-	/** Summary情報 */
-	private {{className}}Summary summary;
-
-	/** Contentリスト情報 */
-	private List<{{className}}Content> contents;
-
-	/** オフセット */
-	private int offset;
-
-	/**
-	 * Summary情報を取得する
-	 *
-	 * @return Summary情報
-	 */
-	public {{className}}Summary getSummary() {
-		return summary;
-	}
-
-	/**
-	 * Summary情報を設定する
-	 *
-	 * @param summary サマリー情報
-	 */
-	public void setSummary({{className}}Summary summary) {
-		this.summary = summary;
-	}
-
-	/**
-	 * Contentリスト情報を取得する
-	 *
-	 * @return Contentリスト情報
-	 */
-	public List<{{className}}Content> getContents() {
-		return contents;
-	}
-
-	/**
-	 * Contentリスト情報を設定する
-	 *
-	 * @param contents Contentリスト情報
-	 */
-	public void setContents(List<{{className}}Content> contents) {
-		this.contents = contents;
-	}
-
-	/**
-	 * オフセットを取得する
-	 *
-	 * @return オフセット
-	 */
-	public int getOffset() {
-		return offset;
-	}
-
-	/**
-	 * オフセットを設定する
-	 *
-	 * @param offset オフセット
-	 */
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(summary, contents, offset);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (obj == null) {
-			return false;
-		} else if (getClass() != obj.getClass()) {
-			return false;
-		} else {
-			return equals(({{className}}Info) obj);
-		}
-	}
-
-	private boolean equals({{className}}Info other) {
-		return	Objects.equals(summary, other.summary) &&
-				Objects.equals(contents, other.contents) &&
-				offset == other.offset;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{{className}}Info [");
-		sb.append("summary=").append(summary).append(", ");
-		sb.append("contents=").append(contents).append(", ");
+		sb.append("focus=").append(focus).append(", ");
 		sb.append("offset=").append(offset).append(", ");
+		sb.append("contents=").append(contents);
 		sb.append("]");
 		return sb.toString();
 	}

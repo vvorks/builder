@@ -65,7 +65,7 @@ public interface {{className}}Mapper {
 	 *
 	 * @return {{titleOrName}}のサマリー
 	 */
-	public {{className}}Summary listSummary();
+	public {{className}}Summary<{{className}}Content> listSummary();
 
 	/**
 	 * 全ての{{titleOrName}}を取得する
@@ -89,7 +89,7 @@ public interface {{className}}Mapper {
 	{{/each}}
 	 * @return {{../titleOrName}}のサマリー
 	 */
-	public {{../className}}Summary listSummaryIf{{upperName}}(
+	public {{../className}}Summary<{{../className}}Content> listSummaryIf{{upperName}}(
 		{{#each arguments}}
 		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
 		{{/each}}
@@ -123,6 +123,30 @@ public interface {{className}}Mapper {
 	 * @return {{titleOrName}}
 	 */
 	public {{cref.className}}Content get{{upperName}}({{../className}}Content content);
+
+	/**
+	 * {{titleOrName}}の候補サマリーを取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @return {{titleOrName}}の候補サマリー
+	 */
+//	public {{cref.className}}Summary<{{cref.className}}Content> list{{upperName}}CandidateSummary(
+//		@Param("content") {{../className}}Content content,
+//		@Param("hint") String hint
+//	);
+
+	/**
+	 * {{titleOrName}}の候補一覧を取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @return {{titleOrName}}の候補一覧
+	 */
+//	public List<{{cref.className}}Subject> list{{upperName}}CandidateSubject(
+//		@Param("content") {{../className}}Content content,
+//		@Param("hint") String hint,
+//		@Param("offset") int offset,
+//		@Param("limit") int limit
+//	);
 	{{/each}}
 
 	{{#each sets}}
@@ -133,7 +157,7 @@ public interface {{className}}Mapper {
 	 * @param content {{../titleOrName}}
 	 * @return {{titleOrName}}のサマリー
 	 */
-	public {{fref.owner.className}}Summary list{{upperName}}Summary(
+	public {{fref.owner.className}}Summary<{{fref.owner.className}}Content> list{{upperName}}Summary(
 		@Param("content") {{../className}}Content content
 	);
 
@@ -159,7 +183,7 @@ public interface {{className}}Mapper {
 	 * @param content {{../../titleOrName}}
 	 * @return {{../titleOrName}}のサマリー
 	 */
-	public {{../fref.owner.className}}Summary list{{../upperName}}SummaryIf{{upperName}}(
+	public {{../fref.owner.className}}Summary<{{../fref.owner.className}}Content> list{{../upperName}}SummaryIf{{upperName}}(
 		@Param("content") {{../../className}}Content content,
 		{{#each arguments}}
 		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
@@ -258,7 +282,7 @@ public interface {{className}}Mapper {
 			{{#each properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{#each titles}}
+			{{#each _titleFields}}
 			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
 			{{/each}}
 		FROM
@@ -307,7 +331,7 @@ public interface {{className}}Mapper {
 			{{#each properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{#each titles}}
+			{{#each _titleFields}}
 			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
 			{{/each}}
 		FROM
@@ -376,7 +400,7 @@ public interface {{className}}Mapper {
 			{{#each ../properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{#each ../titles}}
+			{{#each ../_titleFields}}
 			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
 			{{/each}}
 		FROM
@@ -414,7 +438,7 @@ public interface {{className}}Mapper {
 			{{#each cref.properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{#each cref.titles}}
+			{{#each cref._titleFields}}
 			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
 			{{/each}}
 		FROM
@@ -469,7 +493,7 @@ public interface {{className}}Mapper {
 			{{#each fref.owner.properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{#each fref.owner.titles}}
+			{{#each fref.owner._titleFields}}
 			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
 			{{/each}}
 		FROM
@@ -501,7 +525,6 @@ public interface {{className}}Mapper {
 
 	{{#each fref.owner.queries}}
 	{{sql}}
-	{{log "begin q list-summaryIf" level="error"}}
 	<select id="list{{../upperName}}SummaryIf{{upperName}}" resultType="{{../fref.owner.className}}Summary">
 		SELECT
 			{{#each ../fref.owner.properties}}
@@ -546,7 +569,7 @@ public interface {{className}}Mapper {
 			{{#each ../fref.owner.properties}}
 			T1.{{columnName}} AS "{{fieldName}}",
 			{{/each}}
-			{{#each ../fref.owner.titles}}
+			{{#each ../fref.owner._titleFields}}
 			{{titleExpr}} AS "{{fieldName}}"{{#separator}},{{/separator}}
 			{{/each}}
 		FROM
