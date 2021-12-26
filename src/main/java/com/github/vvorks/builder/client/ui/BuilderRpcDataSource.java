@@ -2,6 +2,7 @@ package com.github.vvorks.builder.client.ui;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class BuilderRpcDataSource extends DataSource {
 	private final int pageSize;
 
 	/** データキャッシュ */
-	private CacheMap<Integer, Json> cache;
+	private Map<Integer, Json> cache;
 
 	/** 検索条件 */
 	private Json criteria;
@@ -48,7 +49,7 @@ public class BuilderRpcDataSource extends DataSource {
 		this.rpc = rpc;
 		this.apiName = apiName;
 		this.pageSize = pageSize;
-		cache = new CacheMap<>(Math.max(cacheSize, pageSize * 4));
+		cache = new CacheMap<>(Math.max(cacheSize, pageSize * 4), true);
 		criteria = null;
 		requests = new HashSet<>();
 		reload();
@@ -70,22 +71,27 @@ public class BuilderRpcDataSource extends DataSource {
 				param.set(e.getKey(), e.getValue());
 			}
 		}
-		IntRange requestRange = new IntRange(offset, offset + limit - 1);
+		IntRange requestRange = offset == -1 ? null : new IntRange(offset, offset + limit - 1);
 		rpc.request(apiName, param, 0, new Callback<Json>() {
 			public void onSuccess(Json result) {
-				requests.remove(requestRange);
+				if (requestRange != null) {
+					requests.remove(requestRange);
+				}
 				doResponse(result);
 			}
 			public void onFailure(Throwable caught) {
-				requests.remove(requestRange);
+				if (requestRange != null) {
+					requests.remove(requestRange);
+				}
 				LOGGER.error(caught, caught.getMessage());
 			}
 		});
-		requests.add(requestRange);
+		if (requestRange != null) {
+			requests.add(requestRange);
+		}
 	}
 
 	private void doResponse(Json result) {
-		LOGGER.debug("result %s", result);
 		int newCount = result.getInt("count");
 		Date newLast = result.getDate("lastUpdatedAt");
 		//到着データが古かった場合、無視する
@@ -94,6 +100,7 @@ public class BuilderRpcDataSource extends DataSource {
 		}
 		//到着データが新しかった場合、キャッシュを破棄
 		if (lastUpdatedAt == null || lastUpdatedAt.getTime() < newLast.getTime() || lastCount != newCount) {
+			LOGGER.info("CLEAR CACHE!");
 			cache.clear();
 		}
 		lastCount = newCount;
@@ -149,8 +156,17 @@ public class BuilderRpcDataSource extends DataSource {
 
 	private void requestAround(int index) {
 		int count = loaded ? this.lastCount : Integer.MAX_VALUE;
-		int offset = Math.max(0, index - pageSize);
-		int limit = Math.min(offset + pageSize * 2, count) - offset;
+		int halfSize = pageSize / 2;
+		int head = Math.max(0, index - halfSize);
+		int tail = Math.min(index + halfSize, count - 1);
+		while (cache.get(head) != null) {
+			head++;
+		}
+		while (cache.get(tail) != null) {
+			tail--;
+		}
+		int offset = head;
+		int limit = tail - head + 1;
 		doRequest(criteria, offset, limit);
 	}
 

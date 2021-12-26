@@ -31,7 +31,7 @@ public class FieldListPage extends UiPage {
 	protected void initialize() {
 		UiApplication app = getApplication();
 		JsonRpcClient rpc = app.getRpcClient();
-		DataSource ds = new BuilderRpcDataSource(rpc, "listField", 100, 200);
+		DataSource ds = new BuilderRpcDataSource(rpc, "listField", 20, 40);
 		final double NA = UiNodeBuilder.NA;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		UiVerticalList list;
@@ -40,7 +40,7 @@ public class FieldListPage extends UiPage {
 			b.style(BuilderUiApplication.ENABLE);
 			b.source(ds);
 			b.locate(1.0, 1.0, 2.0, 2.0, NA, NA);
-			b.loop(false);
+			b.loop(true);
 			b.flushSoon(false);
 			//
 			b.enter(new UiDataField(UiVerticalList.ROWID_COLUMN));

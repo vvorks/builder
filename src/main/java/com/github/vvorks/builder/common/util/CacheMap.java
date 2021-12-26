@@ -8,11 +8,11 @@ public class CacheMap<K, V> extends LinkedHashMap<K, V> {
 	private int limit;
 
 	public CacheMap() {
-		this(256);
+		this(256, true);
 	}
 
-	public CacheMap(int limit) {
-		super(16, 0.75F, true);
+	public CacheMap(int limit, boolean accessOrder) {
+		super(16, 0.75F, accessOrder);
 		this.limit = limit;
 	}
 

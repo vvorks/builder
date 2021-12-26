@@ -65,8 +65,12 @@ public class UiVerticalList extends UiGroup {
 
 		public void setIndex(int index) {
 			flush();
-			DataSource ds = list.getDataSource();
 			this.index = index;
+			reload();
+		}
+
+		public void reload() {
+			DataSource ds = list.getDataSource();
 			this.json = ds.getData(index);
 			if (json != null) {
 				for (UiNode d : this.getDescendantsIf(c -> c instanceof DataField)) {
@@ -672,6 +676,8 @@ public class UiVerticalList extends UiGroup {
 			if (hasFocus) {
 				setFocus(app.getFirstFocus(this));
 			}
+		} else {
+			reloadChildren();
 		}
 	}
 
@@ -699,6 +705,15 @@ public class UiVerticalList extends UiGroup {
 			total += child.getHeightPx() + spacingHeightPx;
 		}
 		setScrollHeight(total);
+	}
+
+	private void reloadChildren() {
+		for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
+			UiLine line = (UiLine)c;
+			if (!line.exists()) {
+				line.reload();
+			}
+		}
 	}
 
 	@Override
