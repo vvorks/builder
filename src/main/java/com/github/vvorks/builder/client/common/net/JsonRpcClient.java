@@ -145,7 +145,7 @@ public class JsonRpcClient implements WebSocketHandler {
 		addWaiting(id, new RequestInfo(method, callback, timeout));
 		try {
 			send(id, msg);
-			LOGGER.info("RPC: SEND REQ %s with %s", getShortName(method, id), params);
+			LOGGER.info("RPC: SEND REQ %s", getShortName(method, id));
 			if (timeout > 0) {
 				DelayedExecuter context = Factory.getInstance(DelayedExecuter.class);
 				context.runAfter(timeout, () -> {
@@ -213,7 +213,7 @@ public class JsonRpcClient implements WebSocketHandler {
 		String msg = json.toString();
 		try {
 			send(NOTIFY_ID, msg);
-			LOGGER.info("RPC: SEND NTF %s with %s", getShortName(method, NOTIFY_ID), params);
+			LOGGER.info("RPC: SEND NTF %s", getShortName(method, NOTIFY_ID));
 		} catch (IOException e) {
 			LOGGER.error(e, "RPC: SEND NTF %s ERROR", getShortName(method, NOTIFY_ID));
 		}
@@ -311,7 +311,7 @@ public class JsonRpcClient implements WebSocketHandler {
 		Json params = json.get(JsonRpcs.KEY_PARAMS);
 		Handler handler = handlers.get(method);
 		String tag = (id != NOTIFY_ID) ? "REQ" : "NTF";
-		LOGGER.info("RPC: RECV %s %s with %s", tag, getShortName(method, id), params);
+		LOGGER.info("RPC: RECV %s %s", tag, getShortName(method, id));
 		if (handler != null) {
 			try {
 				if (id != 0) {
@@ -339,7 +339,7 @@ public class JsonRpcClient implements WebSocketHandler {
 		if (req != null) {
 			method = req.method;
 			if (result != null) {
-				LOGGER.info("RPC: RECV RSP %s with %s", getShortName(method, id), result);
+				LOGGER.info("RPC: RECV RSP %s", getShortName(method, id), result);
 				try {
 					req.callback.onSuccess(result);
 				} catch (Exception|AssertionError err) {
@@ -375,7 +375,7 @@ public class JsonRpcClient implements WebSocketHandler {
 			json.setString(JsonRpcs.KEY_JSONRPC, RPC_VERSION);
 			json.setInt(JsonRpcs.KEY_ID, id);
 			json.set(JsonRpcs.KEY_RESULT, result);
-			LOGGER.info("RPC: SEND RSP %s with %s", getShortName(method, id), result.toJsonString());
+			LOGGER.info("RPC: SEND RSP %s", getShortName(method, id));
 			sendResponse(json);
 		}
 
