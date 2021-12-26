@@ -1,4 +1,4 @@
-package com.github.vvorks.builder.client.app;
+package com.github.vvorks.builder.client.ui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +94,7 @@ public class ListTestPage extends UiPage {
 	}
 
 	private DataSource createDataSource(JsonRpcClient rpc) {
-		return new TestDataSource(rpc, "listClass", 20, 100);
+		return new BuilderRpcDataSource(rpc, "listClass", 20, 100);
 	}
 
 	private DataSource createDataSource() {

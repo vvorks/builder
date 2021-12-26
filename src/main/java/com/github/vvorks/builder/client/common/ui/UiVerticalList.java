@@ -60,9 +60,11 @@ public class UiVerticalList extends UiGroup {
 			DataSource ds = list.getDataSource();
 			this.index = index;
 			this.json = ds.getData(index);
-			for (UiNode d : this.getDescendantsIf(c -> c instanceof DataField)) {
-				DataField field = (DataField) d;
-				field.setRecord(this);
+			if (json != null) {
+				for (UiNode d : this.getDescendantsIf(c -> c instanceof DataField)) {
+					DataField field = (DataField) d;
+					field.setRecord(this);
+				}
 			}
 		}
 
@@ -374,7 +376,7 @@ public class UiVerticalList extends UiGroup {
 	public void onMount() {
 		if (template == null) {
 			template = new UiLine(this, "template");
-			template.setBounds(Length.ZERO, Length.ZERO, Length.ZERO, null, null, getMaxHeight());
+			setTemplateBounds(template);
 			template.setChildren(clearChildren());
 			template.setParent(this);
 		}
@@ -382,24 +384,23 @@ public class UiVerticalList extends UiGroup {
 		super.onMount();
 	}
 
+	private void setTemplateBounds(UiNode template) {
+		int maxRightPx = 0;
+		int maxBottomPx = 0;
+		for (UiNode c : getChildren()) {
+			maxRightPx = Math.max(maxRightPx, c.getLeftPx() + c.getWidthPx());
+			maxBottomPx = Math.max(maxBottomPx, c.getTopPx() + c.getHeightPx());
+		}
+		template.setBounds(
+				Length.ZERO, Length.ZERO,
+				null, null,
+				Length.Unit.PX.of(maxRightPx), Length.Unit.PX.of(maxBottomPx));
+	}
+
 	private void updateMetrics() {
 		pageHeight = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
 		lineHeight = template.getHeightPx(pageHeight);
 		linesPerView = (int) Math.ceil((double)pageHeight / (double)lineHeight);
-	}
-
-	private Length getMaxHeight() {
-		Length maxHeight = null;
-		int maxHeightPx = 0;
-		for (UiNode c : getChildren()) {
-			Length height = c.getHeight();
-			int heightPx = c.getHeightPx();
-			if (maxHeight == null || maxHeightPx < heightPx) {
-				maxHeight = height;
-				maxHeightPx = heightPx;
-			}
-		}
-		return maxHeight;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.github.vvorks.builder.client.app;
+package com.github.vvorks.builder.client.ui;
 
 import java.util.Map;
 
@@ -73,6 +73,7 @@ public class BuilderUiApplication extends UiApplication {
 		addPage("", args -> new GroupTestPage("testPage", app, (Map<String, String>)args[0]));
 		addPage("#list", args -> new ListTestPage("listPage", app, (Map<String, String>)args[0]));
 		addPage("#layout", args -> new LayouterTestPage("layoutPage", app, (Map<String, String>)args[0]));
+		addPage("#fieldList", args -> new FieldListPage("fieldListPage", app, (Map<String, String>)args[0]));
 		registerStyle(BASIC);
 		registerStyle(NOBORDER);
 		registerStyle(SB);

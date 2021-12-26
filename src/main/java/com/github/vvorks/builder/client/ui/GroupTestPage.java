@@ -1,4 +1,4 @@
-package com.github.vvorks.builder.client.app;
+package com.github.vvorks.builder.client.ui;
 
 import java.util.Map;
 

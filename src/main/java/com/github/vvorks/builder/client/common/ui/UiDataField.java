@@ -1,6 +1,6 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.client.app.BuilderUiApplication;
+import com.github.vvorks.builder.client.ui.BuilderUiApplication;
 
 public class UiDataField extends UiNode implements DataField {
 

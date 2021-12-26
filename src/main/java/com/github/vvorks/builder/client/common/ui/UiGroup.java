@@ -3,8 +3,11 @@ package com.github.vvorks.builder.client.common.ui;
 import java.util.Objects;
 
 import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiGroup extends UiNode {
+
+	private static final Logger LOGGER = Logger.createLogger(UiGroup.class);
 
 	private Length spacingWidth;
 
@@ -114,6 +117,7 @@ public class UiGroup extends UiNode {
 		} else {
 			dy = 0;
 		}
+		LOGGER.debug("%s: scroll %d, %d", getName(), dx, dy);
 		setScrollLeft(s.getLeft() + dx);
 		setScrollTop (s.getTop()  + dy);
 	}

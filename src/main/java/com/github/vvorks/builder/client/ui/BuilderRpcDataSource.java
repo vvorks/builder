@@ -1,4 +1,4 @@
-package com.github.vvorks.builder.client.app;
+package com.github.vvorks.builder.client.ui;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -13,9 +13,9 @@ import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.CacheMap;
 import com.github.vvorks.builder.common.util.IntRange;
 
-public class TestDataSource extends DataSource {
+public class BuilderRpcDataSource extends DataSource {
 
-	private static final Logger LOGGER = Logger.createLogger(TestDataSource.class);
+	private static final Logger LOGGER = Logger.createLogger(BuilderRpcDataSource.class);
 
 	/** rpcクライアント */
 	private final JsonRpcClient rpc;
@@ -44,7 +44,7 @@ public class TestDataSource extends DataSource {
 	/** 最新ロード時刻 */
 	private Date lastUpdatedAt;
 
-	public TestDataSource(JsonRpcClient rpc, String apiName, int pageSize, int cacheSize) {
+	public BuilderRpcDataSource(JsonRpcClient rpc, String apiName, int pageSize, int cacheSize) {
 		this.rpc = rpc;
 		this.apiName = apiName;
 		this.pageSize = pageSize;
