@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.ui.DataSource;
 import com.github.vvorks.builder.client.common.ui.ListDataSource;
@@ -38,7 +37,7 @@ public class ListTestPage extends UiPage {
 	protected void initialize() {
 		UiApplication app = getApplication();
 		JsonRpcClient rpc = app.getRpcClient();
-		DataSource ds = ClientSettings.DEBUG ? createDataSource(rpc) : createDataSource();
+		DataSource ds = createDataSource();
 		final double NA = UiNodeBuilder.NA;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		UiNode list;
@@ -63,7 +62,7 @@ public class ListTestPage extends UiPage {
 				b.style(BuilderUiApplication.ENABLE);
 				b.source(ds);
 				b.locate(5.0, 5.0, 5.0, 5.0, NA, NA);
-				b.loop(true);
+				b.loop(false);
 				b.flushSoon(false);
 				b.enter(new UiDataField("_key"));
 					b.style(BuilderUiApplication.BASIC);

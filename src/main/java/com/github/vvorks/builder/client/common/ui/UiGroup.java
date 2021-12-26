@@ -96,10 +96,9 @@ public class UiGroup extends UiNode {
 	}
 
 	@Override
-	public void scrollFor(UiNode child) {
-		Asserts.requireNotNull(child);
-		Asserts.require(child.getParent() == this);
-		Rect r = child.getRectangleOnParent();
+	public void scrollFor(UiNode target) {
+		Asserts.requireNotNull(target);
+		Rect r = target.getRectangleOn(this);
 		Rect s = this.getRectangleOnThis();
 		int dx;
 		int dy;

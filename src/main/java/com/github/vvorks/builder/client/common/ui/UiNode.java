@@ -18,8 +18,11 @@ import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Copyable;
 import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrollable {
+
+	private static final Logger LOGGER = Logger.createLogger(UiNode.class);
 
 	public static final String NS_HTML = "http://www.w3.org/1999/xhtml";
 
@@ -931,6 +934,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	}
 
 	public int setHorizontalScroll(int offset) {
+		LOGGER.debug("setHorizontalScroll %d", offset);
 		int result = EVENT_IGNORED;
 		int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
 		int count = getScrollWidthPx();
@@ -943,6 +947,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	}
 
 	public int setVerticalScroll(int offset) {
+		LOGGER.debug("setVerticalScroll %d", offset);
 		int result = EVENT_IGNORED;
 		int limit = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
 		int count = getScrollHeightPx();
@@ -1616,7 +1621,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 		}
 	}
 
-	public void scrollFor(UiNode child) {
+	public void scrollFor(UiNode target) {
 		//NOP
 	}
 

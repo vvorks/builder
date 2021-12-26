@@ -655,9 +655,6 @@ public class UiApplication implements EventHandler {
 
 	public int processAnimationFrame(int time) {
 		try {
-			if (busy) {
-				LOGGER.info("processAnimationFrame(%d) reset busy", time);
-			}
 			busy = false;
 			return UiNode.EVENT_EATEN;
 		} catch (Exception|AssertionError err) {
@@ -864,7 +861,7 @@ public class UiApplication implements EventHandler {
 		UiNode target = node;
 		UiNode parent = target.getParent();
 		while (parent != null) {
-			parent.scrollFor(target);
+			parent.scrollFor(node);
 			target = parent;
 			parent = target.getParent();
 		}

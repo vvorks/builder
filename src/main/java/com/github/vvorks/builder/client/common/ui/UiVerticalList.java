@@ -6,8 +6,11 @@ import java.util.Date;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiVerticalList extends UiGroup {
+
+	private static final Logger LOGGER = Logger.createLogger(UiVerticalList.class);
 
 	/** 疑似スクロール用のマージン行数 */
 	protected static final int VIEW_MARGIN	= 3;
@@ -338,7 +341,8 @@ public class UiVerticalList extends UiGroup {
 
 	@Override
 	protected void notifyHorizontalScroll(int offset, int limit, int count) {
-		//NOP
+		LOGGER.debug("HORZ %d %d %d", offset, limit, count);
+		super.notifyHorizontalScroll(offset, limit, count);
 	}
 
 	@Override
@@ -351,11 +355,6 @@ public class UiVerticalList extends UiGroup {
 		} else {
 			super.notifyVerticalScroll(0, pageHeight, pageHeight);
 		}
-	}
-
-	@Override
-	public int setHorizontalScroll(int offset) {
-		return EVENT_IGNORED;
 	}
 
 	@Override
@@ -391,10 +390,10 @@ public class UiVerticalList extends UiGroup {
 			maxRightPx = Math.max(maxRightPx, c.getLeftPx() + c.getWidthPx());
 			maxBottomPx = Math.max(maxBottomPx, c.getTopPx() + c.getHeightPx());
 		}
-		template.setBounds(
-				Length.ZERO, Length.ZERO,
-				null, null,
-				Length.Unit.PX.of(maxRightPx), Length.Unit.PX.of(maxBottomPx));
+		Length width = Length.Unit.PX.of(maxRightPx);
+		Length height = Length.Unit.PX.of(maxBottomPx);
+		template.setBounds(Length.ZERO, Length.ZERO, null, null, width, height);
+		setScrollWidth(width);
 	}
 
 	private void updateMetrics() {
@@ -483,10 +482,12 @@ public class UiVerticalList extends UiGroup {
 		case KeyCodes.UP:
 			next = app.getNearestNode(target, c -> getExceptRectUp(c, root, tIndex, tRect));
 			axis = AXIS_Y;
+			result |= EVENT_CONSUMED;
 			break;
 		case KeyCodes.DOWN:
 			next = app.getNearestNode(target, c -> getExceptRectDown(c, root, tIndex, tRect));
 			axis = AXIS_Y;
+			result |= EVENT_CONSUMED;
 			break;
 		case KeyCodes.TAB:
 			int dir = (mods & KeyCodes.MOD_SHIFT) != 0 ? -1 : +1;
