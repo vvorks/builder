@@ -243,7 +243,6 @@ public class ImePanel extends FocusPanel {
 
 	public void setAxis(int x, int y) {
 		if (ClientSettings.DEBUG) {
-			LOGGER.debug("axis %d, %d", x, y);
 			xAxis.getStyle().setLeft(x, Unit.PX);
 			yAxis.getStyle().setTop(y, Unit.PX);
 		}

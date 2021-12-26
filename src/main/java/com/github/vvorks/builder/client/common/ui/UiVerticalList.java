@@ -340,12 +340,6 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	@Override
-	protected void notifyHorizontalScroll(int offset, int limit, int count) {
-		LOGGER.debug("HORZ %d %d %d", offset, limit, count);
-		super.notifyHorizontalScroll(offset, limit, count);
-	}
-
-	@Override
 	protected void notifyVerticalScroll(int _offset, int _limit, int _count) {
 		if (size() >= linesPerView) {
 			UiLine first = (UiLine) getFirstChild();

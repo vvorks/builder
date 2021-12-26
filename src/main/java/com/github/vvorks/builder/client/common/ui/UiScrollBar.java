@@ -100,7 +100,6 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 			//通常のケース
 			double left  = 100.0 * offset / count;
 			double width = 100.0 * limit  / count;
-			LOGGER.debug("left %g width %g", left, width);
 			thumbMain.setBounds(
 					Unit.PCT.of(left),	Length.ZERO,
 					null,				Length.ZERO,

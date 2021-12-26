@@ -116,7 +116,6 @@ public class UiGroup extends UiNode {
 		} else {
 			dy = 0;
 		}
-		LOGGER.debug("%s: scroll %d, %d", getName(), dx, dy);
 		setScrollLeft(s.getLeft() + dx);
 		setScrollTop (s.getTop()  + dy);
 	}
