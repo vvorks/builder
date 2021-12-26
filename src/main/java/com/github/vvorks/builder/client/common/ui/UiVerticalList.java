@@ -12,6 +12,11 @@ public class UiVerticalList extends UiGroup {
 
 	private static final Logger LOGGER = Logger.createLogger(UiVerticalList.class);
 
+	/**
+	 * 行IDを示す特殊カラム名
+	 */
+	public static final String ROWID_COLUMN = "ROWID";
+
 	/** 疑似スクロール用のマージン行数 */
 	protected static final int VIEW_MARGIN	= 3;
 
@@ -144,6 +149,9 @@ public class UiVerticalList extends UiGroup {
 
 		@Override
 		public String getString(String column, String defaultValue) {
+			if (ROWID_COLUMN.equals(column)) {
+				return String.valueOf(getIndex());
+			}
 			Asserts.assume(exists());
 			return json.getString(column, defaultValue);
 		}

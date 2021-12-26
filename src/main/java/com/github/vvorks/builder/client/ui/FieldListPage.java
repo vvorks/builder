@@ -43,9 +43,13 @@ public class FieldListPage extends UiPage {
 			b.loop(false);
 			b.flushSoon(false);
 			//
+			b.enter(new UiDataField(UiVerticalList.ROWID_COLUMN));
+				b.style(BuilderUiApplication.BASIC);
+				b.locate( 0.0, 0.0, NA, NA,  5.0, 2.0);
+			b.leave();
 			b.enter(new UiDataField("fieldId"));
 				b.style(BuilderUiApplication.BASIC);
-				b.locate( 0.0, 0.0, NA, NA, 10.0, 2.0);
+				b.locate( 5.0, 0.0, NA, NA,  5.0, 2.0);
 			b.leave();
 			b.enter(new UiDataField("ownerClassId"));
 				b.style(BuilderUiApplication.BASIC);
