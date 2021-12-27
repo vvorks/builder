@@ -4,7 +4,6 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * 列挙値
@@ -19,7 +18,6 @@ public class EnumValueContent {
 	/**
 	 * 列挙名
 	 */
-	@NotNull
 	private String valueId;
 
 	/**
@@ -30,7 +28,6 @@ public class EnumValueContent {
 	/**
 	 * タイトル
 	 */
-	@NotNull
 	private String title;
 
 	/**
@@ -46,7 +43,6 @@ public class EnumValueContent {
 	/**
 	 * 最終更新時刻
 	 */
-	@NotNull
 	private java.util.Date _lastUpdatedAt;
 
 	/**

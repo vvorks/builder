@@ -4,7 +4,6 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * クエリーの見出し

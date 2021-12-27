@@ -132,11 +132,13 @@ public class ClassSummary<T> {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((ClassSummary) obj);
+			@SuppressWarnings("unchecked")
+			ClassSummary<T> other = (ClassSummary<T>) obj;
+			return equals(other);
 		}
 	}
 
-	private boolean equals(ClassSummary other) {
+	private boolean equals(ClassSummary<T> other) {
 		return
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&

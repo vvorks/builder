@@ -4,7 +4,6 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * プロジェクト
@@ -23,19 +22,16 @@ public class ProjectContent {
 	 *
 	 * ベースパッケージ名を兼ねる
 	 */
-	@NotNull
 	private String projectName;
 
 	/**
 	 * gradleサブプロジェクト名
 	 */
-	@NotNull
 	private String gradleName;
 
 	/**
 	 * タイトル
 	 */
-	@NotNull
 	private String title;
 
 	/**
@@ -56,7 +52,6 @@ public class ProjectContent {
 	/**
 	 * 最終更新時刻
 	 */
-	@NotNull
 	private java.util.Date _lastUpdatedAt;
 
 	/**

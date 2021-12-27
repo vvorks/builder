@@ -4,7 +4,6 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * クラス
@@ -26,7 +25,6 @@ public class ClassContent {
 	/**
 	 * クラス名
 	 */
-	@NotNull
 	private String className;
 
 	/**
@@ -34,7 +32,6 @@ public class ClassContent {
 	 *
 	 * デフォルトの表示順を表す式
 	 */
-	@NotNull
 	private String orderExpr;
 
 	/**
@@ -42,13 +39,11 @@ public class ClassContent {
 	 *
 	 * オブジェクトのタイトルを表現する式
 	 */
-	@NotNull
 	private String titleExpr;
 
 	/**
 	 * タイトル
 	 */
-	@NotNull
 	private String title;
 
 	/**
@@ -64,7 +59,6 @@ public class ClassContent {
 	/**
 	 * 最終更新時刻
 	 */
-	@NotNull
 	private java.util.Date _lastUpdatedAt;
 
 	/**

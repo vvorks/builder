@@ -13,7 +13,6 @@
 package {{global.project.projectName}}.server.domain;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * {{titleOrName}}
@@ -41,9 +40,6 @@ public class {{className}}Content {
 	 * {{note}}
 	{{/if}}
 	 */
-	{{#if notNullObject}}
-	@NotNull
-	{{/if}}
 	private {{javaType}} {{fieldName}};
 	{{/each}}
 
@@ -184,7 +180,6 @@ public class {{className}}Content {
 package {{global.project.projectName}}.server.domain;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * {{titleOrName}}の見出し
@@ -212,9 +207,6 @@ public class {{className}}Subject {
 	 * {{note}}
 	{{/if}}
 	 */
-	{{#if notNullObject}}
-	@NotNull
-	{{/if}}
 	private {{javaType}} {{fieldName}};
 	{{/each}}
 
@@ -560,11 +552,13 @@ public class {{className}}Summary<T> {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals(({{className}}Summary) obj);
+			@SuppressWarnings("unchecked")
+			{{className}}Summary<T> other = ({{className}}Summary<T>) obj;
+			return equals(other);
 		}
 	}
 
-	private boolean equals({{className}}Summary other) {
+	private boolean equals({{className}}Summary<T> other) {
 		return
 			{{#each properties}}
 			{{#if primitiveOrEnum}}

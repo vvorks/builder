@@ -132,11 +132,13 @@ public class QuerySummary<T> {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((QuerySummary) obj);
+			@SuppressWarnings("unchecked")
+			QuerySummary<T> other = (QuerySummary<T>) obj;
+			return equals(other);
 		}
 	}
 
-	private boolean equals(QuerySummary other) {
+	private boolean equals(QuerySummary<T> other) {
 		return
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&

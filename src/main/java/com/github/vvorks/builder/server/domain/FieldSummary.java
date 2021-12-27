@@ -132,11 +132,13 @@ public class FieldSummary<T> {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((FieldSummary) obj);
+			@SuppressWarnings("unchecked")
+			FieldSummary<T> other = (FieldSummary<T>) obj;
+			return equals(other);
 		}
 	}
 
-	private boolean equals(FieldSummary other) {
+	private boolean equals(FieldSummary<T> other) {
 		return
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&

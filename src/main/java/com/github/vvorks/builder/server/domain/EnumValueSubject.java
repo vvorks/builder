@@ -4,7 +4,6 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * 列挙値の見出し
@@ -19,7 +18,6 @@ public class EnumValueSubject {
 	/**
 	 * 列挙名
 	 */
-	@NotNull
 	private String valueId;
 
 	/**

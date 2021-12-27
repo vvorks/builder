@@ -132,11 +132,13 @@ public class EnumValueSummary<T> {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((EnumValueSummary) obj);
+			@SuppressWarnings("unchecked")
+			EnumValueSummary<T> other = (EnumValueSummary<T>) obj;
+			return equals(other);
 		}
 	}
 
-	private boolean equals(EnumValueSummary other) {
+	private boolean equals(EnumValueSummary<T> other) {
 		return
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&

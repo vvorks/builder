@@ -4,7 +4,6 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * クエリー
@@ -26,7 +25,6 @@ public class QueryContent {
 	/**
 	 * クエリー名
 	 */
-	@NotNull
 	private String queryName;
 
 	/**
@@ -34,7 +32,6 @@ public class QueryContent {
 	 *
 	 * 抽出条件を式形式で記載する
 	 */
-	@NotNull
 	private String filter;
 
 	/**
@@ -42,13 +39,11 @@ public class QueryContent {
 	 *
 	 * ソート条件を式形式で記載する
 	 */
-	@NotNull
 	private String order;
 
 	/**
 	 * タイトル
 	 */
-	@NotNull
 	private String title;
 
 	/**
@@ -64,7 +59,6 @@ public class QueryContent {
 	/**
 	 * 最終更新時刻
 	 */
-	@NotNull
 	private java.util.Date _lastUpdatedAt;
 
 	/**

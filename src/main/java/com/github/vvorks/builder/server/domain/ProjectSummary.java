@@ -132,11 +132,13 @@ public class ProjectSummary<T> {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((ProjectSummary) obj);
+			@SuppressWarnings("unchecked")
+			ProjectSummary<T> other = (ProjectSummary<T>) obj;
+			return equals(other);
 		}
 	}
 
-	private boolean equals(ProjectSummary other) {
+	private boolean equals(ProjectSummary<T> other) {
 		return
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&

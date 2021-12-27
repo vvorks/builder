@@ -4,7 +4,6 @@
 package com.github.vvorks.builder.server.domain;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * フィールド
@@ -26,13 +25,11 @@ public class FieldContent {
 	/**
 	 * フィールド名
 	 */
-	@NotNull
 	private String fieldName;
 
 	/**
 	 * フィールド型
 	 */
-	@NotNull
 	private DataType type;
 
 	/**
@@ -93,7 +90,6 @@ public class FieldContent {
 	/**
 	 * タイトル
 	 */
-	@NotNull
 	private String title;
 
 	/**
@@ -109,7 +105,6 @@ public class FieldContent {
 	/**
 	 * 最終更新時刻
 	 */
-	@NotNull
 	private java.util.Date _lastUpdatedAt;
 
 	/**
