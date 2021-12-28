@@ -291,6 +291,10 @@ public class ClassExtender {
 		return getFields(cls, fld -> fld.getType() == DataType.REF);
 	}
 
+	public List<FieldContent> getEnums(ClassContent cls) {
+		return getFields(cls, fld -> fld.getType() == DataType.ENUM);
+	}
+
 	public List<FieldContent> getSets(ClassContent cls) {
 		return getFields(cls, fld -> fld.getType() == DataType.SET);
 	}

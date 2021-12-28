@@ -666,7 +666,7 @@ public enum {{enumName}} implements Encodable<{{encodeType}}> {
 	 * {{note}}
 	{{/if}}
 	 */
-	{{valueId}}({{code}}){{#separator}},{{/separator}}
+	{{valueId}}({{code}}, "{{_title}}"){{#separator}},{{/separator}}
 	{{/each}}
 	;
 
@@ -676,12 +676,18 @@ public enum {{enumName}} implements Encodable<{{encodeType}}> {
 	private final int code;
 
 	/**
+	 * タイトル
+	 */
+	private final String _title;
+
+	/**
 	 * {{enumName}}を作成する
 	 *
 	 * @param code 列挙コード
 	 */
-	private {{enumName}}(int code) {
+	private {{enumName}}(int code, String _title) {
 		this.code = code;
+		this._title = _title;
 	}
 
 	/**
@@ -700,6 +706,10 @@ public enum {{enumName}} implements Encodable<{{encodeType}}> {
 		{{/if}}
 	}
 
+	public String get_title() {
+		return _title;
+	}
+
 	/**
 	 * 列挙コードから列挙オブジェクトを取得する
 	 */
@@ -710,6 +720,239 @@ public enum {{enumName}} implements Encodable<{{encodeType}}> {
 			}
 		}
 		return null;
+	}
+
+}
+{{/java}}
+{{/each}}
+
+//
+// EnumのSubjectテンプレート
+//
+{{#each this.enums}}
+{{#java this "server/domain/" enumName "Subject" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+import java.util.Objects;
+
+/**
+ * {{titleOrName}}の見出し
+{{#if description}}
+ *
+ * {{description}}
+{{/if}}
+{{#if note}}
+ *
+ * {{note}}
+{{/if}}
+ */
+public class {{enumName}}Subject {
+
+	private final {{enumName}} value;
+
+	/**
+	 * 指定の列挙値と見出しを持つ{{titleOrName}}の見出しを作成する
+	 *
+	 * @param value 列挙値
+	 */
+	public {{enumName}}Subject({{enumName}} value) {
+		this.value = value;
+	}
+
+	public {{enumName}} getValue() {
+		return value;
+	}
+
+	public String get_title() {
+		return value.get_title();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(value);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			return equals(({{enumName}}Subject) obj);
+		}
+	}
+
+	private boolean equals({{enumName}}Subject other) {
+		return this.value == other.value;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{enumName}}Subject [");
+		sb.append("value=").append(value);
+		sb.append("]");
+		return sb.toString();
+	}
+
+}
+{{/java}}
+{{/each}}
+
+//
+// 列挙のSummaryクラステンプレート
+//
+{{#each this.enums}}
+{{#java this "server/domain/" enumName "Summary" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * {{titleOrName}}のサマリー情報
+ */
+public class {{enumName}}Summary<T> {
+
+	/** 件数 */
+	private int count;
+
+	/** （初期）フォーカス位置 */
+	private int focus;
+
+	/** オフセット */
+	private int offset;
+
+	/** Contentリスト情報 */
+	private List<T> contents;
+
+	/**
+	 * 件数を取得する
+	 *
+	 * @return 件数
+	 */
+	public int getCount() {
+		return count;
+	}
+
+	/**
+	 * 件数を設定する
+	 *
+	 * @param count 件数
+	 */
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	/**
+	 * （初期）フォーカス位置を取得する
+	 *
+	 * @return 件数
+	 */
+	public int getFocus() {
+		return focus;
+	}
+
+	/**
+	 * （初期）フォーカス位置を設定する
+	 *
+	 * @param focus （初期）フォーカス位置
+	 */
+	public void setFocus(int focus) {
+		this.focus = focus;
+	}
+
+	/**
+	 * オフセットを取得する
+	 *
+	 * @return オフセット
+	 */
+	public int getOffset() {
+		return offset;
+	}
+
+	/**
+	 * オフセットを設定する
+	 *
+	 * @param offset オフセット
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	/**
+	 * Contentリスト情報を取得する
+	 *
+	 * @return Contentリスト情報
+	 */
+	public List<T> getContents() {
+		return contents;
+	}
+
+	/**
+	 * Contentリスト情報を設定する
+	 *
+	 * @param contents Contentリスト情報
+	 */
+	public void setContents(List<T> contents) {
+		this.contents = contents;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(count, focus, offset, contents);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			@SuppressWarnings("unchecked")
+			{{enumName}}Summary<T> other = ({{enumName}}Summary<T>) obj;
+			return equals(other);
+		}
+	}
+
+	private boolean equals({{enumName}}Summary<T> other) {
+		return
+			this.count == other.count &&
+			this.focus == other.focus &&
+			this.offset == other.offset &&
+			Objects.equals(this.contents, other.contents);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{enumName}}Content [");
+		sb.append("count=").append(count).append(", ");
+		sb.append("focus=").append(focus).append(", ");
+		sb.append("offset=").append(offset).append(", ");
+		sb.append("contents=").append(contents);
+		sb.append("]");
+		return sb.toString();
 	}
 
 }

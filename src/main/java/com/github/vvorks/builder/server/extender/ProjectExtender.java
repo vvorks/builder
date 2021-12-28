@@ -62,6 +62,12 @@ public class ProjectExtender {
 		return projectMapper.listEnumsContent(prj, 0, 0);
 	}
 
+	public List<EnumContent> getEnumsByName(ProjectContent prj) {
+		List<EnumContent> list = projectMapper.listEnumsContent(prj, 0, 0);
+		Collections.sort(list, (a, b) -> a.getEnumName().compareTo(b.getEnumName()));
+		return list;
+	}
+
 	public boolean isBuilderProject(ProjectContent prj) {
 		return prj.getProjectName().equals(ServerSettings.MODULE_NAME);
 	}

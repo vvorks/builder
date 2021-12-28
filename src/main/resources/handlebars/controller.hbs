@@ -11,8 +11,11 @@
 {{/if}}
 package {{global.project.projectName}}.server.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import {{global.project.projectName}}.common.lang.Strings;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcController;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcMethod;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcParam;
@@ -20,6 +23,11 @@ import {{global.project.projectName}}.server.common.net.annotation.JsonRpcParam;
 import {{global.project.projectName}}.server.domain.{{className}}Content;
 import {{global.project.projectName}}.server.domain.{{className}}Subject;
 import {{global.project.projectName}}.server.domain.{{className}}Summary;
+{{/each}}
+{{#each enumsByName}}
+import {{global.project.projectName}}.server.domain.{{enumName}};
+import {{global.project.projectName}}.server.domain.{{enumName}}Subject;
+import {{global.project.projectName}}.server.domain.{{enumName}}Summary;
 {{/each}}
 {{#each classesByName}}
 import {{global.project.projectName}}.server.mapper.{{className}}Mapper;
@@ -193,6 +201,60 @@ public class {{upperLastName}}RpcController {
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
+		return summary;
+	}
+	{{/each}}
+
+	{{#each enums}}
+
+	/**
+	 * {{titleOrName}}の候補一覧を取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @return {{titleOrName}}の候補一覧
+	 */
+	@JsonRpcMethod
+	public {{eref.enumName}}Summary<{{eref.enumName}}Subject> list{{../className}}{{upperName}}Candidate(
+		@JsonRpcParam("content") {{../className}}Content content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		int count;
+		if (Strings.isEmpty(hint)) {
+			count = {{eref.enumName}}.values().length;
+		} else {
+			count = 0;
+			for ({{eref.enumName}} e : {{eref.enumName}}.values()) {
+				if (e.get_title().indexOf(hint) >= 0) {
+					count++;
+				}
+			}
+		}
+		offset = Math.min(Math.max(0, offset), count);
+		{{eref.enumName}}Summary<{{eref.enumName}}Subject> summary = new {{eref.enumName}}Summary<>();
+		summary.setCount(count);
+		summary.setFocus(0);
+		summary.setOffset(offset);
+		if (count == 0) {
+			summary.setContents(Collections.emptyList());
+		} else {
+			List<{{eref.enumName}}Subject> contents = new ArrayList<>();
+			for ({{eref.enumName}} e : {{eref.enumName}}.values()) {
+				if (Strings.isEmpty(hint) || e.get_title().indexOf(hint) >= 0) {
+					if (offset > 0) {
+						offset--;
+					} else if (limit > 0) {
+						contents.add(new {{eref.enumName}}Subject(e));
+						limit--;
+						if (limit == 0) {
+							break;
+						}
+					}
+				}
+			}
+			summary.setContents(contents);
+		}
 		return summary;
 	}
 	{{/each}}

@@ -3,8 +3,11 @@
  */
 package com.github.vvorks.builder.server.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
@@ -26,6 +29,9 @@ import com.github.vvorks.builder.server.domain.ProjectSummary;
 import com.github.vvorks.builder.server.domain.QueryContent;
 import com.github.vvorks.builder.server.domain.QuerySubject;
 import com.github.vvorks.builder.server.domain.QuerySummary;
+import com.github.vvorks.builder.server.domain.DataType;
+import com.github.vvorks.builder.server.domain.DataTypeSubject;
+import com.github.vvorks.builder.server.domain.DataTypeSummary;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
@@ -742,6 +748,57 @@ public class BuilderRpcController {
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * フィールド型の候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return フィールド型の候補一覧
+	 */
+	@JsonRpcMethod
+	public DataTypeSummary<DataTypeSubject> listFieldTypeCandidate(
+		@JsonRpcParam("content") FieldContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		int count;
+		if (Strings.isEmpty(hint)) {
+			count = DataType.values().length;
+		} else {
+			count = 0;
+			for (DataType e : DataType.values()) {
+				if (e.get_title().indexOf(hint) >= 0) {
+					count++;
+				}
+			}
+		}
+		offset = Math.min(Math.max(0, offset), count);
+		DataTypeSummary<DataTypeSubject> summary = new DataTypeSummary<>();
+		summary.setCount(count);
+		summary.setFocus(0);
+		summary.setOffset(offset);
+		if (count == 0) {
+			summary.setContents(Collections.emptyList());
+		} else {
+			List<DataTypeSubject> contents = new ArrayList<>();
+			for (DataType e : DataType.values()) {
+				if (Strings.isEmpty(hint) || e.get_title().indexOf(hint) >= 0) {
+					if (offset > 0) {
+						offset--;
+					} else if (limit > 0) {
+						contents.add(new DataTypeSubject(e));
+						limit--;
+						if (limit == 0) {
+							break;
+						}
+					}
+				}
+			}
+			summary.setContents(contents);
+		}
 		return summary;
 	}
 

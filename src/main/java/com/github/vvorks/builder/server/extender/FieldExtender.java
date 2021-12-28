@@ -211,6 +211,10 @@ public class FieldExtender {
 		return fieldMapper.getCref(fld);
 	}
 
+	public EnumContent getEref(FieldContent fld) {
+		return fieldMapper.getEref(fld);
+	}
+
 	public FieldContent getFref(FieldContent fld) {
 		return fieldMapper.getFref(fld);
 	}
