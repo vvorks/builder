@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.util.DelayedExecuter;
 
 public abstract class DataSource {
 
@@ -71,23 +69,12 @@ public abstract class DataSource {
 	 * @param app アプリケーション
 	 */
 	public void attach(UiApplication app) {
+		boolean beforeEmpty = apps.isEmpty();
 		apps.add(app);
-		DelayedExecuter executer = Factory.getInstance(DelayedExecuter.class);
-		executer.runAfter(100, () -> {
-			app.processDataSourceUpdated(this, 0);
-		});
+		if (beforeEmpty) {
+			onAttached();
+		}
 	}
-
-	protected void notifyToApps() {
-		DelayedExecuter executer = Factory.getInstance(DelayedExecuter.class);
-		executer.runAfter(100, () -> {
-			for (UiApplication app : apps) {
-				app.processDataSourceUpdated(this, 0);
-			}
-		});
-	}
-
-
 
 	/**
 	 * 関連するアプリケーションを削除
@@ -96,6 +83,29 @@ public abstract class DataSource {
 	 */
 	public void detach(UiApplication app) {
 		apps.remove(app);
+		boolean afterEmpty = apps.isEmpty();
+		if (afterEmpty) {
+			onDetached();
+		}
+	}
+
+	protected void onAttached() {
+	}
+
+	protected void onDetached() {
+	}
+
+	protected boolean isAttached() {
+		return !apps.isEmpty();
+	}
+
+	/**
+	 * データ更新をアプリケーションに通知する
+	 */
+	protected void notifyToApps() {
+		for (UiApplication app : apps) {
+			app.processDataSourceUpdated(this, 0);
+		}
 	}
 
 }

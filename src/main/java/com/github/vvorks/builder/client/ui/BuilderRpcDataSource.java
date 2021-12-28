@@ -52,6 +52,10 @@ public class BuilderRpcDataSource extends DataSource {
 		cache = new CacheMap<>(Math.max(cacheSize, pageSize * 4), true);
 		criteria = null;
 		requests = new HashSet<>();
+	}
+
+	@Override
+	public void onAttached() {
 		reload();
 	}
 
@@ -123,7 +127,9 @@ public class BuilderRpcDataSource extends DataSource {
 	@Override
 	public void setCriteria(Json criteria) {
 		this.criteria = criteria;
-		reload();
+		if (isAttached()) {
+			reload();
+		}
 	}
 
 	@Override
