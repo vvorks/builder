@@ -22,7 +22,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrollable {
 
-	private static final Logger LOGGER = Logger.createLogger(UiNode.class);
+	protected static final Logger LOGGER = Logger.createLogger(UiNode.class);
 
 	public static final String NS_HTML = "http://www.w3.org/1999/xhtml";
 
@@ -212,6 +212,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	/** スタイル管理マップ */
 	private Map<String, UiStyle> registerdStyles;
 
+	/** データソース */
+	private DataSource dataSource;
+
 	/** スクロールリスナーのリスト */
 	private transient List<ScrollListener> scrollListeners;
 
@@ -272,6 +275,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 		this.flags = src.flags;
 		this.changed = src.changed;
 		this.registerdStyles = new LinkedHashMap<>(src.registerdStyles);
+		this.dataSource = src.dataSource;
 		this.left = src.left;
 		this.top = src.top;
 		this.right = src.right;
@@ -931,6 +935,31 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 
 	public UiNode getNextSibling() {
 		return nextSibling;
+	}
+
+	/**
+	 * データソースを取得する
+	 *
+	 * @return データソース
+	 */
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	/**
+	 * データソースを設定する
+	 *
+	 * @param ds データソース
+	 */
+	public void setDataSource(DataSource ds) {
+		UiApplication app = getApplication();
+		if (this.dataSource != null) {
+			app.detachDataSource(this, this.dataSource);
+		}
+		this.dataSource = ds;
+		if (this.dataSource != null) {
+			app.attachDataSource(this, this.dataSource);
+		}
 	}
 
 	public int setHorizontalScroll(int offset) {

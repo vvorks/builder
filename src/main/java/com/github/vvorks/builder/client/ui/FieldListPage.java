@@ -9,8 +9,10 @@ import com.github.vvorks.builder.client.common.ui.UiDataField;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalScrollBar;
 import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
+import com.github.vvorks.builder.client.common.ui.UiSelectField;
 import com.github.vvorks.builder.client.common.ui.UiVerticalList;
 import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
+import com.github.vvorks.builder.client.domain.DataTypeAgent;
 
 public class FieldListPage extends UiPage {
 
@@ -32,6 +34,7 @@ public class FieldListPage extends UiPage {
 		UiApplication app = getApplication();
 		JsonRpcClient rpc = app.getRpcClient();
 		DataSource ds = new BuilderRpcDataSource(rpc, "listField", 20, 40);
+		DataSource ds2 = new BuilderRpcDataSource(rpc, "listFieldTypeCandidate", 20, 40);
 		final double NA = UiNodeBuilder.NA;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		UiVerticalList list;
@@ -59,8 +62,9 @@ public class FieldListPage extends UiPage {
 				b.style(BuilderUiApplication.BASIC);
 				b.locate( 20.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
-			b.enter(new UiDataField("type"));
+			b.enter(new UiSelectField("type", DataTypeAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
+				b.source(ds2);
 				b.locate( 30.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiDataField("width"));

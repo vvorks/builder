@@ -6,11 +6,8 @@ import java.util.Date;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiVerticalList extends UiGroup {
-
-	private static final Logger LOGGER = Logger.createLogger(UiVerticalList.class);
 
 	/**
 	 * 行IDを示す特殊カラム名
@@ -238,10 +235,11 @@ public class UiVerticalList extends UiGroup {
 			}
 		}
 
-	}
+		public String toString() {
+			return json.toJsonString();
+		}
 
-	/** データソース */
-	private DataSource dataSource;
+	}
 
 	/** 注目位置 */
 	private int attentionIndex;
@@ -286,44 +284,18 @@ public class UiVerticalList extends UiGroup {
 	 */
 	public UiVerticalList(UiVerticalList src) {
 		super(src);
-		dataSource = src.dataSource;
-		attentionIndex = src.attentionIndex;
-		template = src.template;
-		pageHeight = src.pageHeight;
-		lineHeight = src.lineHeight;
-		linesPerView = src.linesPerView;
-		hiddenIndex = src.hiddenIndex;
-		hiddenColumn = src.hiddenColumn;
+		this.attentionIndex = src.attentionIndex;
+		this.template = src.template;
+		this.pageHeight = src.pageHeight;
+		this.lineHeight = src.lineHeight;
+		this.linesPerView = src.linesPerView;
+		this.hiddenIndex = src.hiddenIndex;
+		this.hiddenColumn = src.hiddenColumn;
 	}
 
 	@Override
 	public UiVerticalList copy() {
 		return new UiVerticalList(this);
-	}
-
-	/**
-	 * データソースを取得する
-	 *
-	 * @return データソース
-	 */
-	public DataSource getDataSource() {
-		return dataSource;
-	}
-
-	/**
-	 * データソースを設定する
-	 *
-	 * @param ds データソース
-	 */
-	public void setDataSource(DataSource ds) {
-		UiApplication app = getApplication();
-		if (this.dataSource != null) {
-			app.detachDataSource(this, this.dataSource);
-		}
-		this.dataSource = ds;
-		if (this.dataSource != null) {
-			app.attachDataSource(this, this.dataSource);
-		}
 	}
 
 	public boolean isLoopMode() {
@@ -355,7 +327,7 @@ public class UiVerticalList extends UiGroup {
 	protected void notifyVerticalScroll(int _offset, int _limit, int _count) {
 		if (size() >= linesPerView) {
 			UiLine first = (UiLine) getFirstChild();
-			int count = dataSource.getCount() * lineHeight;
+			int count = getDataSource().getCount() * lineHeight;
 			int offset = (first.getIndex() * lineHeight + getScrollTopPx()) % count;
 			super.notifyVerticalScroll(offset, pageHeight, count);
 		} else {
@@ -365,7 +337,7 @@ public class UiVerticalList extends UiGroup {
 
 	@Override
 	public int setVerticalScroll(int offset) {
-		int count = dataSource.getCount() * lineHeight;
+		int count = getDataSource().getCount() * lineHeight;
 		int len = count - pageHeight;
 		int index = ((UiLine) getFirstChild()).getIndex();
 		int oldOffset = (index * lineHeight + getScrollTopPx()) % count;
@@ -417,7 +389,7 @@ public class UiVerticalList extends UiGroup {
 	@Override
 	public void onResize(int screenWidth, int screenHeight) {
 		updateMetrics();
-		DataSource ds = dataSource;
+		DataSource ds = getDataSource();
 		if (ds.isLoaded()) {
 			int count = ds.getCount();
 			if (attentionIndex >= count) {
@@ -776,7 +748,7 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	private void rollUp() {
-		int count = dataSource.getCount();
+		int count = getDataSource().getCount();
 		UiLine edgeLine = (UiLine) getFirstChild();
 		int index = lap(edgeLine.getIndex() - 1, count);
 		UiLine rollLine = (UiLine) removeLastChild();
@@ -793,7 +765,7 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	private void rollDown() {
-		int count = dataSource.getCount();
+		int count = getDataSource().getCount();
 		UiLine edgeLine = (UiLine) getLastChild();
 		int index = lap(edgeLine.getIndex() + 1, count);
 		UiLine rollLine = (UiLine) removeFirstChild();

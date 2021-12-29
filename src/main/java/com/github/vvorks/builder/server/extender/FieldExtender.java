@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
@@ -25,6 +26,8 @@ import com.github.vvorks.builder.server.mapper.FieldMapper;
 
 @Component
 public class FieldExtender {
+
+	private static final Logger LOGGER = Logger.createLogger(FieldExtender.class);
 
 	private static final EnumMap<DataType, Class<?>> TYPE_MAP = new EnumMap<>(DataType.class);
 	static {
@@ -65,6 +68,9 @@ public class FieldExtender {
 
 	@Autowired
 	private EnumMapper enumMapper;
+
+	@Autowired
+	private EnumValueExtender enumValueExtender;
 
 	private SqlHelper sqlHelper = SqlHelper.getHelper();
 
@@ -220,11 +226,29 @@ public class FieldExtender {
 	}
 
 	public List<FieldContent> getRefKeyFields(FieldContent fld) {
-		Asserts.require(fld.getType() == DataType.REF);
 		List<FieldContent> props = new ArrayList<>();
-		Deque<FieldContent> stack = new ArrayDeque<>();
-		extractKey(fld, stack, props);
+		if (fld.getType() == DataType.REF) {
+			extractKey(fld, new ArrayDeque<>(), props);
+		} else if (fld.getType() == DataType.ENUM) {
+			props.add(fld);
+		} else {
+			throw new IllegalArgumentException();
+		}
 		return props;
+	}
+
+	public String getOptionKey(FieldContent fld) {
+		if (fld.getType() != DataType.ENUM) {
+			return null;
+		}
+		return getColumnName(enumValueExtender.getOwnerKeyField());
+	}
+
+	public String getOptionValue(FieldContent fld) {
+		if (fld.getType() != DataType.ENUM) {
+			return null;
+		}
+		return "" + fld.getErefEnumId();
 	}
 
 	public String getRefKeyFieldName(FieldContent fld) {
@@ -232,7 +256,11 @@ public class FieldExtender {
 	}
 
 	public String getRefKeyColumnName(FieldContent fld) {
-		return SqlWriter.COLUMN_PREFIX + Strings.toUpperSnake((trimLeading(fld)));
+		if (fld.getType() == DataType.ENUM) {
+			return getColumnName(enumValueExtender.getThisKeyField());
+		} else {
+			return SqlWriter.COLUMN_PREFIX + Strings.toUpperSnake((trimLeading(fld)));
+		}
 	}
 
 	private String trimLeading(FieldContent fld) {

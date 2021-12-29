@@ -1,7 +1,5 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.client.ui.BuilderUiApplication;
-
 public class UiDataField extends UiNode implements DataField {
 
 	/** 編集状態 */
@@ -38,11 +36,8 @@ public class UiDataField extends UiNode implements DataField {
 	@Override
 	public void setRecord(DataRecord rec) {
 		this.rec = rec;
-		setText(rec.getString(getName()));
-	}
-
-	private String getText() {
-		return text;
+		this.text = rec.getString(getName());
+		setChanged(CHANGED_CONTENT);
 	}
 
 	private void setText(String text) {
@@ -84,17 +79,13 @@ public class UiDataField extends UiNode implements DataField {
 		int result;
 		if (isCharKey(keyCode, mods) || isImeKey(keyCode, mods)) {
 			editState = EditState.HALF;
-			saveText = getText();
+			saveText = text;
 			setText("");
 			doc.startEditing(this, "");
 			result = EVENT_AFFECTED;
-		} else if (isPopupKey(keyCode, mods)) {
-			showPopup();
-			result = EVENT_EATEN;
-
 		} else if (isEditKey(keyCode, mods)) {
 			editState = EditState.FULL;
-			saveText = getText();
+			saveText = text;
 			setText("");
 			doc.startEditing(this, saveText);
 			result = EVENT_EATEN;
@@ -130,149 +121,6 @@ public class UiDataField extends UiNode implements DataField {
 			result = EVENT_IGNORED;
 		}
 		return result;
-	}
-
-	/**
-	 * 文字入力キーか否かを判定する
-	 *
-	 * @param keyCode
-	 * 		キーコード
-	 * @param mods
-	 * 		キー修飾子
-	 * @return
-	 * 		文字入力を行うキーの場合、真
-	 */
-	private boolean isCharKey(int keyCode, int mods) {
-		if ((mods & KeyCodes.MOD_AC) != 0) {
-			return false;
-		}
-		return	(KeyCodes.KEY_A <= keyCode && keyCode <= KeyCodes.KEY_Z) ||
-				(KeyCodes.KEY_0 <= keyCode && keyCode <= KeyCodes.KEY_9) ||
-				(KeyCodes.NUM_0 <= keyCode && keyCode <= KeyCodes.NUM_9) ||
-				(keyCode == KeyCodes.MINUS                             ) ||
-				(keyCode == KeyCodes.CARET                             ) ||
-				(keyCode == KeyCodes.YEN                               ) ||
-				(keyCode == KeyCodes.AT                                ) ||
-				(keyCode == KeyCodes.LBRACKET                          ) ||
-				(keyCode == KeyCodes.SEMICOLON                         ) ||
-				(keyCode == KeyCodes.COLON                             ) ||
-				(keyCode == KeyCodes.RBRACKET                          ) ||
-				(keyCode == KeyCodes.COMMA                             ) ||
-				(keyCode == KeyCodes.PERIOD                            ) ||
-				(keyCode == KeyCodes.DIVISION                          ) ||
-				(keyCode == KeyCodes.BACKSLASH                         ) ||
-				(keyCode == KeyCodes.NUM_MULTIPLY                      ) ||
-				(keyCode == KeyCodes.NUM_PLUS                          ) ||
-				(keyCode == KeyCodes.NUM_MINUS                         ) ||
-				(keyCode == KeyCodes.NUM_PERIOD                        ) ||
-				(keyCode == KeyCodes.NUM_DIVISION                      )  ;
-	}
-
-	/**
-	 * IME入力キーか否かを判定する
-	 *
-	 * @param keyCode
-	 * 		キーコード
-	 * @param mods
-	 * 		キー修飾子
-	 * @return
-	 * 		IME入力キーの場合、真
-	 */
-	private boolean isImeKey(int keyCode, int mods) {
-		return keyCode == KeyCodes.WIN_IME;
-	}
-
-	/**
-	 * 編集開始キーか否かを判定する
-	 *
-	 * @param keyCode
-	 * 		キーコード
-	 * @param mods
-	 * 		キー修飾子
-	 * @return
-	 * 		全編集開始キーの場合、真
-	 */
-	protected boolean isEditKey(int keyCode, int mods) {
-		if ((mods & KeyCodes.MOD_ACS) != 0) {
-			return false;
-		}
-		return keyCode == KeyCodes.F2 || keyCode == KeyCodes.ENTER;
-	}
-	/**
-	 * カーソル移動キーか否かを判定する
-	 *
-	 * @param keyCode
-	 * 		キーコード
-	 * @param mods
-	 * 		キー修飾子
-	 * @return
-	 * 		カーソル移動キーの場合、真
-	 */
-	protected boolean isArrowKey(int keyCode, int mods) {
-		return	(keyCode == KeyCodes.UP    ) || (keyCode == KeyCodes.DOWN    ) ||
-				(keyCode == KeyCodes.LEFT  ) || (keyCode == KeyCodes.RIGHT   ) ||
-				(keyCode == KeyCodes.PAGEUP) || (keyCode == KeyCodes.PAGEDOWN) ||
-				(keyCode == KeyCodes.HOME  ) || (keyCode == KeyCodes.END     ) ||
-				(keyCode == KeyCodes.TAB   )  ;
-	}
-
-	protected boolean isPopupKey(int keyCode, int mods) {
-		return keyCode == KeyCodes.DOWN && (mods & KeyCodes.MOD_ALT) != 0;
-	}
-
-	/**
-	 * 決定キーか否かを判定する
-	 *
-	 * @param keyCode
-	 * 		キーコード
-	 * @param mods
-	 * 		キー修飾子
-	 * @return
-	 * 		決定キーの場合、真
-	 */
-	protected boolean isEnterKey(int keyCode, int mods) {
-		if ((mods & KeyCodes.MOD_ACS) != 0) {
-			return false;
-		}
-		return keyCode == KeyCodes.ENTER;
-	}
-
-	/**
-	 * 戻るキーか否かを判定する
-	 *
-	 * @param keyCode
-	 * 		キーコード
-	 * @param mods
-	 * 		キー修飾子
-	 * @return
-	 * 		戻るキーの場合、真
-	 */
-	protected boolean isEscKey(int keyCode, int mods) {
-		if ((mods & KeyCodes.MOD_ACS) != 0) {
-			return false;
-		}
-		return keyCode == KeyCodes.ESCAPE;
-	}
-
-	private static class Test extends UiPage {
-		public Test(UiApplication app) {
-			super("test", app);
-		}
-		@Override
-		protected void initialize() {
-			final double NA = UiNodeBuilder.NA;
-			UiNodeBuilder b = new UiNodeBuilder(this, "px");
-			b.enter(new UiButton("group"));
-				b.style(BuilderUiApplication.BASIC);
-				b.locate(NA, NA, NA, NA, 200, 40);
-				b.action(node -> {node.getApplication().back();return EVENT_EATEN;});
-			b.leave();
-		}
-	}
-
-	protected void showPopup() {
-		UiApplication app = getApplication();
-		app.call(new Test(app));
 	}
 
 }

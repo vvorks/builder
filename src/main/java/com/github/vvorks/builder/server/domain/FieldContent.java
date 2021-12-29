@@ -133,6 +133,11 @@ public class FieldContent {
 	private String fref_title;
 
 	/**
+	 * フィールド型のタイトル
+	 */
+	private String type_title;
+
+	/**
 	 * 空のフィールドを作成する
 	 */
 	public FieldContent() {
@@ -579,6 +584,24 @@ public class FieldContent {
 	 */
 	public void setFref_title(String fref_title) {
 		this.fref_title = fref_title;
+	}
+
+	/**
+	 * フィールド型のタイトルを取得する
+	 *
+	 * @return フィールド型のタイトル
+	 */
+	public String getType_title() {
+		return this.type_title;
+	}
+
+	/**
+	 * フィールド型のタイトルを設定する
+	 *
+	 * @param type_title 設定するフィールド型のタイトル
+	 */
+	public void setType_title(String type_title) {
+		this.type_title = type_title;
 	}
 
 	@Override

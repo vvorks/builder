@@ -295,6 +295,9 @@ public interface {{className}}Mapper {
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
@@ -344,6 +347,9 @@ public interface {{className}}Mapper {
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
@@ -387,6 +393,9 @@ public interface {{className}}Mapper {
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
@@ -413,6 +422,9 @@ public interface {{className}}Mapper {
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
@@ -451,12 +463,18 @@ public interface {{className}}Mapper {
 		{{#each cref.joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
 		{{^}}
 		WHERE
 			{{#each refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T1.{{refKeyColumnName}} = #{ {{refKeyFieldName}} }{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/reverse}}
@@ -487,6 +505,9 @@ public interface {{className}}Mapper {
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
@@ -516,6 +537,9 @@ public interface {{className}}Mapper {
 		{{#each cref.joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
@@ -580,6 +604,9 @@ public interface {{className}}Mapper {
 		{{#each fref.owner.joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
@@ -627,6 +654,9 @@ public interface {{className}}Mapper {
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}
@@ -656,6 +686,9 @@ public interface {{className}}Mapper {
 		{{#each joins}}
 		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
 			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
 			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
 			{{/each}}
 		{{/each}}

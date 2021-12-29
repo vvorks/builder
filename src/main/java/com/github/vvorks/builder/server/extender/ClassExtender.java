@@ -166,6 +166,9 @@ public class ClassExtender {
 	private FieldExtender fieldExtender;
 
 	@Autowired
+	private EnumValueExtender enumValueExtender;
+
+	@Autowired
 	private ExprParser parser;
 
 	@Autowired
@@ -217,7 +220,12 @@ public class ClassExtender {
 	public List<TitleInfo> get_titleFields(ClassContent cls) {
 		List<TitleInfo> result = new ArrayList<>();
 		result.add(get_titleField(cls));
-		result.addAll(get_refTitleFields(cls));
+		for (FieldContent fld : getRefs(cls)) {
+			result.add(get_refTitleField(cls, fld));
+		}
+		for (FieldContent fld : getEnums(cls)) {
+			result.add(get_refTitleField(cls, fld));
+		}
 		return result;
 	}
 
@@ -241,27 +249,32 @@ public class ClassExtender {
 	}
 
 	/**
-	 * 指定クラスの参照フィールドのタイトルフィールド一覧を取得する
-	 *
-	 * @param cls
-	 * @return 参照フィールドのタイトルフィールド一覧
+	 * 指定クラスの参照フィールドのタイトルフィールドを取得する
 	 */
-	public List<TitleInfo> get_refTitleFields(ClassContent cls) {
-		List<TitleInfo> result = new ArrayList<>();
-		for (FieldContent fld : getRefs(cls)) {
-			String name = fld.getFieldName() + "_title";
-			String title = fieldExtender.getTitleOrName(fld) + "のタイトル";
-			ClassContent ref = fieldExtender.getCref(fld);
-			String refExpr = ref.getTitleExpr();
-			ExprInfo info;
-			if (!Strings.isEmpty(refExpr)) {
-				info = referExpr(cls, fld, refExpr, ExprParser.CODE_TYPE_SELECT);
-			} else {
-				info = null;
-			}
-			result.add(new TitleInfo(name, title, info));
+	public TitleInfo get_refTitleField(ClassContent cls, FieldContent fld) {
+		String name = fld.getFieldName() + "_title";
+		String title = fieldExtender.getTitleOrName(fld) + "のタイトル";
+		ClassContent ref = getReferClass(fld);
+		String refExpr = ref.getTitleExpr();
+		ExprInfo info;
+		if (!Strings.isEmpty(refExpr)) {
+			info = referExpr(cls, fld, refExpr, ExprParser.CODE_TYPE_SELECT);
+		} else {
+			info = null;
 		}
-		return result;
+		return new TitleInfo(name, title, info);
+	}
+
+	private ClassContent getReferClass(FieldContent fld) {
+		ClassContent ref;
+		if (fld.getType() == DataType.REF) {
+			ref = fieldExtender.getCref(fld);
+		} else if (fld.getType() == DataType.ENUM) {
+			ref = enumValueExtender.getThisContent();
+		} else {
+			throw new IllegalArgumentException();
+		}
+		return ref;
 	}
 
 	public List<FieldContent> getProperties(ClassContent cls) {
@@ -344,12 +357,18 @@ public class ClassExtender {
 
 	private static final Map<String, Joint> JOINT_MAP = new HashMap<>();
 	static {
-		JOINT_MAP.put("Project", new Joint(ProjectContent.class, me -> me.projectMapper.listContent(0, 0)));
-		JOINT_MAP.put("Class", new Joint(ClassContent.class, me -> me.classMapper.listContent(0, 0)));
-		JOINT_MAP.put("Field", new Joint(FieldContent.class, me -> me.fieldMapper.listContent(0, 0)));
-		JOINT_MAP.put("Query", new Joint(QueryContent.class, me -> me.queryMapper.listContent(0, 0)));
-		JOINT_MAP.put("Enum", new Joint(EnumContent.class, me -> me.enumMapper.listContent(0, 0)));
-		JOINT_MAP.put("EnumValue", new Joint(EnumValueContent.class, me -> me.enumValueMapper.listContent(0, 0)));
+		add(new Joint(ProjectContent.class, me -> me.projectMapper.listContent(0, 0)));
+		add(new Joint(ClassContent.class, me -> me.classMapper.listContent(0, 0)));
+		add(new Joint(FieldContent.class, me -> me.fieldMapper.listContent(0, 0)));
+		add(new Joint(QueryContent.class, me -> me.queryMapper.listContent(0, 0)));
+		add(new Joint(EnumContent.class, me -> me.enumMapper.listContent(0, 0)));
+		add(new Joint(EnumValueContent.class, me -> me.enumValueMapper.listContent(0, 0)));
+	}
+
+	private static void add(Joint joint) {
+		String name = joint.type.getSimpleName();
+		String baseName = name.substring(0, name.length() - "Content".length());
+		JOINT_MAP.put(baseName, joint);
 	}
 
 	public List<String[]> getValues(ClassContent cls) {
@@ -494,12 +513,14 @@ public class ClassExtender {
 				cls.getClassId(), id -> new ExprEntry());
 		String key;
 		ClassContent ctx;
-		if (ctxRef != null) {
-			key = ctxRef.getFieldName() + ":" + exprString;
-			ctx = fieldExtender.getCref(ctxRef);
-		} else {
+		if (ctxRef == null) {
 			key = exprString;
 			ctx = cls;
+		} else if (ctxRef.getType() == DataType.REF || ctxRef.getType() == DataType.ENUM) {
+			key = ctxRef.getFieldName() + ":" + exprString;
+			ctx = getReferClass(ctxRef);
+		} else {
+			throw new IllegalArgumentException();
 		}
 		return entry.exprs.computeIfAbsent(
 				key, k -> createExpr(ctx, ctxRef, exprString, codeType, entry));
@@ -585,8 +606,11 @@ public class ClassExtender {
 			List<FieldContent> fields = e.getKey();
 			int n = fields.size();
 			FieldContent lastField = fields.get(n - 1);
+			if (lastField.getType() == DataType.ENUM) {
+				LOGGER.debug("CHECK");
+			}
 			int lastNo = n <= 1 ? 1 : joinMap.get(fields.subList(0, n - 1));
-			ClassContent nextClass = fieldMapper.getCref(lastField);
+			ClassContent nextClass = getReferClass(lastField);
 			int nextNo = e.getValue();
 			result.add(new JoinInfo(lastField, lastNo, nextClass, nextNo));
 		}

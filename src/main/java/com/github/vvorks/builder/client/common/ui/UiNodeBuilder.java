@@ -131,9 +131,7 @@ public class UiNodeBuilder {
 
 	public UiNodeBuilder source(DataSource source) {
 		UiNode node = stack.peek();
-		Asserts.assume(node instanceof UiVerticalList);
-		UiVerticalList list = (UiVerticalList) node;
-		list.setDataSource(source);
+		node.setDataSource(source);
 		return this;
 	}
 
