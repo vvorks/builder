@@ -1,4 +1,4 @@
-package com.github.vvorks.builder.client.domain;
+package com.github.vvorks.builder.client.agent;
 
 import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;

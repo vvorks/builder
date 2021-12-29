@@ -2,6 +2,7 @@ package com.github.vvorks.builder.client.ui;
 
 import java.util.Map;
 
+import com.github.vvorks.builder.client.agent.DataTypeAgent;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.ui.DataSource;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
@@ -12,7 +13,6 @@ import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiSelectField;
 import com.github.vvorks.builder.client.common.ui.UiVerticalList;
 import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
-import com.github.vvorks.builder.client.domain.DataTypeAgent;
 
 public class FieldListPage extends UiPage {
 
