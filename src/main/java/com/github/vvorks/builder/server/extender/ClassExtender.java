@@ -571,8 +571,9 @@ public class ClassExtender {
 				flds.add(fld);
 				int m = flds.size();
 				if (m > 1) {
-					List<FieldContent> subList = flds.subList(0, m - 1);
-					no = joinMap.computeIfAbsent(subList, s -> joinMap.size() + 2);
+					List<FieldContent> subList = new ArrayList<>(flds.subList(0, m - 1));
+					int size = joinMap.size();
+					no = joinMap.computeIfAbsent(subList, s -> size + 2);
 				}
 			}
 			//opにjoin番号を設定

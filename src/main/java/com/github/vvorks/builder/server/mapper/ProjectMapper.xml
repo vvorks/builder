@@ -58,7 +58,7 @@
 			T1.F_NOTE AS "note",
 			T1.F_COPYRIGHTS AS "copyrights",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_TITLE AS "_title"
+			T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' AS "_title"
 		FROM
 			T_PROJECT T1
 		WHERE
@@ -84,7 +84,7 @@
 			T1.F_NOTE AS "note",
 			T1.F_COPYRIGHTS AS "copyrights",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_TITLE AS "_title"
+			T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' AS "_title"
 		FROM
 			T_PROJECT T1
 		ORDER BY
@@ -120,7 +120,7 @@
 			T1.F_NOTE AS "note",
 			T1.F_COPYRIGHTS AS "copyrights",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_TITLE AS "_title"
+			T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' AS "_title"
 		FROM
 			T_PROJECT T1
 		WHERE
@@ -159,8 +159,8 @@
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_TITLE AS "_title",
-			T2.F_TITLE AS "owner_title"
+			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
 		FROM
 			T_CLASS T1
 		LEFT JOIN T_PROJECT T2 ON
@@ -202,8 +202,8 @@
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_TITLE AS "_title",
-			T2.F_TITLE AS "owner_title"
+			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
 		FROM
 			T_CLASS T1
 		LEFT JOIN T_PROJECT T2 ON
@@ -244,8 +244,8 @@
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_TITLE AS "_title",
-			T2.F_TITLE AS "owner_title"
+			T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
 		FROM
 			T_ENUM T1
 		LEFT JOIN T_PROJECT T2 ON
@@ -286,8 +286,8 @@
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_TITLE AS "_title",
-			T2.F_TITLE AS "owner_title"
+			T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
 		FROM
 			T_ENUM T1
 		LEFT JOIN T_PROJECT T2 ON
