@@ -8,29 +8,29 @@ import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.common.json.Json;
 
 /**
- * データ型エージェント
+ * クラスエージェント
  */
-public class DataTypeAgent extends DataRecordAgent {
+public class ClassAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static DataTypeAgent INSTANCE = new DataTypeAgent();
+	public static ClassAgent INSTANCE = new ClassAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final DataTypeAgent get() {
+	public static final ClassAgent get() {
 		return INSTANCE;
 	}
 
 	/** プライベートコンストラクタ */
-	private DataTypeAgent() {
+	private ClassAgent() {
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setString(name, from.getString("valueId"));
+		rec.setInt(name + "ClassId", from.getInt("classId"));
 	}
 
 }

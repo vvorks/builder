@@ -1,0 +1,97 @@
+//
+// クラスAgentテンプレート
+//
+{{#each this.classes}}
+{{#java this "client/agent/" className "Agent" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.client.agent;
+
+import {{global.project.projectName}}.client.common.ui.DataRecord;
+import {{global.project.projectName}}.client.common.ui.DataRecordAgent;
+import {{global.project.projectName}}.common.json.Json;
+
+/**
+ * {{titleOrName}}エージェント
+ */
+public class {{className}}Agent extends DataRecordAgent {
+
+	/** このクラスのシングルトンインスタンス */
+	public static {{className}}Agent INSTANCE = new {{className}}Agent();
+
+	/**
+	 * このクラスのシングルトンインスタンスを取得する
+	 *
+	 * @return このクラスのシングルトンインスタンス
+	 */
+	public static final {{className}}Agent get() {
+		return INSTANCE;
+	}
+
+	/** プライベートコンストラクタ */
+	private {{className}}Agent() {
+	}
+
+	@Override
+	public void setValue(DataRecord rec, String name, Json from) {
+		{{#each keys}}
+		rec.set{{typeSuffix}}(name + "{{upperName}}", from.get{{typeSuffix}}("{{fieldName}}"));
+		{{/each}}
+	}
+
+}
+{{/java}}
+{{/each}}
+
+//
+// 列挙Agentテンプレート
+//
+{{#each this.enums}}
+{{#java this "client/agent/" enumName "Agent" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.client.agent;
+
+import {{global.project.projectName}}.client.common.ui.DataRecord;
+import {{global.project.projectName}}.client.common.ui.DataRecordAgent;
+import {{global.project.projectName}}.common.json.Json;
+
+/**
+ * {{titleOrName}}エージェント
+ */
+public class {{enumName}}Agent extends DataRecordAgent {
+
+	/** このクラスのシングルトンインスタンス */
+	public static {{enumName}}Agent INSTANCE = new {{enumName}}Agent();
+
+	/**
+	 * このクラスのシングルトンインスタンスを取得する
+	 *
+	 * @return このクラスのシングルトンインスタンス
+	 */
+	public static final {{enumName}}Agent get() {
+		return INSTANCE;
+	}
+
+	/** プライベートコンストラクタ */
+	private {{enumName}}Agent() {
+	}
+
+	@Override
+	public void setValue(DataRecord rec, String name, Json from) {
+		rec.set{{encodeSuffix}}(name, from.get{{encodeSuffix}}("valueId"));
+	}
+
+}
+{{/java}}
+{{/each}}

@@ -32,8 +32,8 @@ public class EnumExtender {
 		return e.isEncodeString() ? "String" : "Integer";
 	}
 
-	public String getConstName(EnumContent e) {
-		return Strings.toUpperSnake(e.getEnumName());
+	public String getEncodeSuffix(EnumContent e) {
+		return e.isEncodeString() ? "String" : "Int";
 	}
 
 }

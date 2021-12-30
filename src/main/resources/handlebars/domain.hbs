@@ -337,22 +337,22 @@ public class {{className}}Summary<T> {
 
 	{{#if needsSum}}
 	/** {{titleOrName}}の合計値 */
-	private {{calcuratedType}} sum{{upperName}};
+	private {{calculatedType}} sum{{upperName}};
 	{{/if}}
 
 	{{#if needsAvg}}
 	/** {{titleOrName}}の平均値 */
-	private {{calcuratedType}} avg{{upperName}};
+	private {{calculatedType}} avg{{upperName}};
 	{{/if}}
 
 	{{#if needsMax}}
 	/** {{titleOrName}}の最大値 */
-	private {{calcuratedType}} max{{upperName}};
+	private {{calculatedType}} max{{upperName}};
 	{{/if}}
 
 	{{#if needsMin}}
 	/** {{titleOrName}}の最小値 */
-	private {{calcuratedType}} min{{upperName}};
+	private {{calculatedType}} min{{upperName}};
 	{{/if}}
 	{{/each}}
 
@@ -376,7 +376,7 @@ public class {{className}}Summary<T> {
 	 *
 	 * @return {{titleOrName}}の合計値
 	 */
-	public {{calcuratedType}} getSum{{upperName}}() {
+	public {{calculatedType}} getSum{{upperName}}() {
 		return sum{{upperName}};
 	}
 
@@ -385,7 +385,7 @@ public class {{className}}Summary<T> {
 	 *
 	 * @param sum{{upperName}} {{titleOrName}}の合計値
 	 */
-	public void setSum{{upperName}}({{calcuratedType}} sum{{upperName}}) {
+	public void setSum{{upperName}}({{calculatedType}} sum{{upperName}}) {
 		this.sum{{upperName}} = sum{{upperName}};
 	}
 	{{/if}}
@@ -396,7 +396,7 @@ public class {{className}}Summary<T> {
 	 *
 	 * @return {{titleOrName}}の平均値
 	 */
-	public {{calcuratedType}} getAvg{{upperName}}() {
+	public {{calculatedType}} getAvg{{upperName}}() {
 		return avg{{upperName}};
 	}
 
@@ -405,7 +405,7 @@ public class {{className}}Summary<T> {
 	 *
 	 * @param avg{{upperName}} {{titleOrName}}の平均値
 	 */
-	public void setAvg{{upperName}}({{calcuratedType}} avg{{upperName}}) {
+	public void setAvg{{upperName}}({{calculatedType}} avg{{upperName}}) {
 		this.avg{{upperName}} = avg{{upperName}};
 	}
 	{{/if}}
@@ -416,7 +416,7 @@ public class {{className}}Summary<T> {
 	 *
 	 * @return {{titleOrName}}の最大値
 	 */
-	public {{calcuratedType}} getMax{{upperName}}() {
+	public {{calculatedType}} getMax{{upperName}}() {
 		return max{{upperName}};
 	}
 
@@ -425,7 +425,7 @@ public class {{className}}Summary<T> {
 	 *
 	 * @param max{{upperName}} {{titleOrName}}の最大値
 	 */
-	public void setMax{{upperName}}({{calcuratedType}} max{{upperName}}) {
+	public void setMax{{upperName}}({{calculatedType}} max{{upperName}}) {
 		this.max{{upperName}} = max{{upperName}};
 	}
 	{{/if}}
@@ -436,7 +436,7 @@ public class {{className}}Summary<T> {
 	 *
 	 * @return {{titleOrName}}の最小値
 	 */
-	public {{calcuratedType}} getMin{{upperName}}() {
+	public {{calculatedType}} getMin{{upperName}}() {
 		return min{{upperName}};
 	}
 
@@ -445,7 +445,7 @@ public class {{className}}Summary<T> {
 	 *
 	 * @param min{{upperName}} {{titleOrName}}の最小値
 	 */
-	public void setMin{{upperName}}({{calcuratedType}} min{{upperName}}) {
+	public void setMin{{upperName}}({{calculatedType}} min{{upperName}}) {
 		this.min{{upperName}} = min{{upperName}};
 	}
 	{{/if}}

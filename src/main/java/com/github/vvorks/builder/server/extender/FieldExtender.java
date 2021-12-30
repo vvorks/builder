@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Deque;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -58,6 +60,22 @@ public class FieldExtender {
 		SQLITE_TYPE_MAP.put(DataType.NUMERIC, n);
 		SQLITE_TYPE_MAP.put(DataType.DATE, i);
 		SQLITE_TYPE_MAP.put(DataType.STRING, t);
+	}
+
+	private static final String INT_SUFFIX = "Int";
+
+	private static final Map<Class<?>, String> SUFFIX_MAP = new HashMap<>();
+	static {
+		SUFFIX_MAP.put(Boolean.class, "Boolean");
+		SUFFIX_MAP.put(Byte.class, INT_SUFFIX);
+		SUFFIX_MAP.put(Short.class, INT_SUFFIX);
+		SUFFIX_MAP.put(Integer.class, INT_SUFFIX);
+		SUFFIX_MAP.put(Long.class, "Long");
+		SUFFIX_MAP.put(Float.class, "Float");
+		SUFFIX_MAP.put(Double.class, "Double");
+		SUFFIX_MAP.put(BigDecimal.class, "Decimal");
+		SUFFIX_MAP.put(Date.class, "Date");
+		SUFFIX_MAP.put(String.class, "String");
 	}
 
 	@Autowired
@@ -150,7 +168,7 @@ public class FieldExtender {
 		return cls;
 	}
 
-	public String getCalcuratedType(FieldContent fld) {
+	public String getCalculatedType(FieldContent fld) {
 		Class<?> cls = getJavaClass(fld, false);
 		if (cls == Byte.TYPE || cls == Short.TYPE) {
 			cls = Integer.TYPE;
@@ -162,6 +180,11 @@ public class FieldExtender {
 			javaType = cls.getName();
 		}
 		return javaType;
+	}
+
+	public String getTypeSuffix(FieldContent fld) {
+		Class<?> cls = getJavaClass(fld, true);
+		return SUFFIX_MAP.get(cls);
 	}
 
 	public String getUpperName(FieldContent fld) {

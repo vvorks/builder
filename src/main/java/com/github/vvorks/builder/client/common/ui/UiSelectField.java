@@ -41,8 +41,6 @@ public class UiSelectField extends UiNode implements DataField {
 	public void setRecord(DataRecord rec) {
 		this.rec = rec;
 		this.title = agent.getTitle(rec, getName());
-		LOGGER.debug("agent %s return %s", getName(), title);
-		LOGGER.debug("rec %s", rec);
 		setChanged(CHANGED_CONTENT);
 	}
 

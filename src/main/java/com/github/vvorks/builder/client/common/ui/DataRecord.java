@@ -79,7 +79,7 @@ public interface DataRecord {
 	 * @param column カラム名
 	 * @return 値
 	 */
-	public default double getNumber(String column) {
+	public default double getDouble(String column) {
 		return getDouble(column, DEFAULT_DOUBLE);
 	}
 

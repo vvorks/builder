@@ -2,6 +2,7 @@ package com.github.vvorks.builder.client.ui;
 
 import java.util.Map;
 
+import com.github.vvorks.builder.client.agent.ClassAgent;
 import com.github.vvorks.builder.client.agent.DataTypeAgent;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.ui.DataSource;
@@ -54,7 +55,7 @@ public class FieldListPage extends UiPage {
 				b.style(BuilderUiApplication.BASIC);
 				b.locate( 5.0, 0.0, NA, NA,  5.0, 2.0);
 			b.leave();
-			b.enter(new UiDataField("ownerClassId"));
+			b.enter(new UiSelectField("owner", ClassAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
 				b.locate( 10.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
@@ -75,15 +76,15 @@ public class FieldListPage extends UiPage {
 				b.style(BuilderUiApplication.BASIC);
 				b.locate( 45.0, 0.0, NA, NA,  5.0, 2.0);
 			b.leave();
-			b.enter(new UiDataField("crefClassId"));
+			b.enter(new UiSelectField("cref", ClassAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
 				b.locate( 50.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
-			b.enter(new UiDataField("erefEnumId"));
+			b.enter(new UiSelectField("eref", ClassAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
 				b.locate( 60.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
-			b.enter(new UiDataField("frefFieldId"));
+			b.enter(new UiSelectField("fref", ClassAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
 				b.locate( 70.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
