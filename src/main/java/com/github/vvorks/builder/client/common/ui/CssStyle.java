@@ -41,6 +41,11 @@ public class CssStyle implements Jsonizable {
 			style = new CssStyle();
 		}
 
+		public Builder from(CssStyle src) {
+			style.map.putAll(src.map);
+			return this;
+		}
+
 		public Builder visible(boolean b) {
 			return property("visibility", b ? "visible" : "hidden");
 		}

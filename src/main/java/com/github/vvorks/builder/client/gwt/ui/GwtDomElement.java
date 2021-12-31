@@ -7,6 +7,7 @@ import com.github.vvorks.builder.client.common.ui.CssStyle;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
+import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.google.gwt.dom.client.Document;
@@ -34,9 +35,11 @@ public class GwtDomElement implements DomElement {
 	private Element innerElement;
 
 	/** スクロール範囲設定用要素 */
-	private Element anchorElement;
+	private Element endElement;
 
 	protected String text;
+
+	protected String imageUrl;
 
 	protected UiAtomicStyle definedStyle;
 
@@ -201,16 +204,16 @@ public class GwtDomElement implements DomElement {
 			return;
 		}
 		if (width != 0 || height != 0) {
-			Element anchor = ensureAnchorElement();
+			Element end = ensureEndElement();
 			CssStyle.Builder sb = new CssStyle.Builder()
 					.property("position", "absolute")
 					.left(new Length(scrollWidth - 1))
 					.top(new Length(scrollHeight - 1))
 					.width(new Length(1))
 					.height(new Length(1));
-			anchor.setAttribute(PROP_STYLE, document.toCssString(sb.build()));
+			end.setAttribute(PROP_STYLE, document.toCssString(sb.build()));
 		} else {
-			removeAnchorElement();
+			removeEndElement();
 		}
 		nativeElement.setScrollLeft(x);
 		nativeElement.setScrollTop(y);
@@ -222,6 +225,19 @@ public class GwtDomElement implements DomElement {
 				nativeElement.setScrollLeft(x);
 				nativeElement.setScrollTop(y);
 			});
+		}
+	}
+
+	@Override
+	public void setImageUrl(String url) {
+		this.imageUrl = url;
+		if (nativeElement == null || !nativeElement.getTagName().equalsIgnoreCase(UiNode.HTML_IMG)) {
+			return;
+		}
+		if (imageUrl != null) {
+			nativeElement.setAttribute("src", imageUrl);
+		} else {
+			nativeElement.removeAttribute("src");
 		}
 	}
 
@@ -245,18 +261,18 @@ public class GwtDomElement implements DomElement {
 		}
 	}
 
-	private Element ensureAnchorElement() {
-		if (anchorElement == null) {
-			anchorElement = Document.get().createDivElement();
-			nativeElement.appendChild(anchorElement);
+	private Element ensureEndElement() {
+		if (endElement == null) {
+			endElement = Document.get().createDivElement();
+			nativeElement.appendChild(endElement);
 		}
-		return anchorElement;
+		return endElement;
 	}
 
-	private void removeAnchorElement() {
-		if (anchorElement != null) {
-			nativeElement.removeChild(anchorElement);
-			anchorElement = null;
+	private void removeEndElement() {
+		if (endElement != null) {
+			nativeElement.removeChild(endElement);
+			endElement = null;
 		}
 	}
 

@@ -37,6 +37,11 @@ public class UiPhantom extends UiNode {
 		}
 
 		@Override
+		public void setImageUrl(String url) {
+			//NOP
+		}
+
+		@Override
 		public void sync() {
 			//NOP
 		}

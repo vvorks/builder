@@ -14,6 +14,8 @@ public interface DomElement {
 
 	public void setScrollBounds(int x, int y, int width, int height);
 
+	public void setImageUrl(String url);
+
 	public void sync();
 
 }

@@ -45,10 +45,6 @@ public class Length implements Jsonizable {
 			this.cssName = cssName;
 		}
 
-		public Length of(double value) {
-			return new Length(value, this);
-		}
-
 		@Override
 		public String toString() {
 			return cssName;
@@ -271,6 +267,14 @@ public class Length implements Jsonizable {
 		return String.valueOf(value) + unit;
 	}
 
+	@Override
+	public Json toJson() {
+		Json json = Json.createObject();
+		json.setDouble("value", value);
+		json.setString("unit", unit);
+		return json;
+	}
+
 	public static Unit unitOf(String unitName) {
 		Unit unit = UNIT_NAME_MAP.get(unitName.toUpperCase());
 		if (unit == null) {
@@ -317,16 +321,40 @@ public class Length implements Jsonizable {
 		return new Length(value, unit);
 	}
 
-	public static Length pxOf(double value) {
-		return new Length(value, Unit.PX);
+	public static Length emOf(double value) {
+		return new Length(value, Unit.REM);
 	}
 
-	@Override
-	public Json toJson() {
-		Json json = Json.createObject();
-		json.setDouble("value", value);
-		json.setString("unit", unit);
-		return json;
+	public static Length exOf(double value) {
+		return new Length(value, Unit.REX);
+	}
+
+	public static Length pctOf(double value) {
+		return new Length(value, Unit.PCT);
+	}
+
+	public static Length inOf(double value) {
+		return new Length(value, Unit.IN);
+	}
+
+	public static Length cmOf(double value) {
+		return new Length(value, Unit.CM);
+	}
+
+	public static Length mmOf(double value) {
+		return new Length(value, Unit.MM);
+	}
+
+	public static Length ptOf(double value) {
+		return new Length(value, Unit.PT);
+	}
+
+	public static Length pcOf(double value) {
+		return new Length(value, Unit.PC);
+	}
+
+	public static Length pxOf(double value) {
+		return new Length(value, Unit.PX);
 	}
 
 }

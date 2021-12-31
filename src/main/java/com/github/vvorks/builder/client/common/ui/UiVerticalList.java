@@ -368,8 +368,8 @@ public class UiVerticalList extends UiGroup {
 			maxRightPx = Math.max(maxRightPx, c.getLeftPx() + c.getWidthPx());
 			maxBottomPx = Math.max(maxBottomPx, c.getTopPx() + c.getHeightPx());
 		}
-		Length width = Length.Unit.PX.of(maxRightPx);
-		Length height = Length.Unit.PX.of(maxBottomPx);
+		Length width = Length.pxOf(maxRightPx);
+		Length height = Length.pxOf(maxBottomPx);
 		template.setBounds(Length.ZERO, Length.ZERO, null, null, width, height);
 		setScrollWidth(width);
 	}

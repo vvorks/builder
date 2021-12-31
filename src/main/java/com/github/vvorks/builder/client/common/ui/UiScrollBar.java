@@ -1,9 +1,11 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.client.common.ui.Length.Unit;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public abstract class UiScrollBar extends UiNode implements ScrollListener {
+
+	/** スクロールバー内部のつまみのノード名称（スタイル設定時に使用する） */
+	public static final String THUMB_NAME = "thumb";
 
 	private static final Logger LOGGER = Logger.createLogger(UiScrollBar.class);
 
@@ -15,13 +17,18 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 	protected static class UiThumb extends UiNode {
 
 		public UiThumb() {
-			super("thumb");
+			super(THUMB_NAME);
+		}
+
+		public UiThumb(UiThumb src) {
+			super(src);
 		}
 
 		@Override
 		public UiThumb copy() {
-			throw new UnsupportedOperationException();
+			return new UiThumb(this);
 		}
+
 	}
 
 	private Scrollable scrollable;
@@ -52,6 +59,8 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 		super(src);
 		this.scrollable = src.scrollable;
 		this.scrollable.addScrollListener(this);
+		this.thumbMain = (UiThumb) getFirstChild();
+		this.thumbSub = (UiThumb) this.thumbMain.getNextSibling();
 	}
 
 	private UiThumb createThumb() {
@@ -101,9 +110,9 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 			double left  = 100.0 * offset / count;
 			double width = 100.0 * limit  / count;
 			thumbMain.setBounds(
-					Unit.PCT.of(left),	Length.ZERO,
-					null,				Length.ZERO,
-					Unit.PCT.of(width),	null);
+					Length.pctOf(left),		Length.ZERO,
+					null,					Length.ZERO,
+					Length.pctOf(width),	null);
 			thumbSub.setBounds(
 					Length.ZERO, Length.ZERO,
 					null,		 Length.ZERO,
@@ -115,13 +124,13 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 			double left   = 100.0 * offset / count;
 			double remain = 100.0 * (offset + limit - count) / count;
 			thumbMain.setBounds(
-					Unit.PCT.of(left),	Length.ZERO,
-					null, 				Length.ZERO,
-					Length.FULL,		null);
+					Length.pctOf(left),		Length.ZERO,
+					null, 					Length.ZERO,
+					Length.FULL,			null);
 			thumbSub.setBounds(
-					Length.ZERO,		Length.ZERO,
-					 null,				Length.ZERO,
-					 Unit.PCT.of(remain), null);
+					Length.ZERO,			Length.ZERO,
+					null,					Length.ZERO,
+					Length.pctOf(remain),	null);
 			thumbMain.setVisible(true);
 			thumbSub.setVisible(true);
 		}
@@ -137,13 +146,13 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 			double top    = 100.0 * offset / count;
 			double height = 100.0 * limit  / count;
 			thumbMain.setBounds(
-					Length.ZERO, Unit.PCT.of(top),
-					Length.ZERO, null,
-					null,		 Unit.PCT.of(height));
+					Length.ZERO,	Length.pctOf(top),
+					Length.ZERO,	null,
+					null,			Length.pctOf(height));
 			thumbSub.setBounds(
-					Length.ZERO, Length.ZERO,
-					Length.ZERO, null,
-					null,		 Length.ZERO);
+					Length.ZERO,	Length.ZERO,
+					Length.ZERO,	null,
+					null,			Length.ZERO);
 			thumbMain.setVisible(true);
 			thumbSub.setVisible(false);
 		} else {
@@ -151,13 +160,13 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 			double top    = 100.0 * offset / count;
 			double remain = 100.0 * (offset + limit - count) / count;
 			thumbMain.setBounds(
-					Length.ZERO, Unit.PCT.of(top),
-					Length.ZERO, null,
-					null,		 Length.FULL);
+					Length.ZERO,	Length.pctOf(top),
+					Length.ZERO,	null,
+					null,			Length.FULL);
 			thumbSub.setBounds(
-					Length.ZERO, Length.ZERO,
-					Length.ZERO, null,
-					null,		 Unit.PCT.of(remain));
+					Length.ZERO,	Length.ZERO,
+					Length.ZERO,	null,
+					null,			Length.pctOf(remain));
 			thumbMain.setVisible(true);
 			thumbSub.setVisible(true);
 		}

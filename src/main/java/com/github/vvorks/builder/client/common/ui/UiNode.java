@@ -36,6 +36,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 
 	public static final String HTML_CANVAS = "canvas";
 
+	public static final String HTML_IMG = "img";
+
 	/** イベント結果フラグ： イベントは無視された */
 	public static final int EVENT_IGNORED = UiApplication.EVENT_IGNORED;
 

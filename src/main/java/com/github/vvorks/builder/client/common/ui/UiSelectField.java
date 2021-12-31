@@ -4,6 +4,29 @@ import com.github.vvorks.builder.client.ui.BuilderUiApplication;
 
 public class UiSelectField extends UiNode implements DataField {
 
+	private static class UiInnerText extends UiLabel {
+
+		public UiInnerText(String name) {
+			super(name);
+		}
+
+		public UiInnerText(UiInnerText src) {
+			super(src);
+		}
+
+		@Override
+		public UiInnerText copy() {
+			return new UiInnerText(this);
+		}
+
+		@Override
+		protected void syncElementStyle(CssStyle.Builder b) {
+			super.syncElementStyle(b);
+			b.property("border", "0");
+		}
+
+	}
+
 	/** 選択状態 */
 	private enum SelectState {
 		/** 非選択中 */	NONE,
@@ -18,18 +41,31 @@ public class UiSelectField extends UiNode implements DataField {
 
 	private transient SelectState selectState;
 
+	private transient UiInnerText label;
+
+	private transient UiImage image;
+
 	public UiSelectField(String name, DataRecordAgent agent) {
 		super(name);
 		setFocusable(true);
 		this.agent = agent;
 		selectState = SelectState.NONE;
+		label = (UiInnerText) appendChild(new UiInnerText("inner"));
+		image = (UiImage) appendChild(new UiImage());
+		Length arrowSize = Length.pxOf(16);
+		label.setBounds(Length.ZERO, Length.ZERO, arrowSize, Length.ZERO, null, null);
+		image.setBounds(null, null, Length.ZERO, null, arrowSize, arrowSize);
+		image.setImageUrl("image/arrow-down.png");
 	}
 
 	protected UiSelectField(UiSelectField src) {
 		super(src);
+		this.rec = src.rec;
 		this.agent = src.agent;
 		this.title = src.title;
-		selectState = SelectState.NONE;
+		this.selectState = SelectState.NONE;
+		this.label = (UiInnerText) getFirstChild();
+		this.image = (UiImage) this.label.getNextSibling();
 	}
 
 	@Override
@@ -38,15 +74,17 @@ public class UiSelectField extends UiNode implements DataField {
 	}
 
 	@Override
-	public void setRecord(DataRecord rec) {
-		this.rec = rec;
-		this.title = agent.getTitle(rec, getName());
-		setChanged(CHANGED_CONTENT);
+	public void setStyle(UiStyle style) {
+		super.setStyle(style);
+		label.setStyle(style);
+		image.setStyle(style);
 	}
 
 	@Override
-	protected void syncContent() {
-		getDomElement().setInnerText(title);
+	public void setRecord(DataRecord rec) {
+		this.rec = rec;
+		title = agent.getTitle(rec, getName());
+		label.setText(title);
 	}
 
 	@Override

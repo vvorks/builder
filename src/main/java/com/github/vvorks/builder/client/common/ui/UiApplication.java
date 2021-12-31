@@ -109,7 +109,7 @@ public class UiApplication implements EventHandler {
 	/** データソースマップ */
 	private final Map<DataSource, Set<UiNode>> dataSourceMap;
 
-	/** キー押下マップ（リピートフラグ算出用） */
+	/** キーダウン中セット（リピートフラグ算出用） */
 	private final BitSet keyDowns;
 
 	/** ビジーフラグ */
@@ -188,6 +188,7 @@ public class UiApplication implements EventHandler {
 		if (p.focus == null) {
 			setFocus(getFirstFocus(p.page), AXIS_XY);
 		}
+		keyDowns.clear();
 	}
 
 	public UiNode getFirstFocus(UiNode owner) {
@@ -201,6 +202,7 @@ public class UiApplication implements EventHandler {
 		p.page.onUnmount();
 		pageStack.pop();
 		root.deleteChild(p.page);
+		keyDowns.clear();
 	}
 
 	private LivePage getLivePage() {
@@ -248,12 +250,6 @@ public class UiApplication implements EventHandler {
 		Asserts.requireNotNull(page);
 		LivePage p = getLivePageOf(page);
 		return p != null ? p.focus : null;
-	}
-
-	private UiNode getFocus() {
-		LivePage p = getLivePage();
-		Asserts.assume(p != null);
-		return p.focus;
 	}
 
 	public UiNode setFocus(UiNode newFocusNode) {
@@ -391,13 +387,14 @@ public class UiApplication implements EventHandler {
 				LOGGER.warn("BUSY");
 				return EVENT_CONSUMED;
 			}
+			LivePage page = getLivePage();
 			//リピートフラグ処理
 			if (keyDowns.get(keyCode)) {
 				mods |= KeyCodes.MOD_REPEAT;
 			}
 			keyDowns.set(keyCode, true);
 			//イベント配信処理
-			UiNode target = getKeyTarget();
+			UiNode target = page.focus;
 			UiNode node = target;
 			int result = node.onKeyDown(target, keyCode, charCode, mods, time);
 			while ((result & EVENT_CONSUMED) == 0 && node.getParent() != null) {
@@ -406,7 +403,7 @@ public class UiApplication implements EventHandler {
 			}
 			if ((result & EVENT_CONSUMED) == 0) {
 				//UiNode側の処理でフォーカスが変化している場合があるので、再取得
-				UiNode focus = getKeyTarget();
+				UiNode focus = page.focus;
 				result |= this.onKeyDown(focus, keyCode, charCode, mods, time);
 			}
 			if ((result & EVENT_AFFECTED) != 0) {
@@ -430,8 +427,9 @@ public class UiApplication implements EventHandler {
 				LOGGER.warn("BUSY");
 				return EVENT_CONSUMED;
 			}
+			LivePage page = getLivePage();
 			//イベント配信処理
-			UiNode target = getKeyTarget();
+			UiNode target = page.focus;
 			UiNode node = target;
 			int result = node.onKeyPress(target, keyCode, charCode, mods, time);
 			while ((result & EVENT_CONSUMED) == 0 && node.getParent() != null) {
@@ -440,7 +438,7 @@ public class UiApplication implements EventHandler {
 			}
 			if ((result & EVENT_CONSUMED) == 0) {
 				//UiNode側の処理でフォーカスが変化している場合があるので、再取得
-				UiNode focus = getKeyTarget();
+				UiNode focus = page.focus;
 				result |= this.onKeyPress(focus, keyCode, charCode, mods, time);
 			}
 			if ((result & EVENT_AFFECTED) != 0) {
@@ -458,6 +456,7 @@ public class UiApplication implements EventHandler {
 	public int processKeyUp(int keyCode, int charCode, int mods, int time) {
 		LOGGER.info("processKeyUp(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
 		try {
+			LivePage page = getLivePage();
 			//リピートフラグ処理
 			if (!keyDowns.get(keyCode)) {
 				LOGGER.warn("INVALID");
@@ -465,7 +464,7 @@ public class UiApplication implements EventHandler {
 			}
 			keyDowns.set(keyCode, false);
 			//イベント配信処理
-			UiNode target = getKeyTarget();
+			UiNode target = page.focus;
 			UiNode node = target;
 			int result = node.onKeyUp(target, keyCode, charCode, mods, time);
 			while ((result & EVENT_CONSUMED) == 0 && node.getParent() != null) {
@@ -474,7 +473,7 @@ public class UiApplication implements EventHandler {
 			}
 			if ((result & EVENT_CONSUMED) == 0) {
 				//UiNode側の処理でフォーカスが変化している場合があるので、再取得
-				UiNode focus = getKeyTarget();
+				UiNode focus = page.focus;
 				result |= this.onKeyUp(focus, keyCode, charCode, mods, time);
 			}
 			if ((result & EVENT_AFFECTED) != 0) {
@@ -699,10 +698,6 @@ public class UiApplication implements EventHandler {
 		} finally {
 			LOGGER.feed();
 		}
-	}
-
-	private UiNode getKeyTarget() {
-		return getFocus();
 	}
 
 	private UiNode getMouseTarget(Point pt) {

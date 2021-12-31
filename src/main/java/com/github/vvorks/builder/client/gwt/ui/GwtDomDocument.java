@@ -61,7 +61,7 @@ public class GwtDomDocument implements DomDocument {
 
 	private boolean isCanvas(String ns, String tag) {
 		return	UiNode.NS_CANVAS.equals(ns) ||
-				((ns == null || UiNode.NS_HTML.equals(ns)) && UiNode.HTML_CANVAS.equals(tag));
+				((ns == null || UiNode.NS_HTML.equals(ns)) && UiNode.HTML_CANVAS.equalsIgnoreCase(tag));
 	}
 
 	@Override
