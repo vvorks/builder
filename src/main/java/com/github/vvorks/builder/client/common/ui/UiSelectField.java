@@ -2,7 +2,7 @@ package com.github.vvorks.builder.client.common.ui;
 
 import com.github.vvorks.builder.client.ui.BuilderUiApplication;
 
-public class UiSelectField extends UiNode implements DataField {
+public class UiSelectField extends UiField implements DataField {
 
 	private static class UiInnerText extends UiLabel {
 
@@ -101,9 +101,13 @@ public class UiSelectField extends UiNode implements DataField {
 	@Override
 	public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
 		int result;
-		if (isCharKey(keyCode, mods) || isImeKey(keyCode, mods) || isEditKey(keyCode, mods)) {
+		if (isCharKey(keyCode, mods) || isImeKey(keyCode, mods)) {
 			selectState = SelectState.PICK;
-			showPopup();
+			showPopup(true);
+			result = EVENT_EATEN;
+		} else if (isEditKey(keyCode, mods)) {
+			selectState = SelectState.PICK;
+			showPopup(false);
 			result = EVENT_EATEN;
 		} else {
 			result = EVENT_IGNORED;
@@ -111,24 +115,89 @@ public class UiSelectField extends UiNode implements DataField {
 		return result;
 	}
 
-	private void showPopup() {
+	private void showPopup(boolean isEdit) {
 		UiApplication app = getApplication();
-		app.call(new Test(app));
+		app.call(new Popup(app, this, isEdit));
 	}
 
-	private static class Test extends UiPage {
-		public Test(UiApplication app) {
+	private static class Popup extends UiPage {
+
+		private static final int DEFAULT_PER_PAGE = 1 + 10;
+
+		private final UiSelectField owner;
+
+		private boolean isEdit;
+
+		private int unitHeight;
+
+		private Rect popupRect;
+
+		private boolean hintUnder;
+
+		public Popup(UiApplication app, UiSelectField owner, boolean isEdit) {
 			super("test", app);
+			this.owner = owner;
+			this.isEdit = isEdit;
+			Rect pivot = owner.getRectangleOnRoot();
+			unitHeight = pivot.getHeight();
+			Rect screen = owner.getRoot().getRectangleOnParent();
+			int perPage = Math.min(DEFAULT_PER_PAGE, screen.getHeight() / unitHeight);
+			int height = unitHeight * perPage;
+			popupRect = new Rect(0, 0, pivot.getWidth(), height);
+			if (height <= screen.getHeight() - pivot.getBottom()) {
+				//pivot下に配置
+				popupRect.move(pivot.getLeft(), pivot.getTop());
+				hintUnder = false;
+			} else if (height <= pivot.getTop()) {
+				//pivot上に配置
+				popupRect.move(pivot.getLeft(), pivot.getBottom() - height);
+				hintUnder = true;
+			} else {
+				//中央に配置
+				popupRect.move(pivot.getLeft(), (screen.getHeight() - height) / 2);
+				hintUnder = false;
+			}
 		}
+
 		@Override
 		protected void initialize() {
 			final double NA = UiNodeBuilder.NA;
 			UiNodeBuilder b = new UiNodeBuilder(this, "px");
-			b.enter(new UiButton("group"));
-				b.style(BuilderUiApplication.BASIC);
-				b.locate(NA, NA, NA, NA, 200, 40);
-				b.action(node -> {node.getApplication().back();return EVENT_EATEN;});
+			UiTextField hint;
+			b.enter(new UiGroup("group"));
+				b.style(BuilderUiApplication.NOBORDER);
+				b.locate(popupRect);
+				int width = popupRect.getWidth();
+				int listHeight = popupRect.getHeight() - unitHeight;
+				int hintTop;
+				int listTop;
+				if (hintUnder) {
+					hintTop = listHeight;
+					listTop = 0;
+				} else {
+					hintTop = 0;
+					listTop = unitHeight;
+				}
+				b.enter(hint = new UiTextField("hint"));
+					b.style(BuilderUiApplication.BASIC);
+					b.locate(0, hintTop, NA, NA, width, unitHeight);
+				b.leave();
+				b.enter(new UiVerticalList("list"));
+					b.style(BuilderUiApplication.NOBORDER);
+					b.source(owner.getDataSource());
+					b.locate(0, listTop, NA, NA, width, listHeight);
+					b.loop(false);
+					b.flushSoon(false);
+					b.enter(new UiDataField("_title"));
+						b.style(BuilderUiApplication.BASIC);
+						b.locate(0, 0, NA, NA, width, unitHeight);
+					b.leave();
+				b.leave();
 			b.leave();
+			if (isEdit) {
+				DomDocument doc = getDocument();
+				doc.startEditing(hint, "");
+			}
 		}
 	}
 

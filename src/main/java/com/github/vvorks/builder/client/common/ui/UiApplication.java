@@ -311,18 +311,14 @@ public class UiApplication implements EventHandler {
 
 	public void attachDataSource(UiNode node, DataSource ds) {
 		Set<UiNode> nodes = getAttachedNodes(ds);
-		if (nodes.isEmpty()) {
-			ds.attach(this);
-		}
 		nodes.add(node);
+		ds.attach(this);
 	}
 
 	public void detachDataSource(UiNode node, DataSource ds) {
 		Set<UiNode> nodes = getAttachedNodes(ds);
+		ds.detach(this);
 		nodes.remove(node);
-		if (nodes.isEmpty()) {
-			ds.detach(this);
-		}
 	}
 
 	private Set<UiNode> getAttachedNodes(DataSource ds) {
@@ -397,9 +393,11 @@ public class UiApplication implements EventHandler {
 			UiNode target = page.focus;
 			UiNode node = target;
 			int result = node.onKeyDown(target, keyCode, charCode, mods, time);
+			LOGGER.debug("%s.onKeyDown %d", node.getFullName(), result);
 			while ((result & EVENT_CONSUMED) == 0 && node.getParent() != null) {
 				node = node.getParent();
 				result |= node.onKeyDown(target, keyCode, charCode, mods, time);
+				LOGGER.debug("%s.onKeyDown %d", node.getFullName(), result);
 			}
 			if ((result & EVENT_CONSUMED) == 0) {
 				//UiNode側の処理でフォーカスが変化している場合があるので、再取得
@@ -422,11 +420,6 @@ public class UiApplication implements EventHandler {
 	public int processKeyPress(int keyCode, int charCode, int mods, int time) {
 		LOGGER.info("processKeyPress(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
 		try {
-			//busyチェック
-			if (busy) {
-				LOGGER.warn("BUSY");
-				return EVENT_CONSUMED;
-			}
 			LivePage page = getLivePage();
 			//イベント配信処理
 			UiNode target = page.focus;
@@ -914,8 +907,7 @@ public class UiApplication implements EventHandler {
 
 	@Override
 	public void onResize(int screenWidth, int screenHeight) {
-		Metrics met = Factory.getInstance(Metrics.class);
-		met.setScreenSize(screenWidth, screenHeight);
+		Metrics.get().setScreenSize(screenWidth, screenHeight);
 	}
 
 	@Override

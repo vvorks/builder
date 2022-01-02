@@ -7,7 +7,6 @@ import java.util.Objects;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Value;
 import com.github.vvorks.builder.common.logging.Logger;
 
@@ -207,7 +206,7 @@ public class Length implements Jsonizable {
 	}
 
 	private double getValuePxNotPct() {
-		Metrics met = Factory.getInstance(Metrics.class);
+		Metrics met = Metrics.get();
 		double px;
 		switch (unit) {
 		case IN:
@@ -285,7 +284,7 @@ public class Length implements Jsonizable {
 	}
 
 	public static Length fromPx(double px, Unit unit, Value<Integer> parentValue) {
-		Metrics met = Factory.getInstance(Metrics.class);
+		Metrics met = Metrics.get();
 		double value;
 		switch (unit) {
 		case PCT:

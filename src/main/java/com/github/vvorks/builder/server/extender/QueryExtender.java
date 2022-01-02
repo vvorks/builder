@@ -15,7 +15,7 @@ import com.github.vvorks.builder.server.mapper.QueryMapper;
 @Component
 public class QueryExtender {
 
-	private SqlWriter sqlWriter = SqlWriter.getWriter();
+	private SqlWriter sqlWriter = SqlWriter.get();
 
 	@Autowired
 	private QueryMapper queryMapper;

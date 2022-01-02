@@ -68,7 +68,7 @@ public class SourceWriter {
 	@Autowired
 	private EnumValueExtender enumValueExtender;
 
-	private SqlHelper sqlHelper = SqlHelper.getHelper();
+	private SqlHelper sqlHelper = SqlHelper.get();
 
 	public void process() throws IOException {
 		String now = String.format("%tY%<tm%<td_%<tH%<tM%<tS", new Date());

@@ -5,7 +5,6 @@ import java.util.Map;
 import com.github.vvorks.builder.client.agent.ClassAgent;
 import com.github.vvorks.builder.client.agent.DataTypeAgent;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
-import com.github.vvorks.builder.client.common.ui.DataSource;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiDataField;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalScrollBar;
@@ -34,15 +33,13 @@ public class FieldListPage extends UiPage {
 	protected void initialize() {
 		UiApplication app = getApplication();
 		JsonRpcClient rpc = app.getRpcClient();
-		DataSource ds = new BuilderRpcDataSource(rpc, "listField", 20, 40);
-		DataSource ds2 = new BuilderRpcDataSource(rpc, "listFieldTypeCandidate", 20, 40);
 		final double NA = UiNodeBuilder.NA;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		UiVerticalList list;
 		//リスト
 		b.enter(list = new UiVerticalList("list"));
 			b.style(BuilderUiApplication.ENABLE);
-			b.source(ds);
+			b.source(new BuilderRpcDataSource(rpc, "listField", 20, 40));
 			b.locate(1.0, 1.0, 2.0, 2.0, NA, NA);
 			b.loop(true);
 			b.flushSoon(false);
@@ -57,6 +54,7 @@ public class FieldListPage extends UiPage {
 			b.leave();
 			b.enter(new UiSelectField("owner", ClassAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
+				b.source(new BuilderRpcDataSource(rpc, "listFieldOwnerCandidate", 20, 40));
 				b.locate( 10.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiDataField("fieldName"));
@@ -65,7 +63,7 @@ public class FieldListPage extends UiPage {
 			b.leave();
 			b.enter(new UiSelectField("type", DataTypeAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
-				b.source(ds2);
+				b.source(new BuilderRpcDataSource(rpc, "listFieldTypeCandidate", 20, 40));
 				b.locate( 30.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiDataField("width"));
@@ -78,14 +76,17 @@ public class FieldListPage extends UiPage {
 			b.leave();
 			b.enter(new UiSelectField("cref", ClassAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
+				b.source(new BuilderRpcDataSource(rpc, "listFieldCrefCandidate", 20, 40));
 				b.locate( 50.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiSelectField("eref", ClassAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
+				b.source(new BuilderRpcDataSource(rpc, "listFieldErefCandidate", 20, 40));
 				b.locate( 60.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiSelectField("fref", ClassAgent.get()));
 				b.style(BuilderUiApplication.BASIC);
+				b.source(new BuilderRpcDataSource(rpc, "listFieldFrefCandidate", 20, 40));
 				b.locate( 70.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiDataField("pk"));

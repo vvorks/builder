@@ -4,7 +4,6 @@ import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.client.gwt.ui.DomPanel;
 import com.github.vvorks.builder.client.gwt.ui.ImePanel;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.net.URLFragment;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.google.gwt.animation.client.AnimationScheduler;
@@ -45,10 +44,9 @@ public class GwtEntryPoint implements EntryPoint {
 		setWidgetSize(em, 10, Unit.EM);
 		setWidgetSize(ex, 10, Unit.EX);
 		setWidgetSize(in,  1, Unit.IN);
-		DelayedExecuter executer = Factory.getInstance(DelayedExecuter.class);
-		executer.runLator(() -> {
+		DelayedExecuter.get().runLator(() -> {
 			//メトリックス計測結果を保存
-			Metrics met = Factory.getInstance(Metrics.class);
+			Metrics met = Metrics.get();
 			met.setEmSize(em.getOffsetWidth() / 10.0);
 			met.setExSize(ex.getOffsetWidth() / 10.0);
 			met.setInSize(in.getOffsetWidth() /  1.0);

@@ -81,6 +81,16 @@ public class UiNodeBuilder {
 		return this;
 	}
 
+	public UiNodeBuilder locate(Rect rect) {
+		UiNode node = stack.peek();
+		node.setBounds(
+				Length.pxOf(rect.getLeft()), Length.pxOf(rect.getTop()),
+				null, null,
+				Length.pxOf(rect.getWidth()), Length.pxOf(rect.getHeight())
+				);
+		return this;
+	}
+
 	private Length encode(double value) {
 		if (Double.isNaN(value)) {
 			return null;

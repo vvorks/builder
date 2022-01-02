@@ -5,7 +5,7 @@ import com.github.vvorks.builder.server.expression.Expression;
 
 public abstract class SqlWriter implements Expression.Visitor<Object, String> {
 
-	public static SqlWriter getWriter() {
+	public static SqlWriter get() {
 		return Factory.getInstance(SqlWriter.class);
 	}
 

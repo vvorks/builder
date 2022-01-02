@@ -174,9 +174,9 @@ public class ClassExtender {
 	@Autowired
 	private ExpressionBuilder builder;
 
-	private SqlWriter sqlWriter = SqlWriter.getWriter();
+	private SqlWriter sqlWriter = SqlWriter.get();
 
-	private SqlHelper sqlHelper = SqlHelper.getHelper();
+	private SqlHelper sqlHelper = SqlHelper.get();
 
 	private final Map<Integer, ExprEntry> entries = new LinkedHashMap<>();
 

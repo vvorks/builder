@@ -12,6 +12,7 @@ import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Callback;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.CacheMap;
+import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.github.vvorks.builder.common.util.IntRange;
 
 public class BuilderRpcDataSource extends DataSource {
@@ -56,7 +57,11 @@ public class BuilderRpcDataSource extends DataSource {
 
 	@Override
 	public void onAttached() {
-		reload();
+		if (!loaded) {
+			reload();
+		} else {
+			DelayedExecuter.get().runLator(() -> notifyToApps());
+		}
 	}
 
 	private void reload() {

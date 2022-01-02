@@ -90,7 +90,7 @@ public class FieldExtender {
 	@Autowired
 	private EnumValueExtender enumValueExtender;
 
-	private SqlHelper sqlHelper = SqlHelper.getHelper();
+	private SqlHelper sqlHelper = SqlHelper.get();
 
 	public String getTitleOrName(FieldContent fld) {
 		if (!Strings.isEmpty(fld.getTitle())) {

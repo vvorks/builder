@@ -1,7 +1,5 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.common.lang.Factory;
-
 public class UiRoot extends UiNode {
 
 	private DomDocument document;
@@ -32,12 +30,12 @@ public class UiRoot extends UiNode {
 
 	@Override
 	protected int getParentWidthPx() {
-		return Factory.getInstance(Metrics.class).getScreenWidth();
+		return Metrics.get().getScreenWidth();
 	}
 
 	@Override
 	protected int getParentHeightPx() {
-		return Factory.getInstance(Metrics.class).getScreenHeight();
+		return Metrics.get().getScreenHeight();
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Callback;
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.net.JsonRpcs;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
@@ -147,8 +146,7 @@ public class JsonRpcClient implements WebSocketHandler {
 			send(id, msg);
 			LOGGER.info("RPC: SEND REQ %s", getShortName(method, id));
 			if (timeout > 0) {
-				DelayedExecuter context = Factory.getInstance(DelayedExecuter.class);
-				context.runAfter(timeout, () -> {
+				DelayedExecuter.get().runAfter(timeout, () -> {
 					List<RequestInfo> timeouts = removeTimeoutWaitings();
 					for (RequestInfo req : timeouts) {
 						try {

@@ -201,7 +201,7 @@ public abstract class SqlHelper {
 
 	protected static final char SINGLE_QUOTE = '\'';
 
-	public static SqlHelper getHelper() {
+	public static SqlHelper get() {
 		return Factory.getInstance(SqlHelper.class);
 	}
 

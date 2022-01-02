@@ -21,7 +21,7 @@ public class ListDataSource extends DataSource {
 
 	@Override
 	public void setCriteria(Json criteria) {
-		notifyToApps();
+		//TODO create sublist
 	}
 
 	@Override

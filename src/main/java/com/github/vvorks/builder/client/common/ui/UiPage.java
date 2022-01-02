@@ -12,6 +12,8 @@ public abstract class UiPage extends UiNode {
 
 	private UiApplication application;
 
+	private boolean initialized;
+
 	protected UiPage(String name, UiApplication app) {
 		super(name);
 		Asserts.requireNotNull(app);
@@ -20,7 +22,6 @@ public abstract class UiPage extends UiNode {
 		setTop(Length.ZERO);
 		setRight(Length.ZERO);
 		setBottom(Length.ZERO);
-		initialize();
 	}
 
 	protected UiPage(UiPage src) {
@@ -47,6 +48,10 @@ public abstract class UiPage extends UiNode {
 
 	@Override
 	public void onMount() {
+		if (!initialized) {
+			initialize();
+			initialized = true;
+		}
 		super.onMount();
 		injectRegisteredStyles();
 	}
