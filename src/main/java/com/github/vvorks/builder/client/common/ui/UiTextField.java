@@ -71,11 +71,12 @@ public class UiTextField extends UiField {
 	private int onKeyDownInNone(UiNode target, int keyCode, int charCode, int mods, int time) {
 		DomDocument doc = getDocument();
 		int result;
-		if (isCharKey(keyCode, mods) || isBsKey(keyCode, mods) || isImeKey(keyCode, mods)) {
+		int k = keyCode|mods;
+		if (isCharKey(keyCode, mods) || k == KeyCodes.BACKSPACE || isImeKey(keyCode, mods)) {
 			editState = EditState.HALF;
 			saveText = text;
 			setText("");
-			doc.startEditing(this, "", isBsKey(keyCode, mods));
+			doc.startEditing(this, "", k == KeyCodes.BACKSPACE);
 			result = EVENT_AFFECTED;
 		} else if (isEditKey(keyCode, mods)) {
 			editState = EditState.FULL;

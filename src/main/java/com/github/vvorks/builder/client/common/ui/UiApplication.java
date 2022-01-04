@@ -22,6 +22,7 @@ import com.github.vvorks.builder.common.lang.Creator;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.common.util.DelayedExecuter;
 
 public class UiApplication implements EventHandler {
 
@@ -261,11 +262,12 @@ public class UiApplication implements EventHandler {
 		UiPage page = newFocusNode.getPage();
 		Asserts.requireNotNull(page);
 		LivePage p = getLivePageOf(page);
-		UiNode oldFocusNode = p != null ? p.focus : null;
+		Asserts.requireNotNull(p);
+		UiNode oldFocusNode = p.focus;
 		if (!newFocusNode.isFocusable()) {
 			newFocusNode = oldFocusNode;
 		} else if (oldFocusNode != newFocusNode) {
-			LOGGER.debug("FOCUS %s -> %s", getQualifiedName(oldFocusNode, page), getQualifiedName(newFocusNode, page));
+			LOGGER.info("FOCUS %s -> %s", getQualifiedName(oldFocusNode, page), getQualifiedName(newFocusNode, page));
 			notifyFocus(oldFocusNode, newFocusNode);
 			p.focus = newFocusNode;
 			adjustAxis(p, axis);
@@ -273,7 +275,7 @@ public class UiApplication implements EventHandler {
 		return newFocusNode;
 	}
 
-	private static Point DUMMY_POINT = new Point();
+	private static final Point DUMMY_POINT = new Point();
 
 	public Point getAxis(UiNode node) {
 		Asserts.requireNotNull(node);
@@ -311,14 +313,23 @@ public class UiApplication implements EventHandler {
 
 	public void attachDataSource(UiNode node, DataSource ds) {
 		Set<UiNode> nodes = getAttachedNodes(ds);
+		if (nodes.isEmpty()) {
+			ds.attach(this);
+		}
 		nodes.add(node);
-		ds.attach(this);
+		LOGGER.debug("★");
+		if (ds.isLoaded()) {
+			LOGGER.debug("★★");
+			DelayedExecuter.get().runLator(() -> processDataSourceUpdated(ds, 0));
+		}
 	}
 
 	public void detachDataSource(UiNode node, DataSource ds) {
 		Set<UiNode> nodes = getAttachedNodes(ds);
-		ds.detach(this);
 		nodes.remove(node);
+		if (nodes.isEmpty()) {
+			ds.detach(this);
+		}
 	}
 
 	private Set<UiNode> getAttachedNodes(DataSource ds) {
@@ -393,11 +404,9 @@ public class UiApplication implements EventHandler {
 			UiNode target = page.focus;
 			UiNode node = target;
 			int result = node.onKeyDown(target, keyCode, charCode, mods, time);
-			LOGGER.debug("%s.onKeyDown %d", node.getFullName(), result);
 			while ((result & EVENT_CONSUMED) == 0 && node.getParent() != null) {
 				node = node.getParent();
 				result |= node.onKeyDown(target, keyCode, charCode, mods, time);
-				LOGGER.debug("%s.onKeyDown %d", node.getFullName(), result);
 			}
 			if ((result & EVENT_CONSUMED) == 0) {
 				//UiNode側の処理でフォーカスが変化している場合があるので、再取得
@@ -722,6 +731,24 @@ public class UiApplication implements EventHandler {
 		}
 	}
 
+	private int processDataSourceUpdatedTo(DataSource ds, UiNode node, int time) {
+		LOGGER.info("processDataSourceUpdatedTo(%s, %s, %d)", ds, node, time);
+		try {
+			int result = EVENT_IGNORED;
+			result |= node.onDataSourceUpdated(ds);
+			result |= this.onDataSourceUpdated(ds);
+			if ((result & EVENT_AFFECTED) != 0) {
+				refresh();
+			}
+			return result;
+		} catch (Exception|AssertionError err) {
+			LOGGER.error(err);
+			throw err;
+		} finally {
+			LOGGER.feed();
+		}
+	}
+
 	private UiNode getMouseTarget(Point pt) {
 		LivePage p = getLivePage(null);
 		UiNode node;
@@ -750,18 +777,6 @@ public class UiApplication implements EventHandler {
 	}
 
 	private void refresh() {
-//		if (ClientSettings.DEBUG) {
-//			LivePage p = getLivePage(null);
-//			if (p != null) {
-//				StringBuilder sb = new StringBuilder();
-//				for (UiNode node : p.page.getDescendantsIf(d -> d.isChanged())) {
-//					sb.append(",").append(node.getQualifiedName(p.page));
-//				}
-//				if (sb.length() > 0) {
-//					LOGGER.debug("changed %s", sb.substring(1));
-//				}
-//			}
-//		}
 		root.sync();
 		busy = true;
 	}
@@ -809,11 +824,6 @@ public class UiApplication implements EventHandler {
 			break;
 		case KeyCodes.ENTER:
 			result |= clearClicking() | setClicking(target);
-			break;
-		case KeyCodes.SPACE:
-			if (ClientSettings.DEBUG) {
-				LOGGER.debug(root.toString());
-			}
 			break;
 		default:
 			break;

@@ -89,8 +89,11 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	/** 削除済みフラグ */
 	protected static final int FLAGS_DELETED		= 0x00000040;
 
+	/** 削除済みフラグ */
+	protected static final int FLAGS_MOUNTED		= 0x00000080;
+
 	/** 予約領域(下位１６ビットの未使用分) */
-	protected static final int FLAGS_RESERVED		= 0x0000FF80;
+	protected static final int FLAGS_RESERVED		= 0x0000FF00;
 
 	/** ノード固有のフラグ領域(上位１６ビット) */
 	protected static final int FLAGS_CUSTOM			= 0xFFFF0000;
@@ -330,6 +333,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 			sb.append("_").append(s);
 		}
 		return sb.substring(1);
+	}
+
+	public boolean isMounted() {
+		return isFlagsOn(FLAGS_MOUNTED);
+	}
+
+	public void setMounted(boolean mounted) {
+		setFlags(FLAGS_MOUNTED, mounted, 0);
 	}
 
 	public boolean isFocusable() {
@@ -960,13 +971,17 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	 * @param ds データソース
 	 */
 	public void setDataSource(DataSource ds) {
-		UiApplication app = getApplication();
-		if (this.dataSource != null) {
-			app.detachDataSource(this, this.dataSource);
-		}
-		this.dataSource = ds;
-		if (this.dataSource != null) {
-			app.attachDataSource(this, this.dataSource);
+		if (isMounted()) {
+			UiApplication app = getApplication();
+			if (this.dataSource != null) {
+				app.detachDataSource(this, this.dataSource);
+			}
+			this.dataSource = ds;
+			if (this.dataSource != null) {
+				app.attachDataSource(this, this.dataSource);
+			}
+		} else {
+			this.dataSource = ds;
 		}
 	}
 
@@ -1860,6 +1875,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	}
 
 	public void onMount() {
+		setMounted(true);
+		if (this.dataSource != null) {
+			getApplication().attachDataSource(this, this.dataSource);
+		}
 		UiNode child = firstChild;
 		while (child != null) {
 			child.onMount();
@@ -1874,6 +1893,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 			child.onUnmount();
 			child = child.getNextSibling();
 		}
+		if (this.dataSource != null) {
+			getApplication().detachDataSource(this, this.dataSource);
+		}
+		setMounted(false);
 	}
 
 	public void onFocus(UiNode target, boolean gained, UiNode other) {

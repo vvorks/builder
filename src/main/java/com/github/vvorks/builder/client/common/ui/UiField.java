@@ -53,16 +53,6 @@ public class UiField extends UiNode {
 	}
 
 	/**
-	 * BackSpaceキーか否かを判定する
-	 */
-	public static boolean isBsKey(int keyCode, int mods) {
-		if ((mods & KeyCodes.MOD_AC) != 0) {
-			return false;
-		}
-		return keyCode == KeyCodes.BACKSPACE;
-	}
-
-	/**
 	 * IME入力キーか否かを判定する
 	 *
 	 * @param keyCode

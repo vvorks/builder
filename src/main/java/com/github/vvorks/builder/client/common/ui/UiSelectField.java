@@ -1,7 +1,11 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.github.vvorks.builder.client.ui.BuilderUiApplication;
 import com.github.vvorks.builder.common.json.Json;
+import com.github.vvorks.builder.common.lang.Iterables;
 
 public class UiSelectField extends UiField implements DataField {
 
@@ -28,19 +32,11 @@ public class UiSelectField extends UiField implements DataField {
 
 	}
 
-	/** 選択状態 */
-	private enum SelectState {
-		/** 非選択中 */	NONE,
-		/** 　選択中 */	PICK,
-	}
-
 	private transient DataRecord rec;
 
 	private transient DataRecordAgent agent;
 
 	private transient String title;
-
-	private transient SelectState selectState;
 
 	private transient UiInnerText label;
 
@@ -50,7 +46,6 @@ public class UiSelectField extends UiField implements DataField {
 		super(name);
 		setFocusable(true);
 		this.agent = agent;
-		selectState = SelectState.NONE;
 		label = (UiInnerText) appendChild(new UiInnerText("inner"));
 		image = (UiImage) appendChild(new UiImage());
 		Length arrowSize = Length.pxOf(16);
@@ -64,7 +59,6 @@ public class UiSelectField extends UiField implements DataField {
 		this.rec = src.rec;
 		this.agent = src.agent;
 		this.title = src.title;
-		this.selectState = SelectState.NONE;
 		this.label = (UiInnerText) getFirstChild();
 		this.image = (UiImage) this.label.getNextSibling();
 	}
@@ -103,31 +97,28 @@ public class UiSelectField extends UiField implements DataField {
 	}
 
 	@Override
-	public void onFocus(UiNode target, boolean gained, UiNode other) {
-		if (this == target) {
-			if (selectState != SelectState.NONE && !gained) {
-				//TODO PICKキャンセル
-				selectState = SelectState.NONE;
-			}
-		}
-		super.onFocus(target, gained, other);
-	}
-
-	@Override
 	public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
 		int result;
-		if (isCharKey(keyCode, mods) || isBsKey(keyCode, mods) || isImeKey(keyCode, mods)) {
-			selectState = SelectState.PICK;
+		int k = keyCode|mods;
+		if (isCharKey(keyCode, mods) || k == KeyCodes.BACKSPACE || isImeKey(keyCode, mods)) {
 			showPopup(true);
 			result = EVENT_AFFECTED;
-		} else if (isEditKey(keyCode, mods)) {
-			selectState = SelectState.PICK;
+		} else if (isEditKey(keyCode, mods) || k == (KeyCodes.MOD_ALT|KeyCodes.DOWN)) {
 			showPopup(false);
 			result = EVENT_AFFECTED;
 		} else {
 			result = EVENT_IGNORED;
 		}
+		if ((result & EVENT_AFFECTED) != 0 && keyCode == KeyCodes.ENTER) {
+			result |= EVENT_CONSUMED;
+		}
 		return result;
+	}
+
+	@Override
+	public int onMouseClick(UiNode target, int x, int y, int mods, int time) {
+		showPopup(false);
+		return EVENT_EATEN;
 	}
 
 	private void showPopup(boolean isEdit) {
@@ -154,7 +145,7 @@ public class UiSelectField extends UiField implements DataField {
 		private boolean hintUnder;
 
 		public Popup(UiApplication app, UiSelectField owner, boolean isEdit) {
-			super("test", app);
+			super("popup", app);
 			this.owner = owner;
 			this.isEdit = isEdit;
 			Rect pivot = owner.getRectangleOnRoot();
@@ -222,6 +213,31 @@ public class UiSelectField extends UiField implements DataField {
 		}
 
 		@Override
+		public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
+			int result = EVENT_IGNORED;
+			int k = keyCode|mods;
+			Set<UiNode> targetAns = new HashSet<>();
+			Iterables.addAll(targetAns, target.getAncestors());
+			if (target == hint || targetAns.contains(hint)) {
+				if (k == KeyCodes.ESCAPE) {
+					cancel();
+					result = EVENT_EATEN;
+				}
+			} else if (target == list || targetAns.contains(list)) {
+				if (k == KeyCodes.SPACE) {
+					pickup((DataField)target);
+					result = EVENT_EATEN;
+				} else if (k == KeyCodes.ESCAPE) {
+					cancel();
+					result = EVENT_EATEN;
+				} else if (isCharKey(keyCode, mods) || isImeKey(keyCode, mods)) {
+					result = EVENT_EATEN;
+				}
+			}
+			return result;
+		}
+
+		@Override
 		public int onInput(UiNode target, String data, String content, int mods, int time) {
 			if (target == hint) {
 				Json criteria = Json.createObject();
@@ -232,10 +248,17 @@ public class UiSelectField extends UiField implements DataField {
 		}
 
 		protected int onSelected(UiNode node) {
-			DataRecord candidate = ((DataField)node).getRecord();
-			owner.setValue(candidate);
-			owner.getApplication().back();
+			pickup((DataField)node);
 			return EVENT_CONSUMED;
+		}
+
+		protected void pickup(DataField field) {
+			owner.setValue(field.getRecord());
+			getApplication().back();
+		}
+
+		protected void cancel() {
+			owner.getApplication().back();
 		}
 
 	}

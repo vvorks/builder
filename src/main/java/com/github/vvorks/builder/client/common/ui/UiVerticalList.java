@@ -613,7 +613,6 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	private void prepareLines(int count, int offset) {
-		LOGGER.debug("PREPARE LINES %d %d", count, offset);
 		boolean hasFocus = hasFocus();
 		if (count <= 0 || linesPerView <= 0) {
 			deleteAfter(0);
@@ -655,11 +654,6 @@ public class UiVerticalList extends UiGroup {
 			renumberChildren(count, index);
 			reloadChildren();
 		}
-		for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
-			UiLine line = (UiLine) c;
-			LOGGER.debug("LINE %d:%s", line.getIndex(), line);
-		}
-
 	}
 
 	private void renumberChildren(int count, int index) {
