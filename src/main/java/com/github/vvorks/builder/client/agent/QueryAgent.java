@@ -33,4 +33,9 @@ public class QueryAgent extends DataRecordAgent {
 		rec.setInt(name + "QueryId", from.getInt("queryId"));
 	}
 
+	@Override
+	public void setValue(DataRecord rec, String name, DataRecord candidate) {
+		rec.setInt(name + "QueryId", candidate.getInt("queryId"));
+	}
+
 }

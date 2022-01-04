@@ -417,6 +417,35 @@ public class UiApplication implements EventHandler {
 		}
 	}
 
+	public int processInput(String data, String content, int mods, int time) {
+		LOGGER.info("processInput(%s, %s, 0x%x, %d)", data, content, mods, time);
+		try {
+			LivePage page = getLivePage();
+			//イベント配信処理
+			UiNode target = page.focus;
+			UiNode node = target;
+			int result = node.onInput(target, data, content, mods, time);
+			while ((result & EVENT_CONSUMED) == 0 && node.getParent() != null) {
+				node = node.getParent();
+				result |= node.onInput(target, data, content, mods, time);
+			}
+			if ((result & EVENT_CONSUMED) == 0) {
+				//UiNode側の処理でフォーカスが変化している場合があるので、再取得
+				UiNode focus = page.focus;
+				result |= this.onInput(focus, data, content, mods, time);
+			}
+			if ((result & EVENT_AFFECTED) != 0) {
+				refresh();
+			}
+			return result;
+		} catch (Exception|AssertionError err) {
+			LOGGER.error(err);
+			throw err;
+		} finally {
+			LOGGER.feed();
+		}
+	}
+
 	public int processKeyPress(int keyCode, int charCode, int mods, int time) {
 		LOGGER.info("processKeyPress(0x%x, 0x%x, 0x%x, %d)", keyCode, charCode, mods, time);
 		try {
@@ -865,10 +894,15 @@ public class UiApplication implements EventHandler {
 		int result = EVENT_IGNORED;
 		if (keyCode == KeyCodes.ENTER) {
 			result |= clearClicking();
-			//クリックエミュレーション。余計なお世話か？
+			//クリックエミュレーション。TODO 余計なお世話か？
 			result |= target.onMouseClick(target, 0, 0, mods, time);
 		}
 		return result;
+	}
+
+	@Override
+	public int onInput(UiNode target, String data, String content, int mods, int time) {
+		return EVENT_IGNORED;
 	}
 
 	@Override

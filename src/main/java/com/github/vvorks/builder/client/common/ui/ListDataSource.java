@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.common.util.DelayedExecuter;
 
 public class ListDataSource extends DataSource {
 
@@ -22,6 +23,12 @@ public class ListDataSource extends DataSource {
 	@Override
 	public void setCriteria(Json criteria) {
 		//TODO create sublist
+	}
+
+
+	@Override
+	public void onAttached() {
+		DelayedExecuter.get().runLator(() -> notifyToApps());
 	}
 
 	@Override

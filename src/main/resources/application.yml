@@ -22,4 +22,5 @@ logging:
   level:
     root: WARN
     com.github.vvorks.builder.server.extender: DEBUG
+    com.github.vvorks.builder.server.controller: DEBUG
 

@@ -19,6 +19,7 @@ public class UiButton extends UiNode {
 	protected UiButton(UiButton src) {
 		super(src);
 		this.text = src.text;
+		this.action = src.action;
 	}
 
 	@Override

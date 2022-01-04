@@ -34,8 +34,9 @@ public interface DomDocument {
 	 *
 	 * @param owner 編集対象ノード
 	 * @param text 初期文字列
+	 * @param fireInputEvent （疑似）InputEventを発生させる場合
 	 */
-	public void startEditing(UiNode owner, String text);
+	public void startEditing(UiNode owner, String text, boolean fireInputEvent);
 
 	/**
 	 * 編集を終了する

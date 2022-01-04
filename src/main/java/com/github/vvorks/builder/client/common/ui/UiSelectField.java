@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
 import com.github.vvorks.builder.client.ui.BuilderUiApplication;
+import com.github.vvorks.builder.common.json.Json;
 
 public class UiSelectField extends UiField implements DataField {
 
@@ -81,9 +82,23 @@ public class UiSelectField extends UiField implements DataField {
 	}
 
 	@Override
+	public DataRecord getRecord() {
+		return rec;
+	}
+
+	@Override
 	public void setRecord(DataRecord rec) {
 		this.rec = rec;
-		title = agent.getTitle(rec, getName());
+		String name = getName();
+		title = agent.getTitle(rec, name);
+		label.setText(title);
+	}
+
+	public void setValue(DataRecord candidate) {
+		String name = getName();
+		agent.setValue(rec, name, candidate);
+		agent.setTitle(rec, name, candidate);
+		title = agent.getTitle(rec, name);
 		label.setText(title);
 	}
 
@@ -101,14 +116,14 @@ public class UiSelectField extends UiField implements DataField {
 	@Override
 	public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
 		int result;
-		if (isCharKey(keyCode, mods) || isImeKey(keyCode, mods)) {
+		if (isCharKey(keyCode, mods) || isBsKey(keyCode, mods) || isImeKey(keyCode, mods)) {
 			selectState = SelectState.PICK;
 			showPopup(true);
-			result = EVENT_EATEN;
+			result = EVENT_AFFECTED;
 		} else if (isEditKey(keyCode, mods)) {
 			selectState = SelectState.PICK;
 			showPopup(false);
-			result = EVENT_EATEN;
+			result = EVENT_AFFECTED;
 		} else {
 			result = EVENT_IGNORED;
 		}
@@ -131,6 +146,10 @@ public class UiSelectField extends UiField implements DataField {
 		private int unitHeight;
 
 		private Rect popupRect;
+
+		private UiTextField hint;
+
+		private UiVerticalList list;
 
 		private boolean hintUnder;
 
@@ -157,13 +176,14 @@ public class UiSelectField extends UiField implements DataField {
 				popupRect.move(pivot.getLeft(), (screen.getHeight() - height) / 2);
 				hintUnder = false;
 			}
+			popupRect.move(32, 0); //仮
 		}
 
 		@Override
 		protected void initialize() {
 			final double NA = UiNodeBuilder.NA;
+			UiApplication app = getApplication();
 			UiNodeBuilder b = new UiNodeBuilder(this, "px");
-			UiTextField hint;
 			b.enter(new UiGroup("group"));
 				b.style(BuilderUiApplication.NOBORDER);
 				b.locate(popupRect);
@@ -178,27 +198,62 @@ public class UiSelectField extends UiField implements DataField {
 					hintTop = 0;
 					listTop = unitHeight;
 				}
-				b.enter(hint = new UiTextField("hint"));
+				b.enter(hint = new HintField("hint"));
 					b.style(BuilderUiApplication.BASIC);
 					b.locate(0, hintTop, NA, NA, width, unitHeight);
 				b.leave();
-				b.enter(new UiVerticalList("list"));
+				b.enter(list = new UiVerticalList("list"));
 					b.style(BuilderUiApplication.NOBORDER);
 					b.source(owner.getDataSource());
 					b.locate(0, listTop, NA, NA, width, listHeight);
 					b.loop(false);
 					b.flushSoon(false);
-					b.enter(new UiDataField("_title"));
+					b.enter(new UiButtonField("_title"));
 						b.style(BuilderUiApplication.BASIC);
 						b.locate(0, 0, NA, NA, width, unitHeight);
+						b.action((n) -> onSelected(n));
 					b.leave();
 				b.leave();
 			b.leave();
+			app.setFocus(hint);
 			if (isEdit) {
-				DomDocument doc = getDocument();
-				doc.startEditing(hint, "");
+				hint.startHalfEditing();
 			}
 		}
+
+		@Override
+		public int onInput(UiNode target, String data, String content, int mods, int time) {
+			if (target == hint) {
+				Json criteria = Json.createObject();
+				criteria.setString("hint", content);
+				list.getDataSource().setCriteria(criteria);
+			}
+			return EVENT_IGNORED;
+		}
+
+		protected int onSelected(UiNode node) {
+			DataRecord candidate = ((DataField)node).getRecord();
+			owner.setValue(candidate);
+			owner.getApplication().back();
+			return EVENT_CONSUMED;
+		}
+
+	}
+
+	private static class HintField extends UiTextField {
+
+		public HintField(String name) {
+			super(name);
+		}
+
+		public HintField(HintField src) {
+			super(src);
+		}
+
+		public HintField copy() {
+			return new HintField(this);
+		}
+
 	}
 
 }

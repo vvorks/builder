@@ -30,7 +30,12 @@ public class DataTypeAgent extends DataRecordAgent {
 
 	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setString(name, from.getString("valueId"));
+		rec.setString(name, from.getString("value"));
+	}
+
+	@Override
+	public void setValue(DataRecord rec, String name, DataRecord candidate) {
+		rec.setString(name, candidate.getString("value"));
 	}
 
 }

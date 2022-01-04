@@ -114,6 +114,17 @@ public class DomPanel extends FocusPanel {
 		}
 	}
 
+	public void onInput(InputEvent event) {
+		String data = event.getData();
+		String content = event.getContent();
+		int mods = getModifier(event, GM_KEY);
+		int timestamp = getTimeStamp(event);
+		int result = app.processInput(data, content, mods, timestamp);
+		if ((result & UiApplication.EVENT_THROUGH) == UiApplication.EVENT_CONSUMED) {
+			event.preventDefault();
+		}
+	}
+
 	public void onMouseDown(MouseDownEvent event) {
 		int x = event.getClientX();
 		int y = event.getClientY();
@@ -256,7 +267,7 @@ public class DomPanel extends FocusPanel {
 		app.processLoad(tag, parameters);
 	}
 
-	public void startEditing(Rect r, UiAtomicStyle style, String text) {
+	public void startEditing(Rect r, UiAtomicStyle style, String text, boolean fireInputEvent) {
 		imePanel.setStyle(style);
 		imePanel.setText(text);
 		int len = text.length();
@@ -264,6 +275,9 @@ public class DomPanel extends FocusPanel {
 			imePanel.setSelection(len, len);
 		}
 		imePanel.show(r.getLeft(), r.getTop(), r.getWidth(), r.getHeight());
+		if (fireInputEvent) {
+			app.processInput("", text, 0, newTimestamp());
+		}
 	}
 
 	public String endEditing() {

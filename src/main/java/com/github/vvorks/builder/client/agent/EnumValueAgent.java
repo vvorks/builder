@@ -34,4 +34,10 @@ public class EnumValueAgent extends DataRecordAgent {
 		rec.setString(name + "ValueId", from.getString("valueId"));
 	}
 
+	@Override
+	public void setValue(DataRecord rec, String name, DataRecord candidate) {
+		rec.setInt(name + "OwnerEnumId", candidate.getInt("ownerEnumId"));
+		rec.setString(name + "ValueId", candidate.getString("valueId"));
+	}
+
 }

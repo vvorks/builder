@@ -44,6 +44,13 @@ public class {{className}}Agent extends DataRecordAgent {
 		{{/each}}
 	}
 
+	@Override
+	public void setValue(DataRecord rec, String name, DataRecord candidate) {
+		{{#each keys}}
+		rec.set{{typeSuffix}}(name + "{{upperName}}", candidate.get{{typeSuffix}}("{{fieldName}}"));
+		{{/each}}
+	}
+
 }
 {{/java}}
 {{/each}}
@@ -89,7 +96,12 @@ public class {{enumName}}Agent extends DataRecordAgent {
 
 	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
-		rec.set{{encodeSuffix}}(name, from.get{{encodeSuffix}}("valueId"));
+		rec.set{{encodeSuffix}}(name, from.get{{encodeSuffix}}("value"));
+	}
+
+	@Override
+	public void setValue(DataRecord rec, String name, DataRecord candidate) {
+		rec.set{{encodeSuffix}}(name, candidate.get{{encodeSuffix}}("value"));
 	}
 
 }

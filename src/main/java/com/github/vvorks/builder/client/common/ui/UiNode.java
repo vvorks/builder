@@ -396,6 +396,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 		getApplication().releaseCapture();
 	}
 
+	public void deleteAfter(int index) {
+		for (UiNode c = getChild(index); c != null; c = c.getNextSibling()) {
+			deleteChild(c);
+		}
+	}
+
 	/**
 	 * 論理削除（実削除は同期時に行う）
 	 *
@@ -1780,6 +1786,11 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	@Override
 	public int onKeyUp(UiNode target, int keyCode, int charCode, int mods, int time) {
 		return UiNode.EVENT_IGNORED;
+	}
+
+	@Override
+	public int onInput(UiNode target, String data, String content, int mods, int time) {
+		return EVENT_IGNORED;
 	}
 
 	@Override

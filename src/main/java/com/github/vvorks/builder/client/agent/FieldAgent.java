@@ -33,4 +33,9 @@ public class FieldAgent extends DataRecordAgent {
 		rec.setInt(name + "FieldId", from.getInt("fieldId"));
 	}
 
+	@Override
+	public void setValue(DataRecord rec, String name, DataRecord candidate) {
+		rec.setInt(name + "FieldId", candidate.getInt("fieldId"));
+	}
+
 }

@@ -5,6 +5,7 @@ public interface EventHandler {
 	int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time);
 	int onKeyPress(UiNode target, int keyCode, int charCode, int mods, int time);
 	int onKeyUp(UiNode target, int keyCode, int charCode, int mods, int time);
+	int onInput(UiNode target, String data, String content, int mods, int time);
 	int onMouseMove(UiNode target, int x, int y, int mods, int time);
 	int onMouseDown(UiNode target, int x, int y, int mods, int time);
 	int onMouseUp(UiNode target, int x, int y, int mods, int time);

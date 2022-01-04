@@ -6,8 +6,11 @@ import java.util.Date;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiVerticalList extends UiGroup {
+
+	private static final Logger LOGGER = Logger.createLogger(UiVerticalList.class);
 
 	/**
 	 * 行IDを示す特殊カラム名
@@ -407,7 +410,7 @@ public class UiVerticalList extends UiGroup {
 		if (ds.isLoaded()) {
 			int count = ds.getCount();
 			if (attentionIndex >= count) {
-				attentionIndex = count - 1;
+				attentionIndex = Math.max(0, count - 1);
 			}
 			prepareLines(count, attentionIndex);
 		} else {
@@ -610,9 +613,10 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	private void prepareLines(int count, int offset) {
+		LOGGER.debug("PREPARE LINES %d %d", count, offset);
 		boolean hasFocus = hasFocus();
 		if (count <= 0 || linesPerView <= 0) {
-			clearChildren();
+			deleteAfter(0);
 			if (hasFocus) {
 				setFocus(this);
 			}
@@ -632,14 +636,12 @@ public class UiVerticalList extends UiGroup {
 					scrollTop = lineHeight * VIEW_MARGIN;
 				}
 			} else {
-				for (int i = 0; i < oldLines - newLines; i++) {
-					removeFirstChild();
-				}
+				deleteAfter(newLines);
 				if (oldLines >= linesPerView && newLines < linesPerView) {
 					scrollTop = 0;
 				}
 			}
-			int index = hasMargin ? lap(offset - VIEW_MARGIN, count) : offset;
+			int index = hasMargin ? lap(offset + count - VIEW_MARGIN, count) : offset;
 			renumberChildren(count, index);
 			relocateChildren();
 			if (scrollTop >= 0) {
@@ -649,13 +651,21 @@ public class UiVerticalList extends UiGroup {
 				setFocus(app.getFirstFocus(this));
 			}
 		} else {
+			int index = hasMargin ? lap(offset + count - VIEW_MARGIN, count) : offset;
+			renumberChildren(count, index);
 			reloadChildren();
 		}
+		for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
+			UiLine line = (UiLine) c;
+			LOGGER.debug("LINE %d:%s", line.getIndex(), line);
+		}
+
 	}
 
 	private void renumberChildren(int count, int index) {
 		for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
-			((UiLine)c).setIndex(index);
+			UiLine line = (UiLine) c;
+			line.setIndex(index);
 			index = lap(index + 1, count);
 		}
 	}

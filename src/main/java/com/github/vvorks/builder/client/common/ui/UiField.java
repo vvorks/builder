@@ -32,6 +32,7 @@ public class UiField extends UiNode {
 		return	(KeyCodes.KEY_A <= keyCode && keyCode <= KeyCodes.KEY_Z) ||
 				(KeyCodes.KEY_0 <= keyCode && keyCode <= KeyCodes.KEY_9) ||
 				(KeyCodes.NUM_0 <= keyCode && keyCode <= KeyCodes.NUM_9) ||
+				(keyCode == KeyCodes.SPACE                             ) ||
 				(keyCode == KeyCodes.MINUS                             ) ||
 				(keyCode == KeyCodes.CARET                             ) ||
 				(keyCode == KeyCodes.YEN                               ) ||
@@ -49,6 +50,16 @@ public class UiField extends UiNode {
 				(keyCode == KeyCodes.NUM_MINUS                         ) ||
 				(keyCode == KeyCodes.NUM_PERIOD                        ) ||
 				(keyCode == KeyCodes.NUM_DIVISION                      )  ;
+	}
+
+	/**
+	 * BackSpaceキーか否かを判定する
+	 */
+	public static boolean isBsKey(int keyCode, int mods) {
+		if ((mods & KeyCodes.MOD_AC) != 0) {
+			return false;
+		}
+		return keyCode == KeyCodes.BACKSPACE;
 	}
 
 	/**

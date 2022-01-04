@@ -92,13 +92,9 @@ public class ListTestPage extends UiPage {
 		b.leave();
 	}
 
-	private DataSource createDataSource(JsonRpcClient rpc) {
-		return new BuilderRpcDataSource(rpc, "listClass", 20, 100);
-	}
-
 	private DataSource createDataSource() {
 		List<Json> list = new ArrayList<>();
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 3; i++) {
 			Json json = Json.createObject();
 			json.setString("_key", i);
 			json.setString("title", "title " + i);

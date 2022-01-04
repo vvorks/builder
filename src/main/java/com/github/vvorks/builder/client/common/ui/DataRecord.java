@@ -74,6 +74,36 @@ public interface DataRecord {
 	}
 
 	/**
+	 * 指定したカラムのint値を取得する
+	 *
+	 * @param column カラム名
+	 * @return 値
+	 */
+	public default int getInt(String column) {
+		return getInt(column, DEFAULT_INT);
+	}
+
+	/**
+	 * 指定したカラムのlong値を取得する
+	 *
+	 * @param column カラム名
+	 * @return 値
+	 */
+	public default long getLong(String column) {
+		return getLong(column, DEFAULT_LONG);
+	}
+
+	/**
+	 * 指定したカラムのfloat値を取得する
+	 *
+	 * @param column カラム名
+	 * @return 値
+	 */
+	public default float getFloat(String column) {
+		return getFloat(column, DEFAULT_FLOAT);
+	}
+
+	/**
 	 * 指定したカラムのdouble値を取得する
 	 *
 	 * @param column カラム名
@@ -81,6 +111,26 @@ public interface DataRecord {
 	 */
 	public default double getDouble(String column) {
 		return getDouble(column, DEFAULT_DOUBLE);
+	}
+
+	/**
+	 * 指定したカラムのdeciamal値を取得する
+	 *
+	 * @param column カラム名
+	 * @return 値
+	 */
+	public default BigDecimal getDecimal(String column) {
+		return getDecimal(column, DEFAULT_DECIMAL);
+	}
+
+	/**
+	 * 指定したカラムのdeciamal値を取得する
+	 *
+	 * @param column カラム名
+	 * @return 値
+	 */
+	public default Date getDate(String column) {
+		return getDate(column, DEFAULT_DATE);
 	}
 
 	/**

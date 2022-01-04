@@ -4,6 +4,7 @@ import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.client.gwt.ui.DomPanel;
 import com.github.vvorks.builder.client.gwt.ui.ImePanel;
+import com.github.vvorks.builder.client.gwt.ui.InputEvent;
 import com.github.vvorks.builder.common.net.URLFragment;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.google.gwt.animation.client.AnimationScheduler;
@@ -90,6 +91,7 @@ public class GwtEntryPoint implements EntryPoint {
 		p.addKeyDownHandler(event -> domPanel.onKeyDown(event));
 		p.addKeyPressHandler(event -> domPanel.onKeyPress(event));
 		p.addKeyUpHandler(event -> domPanel.onKeyUp(event));
+		p.addDomHandler(event -> domPanel.onInput(event), InputEvent.getType());
 		p.addMouseDownHandler(event -> domPanel.onMouseDown(event));
 		p.addMouseMoveHandler(event -> domPanel.onMouseMove(event));
 		p.addMouseUpHandler(event -> domPanel.onMouseUp(event));

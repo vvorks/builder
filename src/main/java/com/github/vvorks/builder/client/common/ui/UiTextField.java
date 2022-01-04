@@ -71,17 +71,17 @@ public class UiTextField extends UiField {
 	private int onKeyDownInNone(UiNode target, int keyCode, int charCode, int mods, int time) {
 		DomDocument doc = getDocument();
 		int result;
-		if (isCharKey(keyCode, mods) || isImeKey(keyCode, mods)) {
+		if (isCharKey(keyCode, mods) || isBsKey(keyCode, mods) || isImeKey(keyCode, mods)) {
 			editState = EditState.HALF;
 			saveText = text;
 			setText("");
-			doc.startEditing(this, "");
+			doc.startEditing(this, "", isBsKey(keyCode, mods));
 			result = EVENT_AFFECTED;
 		} else if (isEditKey(keyCode, mods)) {
 			editState = EditState.FULL;
 			saveText = text;
 			setText("");
-			doc.startEditing(this, saveText);
+			doc.startEditing(this, saveText, false);
 			result = EVENT_EATEN;
 		} else {
 			result = EVENT_IGNORED;
@@ -115,6 +115,14 @@ public class UiTextField extends UiField {
 			result = EVENT_IGNORED;
 		}
 		return result;
+	}
+
+	public void startHalfEditing() {
+		DomDocument doc = getDocument();
+		editState = EditState.HALF;
+		saveText = text;
+		setText("");
+		doc.startEditing(this, "", false);
 	}
 
 }

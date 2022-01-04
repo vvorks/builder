@@ -8,6 +8,16 @@ public abstract class DataRecordAgent {
 		return rec.getString(name + "_title");
 	}
 
+	public void setTitle(DataRecord rec, String name, Json from) {
+		rec.setString(name + "_title", from.getString("_title"));
+	}
+
+	public void setTitle(DataRecord rec, String name, DataRecord candidate) {
+		rec.setString(name + "_title", candidate.getString("_title"));
+	}
+
 	public abstract void setValue(DataRecord rec, String name, Json from);
+
+	public abstract void setValue(DataRecord rec, String name, DataRecord candidate);
 
 }

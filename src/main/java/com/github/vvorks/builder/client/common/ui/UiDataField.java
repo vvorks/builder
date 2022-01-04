@@ -19,6 +19,11 @@ public class UiDataField extends UiTextField implements DataField {
 	}
 
 	@Override
+	public DataRecord getRecord() {
+		return rec;
+	}
+
+	@Override
 	public void setRecord(DataRecord rec) {
 		this.rec = rec;
 		super.setText(rec.getString(getName()));

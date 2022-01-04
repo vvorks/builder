@@ -245,7 +245,7 @@ public class GwtDomDocument implements DomDocument {
 	}
 
 	@Override
-	public void startEditing(UiNode owner, String text) {
+	public void startEditing(UiNode owner, String text, boolean fireInputEvent) {
 		Rect absRect = owner.getRectangleOnRoot();
 		UiAtomicStyle style = owner.getStyle().getAtomicStyleOf(owner);
 		int w = absRect.getWidth();
@@ -255,7 +255,7 @@ public class GwtDomDocument implements DomDocument {
 				+style.getBorderTop().px(h),
 				-style.getBorderRight().px(w),
 				-style.getBorderBottom().px(h));
-		domPanel.startEditing(absRect, style, text);
+		domPanel.startEditing(absRect, style, text, fireInputEvent);
 	}
 
 	/**

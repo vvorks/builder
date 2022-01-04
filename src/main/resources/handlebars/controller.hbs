@@ -226,7 +226,7 @@ public class {{upperLastName}}RpcController {
 		} else {
 			count = 0;
 			for ({{eref.enumName}} e : {{eref.enumName}}.values()) {
-				if (e.get_title().indexOf(hint) >= 0) {
+				if (fuzzyMatch(e.get_title(), hint)) {
 					count++;
 				}
 			}
@@ -241,7 +241,7 @@ public class {{upperLastName}}RpcController {
 		} else {
 			List<{{eref.enumName}}Subject> contents = new ArrayList<>();
 			for ({{eref.enumName}} e : {{eref.enumName}}.values()) {
-				if (Strings.isEmpty(hint) || e.get_title().indexOf(hint) >= 0) {
+				if (Strings.isEmpty(hint) || fuzzyMatch(e.get_title(), hint)) {
 					if (offset > 0) {
 						offset--;
 					} else if (limit > 0) {
@@ -329,6 +329,14 @@ public class {{upperLastName}}RpcController {
 	{{/each}}
 
 	{{/each}}
+
+	/**
+	 * 文字列部分比較関数
+	 */
+	protected boolean fuzzyMatch(String text, String part) {
+		//TODO 全角半角同一視、（ひらがな、カタカナも）。但し、SQL側ロジックと合わせる事
+		return text.toLowerCase().indexOf(part.toLowerCase()) >= 0;
+	}
 
 }
 {{/java}}

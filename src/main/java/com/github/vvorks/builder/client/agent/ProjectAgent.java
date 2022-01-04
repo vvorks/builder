@@ -33,4 +33,9 @@ public class ProjectAgent extends DataRecordAgent {
 		rec.setInt(name + "ProjectId", from.getInt("projectId"));
 	}
 
+	@Override
+	public void setValue(DataRecord rec, String name, DataRecord candidate) {
+		rec.setInt(name + "ProjectId", candidate.getInt("projectId"));
+	}
+
 }
