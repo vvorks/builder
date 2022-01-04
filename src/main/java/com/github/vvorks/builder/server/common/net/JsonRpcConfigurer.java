@@ -37,7 +37,6 @@ public class JsonRpcConfigurer implements WebSocketConfigurer {
 		JsonRpcServer server = jsonRpcServer();
 		for (String path : pathSet) {
 			registry.addHandler(server, path);
-			LOGGER.debug("BIND PATH %s on WebSocketServer", path);
 		}
 	}
 

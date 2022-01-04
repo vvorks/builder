@@ -986,7 +986,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	}
 
 	public int setHorizontalScroll(int offset) {
-		LOGGER.debug("setHorizontalScroll %d", offset);
 		int result = EVENT_IGNORED;
 		int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
 		int count = getScrollWidthPx();
@@ -999,7 +998,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	}
 
 	public int setVerticalScroll(int offset) {
-		LOGGER.debug("setVerticalScroll %d", offset);
 		int result = EVENT_IGNORED;
 		int limit = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
 		int count = getScrollHeightPx();

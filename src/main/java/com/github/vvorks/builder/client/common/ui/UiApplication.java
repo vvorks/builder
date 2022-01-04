@@ -317,9 +317,7 @@ public class UiApplication implements EventHandler {
 			ds.attach(this);
 		}
 		nodes.add(node);
-		LOGGER.debug("★");
 		if (ds.isLoaded()) {
-			LOGGER.debug("★★");
 			DelayedExecuter.get().runLator(() -> processDataSourceUpdated(ds, 0));
 		}
 	}

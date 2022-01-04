@@ -96,7 +96,6 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	public Expression visitChildren(ExprNode node, Expression unused) throws ParseException {
 		Expression result = null;
 		for (ExprNode child : node.getChildren()) {
-			LOGGER.debug("accept %s", child.getClass().getSimpleName());
 			result = child.jjtAccept(this, unused);
 		}
 		return result;

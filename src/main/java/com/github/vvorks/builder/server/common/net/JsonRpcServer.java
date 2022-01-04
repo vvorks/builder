@@ -100,7 +100,6 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 		if (prevInfo != null) {
 			LOGGER.warn("%s ignored", method);
 		} else {
-			LOGGER.debug("%s mapped to path %s method %s", method, path, name);
 			methodMap.put(key, new Invoker(controller, method));
 		}
 	}

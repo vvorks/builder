@@ -166,7 +166,6 @@ public class XlsxLoader {
 				stmt.execute();
 			}
 		}
-		LOGGER.debug(sql.toString());
 	}
 
 	private void setParameter(PreparedStatement stmt, int index, Cell cell, DataType colType) throws SQLException {

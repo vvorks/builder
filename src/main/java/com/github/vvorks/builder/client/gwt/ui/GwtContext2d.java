@@ -123,7 +123,7 @@ public class GwtContext2d {
 
 	public void reinit(CanvasElement canvas, int width, int height) {
 		double dpr = getDevicePixelRatio();
-		LOGGER.debug("size %d, %d dpr %g", width, height, dpr);
+		LOGGER.info("GwtContext2d.reinit(w:%d, h:%d, dpr:%g)", width, height, dpr);
 		//キャンバス、コンテキストの設定
 		canvas.setWidth(round(width * dpr));
 		canvas.setHeight(round(height * dpr));

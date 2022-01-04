@@ -607,9 +607,6 @@ public class ClassExtender {
 			List<FieldContent> fields = e.getKey();
 			int n = fields.size();
 			FieldContent lastField = fields.get(n - 1);
-			if (lastField.getType() == DataType.ENUM) {
-				LOGGER.debug("CHECK");
-			}
 			int lastNo = n <= 1 ? 1 : joinMap.get(fields.subList(0, n - 1));
 			ClassContent nextClass = getReferClass(lastField);
 			int nextNo = e.getValue();
