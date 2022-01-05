@@ -69,8 +69,10 @@ public abstract class DataSource {
 	 * @param app アプリケーション
 	 */
 	public void attach(UiApplication app) {
+		if (apps.isEmpty()) {
+			onAttached();
+		}
 		apps.add(app);
-		onAttached();
 	}
 
 	/**
@@ -80,7 +82,9 @@ public abstract class DataSource {
 	 */
 	public void detach(UiApplication app) {
 		apps.remove(app);
-		onDetached();
+		if (apps.isEmpty()) {
+			onDetached();
+		}
 	}
 
 	protected void onAttached() {

@@ -189,13 +189,15 @@ public class UiSelectField extends UiField implements DataField {
 					hintTop = 0;
 					listTop = unitHeight;
 				}
-				b.enter(hint = new HintField("hint"));
+				DataSource ds = owner.getDataSource();
+				ds.setCriteria(null);
+				b.enter(hint = new UiTextField("hint"));
 					b.style(BuilderUiApplication.BASIC);
 					b.locate(0, hintTop, NA, NA, width, unitHeight);
 				b.leave();
 				b.enter(list = new UiVerticalList("list"));
 					b.style(BuilderUiApplication.NOBORDER);
-					b.source(owner.getDataSource());
+					b.source(ds);
 					b.locate(0, listTop, NA, NA, width, listHeight);
 					b.loop(false);
 					b.flushSoon(false);
@@ -259,22 +261,6 @@ public class UiSelectField extends UiField implements DataField {
 
 		protected void cancel() {
 			owner.getApplication().back();
-		}
-
-	}
-
-	private static class HintField extends UiTextField {
-
-		public HintField(String name) {
-			super(name);
-		}
-
-		public HintField(HintField src) {
-			super(src);
-		}
-
-		public HintField copy() {
-			return new HintField(this);
 		}
 
 	}

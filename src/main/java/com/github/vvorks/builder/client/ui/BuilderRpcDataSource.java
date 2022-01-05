@@ -56,9 +56,7 @@ public class BuilderRpcDataSource extends DataSource {
 
 	@Override
 	public void onAttached() {
-		if (!loaded) {
-			reload();
-		}
+		reload();
 	}
 
 	private void reload() {
