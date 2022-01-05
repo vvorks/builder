@@ -267,7 +267,6 @@ public class UiApplication implements EventHandler {
 		if (!newFocusNode.isFocusable()) {
 			newFocusNode = oldFocusNode;
 		} else if (oldFocusNode != newFocusNode) {
-			LOGGER.info("FOCUS %s -> %s", getQualifiedName(oldFocusNode, page), getQualifiedName(newFocusNode, page));
 			notifyFocus(oldFocusNode, newFocusNode);
 			p.focus = newFocusNode;
 			adjustAxis(p, axis);
@@ -710,30 +709,11 @@ public class UiApplication implements EventHandler {
 	}
 
 	public int processDataSourceUpdated(DataSource ds, int time) {
-		LOGGER.info("processDataSourceUpdated(%s, %d)", ds, time);
 		try {
 			int result = EVENT_IGNORED;
 			for (UiNode node : getAttachedNodes(ds)) {
 				result |= node.onDataSourceUpdated(ds);
 			}
-			result |= this.onDataSourceUpdated(ds);
-			if ((result & EVENT_AFFECTED) != 0) {
-				refresh();
-			}
-			return result;
-		} catch (Exception|AssertionError err) {
-			LOGGER.error(err);
-			throw err;
-		} finally {
-			LOGGER.feed();
-		}
-	}
-
-	private int processDataSourceUpdatedTo(DataSource ds, UiNode node, int time) {
-		LOGGER.info("processDataSourceUpdatedTo(%s, %s, %d)", ds, node, time);
-		try {
-			int result = EVENT_IGNORED;
-			result |= node.onDataSourceUpdated(ds);
 			result |= this.onDataSourceUpdated(ds);
 			if ((result & EVENT_AFFECTED) != 0) {
 				refresh();

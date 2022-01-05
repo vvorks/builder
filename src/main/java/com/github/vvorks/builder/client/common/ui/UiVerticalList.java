@@ -245,7 +245,7 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	/** 注目位置 */
-	private int attentionIndex;
+	private int pageTopIndex;
 
 	/** テンプレートノード */
 	private UiLine template;
@@ -275,7 +275,7 @@ public class UiVerticalList extends UiGroup {
 	 */
 	public UiVerticalList(String name) {
 		super(name);
-		attentionIndex = 0;
+		pageTopIndex = 0;
 		hiddenIndex = -1;
 		hiddenColumn = -1;
 	}
@@ -287,7 +287,7 @@ public class UiVerticalList extends UiGroup {
 	 */
 	public UiVerticalList(UiVerticalList src) {
 		super(src);
-		this.attentionIndex = src.attentionIndex;
+		this.pageTopIndex = src.pageTopIndex;
 		this.template = src.template;
 		this.pageHeight = src.pageHeight;
 		this.lineHeight = src.lineHeight;
@@ -395,10 +395,8 @@ public class UiVerticalList extends UiGroup {
 		DataSource ds = getDataSource();
 		if (ds.isLoaded()) {
 			int count = ds.getCount();
-			if (attentionIndex >= count) {
-				attentionIndex = count - 1;
-			}
-			prepareLines(count, attentionIndex);
+			pageTopIndex = adjustTopIndex(pageTopIndex, count);
+			prepareLines(count, pageTopIndex);
 		} else {
 			prepareLines(0, 0);
 		}
@@ -409,15 +407,23 @@ public class UiVerticalList extends UiGroup {
 		int result = super.onDataSourceUpdated(ds);
 		if (ds.isLoaded()) {
 			int count = ds.getCount();
-			if (attentionIndex >= count) {
-				attentionIndex = Math.max(0, count - 1);
-			}
-			prepareLines(count, attentionIndex);
+			pageTopIndex = adjustTopIndex(pageTopIndex, count);
+			prepareLines(count, pageTopIndex);
 		} else {
 			prepareLines(0, 0);
 		}
 		result |= EVENT_AFFECTED;
 		return result;
+	}
+
+	private int adjustTopIndex(int index, int count) {
+		int limit;
+		if (isLoopMode()) {
+			limit = Math.max(0, count - 1);
+		} else {
+			limit = Math.max(0, count - (linesPerView - 1));
+		}
+		return Math.min(Math.max(0, index), limit);
 	}
 
 	@Override
@@ -613,6 +619,7 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	private void prepareLines(int count, int offset) {
+		LOGGER.debug("★PrepareLines %d %d", count, offset);
 		boolean hasFocus = hasFocus();
 		if (count <= 0 || linesPerView <= 0) {
 			deleteAfter(0);
@@ -754,7 +761,8 @@ public class UiVerticalList extends UiGroup {
 	private void rollUp() {
 		int count = getDataSource().getCount();
 		UiLine edgeLine = (UiLine) getFirstChild();
-		int index = lap(edgeLine.getIndex() - 1, count);
+		int index = lap(edgeLine.getIndex() + count - 1, count);
+		pageTopIndex = lap(pageTopIndex - 1, count);
 		UiLine rollLine = (UiLine) removeLastChild();
 		UiNode focus = getFocus();
 		if (rollLine.isAncestor(focus)) {
@@ -772,6 +780,7 @@ public class UiVerticalList extends UiGroup {
 		int count = getDataSource().getCount();
 		UiLine edgeLine = (UiLine) getLastChild();
 		int index = lap(edgeLine.getIndex() + 1, count);
+		pageTopIndex = lap(pageTopIndex + 1, count);
 		UiLine rollLine = (UiLine) removeFirstChild();
 		UiNode focus = getFocus();
 		if (rollLine.isAncestor(focus)) {
