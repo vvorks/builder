@@ -72,6 +72,12 @@ public class BuilderUiApplication extends UiApplication {
 			.named(UiScrollBar.THUMB_NAME, SB_INNER)
 			.build();
 
+	public static final UiAtomicStyle TRANSPARENT = UiStyle.newAtomicBuilder(THIS, "transparent", null)
+			.color(Colors.TRANSPARENT)
+			.backgroundColor(Colors.TRANSPARENT)
+			.borderWidth("0px")
+			.build();
+
 	@SuppressWarnings("unchecked")
 	public BuilderUiApplication(DomDocument doc) {
 		super(doc);

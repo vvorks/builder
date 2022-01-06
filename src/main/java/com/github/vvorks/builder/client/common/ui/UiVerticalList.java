@@ -619,7 +619,6 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	private void prepareLines(int count, int offset) {
-		LOGGER.debug("★PrepareLines %d %d", count, offset);
 		boolean hasFocus = hasFocus();
 		if (count <= 0 || linesPerView <= 0) {
 			deleteAfter(0);

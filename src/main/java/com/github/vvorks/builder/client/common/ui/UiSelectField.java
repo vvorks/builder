@@ -1,12 +1,5 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import com.github.vvorks.builder.client.ui.BuilderUiApplication;
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Iterables;
-
 public class UiSelectField extends UiField implements DataField {
 
 	private static class UiInnerText extends UiLabel {
@@ -117,152 +110,14 @@ public class UiSelectField extends UiField implements DataField {
 
 	@Override
 	public int onMouseClick(UiNode target, int x, int y, int mods, int time) {
+		setFocus(this);
 		showPopup(false);
 		return EVENT_EATEN;
 	}
 
 	private void showPopup(boolean isEdit) {
 		UiApplication app = getApplication();
-		app.call(new Popup(app, this, isEdit));
-	}
-
-	private static class Popup extends UiPage {
-
-		private static final int DEFAULT_PER_PAGE = 1 + 10;
-
-		private final UiSelectField owner;
-
-		private boolean isEdit;
-
-		private int unitHeight;
-
-		private Rect popupRect;
-
-		private UiTextField hint;
-
-		private UiVerticalList list;
-
-		private boolean hintUnder;
-
-		public Popup(UiApplication app, UiSelectField owner, boolean isEdit) {
-			super("popup", app);
-			this.owner = owner;
-			this.isEdit = isEdit;
-			Rect pivot = owner.getRectangleOnRoot();
-			unitHeight = pivot.getHeight();
-			Rect screen = owner.getRoot().getRectangleOnParent();
-			int perPage = Math.min(DEFAULT_PER_PAGE, screen.getHeight() / unitHeight);
-			int height = unitHeight * perPage;
-			popupRect = new Rect(0, 0, pivot.getWidth(), height);
-			if (height <= screen.getHeight() - pivot.getBottom()) {
-				//pivot下に配置
-				popupRect.move(pivot.getLeft(), pivot.getTop());
-				hintUnder = false;
-			} else if (height <= pivot.getTop()) {
-				//pivot上に配置
-				popupRect.move(pivot.getLeft(), pivot.getBottom() - height);
-				hintUnder = true;
-			} else {
-				//中央に配置
-				popupRect.move(pivot.getLeft(), (screen.getHeight() - height) / 2);
-				hintUnder = false;
-			}
-			popupRect.move(32, 0); //仮
-		}
-
-		@Override
-		protected void initialize() {
-			final double NA = UiNodeBuilder.NA;
-			UiApplication app = getApplication();
-			UiNodeBuilder b = new UiNodeBuilder(this, "px");
-			b.enter(new UiGroup("group"));
-				b.style(BuilderUiApplication.NOBORDER);
-				b.locate(popupRect);
-				int width = popupRect.getWidth();
-				int listHeight = popupRect.getHeight() - unitHeight;
-				int hintTop;
-				int listTop;
-				if (hintUnder) {
-					hintTop = listHeight;
-					listTop = 0;
-				} else {
-					hintTop = 0;
-					listTop = unitHeight;
-				}
-				DataSource ds = owner.getDataSource();
-				ds.setCriteria(null);
-				b.enter(hint = new UiTextField("hint"));
-					b.style(BuilderUiApplication.BASIC);
-					b.locate(0, hintTop, NA, NA, width, unitHeight);
-				b.leave();
-				b.enter(list = new UiVerticalList("list"));
-					b.style(BuilderUiApplication.NOBORDER);
-					b.source(ds);
-					b.locate(0, listTop, NA, NA, width, listHeight);
-					b.loop(false);
-					b.flushSoon(false);
-					b.enter(new UiButtonField("_title"));
-						b.style(BuilderUiApplication.BASIC);
-						b.locate(0, 0, NA, NA, width, unitHeight);
-						b.action((n) -> onSelected(n));
-					b.leave();
-				b.leave();
-			b.leave();
-			app.setFocus(hint);
-			if (isEdit) {
-				hint.startHalfEditing();
-			}
-		}
-
-		@Override
-		public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
-			int result = EVENT_IGNORED;
-			int k = keyCode|mods;
-			Set<UiNode> targetAns = new HashSet<>();
-			Iterables.addAll(targetAns, target.getAncestors());
-			if (target == hint || targetAns.contains(hint)) {
-				if (k == KeyCodes.ESCAPE) {
-					cancel();
-					result = EVENT_EATEN;
-				}
-			} else if (target == list || targetAns.contains(list)) {
-				if (k == KeyCodes.SPACE) {
-					pickup((DataField)target);
-					result = EVENT_EATEN;
-				} else if (k == KeyCodes.ESCAPE) {
-					cancel();
-					result = EVENT_EATEN;
-				} else if (isCharKey(keyCode, mods) || isImeKey(keyCode, mods)) {
-					result = EVENT_EATEN;
-				}
-			}
-			return result;
-		}
-
-		@Override
-		public int onInput(UiNode target, String data, String content, int mods, int time) {
-			if (target == hint) {
-				Json criteria = Json.createObject();
-				criteria.setString("hint", content);
-				list.getDataSource().setCriteria(criteria);
-			}
-			return EVENT_IGNORED;
-		}
-
-		protected int onSelected(UiNode node) {
-			pickup((DataField)node);
-			return EVENT_CONSUMED;
-		}
-
-		protected void pickup(DataField field) {
-			owner.setValue(field.getRecord());
-			getApplication().back();
-		}
-
-		protected void cancel() {
-			owner.getApplication().back();
-		}
-
+		app.call(new UiSelectPopup(app, this, isEdit));
 	}
 
 }
