@@ -13,9 +13,9 @@ class UiSelectPopup extends UiPage {
 
 	private static final UiAtomicStyle FRAME_STYLE = BuilderUiApplication.FOCUS;
 
-	private static final UiBundleStyle HINT_STYLE = BuilderUiApplication.BASIC;
+	private static final UiAtomicStyle TRANSPARENT_STYLE = BuilderUiApplication.TRANSPARENT;
 
-	private static final UiBundleStyle ITEM_STYLE = BuilderUiApplication.BASIC;
+	private static final UiAtomicStyle NOBORDER_STYLE = BuilderUiApplication.NOBORDER;
 
 	private final UiSelectField owner;
 
@@ -69,7 +69,7 @@ class UiSelectPopup extends UiPage {
 		UiApplication app = getApplication();
 		UiNodeBuilder b = new UiNodeBuilder(this, "px");
 		b.enter(outer = new UiGroup("outer"));
-			b.style(BuilderUiApplication.TRANSPARENT);
+			b.style(TRANSPARENT_STYLE);
 			b.locate(0, 0, 0, 0, NA, NA);
 			b.enter(new UiGroup("group"));
 				b.style(FRAME_STYLE);
@@ -93,17 +93,17 @@ class UiSelectPopup extends UiPage {
 				DataSource ds = owner.getDataSource();
 				ds.setCriteria(null);
 				b.enter(hint = new UiTextField("hint"));
-					b.style(HINT_STYLE);
+					b.style(owner.getStyle());
 					b.locate(0, hintTop, NA, NA, width, unitHeight);
 				b.leave();
 				b.enter(list = new UiVerticalList("list"));
-					b.style(BuilderUiApplication.NOBORDER);
+					b.style(NOBORDER_STYLE);
 					b.source(ds);
 					b.locate(0, listTop, NA, NA, width, listHeight);
 					b.loop(false);
 					b.flushSoon(false);
 					b.enter(new UiButtonField("_title"));
-						b.style(ITEM_STYLE);
+						b.style(owner.getStyle());
 						b.locate(0, 0, NA, NA, width, unitHeight);
 						b.action((n) -> onSelected(n));
 					b.leave();
