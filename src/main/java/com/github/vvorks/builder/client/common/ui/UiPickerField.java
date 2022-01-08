@@ -1,8 +1,8 @@
 package com.github.vvorks.builder.client.common.ui;
 
-public class UiPickerField extends UiField implements DataField {
+public class UiPickerField extends UiNode implements DataField {
 
-	private static class UiInnerText extends UiLabel {
+	private static class UiInnerText extends UiText {
 
 		public UiInnerText(String name) {
 			super(name);

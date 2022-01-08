@@ -1,21 +1,21 @@
 package com.github.vvorks.builder.client.common.ui;
 
-public class UiDataField extends UiTextField implements DataField {
+public class UiEditField extends UiEditText implements DataField {
 
 	private transient DataRecord rec;
 
-	public UiDataField(String name) {
+	public UiEditField(String name) {
 		super(name);
 	}
 
-	protected UiDataField(UiDataField src) {
+	protected UiEditField(UiEditField src) {
 		super(src);
 		this.rec = src.rec;
 	}
 
 	@Override
-	public UiDataField copy() {
-		return new UiDataField(this);
+	public UiEditField copy() {
+		return new UiEditField(this);
 	}
 
 	@Override
@@ -30,9 +30,10 @@ public class UiDataField extends UiTextField implements DataField {
 		setChanged(CHANGED_CONTENT);
 	}
 
+	@Override
 	public void setText(String text) {
 		super.setText(text);
-		rec.setString(getName(), text); //とりあえず文字列として設定
+		rec.setString(getName(), text);
 	}
 
 }

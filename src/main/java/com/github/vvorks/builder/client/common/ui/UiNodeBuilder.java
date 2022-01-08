@@ -33,8 +33,8 @@ public class UiNodeBuilder {
 
 	public UiNodeBuilder text(String text) {
 		UiNode node = stack.peek();
-		if (node instanceof UiButton) {
-			UiButton textNode = (UiButton) node;
+		if (node instanceof UiText) {
+			UiText textNode = (UiText) node;
 			textNode.setText(text);
 		}
 		return this;

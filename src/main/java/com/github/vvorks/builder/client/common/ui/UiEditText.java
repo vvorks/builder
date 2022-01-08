@@ -1,6 +1,6 @@
 package com.github.vvorks.builder.client.common.ui;
 
-public class UiTextField extends UiField {
+public class UiEditText extends UiText {
 
 	/** 編集状態 */
 	private enum EditState {
@@ -9,40 +9,24 @@ public class UiTextField extends UiField {
 		/** 全編集中（矢印を使用する） */		FULL;
 	}
 
-	private transient String text;
-
 	private transient EditState editState;
 
 	private transient String saveText;
 
-	public UiTextField(String name) {
+	public UiEditText(String name) {
 		super(name);
 		setFocusable(true);
 		editState = EditState.NONE;
 	}
 
-	protected UiTextField(UiTextField src) {
+	protected UiEditText(UiEditText src) {
 		super(src);
 		editState = EditState.NONE;
 	}
 
 	@Override
-	public UiTextField copy() {
-		return new UiTextField(this);
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-		setChanged(CHANGED_CONTENT);
-	}
-
-	@Override
-	protected void syncContent() {
-		getDomElement().setInnerText(text);
+	public UiEditText copy() {
+		return new UiEditText(this);
 	}
 
 	@Override
@@ -74,13 +58,13 @@ public class UiTextField extends UiField {
 		int k = keyCode|mods;
 		if (isCharKey(keyCode, mods) || k == KeyCodes.BACKSPACE || isImeKey(keyCode, mods)) {
 			editState = EditState.HALF;
-			saveText = text;
+			saveText = getText();
 			setText("");
 			doc.startEditing(this, "", k == KeyCodes.BACKSPACE);
 			result = EVENT_AFFECTED;
 		} else if (isEditKey(keyCode, mods)) {
 			editState = EditState.FULL;
-			saveText = text;
+			saveText = getText();
 			setText("");
 			doc.startEditing(this, saveText, false);
 			result = EVENT_EATEN;
@@ -121,7 +105,7 @@ public class UiTextField extends UiField {
 	public void startHalfEditing() {
 		DomDocument doc = getDocument();
 		editState = EditState.HALF;
-		saveText = text;
+		saveText = getText();
 		setText("");
 		doc.startEditing(this, "", false);
 	}

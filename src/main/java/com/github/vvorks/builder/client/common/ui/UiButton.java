@@ -1,12 +1,8 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import java.util.Objects;
 import java.util.function.Function;
 
-public class UiButton extends UiNode {
-
-	/** テキスト */
-	private String text;
+public class UiButton extends UiText {
 
 	/** アクション */
 	private Function<UiNode, Integer> action;
@@ -18,7 +14,6 @@ public class UiButton extends UiNode {
 
 	protected UiButton(UiButton src) {
 		super(src);
-		this.text = src.text;
 		this.action = src.action;
 	}
 
@@ -34,22 +29,6 @@ public class UiButton extends UiNode {
 	 */
 	public void setAction(Function<UiNode, Integer> action) {
 		this.action = action;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String newText) {
-		if (!Objects.equals(this.text, newText)) {
-			this.text = newText;
-			setChanged(CHANGED_CONTENT);
-		}
-	}
-
-	@Override
-	protected void syncContent() {
-		getDomElement().setInnerText(text);
 	}
 
 	@Override

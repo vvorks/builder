@@ -2,27 +2,27 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.util.Objects;
 
-public class UiLabel extends UiNode {
+public class UiText extends UiNode {
 
 	/** ラベルテキスト */
 	private String text;
 
-	public UiLabel() {
+	public UiText() {
 		super();
 	}
 
-	public UiLabel(String name) {
+	public UiText(String name) {
 		super(name);
 	}
 
-	public UiLabel(UiLabel src) {
+	public UiText(UiText src) {
 		super(src);
 		this.text = src.text;
 	}
 
 	@Override
-	public UiLabel copy() {
-		return new UiLabel(this);
+	public UiText copy() {
+		return new UiText(this);
 	}
 
 	public String getText() {

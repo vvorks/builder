@@ -27,7 +27,7 @@ class UiPickerPopup extends UiPage {
 
 	private UiGroup outer;
 
-	private UiTextField hint;
+	private UiEditText hint;
 
 	private UiVerticalList list;
 
@@ -92,7 +92,7 @@ class UiPickerPopup extends UiPage {
 				}
 				DataSource ds = owner.getDataSource();
 				ds.setCriteria(null);
-				b.enter(hint = new UiTextField("hint"));
+				b.enter(hint = new UiEditText("hint"));
 					b.style(owner.getStyle());
 					b.locate(0, hintTop, NA, NA, width, unitHeight);
 				b.leave();
@@ -143,7 +143,7 @@ class UiPickerPopup extends UiPage {
 			} else if (k == KeyCodes.ESCAPE) {
 				cancel();
 				result = EVENT_EATEN;
-			} else if (UiPickerField.isCharKey(keyCode, mods) || UiPickerField.isImeKey(keyCode, mods)) {
+			} else if (isCharKey(keyCode, mods) || isImeKey(keyCode, mods)) {
 				result = EVENT_EATEN;
 			}
 		}
