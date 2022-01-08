@@ -7,7 +7,7 @@ import com.github.vvorks.builder.client.ui.BuilderUiApplication;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Iterables;
 
-class UiSelectPopup extends UiPage {
+class UiPickerPopup extends UiPage {
 
 	private static final int DEFAULT_PER_PAGE = 1 + 10;
 
@@ -17,7 +17,7 @@ class UiSelectPopup extends UiPage {
 
 	private static final UiAtomicStyle NOBORDER_STYLE = BuilderUiApplication.NOBORDER;
 
-	private final UiSelectField owner;
+	private final UiPickerField owner;
 
 	private boolean isEdit;
 
@@ -33,7 +33,7 @@ class UiSelectPopup extends UiPage {
 
 	private boolean hintUnder;
 
-	public UiSelectPopup(UiApplication app, UiSelectField owner, boolean isEdit) {
+	public UiPickerPopup(UiApplication app, UiPickerField owner, boolean isEdit) {
 		super("popup", app);
 		this.owner = owner;
 		this.isEdit = isEdit;
@@ -105,7 +105,7 @@ class UiSelectPopup extends UiPage {
 					b.enter(new UiButtonField("_title"));
 						b.style(owner.getStyle());
 						b.locate(0, 0, NA, NA, width, unitHeight);
-						b.action((n) -> onSelected(n));
+						b.action((n) -> pickAndEat(n));
 					b.leave();
 				b.leave();
 			b.leave();
@@ -138,12 +138,12 @@ class UiSelectPopup extends UiPage {
 			}
 		} else if (target == list || targetAns.contains(list)) {
 			if (k == KeyCodes.SPACE) {
-				pickup((DataField)target);
+				pick((DataField)target);
 				result = EVENT_EATEN;
 			} else if (k == KeyCodes.ESCAPE) {
 				cancel();
 				result = EVENT_EATEN;
-			} else if (UiSelectField.isCharKey(keyCode, mods) || UiSelectField.isImeKey(keyCode, mods)) {
+			} else if (UiPickerField.isCharKey(keyCode, mods) || UiPickerField.isImeKey(keyCode, mods)) {
 				result = EVENT_EATEN;
 			}
 		}
@@ -160,12 +160,12 @@ class UiSelectPopup extends UiPage {
 		return EVENT_IGNORED;
 	}
 
-	protected int onSelected(UiNode node) {
-		pickup((DataField)node);
+	protected int pickAndEat(UiNode node) {
+		pick((DataField)node);
 		return EVENT_EATEN;
 	}
 
-	protected void pickup(DataField field) {
+	protected void pick(DataField field) {
 		owner.setValue(field.getRecord());
 		getApplication().back();
 	}

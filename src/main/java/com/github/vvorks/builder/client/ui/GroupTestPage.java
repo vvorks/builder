@@ -5,12 +5,13 @@ import java.util.Map;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiButton;
 import com.github.vvorks.builder.client.common.ui.UiCanvasFrame;
+import com.github.vvorks.builder.client.common.ui.UiDeckGroup;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalGroup;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalScrollBar;
-import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
+import com.github.vvorks.builder.client.common.ui.UiTab;
 import com.github.vvorks.builder.client.common.ui.UiVerticalGroup;
 import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
 import com.github.vvorks.builder.common.logging.Logger;
@@ -36,15 +37,18 @@ public class GroupTestPage extends UiPage {
 	protected void initialize() {
 		LOGGER.trace("%s.initialize()", getFullName());
 		final double NA = UiNodeBuilder.NA;
-		UiNode g1, g3;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		int numChild = 100;
+		//被参照ノードの事前作成
+		UiVerticalGroup g1 = new UiVerticalGroup("group1");
+		UiHorizontalGroup g3 = new UiHorizontalGroup("group3");
+		UiDeckGroup deck = new UiDeckGroup("deck");
 		//全体
 		b.enter(new UiGroup("group"));
 			b.style(BuilderUiApplication.NOBORDER);
 			b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
 			//DOMの縦グループ
-			b.enter(g1 = new UiVerticalGroup("group1"));
+			b.enter(g1);
 				b.style(BuilderUiApplication.ENABLE);
 				b.spacing(1.0);
 				b.locate(1.0, 1.0, NA, 1.0, 10.0, NA);
@@ -81,7 +85,7 @@ public class GroupTestPage extends UiPage {
 				b.leave();
 			b.leave();
 			//DOMの横グループ
-			b.enter(g3 = new UiHorizontalGroup("group3"));
+			b.enter(g3);
 				b.style(BuilderUiApplication.ENABLE);
 				b.spacing(1.0);
 				b.locate(25.0, 1.0, 1.0, NA, NA, 4.0);
@@ -117,7 +121,49 @@ public class GroupTestPage extends UiPage {
 					}
 				b.leave();
 			b.leave();
+			//タブ用水平グループ
+			b.enter(new UiHorizontalGroup("tab"));
+				b.style(BuilderUiApplication.ENABLE);
+				b.spacing(0);
+				b.locate(25.0, 14.0, 1.0, NA, NA, 2.0);
+				for (int i = 0; i < 3; i++) {
+					final int index = i;
+					b.enter(new UiTab("tab" + i, deck, index));
+						b.text("TAB " + i);
+						b.style(BuilderUiApplication.BASIC);
+						b.locate(NA, NA, NA, NA, 8, NA);
+					b.leave();
+				}
+			b.leave();
+			//デッキ
+			b.enter(deck);
+				b.style(BuilderUiApplication.ENABLE);
+				b.spacing(0);
+				b.locate(25.0, 16.0, 1.0, 1.0, NA, NA);
+				for (int i = 0; i < 3; i++) {
+					b.enter(new UiGroup("deck" + i));
+						b.style(BuilderUiApplication.ENABLE);
+						b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
+						b.enter(new UiButton("button"));
+							b.style(BuilderUiApplication.BASIC);
+							b.text("BUTTON " + i);
+							switch (i) {
+							case 0:
+								b.locate(1.0, 1.0, NA, NA, 20.0, 4.0);
+								break;
+							case 1:
+								b.locate(NA, NA, 1.0, 1.0, 20.0, 4.0);
+								break;
+							case 2:
+								b.locate(NA, NA, NA, NA, 20.0, 4.0);
+								break;
+							}
+						b.leave();
+					b.leave();
+				}
+			b.leave();
 		b.leave();
+		deck.select(1);
 	}
 
 }

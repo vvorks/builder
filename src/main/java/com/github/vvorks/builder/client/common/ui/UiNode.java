@@ -221,7 +221,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	private DataSource dataSource;
 
 	/** スクロールリスナーのリスト */
-	private transient List<ScrollListener> scrollListeners;
+	private transient List<Scrollable.Listener> scrollableListeners;
 
 	/**	親座標系における左位置 */
 	private Length left;
@@ -1010,37 +1010,38 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 	}
 
 	@Override
-	public void addScrollListener(ScrollListener listener) {
-		if (scrollListeners == null) {
-			scrollListeners = new ArrayList<>();
+	public void addScrollableListener(Scrollable.Listener listener) {
+		if (scrollableListeners == null) {
+			scrollableListeners = new ArrayList<>();
 		}
-		scrollListeners.add(listener);
+		scrollableListeners.add(listener);
 	}
 
 	@Override
-	public void removeScrollListener(ScrollListener listener) {
-		if (scrollListeners == null) {
+	public void removeScrollableListener(Scrollable.Listener listener) {
+		if (scrollableListeners == null) {
 			return;
 		}
-		scrollListeners.remove(listener);
+		scrollableListeners.remove(listener);
 	}
 
 	protected void notifyHorizontalScroll(int offset, int limit, int count) {
-		if (scrollListeners == null) {
-			return;
-		}
-		for (ScrollListener l : scrollListeners) {
+		for (Scrollable.Listener l : getScrollableListeners()) {
 			l.onHorizontalScroll(this, offset, limit, count);
 		}
 	}
 
 	protected void notifyVerticalScroll(int offset, int limit, int count) {
-		if (scrollListeners == null) {
-			return;
-		}
-		for (ScrollListener l : scrollListeners) {
+		for (Scrollable.Listener l : getScrollableListeners()) {
 			l.onVerticalScroll(this, offset, limit, count);
 		}
+	}
+
+	private List<Scrollable.Listener> getScrollableListeners() {
+		if (scrollableListeners == null) {
+			return Collections.emptyList();
+		}
+		return scrollableListeners;
 	}
 
 	private void notifyScroll() {
@@ -1737,7 +1738,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 
 	protected void syncElementStyle(CssStyle.Builder b) {
 		b.property("position", "absolute");
-		b.visible(isVisible());
+		b.display(isVisible());
 		b.left(left).right(right).width(width);
 		b.top(top).bottom(bottom).height(height);
 	}

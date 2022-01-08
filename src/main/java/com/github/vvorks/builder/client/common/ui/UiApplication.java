@@ -333,10 +333,6 @@ public class UiApplication implements EventHandler {
 		return dataSourceMap.computeIfAbsent(ds, k -> new LinkedHashSet<>());
 	}
 
-	private String getQualifiedName(UiNode node, UiNode qualifier) {
-		return node == null ? null : node.getQualifiedName(qualifier);
-	}
-
 	private void notifyFocus(UiNode oldFocus, UiNode newFocus) {
 		UiNode luca = (oldFocus != null && newFocus != null) ? newFocus.getLucaWith(oldFocus) : null;
 		if (oldFocus != null) {

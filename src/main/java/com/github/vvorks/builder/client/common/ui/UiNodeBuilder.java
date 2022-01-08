@@ -133,6 +133,12 @@ public class UiNodeBuilder {
 		return this;
 	}
 
+	public UiNodeBuilder enable(boolean value) {
+		UiNode node = stack.peek();
+		node.setEnable(value);
+		return this;
+	}
+
 	public UiNodeBuilder focusable(boolean value) {
 		UiNode node = stack.peek();
 		node.setFocusable(value);

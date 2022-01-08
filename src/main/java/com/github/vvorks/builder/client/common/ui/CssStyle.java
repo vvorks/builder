@@ -50,6 +50,10 @@ public class CssStyle implements Jsonizable {
 			return property("visibility", b ? "visible" : "hidden");
 		}
 
+		public Builder display(boolean b) {
+			return property("display", b ? "block" : "none");
+		}
+
 		public Builder left(Length length) {
 			return property("left", length);
 		}

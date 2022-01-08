@@ -24,6 +24,10 @@ public class BuilderUiApplication extends UiApplication {
 			.borderImage("image/rrect-bw.png")
 			.build();
 
+	public static final UiAtomicStyle DISABLE = UiStyle.newAtomicBuilder(THIS, "disable", ENABLE)
+			.borderImage("image/rrect-bs.png")
+			.build();
+
 	public static final UiAtomicStyle FOCUS = UiStyle.newAtomicBuilder(THIS, "focus", ENABLE)
 			.color(Colors.RED)
 			.borderImage("image/rrect-yw.png")
@@ -36,6 +40,7 @@ public class BuilderUiApplication extends UiApplication {
 	public static final UiBundleStyle BASIC = UiStyle.newBundleBuilder(THIS, "basic", ENABLE)
 			.clicking(CLICKING)
 			.focus(FOCUS)
+			.disable(DISABLE)
 			.build();
 
 	public static final UiAtomicStyle NOBORDER = UiStyle.newAtomicBuilder(THIS, "noborder", null)

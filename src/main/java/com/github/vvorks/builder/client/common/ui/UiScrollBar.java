@@ -2,7 +2,7 @@ package com.github.vvorks.builder.client.common.ui;
 
 import com.github.vvorks.builder.common.logging.Logger;
 
-public abstract class UiScrollBar extends UiNode implements ScrollListener {
+public abstract class UiScrollBar extends UiNode implements Scrollable.Listener {
 
 	/** スクロールバー内部のつまみのノード名称（スタイル設定時に使用する） */
 	public static final String THUMB_NAME = "thumb";
@@ -10,6 +10,8 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 	private static final Logger LOGGER = Logger.createLogger(UiScrollBar.class);
 
 	protected static final Scrollable DUMMY_SCROLLABLE = new Scrollable() {
+		public void addScrollableListener(Scrollable.Listener listener) {/*NOP*/}
+		public void removeScrollableListener(Scrollable.Listener listener) {/*NOP*/}
 		public int setHorizontalScroll(int offset) { return EVENT_IGNORED; }
 		public int setVerticalScroll(int offset) { return EVENT_IGNORED; }
 	};
@@ -50,7 +52,7 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 		} else {
 			this.scrollable = DUMMY_SCROLLABLE;
 		}
-		this.scrollable.addScrollListener(this);
+		this.scrollable.addScrollableListener(this);
 		thumbMain = (UiThumb) appendChild(createThumb());
 		thumbSub = (UiThumb) appendChild(createThumb());
 	}
@@ -58,7 +60,7 @@ public abstract class UiScrollBar extends UiNode implements ScrollListener {
 	protected UiScrollBar(UiScrollBar src) {
 		super(src);
 		this.scrollable = src.scrollable;
-		this.scrollable.addScrollListener(this);
+		this.scrollable.addScrollableListener(this);
 		this.thumbMain = (UiThumb) getFirstChild();
 		this.thumbSub = (UiThumb) this.thumbMain.getNextSibling();
 	}

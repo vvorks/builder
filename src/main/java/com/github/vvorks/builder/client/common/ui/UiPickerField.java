@@ -1,6 +1,6 @@
 package com.github.vvorks.builder.client.common.ui;
 
-public class UiSelectField extends UiField implements DataField {
+public class UiPickerField extends UiField implements DataField {
 
 	private static class UiInnerText extends UiLabel {
 
@@ -35,7 +35,7 @@ public class UiSelectField extends UiField implements DataField {
 
 	private transient UiImage image;
 
-	public UiSelectField(String name, DataRecordAgent agent) {
+	public UiPickerField(String name, DataRecordAgent agent) {
 		super(name);
 		setFocusable(true);
 		this.agent = agent;
@@ -47,7 +47,7 @@ public class UiSelectField extends UiField implements DataField {
 		image.setImageUrl("image/arrow-down.png");
 	}
 
-	protected UiSelectField(UiSelectField src) {
+	protected UiPickerField(UiPickerField src) {
 		super(src);
 		this.rec = src.rec;
 		this.agent = src.agent;
@@ -57,8 +57,8 @@ public class UiSelectField extends UiField implements DataField {
 	}
 
 	@Override
-	public UiSelectField copy() {
-		return new UiSelectField(this);
+	public UiPickerField copy() {
+		return new UiPickerField(this);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class UiSelectField extends UiField implements DataField {
 
 	private void showPopup(boolean isEdit) {
 		UiApplication app = getApplication();
-		app.call(new UiSelectPopup(app, this, isEdit));
+		app.call(new UiPickerPopup(app, this, isEdit));
 	}
 
 }
