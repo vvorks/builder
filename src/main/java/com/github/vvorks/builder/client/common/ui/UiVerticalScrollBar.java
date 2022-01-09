@@ -11,7 +11,7 @@ public class UiVerticalScrollBar extends UiScrollBar {
 
 	private int yDown;
 
-	public UiVerticalScrollBar(String name, UiNode scrollable) {
+	public UiVerticalScrollBar(String name, Scrollable scrollable) {
 		super(name, scrollable);
 	}
 

@@ -1,17 +1,23 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.logging.Logger;
 
-public class UiGroup extends UiNode {
+public class UiGroup extends UiNode implements Scrollable {
 
 	private static final Logger LOGGER = Logger.createLogger(UiGroup.class);
 
 	private Length spacingWidth;
 
 	private Length spacingHeight;
+
+	/** スクローラブルリスナーのリスト */
+	private transient List<Scrollable.Listener> scrollableListeners;
 
 	public UiGroup(String name) {
 		super(name);
@@ -118,6 +124,43 @@ public class UiGroup extends UiNode {
 		}
 		setScrollLeft(s.getLeft() + dx);
 		setScrollTop (s.getTop()  + dy);
+	}
+
+	@Override
+	public void addScrollableListener(Scrollable.Listener listener) {
+		if (scrollableListeners == null) {
+			scrollableListeners = new ArrayList<>();
+		}
+		scrollableListeners.add(listener);
+	}
+
+	@Override
+	public void removeScrollableListener(Scrollable.Listener listener) {
+		if (scrollableListeners == null) {
+			return;
+		}
+		scrollableListeners.remove(listener);
+	}
+
+	@Override
+	protected void notifyHorizontalScroll(int offset, int limit, int count) {
+		for (Scrollable.Listener l : getScrollableListeners()) {
+			l.onHorizontalScroll(this, offset, limit, count);
+		}
+	}
+
+	@Override
+	protected void notifyVerticalScroll(int offset, int limit, int count) {
+		for (Scrollable.Listener l : getScrollableListeners()) {
+			l.onVerticalScroll(this, offset, limit, count);
+		}
+	}
+
+	private List<Scrollable.Listener> getScrollableListeners() {
+		if (scrollableListeners == null) {
+			return Collections.emptyList();
+		}
+		return scrollableListeners;
 	}
 
 }

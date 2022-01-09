@@ -45,7 +45,7 @@ public abstract class UiScrollBar extends UiNode implements Scrollable.Listener 
 
 	protected double ratio;
 
-	public UiScrollBar(String name, UiNode scrollable) {
+	public UiScrollBar(String name, Scrollable scrollable) {
 		super(name);
 		if (scrollable != null) {
 			this.scrollable = scrollable;

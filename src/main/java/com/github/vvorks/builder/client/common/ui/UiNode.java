@@ -20,7 +20,7 @@ import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.logging.Logger;
 
-public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrollable {
+public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	protected static final Logger LOGGER = Logger.createLogger(UiNode.class);
 
@@ -219,9 +219,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 
 	/** データソース */
 	private DataSource dataSource;
-
-	/** スクロールリスナーのリスト */
-	private transient List<Scrollable.Listener> scrollableListeners;
 
 	/**	親座標系における左位置 */
 	private Length left;
@@ -1009,47 +1006,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 		return result;
 	}
 
-	@Override
-	public void addScrollableListener(Scrollable.Listener listener) {
-		if (scrollableListeners == null) {
-			scrollableListeners = new ArrayList<>();
-		}
-		scrollableListeners.add(listener);
-	}
-
-	@Override
-	public void removeScrollableListener(Scrollable.Listener listener) {
-		if (scrollableListeners == null) {
-			return;
-		}
-		scrollableListeners.remove(listener);
-	}
-
-	protected void notifyHorizontalScroll(int offset, int limit, int count) {
-		for (Scrollable.Listener l : getScrollableListeners()) {
-			l.onHorizontalScroll(this, offset, limit, count);
-		}
-	}
-
-	protected void notifyVerticalScroll(int offset, int limit, int count) {
-		for (Scrollable.Listener l : getScrollableListeners()) {
-			l.onVerticalScroll(this, offset, limit, count);
-		}
-	}
-
-	private List<Scrollable.Listener> getScrollableListeners() {
-		if (scrollableListeners == null) {
-			return Collections.emptyList();
-		}
-		return scrollableListeners;
-	}
-
-	private void notifyScroll() {
-		Rect r = getRectangleOnThis();
-		notifyHorizontalScroll(r.getLeft(), r.getWidth(), getScrollWidthPx());
-		notifyVerticalScroll(r.getTop(), r.getHeight(), getScrollHeightPx());
-	}
-
 	public Length getLeft() {
 		return left;
 	}
@@ -1410,6 +1366,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 			int count = getScrollHeightPx();
 			notifyVerticalScroll(offset, limit, count);
 		}
+	}
+
+	protected void notifyHorizontalScroll(int offset, int limit, int count) {
+		//NOP
+	}
+
+	protected void notifyVerticalScroll(int offset, int limit, int count) {
+		//NOP
 	}
 
 	public Length getScrollWidth() {
@@ -1843,6 +1807,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable, Scrol
 			child = child.getNextSibling();
 		}
 		notifyScroll();
+	}
+
+	private void notifyScroll() {
+		Rect r = getRectangleOnThis();
+		notifyHorizontalScroll(r.getLeft(), r.getWidth(), getScrollWidthPx());
+		notifyVerticalScroll(r.getTop(), r.getHeight(), getScrollHeightPx());
 	}
 
 	@Override

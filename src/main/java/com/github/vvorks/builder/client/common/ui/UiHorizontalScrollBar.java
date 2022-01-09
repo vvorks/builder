@@ -11,7 +11,7 @@ public class UiHorizontalScrollBar extends UiScrollBar {
 
 	private int xDown;
 
-	public UiHorizontalScrollBar(String name, UiNode scrollable) {
+	public UiHorizontalScrollBar(String name, Scrollable scrollable) {
 		super(name, scrollable);
 	}
 
