@@ -982,30 +982,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		}
 	}
 
-	public int setHorizontalScroll(int offset) {
-		int result = EVENT_IGNORED;
-		int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
-		int count = getScrollWidthPx();
-		offset = Math.min(Math.max(0, offset), count - limit);
-		if (offset != getScrollLeftPx()) {
-			setScrollLeft(offset);
-			result = EVENT_AFFECTED;
-		}
-		return result;
-	}
-
-	public int setVerticalScroll(int offset) {
-		int result = EVENT_IGNORED;
-		int limit = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
-		int count = getScrollHeightPx();
-		offset = Math.min(Math.max(0, offset), count - limit);
-		if (offset != getScrollTopPx()) {
-			setScrollTop(offset);
-			result = EVENT_AFFECTED;
-		}
-		return result;
-	}
-
 	public Length getLeft() {
 		return left;
 	}

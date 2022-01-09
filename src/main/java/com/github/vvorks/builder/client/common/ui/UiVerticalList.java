@@ -340,6 +340,9 @@ public class UiVerticalList extends UiGroup {
 
 	@Override
 	public int setVerticalScroll(int offset) {
+		if (!isMounted()) {
+			return EVENT_IGNORED;
+		}
 		int count = getDataSource().getCount() * lineHeight;
 		int len = count - pageHeight;
 		int index = ((UiLine) getFirstChild()).getIndex();

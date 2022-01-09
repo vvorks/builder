@@ -9,13 +9,6 @@ public abstract class UiScrollBar extends UiNode implements Scrollable.Listener 
 
 	private static final Logger LOGGER = Logger.createLogger(UiScrollBar.class);
 
-	protected static final Scrollable DUMMY_SCROLLABLE = new Scrollable() {
-		public void addScrollableListener(Scrollable.Listener listener) {/*NOP*/}
-		public void removeScrollableListener(Scrollable.Listener listener) {/*NOP*/}
-		public int setHorizontalScroll(int offset) { return EVENT_IGNORED; }
-		public int setVerticalScroll(int offset) { return EVENT_IGNORED; }
-	};
-
 	protected static class UiThumb extends UiNode {
 
 		public UiThumb() {
@@ -43,6 +36,8 @@ public abstract class UiScrollBar extends UiNode implements Scrollable.Listener 
 
 	protected int lastLimit;
 
+	protected int lastCount;
+
 	protected double ratio;
 
 	public UiScrollBar(String name, Scrollable scrollable) {
@@ -50,7 +45,7 @@ public abstract class UiScrollBar extends UiNode implements Scrollable.Listener 
 		if (scrollable != null) {
 			this.scrollable = scrollable;
 		} else {
-			this.scrollable = DUMMY_SCROLLABLE;
+			this.scrollable = UiGroup.VOID_SCROLLABLE;
 		}
 		this.scrollable.addScrollableListener(this);
 		thumbMain = (UiThumb) appendChild(createThumb());
@@ -106,6 +101,7 @@ public abstract class UiScrollBar extends UiNode implements Scrollable.Listener 
 	public void onHorizontalScroll(UiNode node, int offset, int limit, int count) {
 		lastOffset = offset;
 		lastLimit = limit;
+		lastCount = count;
 		ratio = (double) count / getWidthPx();
 		if (offset + limit <= count) {
 			//通常のケース

@@ -8,6 +8,10 @@ public class UiVerticalGroup extends UiGroup {
 		super(name);
 	}
 
+	public UiVerticalGroup(String name, Scrollable scrollable) {
+		super(name, scrollable);
+	}
+
 	protected UiVerticalGroup(UiGroup src) {
 		super(src);
 	}

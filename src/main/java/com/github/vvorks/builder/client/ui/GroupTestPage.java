@@ -71,7 +71,7 @@ public class GroupTestPage extends UiPage {
 				b.style(BuilderUiApplication.NOBORDER);
 				b.locate(14.0, 1.0, NA, 1.0, 10.0, NA);
 				//CANVAS枠中の縦グループ
-				b.enter(new UiVerticalGroup("group2"));
+				b.enter(new UiVerticalGroup("group2", g1));
 					b.style(BuilderUiApplication.ENABLE);
 					b.spacing(1.0);
 					b.locate(0.0, 0.0, 0.0, 0.0, NA, NA);
@@ -108,7 +108,7 @@ public class GroupTestPage extends UiPage {
 				b.style(BuilderUiApplication.NOBORDER);
 				b.locate(25.0, 8.0, 1.0, NA, NA, 4.0);
 				//CANVAS枠中の横グループ
-				b.enter(new UiHorizontalGroup("group4"));
+				b.enter(new UiHorizontalGroup("group4", g3));
 					b.style(BuilderUiApplication.ENABLE);
 					b.spacing(1.0);
 					b.locate(0.0, 0.0, 0.0, 0.0, NA, NA);

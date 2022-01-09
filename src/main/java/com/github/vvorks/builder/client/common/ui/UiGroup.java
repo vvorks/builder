@@ -8,25 +8,42 @@ import java.util.Objects;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.logging.Logger;
 
-public class UiGroup extends UiNode implements Scrollable {
+public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
+
+	public static final Scrollable VOID_SCROLLABLE = new Scrollable() {
+		public void addScrollableListener(Scrollable.Listener listener) {/*NOP*/}
+		public void removeScrollableListener(Scrollable.Listener listener) {/*NOP*/}
+		public int setHorizontalScroll(int offset) { return EVENT_IGNORED; }
+		public int setVerticalScroll(int offset) { return EVENT_IGNORED; }
+	};
 
 	private static final Logger LOGGER = Logger.createLogger(UiGroup.class);
+
+	private Scrollable masterGroup;
 
 	private Length spacingWidth;
 
 	private Length spacingHeight;
 
 	/** スクローラブルリスナーのリスト */
-	private transient List<Scrollable.Listener> scrollableListeners;
+	private List<Scrollable.Listener> scrollableListeners;
 
 	public UiGroup(String name) {
 		super(name);
+		this.masterGroup = VOID_SCROLLABLE;
+	}
+
+	public UiGroup(String name, Scrollable masterGroup) {
+		super(name);
+		this.masterGroup = masterGroup;
+		masterGroup.addScrollableListener(this);
 	}
 
 	protected UiGroup(UiGroup src) {
 		super(src);
 		this.spacingWidth = src.spacingWidth;
 		this.spacingHeight = src.spacingHeight;
+		this.masterGroup = src.masterGroup;
 	}
 
 	@Override
@@ -147,6 +164,7 @@ public class UiGroup extends UiNode implements Scrollable {
 		for (Scrollable.Listener l : getScrollableListeners()) {
 			l.onHorizontalScroll(this, offset, limit, count);
 		}
+		masterGroup.setHorizontalScroll(offset);
 	}
 
 	@Override
@@ -154,6 +172,7 @@ public class UiGroup extends UiNode implements Scrollable {
 		for (Scrollable.Listener l : getScrollableListeners()) {
 			l.onVerticalScroll(this, offset, limit, count);
 		}
+		masterGroup.setVerticalScroll(offset);
 	}
 
 	private List<Scrollable.Listener> getScrollableListeners() {
@@ -161,6 +180,42 @@ public class UiGroup extends UiNode implements Scrollable {
 			return Collections.emptyList();
 		}
 		return scrollableListeners;
+	}
+
+	@Override
+	public int setHorizontalScroll(int offset) {
+		int result = EVENT_IGNORED;
+		int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
+		int count = getScrollWidthPx();
+		offset = Math.min(Math.max(0, offset), count - limit);
+		if (offset != getScrollLeftPx()) {
+			setScrollLeft(offset);
+			result = EVENT_AFFECTED;
+		}
+		return result;
+	}
+
+	@Override
+	public int setVerticalScroll(int offset) {
+		int result = EVENT_IGNORED;
+		int limit = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
+		int count = getScrollHeightPx();
+		offset = Math.min(Math.max(0, offset), count - limit);
+		if (offset != getScrollTopPx()) {
+			setScrollTop(offset);
+			result = EVENT_AFFECTED;
+		}
+		return result;
+	}
+
+	@Override
+	public void onHorizontalScroll(UiNode node, int offset, int limit, int count) {
+		setHorizontalScroll(offset);
+	}
+
+	@Override
+	public void onVerticalScroll(UiNode node, int offset, int limit, int count) {
+		setVerticalScroll(offset);
 	}
 
 }
