@@ -8,12 +8,14 @@ import com.github.vvorks.builder.client.gwt.json.GwtJson;
 import com.github.vvorks.builder.client.gwt.logging.AltConsoleHandler;
 import com.github.vvorks.builder.client.gwt.net.GwtWebSocket;
 import com.github.vvorks.builder.client.gwt.util.GwtDelayedExecuter;
+import com.github.vvorks.builder.client.gwt.util.GwtResourceBundle;
 import com.github.vvorks.builder.client.ui.BuilderUiApplication;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.JavaLogger;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
+import com.github.vvorks.builder.common.util.JsonResourceBundle;
 
 public class ClientSettings {
 
@@ -49,6 +51,7 @@ public class ClientSettings {
 			//singleton settings
 			.bindIn(DelayedExecuter.class, args -> new GwtDelayedExecuter())
 			.bindIn(Metrics.class, args -> new Metrics())
+			.bindIn(JsonResourceBundle.class, args -> GwtResourceBundle.get())
 			;
 
 	}

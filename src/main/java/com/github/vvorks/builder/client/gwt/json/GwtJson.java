@@ -640,4 +640,41 @@ public class GwtJson extends Json {
 		return wrap(value);
 	}
 
+	@Override
+	public Json merge(Json otherJson) {
+		if (getTypeOf(nativeValue) != Type.OBJECT) {
+			return this;
+		}
+		JSONValue other;
+		if (otherJson instanceof GwtJson) {
+			other = ((GwtJson) otherJson).getNativeValue();
+		} else {
+			other = parse(otherJson.toJsonString());
+		}
+		if (getTypeOf(other) != Type.OBJECT) {
+			return this;
+		}
+		mergeImpl(asObject(nativeValue), asObject(other));
+		return this;
+	}
+
+	private void mergeImpl(JSONObject a, JSONObject b) {
+		for (String key : b.keySet()) {
+			JSONValue c1 = a.get(key);
+			JSONValue c2 = b.get(key);
+			switch (getTypeOf(c1)) {
+			case UNDEFINED:
+				a.put(key, c2);
+				break;
+			case OBJECT:
+				if (c2 != null && c2.isObject() != null) {
+					mergeImpl(c1.isObject(), c2.isObject());
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 }

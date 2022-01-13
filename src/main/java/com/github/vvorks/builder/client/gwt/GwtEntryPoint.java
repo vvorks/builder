@@ -45,6 +45,7 @@ public class GwtEntryPoint implements EntryPoint {
 		setWidgetSize(em, 10, Unit.EM);
 		setWidgetSize(ex, 10, Unit.EX);
 		setWidgetSize(in,  1, Unit.IN);
+		//ロード後処理
 		DelayedExecuter.get().runLator(() -> {
 			//メトリックス計測結果を保存
 			Metrics met = Metrics.get();

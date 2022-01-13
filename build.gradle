@@ -65,6 +65,10 @@ bootJar {
 	archiveName = "vvorksbuilder-${version}.jar"
 }
 
+bootRun {
+	dependsOn copyGWTCode
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'

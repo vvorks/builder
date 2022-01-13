@@ -445,4 +445,6 @@ public abstract class Json {
 		return toJsonString();
 	}
 
+	public abstract Json merge(Json other);
+
 }

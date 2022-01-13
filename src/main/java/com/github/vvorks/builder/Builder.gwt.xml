@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="Builder">
 
+	<!-- **************************************** -->
+	<!-- inherits                                 -->
+	<!-- **************************************** -->
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="com.google.gwt.logging.Logging" />
 	<inherits name="com.google.gwt.http.HTTP"/>
 	<inherits name="com.google.gwt.i18n.I18N"/>
+	<inherits name="com.google.gwt.i18n.CldrLocales" />
 	<inherits name="org.fusesource.restygwt.RestyGWT"/>
-	<!-- <inherits name="com.google.common.collect.Collect"/> -->
 	<!--  <inherits name="org.vectomatic.libgwtfile" />  -->
 
-	<!--  <set-property name="user.agent" value="safari"/> -->
-
+	<!-- **************************************** -->
+	<!-- logging settings.                        -->
+	<!-- **************************************** -->
 	<set-property name="gwt.logging.enabled" value="TRUE" />
 	<set-property name="gwt.logging.logLevel" value="FINEST" />
 	<!-- <set-property name="gwt.logging.logLevel" value="SEVERE" /> -->
@@ -18,15 +22,38 @@
 	<set-property name="gwt.logging.consoleHandler" value="DISABLED" />
 	<set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />
 
+	<!-- **************************************** -->
+	<!-- stack trace settings.                    -->
+	<!-- **************************************** -->
 	<!-- <set-property name="compiler.emulatedStack" value="true" />  -->
 	<set-property name="compiler.stackMode" value="emulated" />
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
 	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
 	<set-property name="compiler.useSourceMaps" value="true" />
 
+	<!-- **************************************** -->
+	<!-- I18N settings.                           -->
+	<!-- **************************************** -->
+	<extend-property name="locale" values="en,ja" />
+	<set-property name="locale" value="en,ja" />
+	<set-property-fallback name="locale" value="ja" />
+
+	<!-- **************************************** -->
+	<!-- rebind settings.                         -->
+	<!-- **************************************** -->
+	<generate-with class="com.github.vvorks.builder.rebind.GwtResourceBundleGenerator">
+		<when-type-assignable class="com.github.vvorks.builder.client.gwt.util.GwtResourceBundle" />
+	</generate-with>
+
+	<!-- **************************************** -->
+	<!-- path settings.                           -->
+	<!-- **************************************** -->
 	<source path='client' />
 	<source path='common' />
 
+	<!-- **************************************** -->
+	<!-- entry point settings.                    -->
+	<!-- **************************************** -->
 	<entry-point class='com.github.vvorks.builder.client.gwt.GwtEntryPoint' />
 
 </module>

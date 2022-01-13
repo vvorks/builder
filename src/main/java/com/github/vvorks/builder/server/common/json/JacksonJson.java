@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.logging.log4j.util.Strings;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,6 +31,7 @@ import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.vvorks.builder.common.json.Json;
+import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.util.SimpleEntry;
 
 public class JacksonJson extends Json {
@@ -755,6 +754,43 @@ public class JacksonJson extends Json {
 		JsonNode value = MAPPER.createArrayNode();
 		asArray(nativeValue).set(index, value);
 		return wrap(value);
+	}
+
+	@Override
+	public Json merge(Json otherJson) {
+		if (getTypeOf(nativeValue) != Type.OBJECT) {
+			return this;
+		}
+		JsonNode other;
+		if (otherJson instanceof JacksonJson) {
+			other = ((JacksonJson) otherJson).getNativeValue();
+		} else {
+			other = parse(otherJson.toJsonString());
+		}
+		if (getTypeOf(other) != Type.OBJECT) {
+			return this;
+		}
+		mergeImpl(asObject(nativeValue), asObject(other));
+		return this;
+	}
+
+	private void mergeImpl(ObjectNode a, ObjectNode b) {
+		for (String key : asIterable(b.fieldNames())) {
+			JsonNode c1 = a.get(key);
+			JsonNode c2 = b.get(key);
+			switch (getTypeOf(c1)) {
+			case UNDEFINED:
+				a.set(key, c2);
+				break;
+			case OBJECT:
+				if (c2 != null && c2.isObject()) {
+					mergeImpl(asObject(c1), asObject(c2));
+				}
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 }

@@ -528,26 +528,26 @@ public final class Strings {
 	}
 
 	/**
-	 * ２つの文字列の共通部分文字列長を返す.
+	 * ２つの文字列の共通部分文字列を返す.
 	 *
 	 * @param a
 	 * 		文字列１
 	 * @param b
 	 * 		文字列２
 	 * @return
-	 * 		共通部分文字列長
+	 * 		共通部分文字列
 	 */
-	public static int commonLength(String a, String b) {
+	public static String commonPrefix(String a, String b) {
 		if (a == null || b == null) {
-			return 0;
+			return "";
 		}
 		int n = Math.min(a.length(), b.length());
 		for (int i = 0; i < n; i++) {
 			if (a.charAt(i) != b.charAt(i)) {
-				return i;
+				return a.substring(0, i);
 			}
 		}
-		return n;
+		return a;
 	}
 
 	/**
@@ -984,6 +984,49 @@ public final class Strings {
 			}
 		}
 		return sb.toString();
+	}
+
+	public static String toStringConstant(String str) {
+		StringBuilder sb = new StringBuilder();
+		int n = str.length();
+		for (int i = 0; i < n; i++) {
+			char ch = str.charAt(i);
+			switch (ch) {
+			case '\r':
+				sb.append("\\r");
+				break;
+			case '\n':
+				sb.append("\\n");
+				break;
+			case '\t':
+				sb.append("\\t");
+				break;
+			case '\f':
+				sb.append("\\f");
+				break;
+			case '\b':
+				sb.append("\\b");
+				break;
+			case '"':
+				sb.append("\\\"");
+				break;
+			default:
+				if (isInvisibleChar(ch)) {
+					sb.append(Strings.sprintf("\\u%04X", (ch & 0xFFFF)));
+				} else {
+					sb.append(ch);
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	private static boolean isInvisibleChar(char ch) {
+		return	(ch <= '\u001f'                  ) ||
+				(ch == '\u00A0'                  ) ||
+				('\u2002' <= ch && ch <= '\u200b') ||
+				('\u3000' == ch                  ) ||
+				('\uFEFF' == ch                  ) ;
 	}
 
 }

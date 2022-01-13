@@ -1,0 +1,113 @@
+package com.github.vvorks.builder.client.gwt.util;
+
+import java.util.Map;
+import java.util.HashMap;
+import com.github.vvorks.builder.common.json.Json;
+
+public class GwtResourceBundleImpl implements GwtResourceBundle {
+	{{#each this}}
+	{{#each this}}
+
+	private static final String[] {{../@key}}_{{@key}} = {
+		{{#each this}}
+		"{{this}}",
+		{{/each}}
+	};
+	{{/each}}
+	{{/each}}
+
+	private static final Map<String, Map<String, String[]>> RESOURCES = new HashMap<>();
+	static {
+		{{#each this}}
+		{{#each this}}
+		RESOURCES.computeIfAbsent("{{../@key}}", k -> new HashMap<>()).put("{{@key}}", {{../@key}}_{{@key}});
+		{{/each}}
+		{{/each}}
+	}
+
+	private static final Json EMPTY_JSON = Json.createObject();
+
+	private String locale;
+
+	private Map<String, Json> cache = new HashMap<>();
+
+	@Override
+	public String getLocale() {
+		if (locale == null) {
+			setLocale(getBrowserLocale());
+		}
+		return locale;
+	}
+
+	@Override
+	public void setLocale(String newLocale) {
+		if (newLocale == null) {
+			throw new IllegalArgumentException();
+		}
+		if (!newLocale.equals(locale)) {
+			locale = newLocale;
+			cache.clear();
+		}
+	}
+
+	@Override
+	public Json getResource(String resourceName) {
+		Json cachedJson = cache.get(resourceName);
+		if (cachedJson != null) {
+			return cachedJson;
+		}
+		Map<String, String[]> res = RESOURCES.get(resourceName);
+		if (res == null) {
+			return EMPTY_JSON;
+		}
+		Json json = null;
+		for (String locale = getLocale(); locale != null; locale = shorten(locale)) {
+			String[] lines = res.get(locale);
+			if (lines != null) {
+				Json newJson = Json.createJson(concatLines(lines, "\n"));
+				if (json == null) {
+					json = newJson;
+				} else {
+					json = json.merge(newJson);
+				}
+			}
+		}
+		if (json == null) {
+			json = EMPTY_JSON;
+		}
+		cache.put(resourceName, json);
+		return json;
+	}
+
+	private String shorten(String str) {
+		if (str.isEmpty()) {
+			return null;
+		}
+		int index = str.lastIndexOf('_');
+		if (index == -1) {
+			return "";
+		}
+		return str.substring(0, index);
+	}
+
+	private String concatLines(String[] lines, String eol) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < lines.length; i++) {
+			sb.append(lines[i]).append(eol);
+		}
+		return sb.toString();
+	}
+
+	private static String getBrowserLocale() {
+		String lang = getNavigatorLanguage();
+		if (lang == null || lang.isEmpty()) {
+			return "";
+		}
+		return lang.replace('-', '_');
+	}
+
+	private static native String getNavigatorLanguage()/*-{
+		return $wnd.navigator.language;
+	}-*/;
+
+}
