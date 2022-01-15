@@ -1,8 +1,12 @@
 package com.github.vvorks.builder.server.extender;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +16,7 @@ import com.github.vvorks.builder.server.ServerSettings;
 import com.github.vvorks.builder.server.common.util.Patterns;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.EnumContent;
+import com.github.vvorks.builder.server.domain.MessageContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 
@@ -70,6 +75,22 @@ public class ProjectExtender {
 
 	public boolean isBuilderProject(ProjectContent prj) {
 		return prj.getProjectName().equals(ServerSettings.MODULE_NAME);
+	}
+
+	public String getBuilderName(ProjectContent prj) {
+		return ServerSettings.MODULE_NAME;
+	}
+
+	public Set<Map.Entry<String, List<MessageContent>>> getMessages(ProjectContent prj) {
+		List<MessageContent> rawList = projectMapper.listMessagesContent(prj, 0, 0);
+		Map<String, List<MessageContent>> localeMap = new LinkedHashMap<>();
+		for (MessageContent c : rawList) {
+			String locale = c.getLocaleId();
+			String key = Strings.isEmpty(locale) ? "" : "_" + locale;
+			List<MessageContent> subList = localeMap.computeIfAbsent(key, k -> new ArrayList<>());
+			subList.add(c);
+		}
+		return localeMap.entrySet();
 	}
 
 }

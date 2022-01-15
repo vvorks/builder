@@ -1,0 +1,20 @@
+//
+// constantsパッケージテンプレート
+//
+{{#java this "client/constants/package-info.java"}}
+@{{builderName}}.common.util.JsonResourcePackage
+package {{global.project.projectName}}.client.constants;
+{{/java}}
+
+//
+// jsonテンプレート
+//
+{{#each this.messages}}
+{{#java this "client/constants/Message" key ".json"}}
+{
+	{{#each value}}
+	"{{messageId}}" : "{{text}}"{{#separator}}, {{/separator}}
+	{{/each}}
+}
+{{/java}}
+{{/each}}
