@@ -288,12 +288,12 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * 列挙一覧情報を取得する
+	 * メッセージ一覧情報を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return 列挙一覧情報
+	 * @return メッセージ一覧情報
 	 */
 	@JsonRpcMethod
 	public MessageSummary<MessageContent> listProjectMessages(

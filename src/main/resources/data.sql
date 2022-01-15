@@ -67,7 +67,7 @@ INSERT INTO T_FIELD (
 	(7,1,'copyrights','STRING',0,0,0,0,0,0,1,0,0,0,0,'著作権',NULL,NULL,(strftime('%s', 'now') * 1000)),
 	(8,1,'classes','SET',0,0,0,0,12,0,0,0,0,0,0,'クラス一覧',NULL,NULL,(strftime('%s', 'now') * 1000)),
 	(9,1,'enums','SET',0,0,0,0,48,0,0,0,0,0,0,'列挙一覧',NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(10,1,'messages','SET',0,0,0,0,61,0,0,0,0,0,0,'列挙一覧',NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(10,1,'messages','SET',0,0,0,0,61,0,0,0,0,0,0,'メッセージ一覧',NULL,NULL,(strftime('%s', 'now') * 1000)),
 	(11,2,'classId','KEY',0,0,0,0,0,1,0,0,0,0,0,'クラスID','','（代理キー）',(strftime('%s', 'now') * 1000)),
 	(12,2,'owner','REF',0,0,1,0,0,0,0,0,0,0,0,'所属プロジェクト','','',(strftime('%s', 'now') * 1000)),
 	(13,2,'className','STRING',0,0,0,0,0,0,0,0,0,0,0,'クラス名','','',(strftime('%s', 'now') * 1000)),
