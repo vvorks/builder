@@ -129,7 +129,7 @@ public class GroupTestPage extends UiPage {
 				for (int i = 0; i < 3; i++) {
 					final int index = i;
 					b.enter(new UiTab("tab" + i, deck, index));
-						b.text("TAB " + i);
+						//b.text("TAB " + i);
 						b.style(BuilderUiApplication.BASIC);
 						b.locate(NA, NA, NA, NA, 8, NA);
 					b.leave();

@@ -175,6 +175,9 @@ public abstract class Json {
 	/** 指定したキー値で得られる子ノードを返す */
 	public abstract Json get(String key);
 
+	/** 指定したパスで得られる子孫ノードを返す */
+	public abstract Json get(Iterable<String> path);
+
 	/** 指定したキー値で得られる子ノードのデータ種別を返す */
 	public abstract Type getType(String key);
 

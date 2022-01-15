@@ -14,5 +14,6 @@ public interface EventHandler {
 	void onResize(int screenWidth, int screenHeight);
 	int onImageLoaded(String url);
 	int onDataSourceUpdated(DataSource ds);
+	void onResourceChanged();
 
 }

@@ -94,6 +94,7 @@ public class BuilderUiApplication extends UiApplication {
 		registerStyle(BASIC);
 		registerStyle(NOBORDER);
 		registerStyle(SB);
+		setUiResourceName("Form");
 	}
 
 }

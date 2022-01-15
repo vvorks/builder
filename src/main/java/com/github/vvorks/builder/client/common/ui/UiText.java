@@ -2,6 +2,8 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.util.Objects;
 
+import com.github.vvorks.builder.common.json.Json;
+
 public class UiText extends UiNode {
 
 	/** ラベルテキスト */
@@ -29,6 +31,22 @@ public class UiText extends UiNode {
 		return text;
 	}
 
+	public String getDisplayText() {
+		String result;
+		if (text != null) {
+			result = text;
+		} else {
+			Json res = getApplication().getUiResource();
+			Json value = res.get(getQualifiedNames());
+			if (value != null) {
+				result = value.getStringValue();
+			} else {
+				result = getName();
+			}
+		}
+		return result;
+	}
+
 	public void setText(String text) {
 		if (!Objects.equals(this.text, text)) {
 			this.text = text;
@@ -38,7 +56,7 @@ public class UiText extends UiNode {
 
 	@Override
 	protected void syncContent() {
-		getDomElement().setInnerText(text);
+		getDomElement().setInnerText(getDisplayText());
 	}
 
 }

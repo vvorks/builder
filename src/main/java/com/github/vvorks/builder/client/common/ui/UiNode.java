@@ -110,6 +110,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	/** 表示属性更新フラグ */
 	protected static final int CHANGED_DISPLAY		= 0x00000004;
 
+	/** リソース更新フラグ */
+	protected static final int CHANGED_RESOURCE		= CHANGED_CONTENT|CHANGED_LOCATION|CHANGED_DISPLAY;
+
 	/** 階層更新フラグ */
 	protected static final int CHANGED_HIERARCHY	= 0x00000008;
 
@@ -314,22 +317,25 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public String getFullName() {
-		return getQualifiedName(null);
+		return Strings.concat(".", getQualifiedNames());
 	}
 
-	public String getQualifiedName(UiNode root) {
+	public List<String> getQualifiedNames() {
+		return getQualifiedNames(null);
+	}
+
+	public List<String> getQualifiedNames(UiNode top) {
 		List<String> list = new ArrayList<>();
 		UiNode node = this;
-		while (node != null && node != root) {
-			list.add(node.getName());
+		while (node != null && node != top) {
+			String name = node.getName();
+			if (!Strings.isEmpty(name)) {
+				list.add(name);
+			}
 			node = node.parent;
 		}
 		Collections.reverse(list);
-		StringBuilder sb = new StringBuilder();
-		for (String s : list) {
-			sb.append("_").append(s);
-		}
-		return sb.substring(1);
+		return list;
 	}
 
 	public boolean isMounted() {
@@ -1783,6 +1789,16 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			child = child.getNextSibling();
 		}
 		notifyScroll();
+	}
+
+	@Override
+	public void onResourceChanged() {
+		setChanged(CHANGED_RESOURCE);
+		UiNode child = firstChild;
+		while (child != null) {
+			child.onResourceChanged();
+			child = child.getNextSibling();
+		}
 	}
 
 	private void notifyScroll() {

@@ -428,6 +428,33 @@ public class JacksonJson extends Json {
 	}
 
 	@Override
+	public Json get(Iterable<String> path) {
+		JsonNode v = nativeValue;
+		for (String s : path) {
+			v = trace(v, s);
+		}
+		return v != null ? wrap(v) : null;
+	}
+
+	private JsonNode trace(JsonNode v, String nameOrNumber) {
+		Type t = getTypeOf(v);
+		JsonNode result;
+		if (t == Type.OBJECT) {
+			result = asObject(v).get(nameOrNumber);
+		} else if (t == Type.ARRAY) {
+			try {
+				int index = Integer.decode(nameOrNumber);
+				result = asArray(v).get(index);
+			} catch (NumberFormatException err) {
+				result = null;
+			}
+		} else {
+			result = null;
+		}
+		return result;
+	}
+
+	@Override
 	public Type getType(String key) {
 		return getTypeOf(asObject(nativeValue).get(key));
 	}

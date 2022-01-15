@@ -18,6 +18,11 @@ public class UiRoot extends UiNode {
 	}
 
 	@Override
+	public String getName() {
+		return "";
+	}
+
+	@Override
 	protected DomDocument getDocument() {
 		return document;
 	}

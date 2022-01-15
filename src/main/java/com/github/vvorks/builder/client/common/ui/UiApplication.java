@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -17,12 +18,14 @@ import java.util.function.Predicate;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.net.WebSocket;
+import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Creator;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
+import com.github.vvorks.builder.common.util.JsonResourceBundle;
 
 public class UiApplication implements EventHandler {
 
@@ -101,6 +104,9 @@ public class UiApplication implements EventHandler {
 	/** スタイルマップ */
 	private Map<String, UiStyle> styles;
 
+	/** Uiリソース名 */
+	private String uiResourceName;
+
 	/** Webソケット */
 	private final WebSocket socket;
 
@@ -116,12 +122,15 @@ public class UiApplication implements EventHandler {
 	/** ビジーフラグ */
 	private boolean busy;
 
+	private boolean loaded;
+
 	public UiApplication(DomDocument doc) {
 		this.document = doc;
 		this.root = new UiRoot(document);
 		this.pages = new LinkedHashMap<>();
 		this.pageStack = new ArrayDeque<>();
 		this.styles = new LinkedHashMap<>();
+		this.uiResourceName = null;
 		this.socket = Factory.newInstance(WebSocket.class);
 		this.rpcClient = new JsonRpcClient(this.socket);
 		this.dataSourceMap = new HashMap<>();
@@ -163,6 +172,34 @@ public class UiApplication implements EventHandler {
 		cssMap.put("BODY,DIV", RESET_STYLE);
 		UiStyle.toCssStyles(styles.values(), cssMap);
 		document.injectStyleSheet(getClass(), cssMap);
+	}
+
+	public String getLocale() {
+		return JsonResourceBundle.getBundle().getLocale();
+	}
+
+	public void setLocale(String newLocale) {
+		JsonResourceBundle bundle = JsonResourceBundle.getBundle();
+		String oldLocale = bundle.getLocale();
+		if (!Objects.equals(oldLocale, newLocale)) {
+			bundle.setLocale(newLocale);
+			processResourceChanged();
+		}
+	}
+
+	public String getUiResourceName() {
+		return uiResourceName;
+	}
+
+	public void setUiResourceName(String uiResourceName) {
+		if (!Objects.equals(this.uiResourceName, uiResourceName)) {
+			this.uiResourceName = uiResourceName;
+			processResourceChanged();
+		}
+	}
+
+	public Json getUiResource() {
+		return JsonResourceBundle.getBundle().getResource(uiResourceName);
 	}
 
 	protected void addPage(String tag, Creator<UiPage> creator) {
@@ -371,6 +408,7 @@ public class UiApplication implements EventHandler {
 		try {
 			call(tag, params);
 			refresh();
+			loaded = true;
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
@@ -664,9 +702,28 @@ public class UiApplication implements EventHandler {
 	public int processResize(int screenWidth, int screenHeight, int time) {
 		LOGGER.info("processResize(%d, %d, %d)", screenWidth, screenHeight, time);
 		try {
-			this.onResize(screenWidth, screenHeight);
-			root.onResize(screenWidth, screenHeight);
-			refresh();
+			if (loaded) {
+				this.onResize(screenWidth, screenHeight);
+				root.onResize(screenWidth, screenHeight);
+				refresh();
+			}
+			return UiNode.EVENT_EATEN;
+		} catch (Exception|AssertionError err) {
+			LOGGER.error(err);
+			throw err;
+		} finally {
+			LOGGER.feed();
+		}
+	}
+
+	public int processResourceChanged() {
+		LOGGER.info("processResourceChanged()");
+		try {
+			if (loaded) {
+				this.onResourceChanged();
+				root.onResourceChanged();
+				refresh();
+			}
 			return UiNode.EVENT_EATEN;
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
@@ -798,6 +855,17 @@ public class UiApplication implements EventHandler {
 			break;
 		case KeyCodes.ENTER:
 			result |= clearClicking() | setClicking(target);
+			break;
+		case KeyCodes.SPACE:
+			if ((mods & KeyCodes.MOD_ACS) == KeyCodes.MOD_CS) {
+				String locale = getLocale();
+				if (locale.startsWith("ja")) {
+					setLocale("en");
+				} else {
+					setLocale("ja");
+				}
+				result = EVENT_EATEN;
+			}
 			break;
 		default:
 			break;
@@ -936,6 +1004,11 @@ public class UiApplication implements EventHandler {
 	@Override
 	public int onDataSourceUpdated(DataSource ds) {
 		return EVENT_IGNORED;
+	}
+
+	@Override
+	public void onResourceChanged() {
+		//NOP
 	}
 
 	private int setClicking(UiNode node) {

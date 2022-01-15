@@ -1,0 +1,11 @@
+{
+	"testPage" : {
+		"group" : {
+			"tab" : {
+				"tab0" : "ZERO",
+				"tab1" : "ONE",
+				"tab2" : "TWO"
+			}
+		}
+	}
+}
