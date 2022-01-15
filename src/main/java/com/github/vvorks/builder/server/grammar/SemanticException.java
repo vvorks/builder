@@ -8,7 +8,7 @@ public class SemanticException extends ParseException {
 	}
 
 	public SemanticException(String message, ExprNode node) {
-		super(message + " at " + getLocation(node));
+		super(message + " " + node.getImages() + " at " + getLocation(node));
 	}
 
 	public SemanticException(Throwable err, ExprNode node) {

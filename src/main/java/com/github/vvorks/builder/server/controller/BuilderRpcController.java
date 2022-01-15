@@ -23,6 +23,9 @@ import com.github.vvorks.builder.server.domain.EnumValueSummary;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.FieldSubject;
 import com.github.vvorks.builder.server.domain.FieldSummary;
+import com.github.vvorks.builder.server.domain.MessageContent;
+import com.github.vvorks.builder.server.domain.MessageSubject;
+import com.github.vvorks.builder.server.domain.MessageSummary;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.ProjectSubject;
 import com.github.vvorks.builder.server.domain.ProjectSummary;
@@ -36,6 +39,7 @@ import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
+import com.github.vvorks.builder.server.mapper.MessageMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 import com.github.vvorks.builder.server.mapper.QueryMapper;
 
@@ -68,6 +72,10 @@ public class BuilderRpcController {
 	/** 列挙値のMapper */
 	@Autowired
 	private EnumValueMapper enumValueMapper;
+
+	/** メッセージのMapper */
+	@Autowired
+	private MessageMapper messageMapper;
 
 	/**
 	 * プロジェクトを挿入する
@@ -275,6 +283,31 @@ public class BuilderRpcController {
 				content,
 				name,
 				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 列挙一覧情報を取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 列挙一覧情報
+	 */
+	@JsonRpcMethod
+	public MessageSummary<MessageContent> listProjectMessages(
+		@JsonRpcParam("content") ProjectContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		MessageSummary<MessageContent> summary = projectMapper.listMessagesSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<MessageContent> contents =
+				projectMapper.listMessagesContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1179,6 +1212,121 @@ public class BuilderRpcController {
 		}
 		summary.setOffset(offset);
 		List<EnumSubject> contents = enumValueMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * メッセージを挿入する
+	 *
+	 * @param content 挿入するメッセージ
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertMessage(MessageContent content) {
+		return messageMapper.insert(content);
+	}
+
+	/**
+	 * メッセージを更新する
+	 *
+	 * @param content 更新するメッセージ
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateMessage(MessageContent content) {
+		return messageMapper.update(content);
+	}
+
+	/**
+	 * メッセージを削除する
+	 *
+	 * @param content 削除するメッセージ
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteMessage(MessageContent content) {
+		return messageMapper.delete(content);
+	}
+
+	/**
+	 * メッセージを取得する
+	 *
+	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
+	 * @param messageId メッセージID
+	 * @param localeId ロケール
+	 * @return 取得したメッセージ
+	 */
+	@JsonRpcMethod
+	public MessageContent getMessage(
+		@JsonRpcParam("ownerProjectId") int ownerProjectId, 
+		@JsonRpcParam("messageId") String messageId, 
+		@JsonRpcParam("localeId") String localeId
+	) {
+		return messageMapper.get(
+				ownerProjectId, 
+				messageId, 
+				localeId
+				);
+	}
+
+	/**
+	 * 全てのメッセージ情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return メッセージ情報
+	 */
+	@JsonRpcMethod
+	public MessageSummary<MessageContent> listMessage(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		MessageSummary<MessageContent> summary = messageMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<MessageContent> contents = messageMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 所属プロジェクトを取得する
+	 *
+	 * @param content メッセージ
+	 * @return 所属プロジェクト
+	 */
+	@JsonRpcMethod
+	public ProjectContent getMessageOwner(
+		@JsonRpcParam("content") MessageContent content
+	) {
+		return messageMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属プロジェクトの候補一覧を取得する
+	 *
+	 * @param content メッセージ
+	 * @return 所属プロジェクトの候補一覧
+	 */
+	@JsonRpcMethod
+	public ProjectSummary<ProjectSubject> listMessageOwnerCandidate(
+		@JsonRpcParam("content") MessageContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ProjectSummary<ProjectSubject> summary = messageMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ProjectSubject> contents = messageMapper.listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);

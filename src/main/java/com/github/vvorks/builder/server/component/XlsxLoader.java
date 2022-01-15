@@ -119,7 +119,18 @@ public class XlsxLoader {
 		//テーブル作成
 		String tableName = SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(sheet.getSheetName());
 		StringBuilder sql = new StringBuilder();
+		int insertPos;
+		//DropTable分
+		insertPos = sql.length();
+		sql.append("DROP TABLE IF EXISTS ").append(tableName).append(EOL);
+		//DROP TABLE SQL実行
+		try (
+			PreparedStatement stmt = con.prepareStatement(sql.substring(insertPos))
+		) {
+			stmt.execute();
+		}
 		//CreateTable文
+		insertPos = sql.length();
 		sql.append("CREATE TABLE ").append(tableName).append("(").append(EOL);
 		//カラム定義
 		for (ColInfo col : cols) {
@@ -138,12 +149,12 @@ public class XlsxLoader {
 		sql.append(")").append(EOL);
 		//CREATE TABLE SQL実行
 		try (
-			PreparedStatement stmt = con.prepareStatement(sql.toString())
+			PreparedStatement stmt = con.prepareStatement(sql.substring(insertPos))
 		) {
 			stmt.execute();
 		}
 		//INSERT文作成
-		int insertPos = sql.length();
+		insertPos = sql.length();
 		sql.append("INSERT INTO ").append(tableName).append(" VALUES (").append(EOL);
 		sql.append("    ").append("?");
 		sql.append(Strings.repeat(",?", cols.size() - 1));

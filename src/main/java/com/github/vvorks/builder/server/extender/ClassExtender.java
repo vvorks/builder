@@ -28,6 +28,7 @@ import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
 import com.github.vvorks.builder.server.domain.FieldContent;
+import com.github.vvorks.builder.server.domain.MessageContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.QueryContent;
 import com.github.vvorks.builder.server.expression.Argument;
@@ -42,6 +43,7 @@ import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
+import com.github.vvorks.builder.server.mapper.MessageMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 import com.github.vvorks.builder.server.mapper.QueryMapper;
 
@@ -161,6 +163,9 @@ public class ClassExtender {
 
 	@Autowired
 	private EnumValueMapper enumValueMapper;
+
+	@Autowired
+	private MessageMapper messageMapper;
 
 	@Autowired
 	private FieldExtender fieldExtender;
@@ -363,6 +368,7 @@ public class ClassExtender {
 		add(new Joint(QueryContent.class, me -> me.queryMapper.listContent(0, 0)));
 		add(new Joint(EnumContent.class, me -> me.enumMapper.listContent(0, 0)));
 		add(new Joint(EnumValueContent.class, me -> me.enumValueMapper.listContent(0, 0)));
+		add(new Joint(MessageContent.class, me -> me.messageMapper.listContent(0, 0)));
 	}
 
 	private static void add(Joint joint) {

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.vvorks.builder.server.mapper.MessageMapper">
+
+	<insert id="insert" parameterType="MessageContent">
+		INSERT INTO T_MESSAGE (
+			F_OWNER_PROJECT_ID,
+			F_MESSAGE_ID,
+			F_LOCALE_ID,
+			F_TEXT,
+			F__LAST_UPDATED_AT
+		) VALUES (
+			#{ ownerProjectId },
+			#{ messageId },
+			#{ localeId },
+			#{ text },
+			(strftime('%s', 'now') * 1000)
+		)
+	</insert>
+
+	<update id="update" parameterType="MessageContent">
+		UPDATE T_MESSAGE SET
+			F_TEXT = #{ text },
+			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
+		WHERE
+			F_OWNER_PROJECT_ID = #{ ownerProjectId } AND 
+			F_MESSAGE_ID = #{ messageId } AND 
+			F_LOCALE_ID = #{ localeId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</update>
+
+	<delete id="delete" parameterType="MessageContent">
+		DELETE FROM T_MESSAGE
+		WHERE
+			F_OWNER_PROJECT_ID = #{ ownerProjectId } AND 
+			F_MESSAGE_ID = #{ messageId } AND 
+			F_LOCALE_ID = #{ localeId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</delete>
+
+	<select id="get" resultType="MessageContent">
+		SELECT
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_MESSAGE_ID AS "messageId",
+			T1.F_LOCALE_ID AS "localeId",
+			T1.F_TEXT AS "text",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_MESSAGE_ID || '(' || T1.F_LOCALE_ID || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_MESSAGE T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_OWNER_PROJECT_ID = #{ ownerProjectId } AND 
+			T1.F_MESSAGE_ID = #{ messageId } AND 
+			T1.F_LOCALE_ID = #{ localeId }
+	</select>
+
+	<select id="listSummary" resultType="MessageSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_MESSAGE T1
+	</select>
+
+	<select id="listContent" resultType="MessageContent">
+		SELECT
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_MESSAGE_ID AS "messageId",
+			T1.F_LOCALE_ID AS "localeId",
+			T1.F_TEXT AS "text",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_MESSAGE_ID || '(' || T1.F_LOCALE_ID || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_MESSAGE T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		ORDER BY
+			T1.F_LOCALE_ID ASC, T1.F_MESSAGE_ID ASC
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="getOwner" resultType="ProjectContent">
+		SELECT
+			T1.F_PROJECT_ID AS "projectId",
+			T1.F_PROJECT_NAME AS "projectName",
+			T1.F_GRADLE_NAME AS "gradleName",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F_COPYRIGHTS AS "copyrights",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' AS "_title"
+		FROM
+			T_PROJECT T1
+		WHERE
+			T1.F_PROJECT_ID = #{ ownerProjectId }
+	</select>
+
+	<select id="listOwnerCandidateSummary" resultType="ProjectSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_PROJECT T1
+		<where>
+			<if test="hint != null">
+				T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listOwnerCandidateSubject" resultType="ProjectSubject">
+		SELECT
+			T1.F_PROJECT_ID AS "projectId",
+			T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' AS "_title"
+		FROM
+			T_PROJECT T1
+		<where>
+			<if test="hint != null">
+				T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+</mapper>

@@ -190,4 +190,28 @@ public interface ProjectMapper {
 		@Param("limit") int limit
 	);
 
+	/**
+	 * 列挙一覧のサマリーを取得する
+	 *
+	 * @param content プロジェクト
+	 * @return 列挙一覧のサマリー
+	 */
+	public MessageSummary<MessageContent> listMessagesSummary(
+		@Param("content") ProjectContent content
+	);
+
+	/**
+	 * 列挙一覧を取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 列挙一覧
+	 */
+	public List<MessageContent> listMessagesContent(
+		@Param("content") ProjectContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
 }
