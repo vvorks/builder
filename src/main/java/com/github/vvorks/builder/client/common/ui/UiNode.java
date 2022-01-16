@@ -806,6 +806,17 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 * @return 挿入ノード
 	 */
 	public UiNode insertChild(UiNode newChild) {
+		return insertChild(newChild, null);
+	}
+
+	/**
+	 * 指定ノードを先頭子ノードとして挿入する
+	 *
+	 * @param newChild 挿入対象ノード
+	 * @param param レイアウトパラメータ
+	 * @return 挿入ノード
+	 */
+	public UiNode insertChild(UiNode newChild, LayoutParam param) {
 		Asserts.require(newChild != null);
 		if (newChild.parent == this) {
 			return newChild;
@@ -828,7 +839,18 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 * @return 追加ノード
 	 */
 	public UiNode appendChild(UiNode newChild) {
-		return insertBefore(newChild, null);
+		return insertBefore(newChild, null, null);
+	}
+
+	/**
+	 * 指定ノードを末尾ノードとして追加する
+	 *
+	 * @param newChild 追加対象ノード
+	 * @param param レイアウトパラメータ
+	 * @return 追加ノード
+	 */
+	public UiNode appendChild(UiNode newChild, LayoutParam param) {
+		return insertBefore(newChild, null, param);
 	}
 
 	/**
@@ -839,6 +861,18 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 * @return 挿入ノード
 	 */
 	public UiNode insertBefore(UiNode newChild, UiNode refChild) {
+		return insertBefore(newChild, refChild, null);
+	}
+
+	/**
+	 * 指定ノードを参照ノードの前に挿入する
+	 *
+	 * @param newChild 挿入対象ノード
+	 * @param refChild 参照ノード
+	 * @param param レイアウトパラメータ
+	 * @return 挿入ノード
+	 */
+	public UiNode insertBefore(UiNode newChild, UiNode refChild, LayoutParam param) {
 		Asserts.require(newChild != null);
 		if (newChild.parent == this) {
 			return newChild;

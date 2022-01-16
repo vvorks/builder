@@ -26,6 +26,12 @@ public class UiNodeBuilder {
 		return this;
 	}
 
+	public UiNodeBuilder enter(UiNode node, LayoutParam param) {
+		stack.peek().appendChild(node, param);
+		stack.push(node);
+		return this;
+	}
+
 	public UiNodeBuilder leave() {
 		stack.pop();
 		return this;
