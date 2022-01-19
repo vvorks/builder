@@ -8,6 +8,7 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.client.common.ui.UiBundleStyle;
 import com.github.vvorks.builder.client.common.ui.UiScrollBar;
+import com.github.vvorks.builder.client.common.ui.UiSplitGroup;
 import com.github.vvorks.builder.client.common.ui.UiStyle;
 
 public class BuilderUiApplication extends UiApplication {
@@ -77,6 +78,17 @@ public class BuilderUiApplication extends UiApplication {
 			.named(UiScrollBar.THUMB_NAME, SB_INNER)
 			.build();
 
+	public static final UiAtomicStyle SPLITTER = UiStyle.newAtomicBuilder(THIS, "splitter", null)
+			.backgroundColor(Colors.SILVER)
+			.borderColor(Colors.PINK)
+			.borderWidth("1px")
+			.build();
+
+	/** SplitGroupスタイルまとめ */
+	public static final UiBundleStyle SPLITGROUP = UiStyle.newBundleBuilder(THIS, "splitGroup", NOBORDER)
+			.named(UiSplitGroup.SPLITTER_NAME, SPLITTER)
+			.build();
+
 	public static final UiAtomicStyle TRANSPARENT = UiStyle.newAtomicBuilder(THIS, "transparent", null)
 			.color(Colors.TRANSPARENT)
 			.backgroundColor(Colors.TRANSPARENT)
@@ -91,9 +103,11 @@ public class BuilderUiApplication extends UiApplication {
 		addPage("#list", args -> new ListTestPage("listPage", app, (Map<String, String>)args[0]));
 		addPage("#layout", args -> new LayouterTestPage("layoutPage", app, (Map<String, String>)args[0]));
 		addPage("#fieldList", args -> new FieldListPage("fieldListPage", app, (Map<String, String>)args[0]));
+		addPage("#split", args -> new SplitTestPage("SplitTestPage", app, (Map<String, String>)args[0]));
 		registerStyle(BASIC);
 		registerStyle(NOBORDER);
 		registerStyle(SB);
+		registerStyle(SPLITGROUP);
 		setUiResourceName("Form");
 	}
 

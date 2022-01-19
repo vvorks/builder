@@ -9,6 +9,7 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,10 +24,10 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.Panel;
 
-public class DomPanel extends FocusPanel {
+public class DomPanel extends FocusWidget {
 
 	private static final Logger LOGGER = Logger.createLogger(DomPanel.class);
 
@@ -61,8 +62,9 @@ public class DomPanel extends FocusPanel {
 		//アプリケーションの作成
 		DomDocument doc = new GwtDomDocument(this);
 		app = Factory.newInstance(UiApplication.class, doc);
-		//このパネルのElementを取得
-		Element panelElement = getElement();
+		//このパネルのElementを設定
+		Element panelElement = Document.get().createDivElement();
+		setElement(panelElement);
 		//ルートノードの作成とこのパネルのElementとの関連付け
 		Element e = ((GwtDomElement) app.getRootElement()).getNativeElement();
 		panelElement.appendChild(e);

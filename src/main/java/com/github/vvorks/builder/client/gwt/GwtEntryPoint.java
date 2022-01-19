@@ -16,9 +16,10 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.layout.client.Layout;
 import com.google.gwt.media.client.Video;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -87,18 +88,23 @@ public class GwtEntryPoint implements EntryPoint {
 		//ImePanelの追加
 		root.add(imePanel);
 		imePanel.hide();
+		((Layout.Layer) imePanel.getLayoutData())
+				.getContainerElement()
+				.getStyle()
+				.setProperty("pointerEvents", "none");
 		//イベントハンドラの初期化
-		FocusPanel p = imePanel;
+		FocusWidget p = imePanel;
+		FocusWidget q = domPanel;
 		p.addKeyDownHandler(event -> domPanel.onKeyDown(event));
 		p.addKeyPressHandler(event -> domPanel.onKeyPress(event));
 		p.addKeyUpHandler(event -> domPanel.onKeyUp(event));
 		p.addDomHandler(event -> domPanel.onInput(event), InputEvent.getType());
-		p.addMouseDownHandler(event -> domPanel.onMouseDown(event));
-		p.addMouseMoveHandler(event -> domPanel.onMouseMove(event));
-		p.addMouseUpHandler(event -> domPanel.onMouseUp(event));
-		p.addClickHandler(event -> domPanel.onClick(event));
-		p.addDoubleClickHandler(event -> domPanel.onDoubleClick(event));
-		p.addMouseWheelHandler(event -> domPanel.onMouseWheel(event));
+		q.addMouseDownHandler(event -> domPanel.onMouseDown(event));
+		q.addMouseMoveHandler(event -> domPanel.onMouseMove(event));
+		q.addMouseUpHandler(event -> domPanel.onMouseUp(event));
+		q.addClickHandler(event -> domPanel.onClick(event));
+		q.addDoubleClickHandler(event -> domPanel.onDoubleClick(event));
+		q.addMouseWheelHandler(event -> domPanel.onMouseWheel(event));
 		Window.addResizeHandler(event -> domPanel.onResize(event));
 		final AnimationScheduler scheduler = AnimationScheduler.get();
 		scheduler.requestAnimationFrame(new AnimationCallback() {

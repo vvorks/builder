@@ -22,7 +22,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
-	protected static final Logger LOGGER = Logger.createLogger(UiNode.class);
+	private static final Logger LOGGER = Logger.createLogger(UiNode.class);
 
 	public static final String NS_HTML = "http://www.w3.org/1999/xhtml";
 
@@ -255,6 +255,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	/** スタイル */
 	private UiStyle style;
+
+	/** レイアウトパラメータ */
+	private LayoutParam layoutParam;
 
 	private int parentWidthPxCache;
 
@@ -828,6 +831,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		this.firstChild = newChild;
 		newChild.nextSibling = younger;
 		newChild.parent = this;
+		newChild.setLayoutParam(param);
 		this.setChanged(CHANGED_HIERARCHY);
 		return newChild;
 	}
@@ -891,6 +895,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			newChild.nextSibling = younger;
 		}
 		newChild.parent = this;
+		newChild.setLayoutParam(param);
 		this.setChanged(CHANGED_HIERARCHY);
 		return newChild;
 	}
@@ -991,6 +996,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	public UiNode getNextSibling() {
 		return nextSibling;
+	}
+
+	protected LayoutParam getLayoutParam() {
+		return layoutParam;
+	}
+
+	protected void setLayoutParam(LayoutParam param) {
+		this.layoutParam = param;
 	}
 
 	/**

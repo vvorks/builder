@@ -22,9 +22,9 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.FocusWidget;
 
-public class ImePanel extends FocusPanel {
+public class ImePanel extends FocusWidget {
 
 	private static final Logger LOGGER = Logger.createLogger(ImePanel.class);
 
@@ -53,7 +53,8 @@ public class ImePanel extends FocusPanel {
 
 	public ImePanel() {
 		Document doc = Document.get();
-		Element elem = getElement();
+		Element elem = doc.createDivElement();
+		setElement(elem);
 		outer = doc.createDivElement();
 		elem.appendChild(outer);
 		outer.setTabIndex(-1);
