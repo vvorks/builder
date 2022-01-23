@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.github.vvorks.builder.common.logging.Logger;
@@ -15,14 +16,17 @@ public class UiSplitGroup extends UiGroup {
 
 	public enum Param implements LayoutParam {
 
-		TOP("ns-resize"), BOTTOM("ns-resize"),
-		LEFT("ew-resize"), RIGHT("ew-resize"),
-		CENTER("default");
+		TOP("ns-resize", true), BOTTOM("ns-resize", false),
+		LEFT("ew-resize", true), RIGHT("ew-resize", false),
+		CENTER("default", true);
 
 		private final String cursorType;
 
-		private Param(String cursorType) {
+		private final boolean forward;
+
+		private Param(String cursorType, boolean forward) {
 			this.cursorType = cursorType;
+			this.forward = forward;
 		}
 
 		public String getCursorType() {
@@ -31,6 +35,10 @@ public class UiSplitGroup extends UiGroup {
 
 		public boolean isSameType(Param p) {
 			return cursorType.equals(((Param)p).cursorType);
+		}
+
+		public boolean isForward() {
+			return forward;
 		}
 
 	}
@@ -134,7 +142,7 @@ public class UiSplitGroup extends UiGroup {
 			param = Param.CENTER;
 		}
 		Param dir = (Param) param;
-		UiNode center = getPane(Param.CENTER);
+		UiNode center = findPaneBy(Param.CENTER);
 		super.insertBefore(newChild, center, dir);
 		if (dir != Param.CENTER) {
 			UiNode splitter = new UiSplitter(newChild);
@@ -144,7 +152,7 @@ public class UiSplitGroup extends UiGroup {
 		return newChild;
 	}
 
-	private UiNode getPane(Param dir) {
+	private UiNode findPaneBy(Param dir) {
 		for (UiNode pane = getFirstChild(); pane != null; pane = pane.getNextSibling()) {
 			if (!(pane instanceof UiSplitter) && pane.getLayoutParam() == dir) {
 				return pane;
@@ -572,6 +580,42 @@ public class UiSplitGroup extends UiGroup {
 			app.releaseCapture(this);
 		}
 		return result;
+	}
+
+	@Override
+	public UiNode getFirstChild(int visitOrder) {
+		if (visitOrder != VISIT_FOCUS_ORDER) {
+			return super.getFirstChild(visitOrder);
+		}
+		List<UiNode> list = getPanesByFocus();
+		return list.isEmpty() ? null : list.get(0);
+	}
+
+	@Override
+	public UiNode getNextChild(UiNode child, int visitOrder) {
+		if (visitOrder != VISIT_FOCUS_ORDER) {
+			return super.getNextChild(child, visitOrder);
+		}
+		List<UiNode> list = getPanesByFocus();
+		int index = list.indexOf(child) + 1;
+		return 0 < index && index < list.size() ? list.get(index) : null;
+	}
+
+	private List<UiNode> getPanesByFocus() {
+		List<UiNode> headList = new ArrayList<>();
+		List<UiNode> tailList = new ArrayList<>();
+		for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
+			if (!(c instanceof UiSplitter)) {
+				if (((Param)c.getLayoutParam()).isForward()) {
+					headList.add(c);
+				} else {
+					tailList.add(c);
+				}
+			}
+		}
+		Collections.reverse(tailList);
+		headList.addAll(tailList);
+		return headList;
 	}
 
 }

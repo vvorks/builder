@@ -24,6 +24,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	private static final Logger LOGGER = Logger.createLogger(UiNode.class);
 
+	protected static final int VISIT_DEFAULT_ORDER = 0;
+
+	protected static final int VISIT_FOCUS_ORDER = 1;
+
 	public static final String NS_HTML = "http://www.w3.org/1999/xhtml";
 
 	public static final String NS_MATHML = "http://www.w3.org/1998/Math/MathML";
@@ -155,10 +159,13 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 		private final Predicate<UiNode> visitChild;
 
-		public DescendantIterator(UiNode top, Predicate<UiNode> visitChild) {
+		private final int visitOrder;
+
+		public DescendantIterator(UiNode top, Predicate<UiNode> visitChild, int visitOrder) {
 			this.top = top;
-			this.now = top.firstChild;
 			this.visitChild = visitChild;
+			this.visitOrder = visitOrder;
+			this.now = top.getFirstChild(visitOrder);
 		}
 
 		@Override
@@ -172,13 +179,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 				throw new NoSuchElementException();
 			}
 			UiNode result = now;
-			if (visitChild.test(now) && now.getFirstChild() != null) {
-				now = now.getFirstChild();
+			UiNode w = null;
+			if (visitChild.test(now) && (w = now.getFirstChild(visitOrder)) != null) {
+				now = w;
 			} else {
-				while (now != top && now.getNextSibling() == null) {
+				while (now != top && (w = now.getParent().getNextChild(now, visitOrder)) == null) {
 					now = now.getParent();
 				}
-				now = (now != top) ? now.getNextSibling() : null;
+				now = (now != top) ? w : null;
 			}
 			return result;
 		}
@@ -531,6 +539,27 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return firstChild;
 	}
 
+	public UiNode getNextChild(UiNode child) {
+		return child.nextSibling;
+	}
+
+	public UiNode getNextSibling() {
+		return nextSibling;
+	}
+
+	/**
+	 * 先頭の子ノードを取得する
+	 *
+	 * @return 先頭の子ノード。子ノードが存在しない場合、null
+	 */
+	public UiNode getFirstChild(int visitOrder) {
+		return firstChild;
+	}
+
+	public UiNode getNextChild(UiNode child, int visitOrder) {
+		return child.nextSibling;
+	}
+
 	/**
 	 * 指定位置の子ノードを取得する
 	 *
@@ -600,7 +629,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 * @return 子孫ノードを返すIterable
 	 */
 	public Iterable<UiNode> getDescendants() {
-		return () -> new DescendantIterator(this, node -> true);
+		return () -> new DescendantIterator(this, node -> true, VISIT_DEFAULT_ORDER);
 	}
 
 	/**
@@ -654,7 +683,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		if (!(!isDeletedAll() && isVisibleAll() && isEnableAll())) {
 			return Collections.emptyList();
 		}
-		return Iterables.filter(getEnableDescendants(), d -> d != except && d.isFocusable());
+		Iterable<UiNode> enables = getEnableDescendants(VISIT_FOCUS_ORDER);
+		return Iterables.filter(enables, d -> d != except && d.isFocusable());
 	}
 
 	/**
@@ -662,8 +692,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 *
 	 * @return 有効な子孫ノードを返すIterable
 	 */
-	protected Iterable<UiNode> getEnableDescendants() {
-		return () -> new DescendantIterator(this, d -> !d.isDeleted() && d.isVisible() && d.isEnable());
+	protected Iterable<UiNode> getEnableDescendants(int visitOrder) {
+		return () -> new DescendantIterator(this,
+				d -> !d.isDeleted() && d.isVisible() && d.isEnable(),
+				visitOrder);
 	}
 
 	/**
@@ -685,7 +717,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 * @return 子ノードを返すItrable
 	 */
 	public Iterable<UiNode> getChildren() {
-		return () -> new DescendantIterator(this, d -> false);
+		return () -> new DescendantIterator(this, d -> false, VISIT_DEFAULT_ORDER);
 	}
 
 	/**
@@ -988,10 +1020,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			}
 		}
 		return removes;
-	}
-
-	public UiNode getNextSibling() {
-		return nextSibling;
 	}
 
 	protected LayoutParam getLayoutParam() {
