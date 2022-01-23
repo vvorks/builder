@@ -71,13 +71,11 @@ public class ImePanel extends FocusWidget {
 		outer.appendChild(inner);
 		addFocusHandler(new FocusHandler() {
 			public void onFocus(FocusEvent event) {
-				LOGGER.debug("imePanel onFocus");
 				setFocus(true);
 			}
 		});
 		addBlurHandler(new BlurHandler() {
 			public void onBlur(BlurEvent event) {
-				LOGGER.debug("imePanel onBlur");
 				setFocus(false);
 			}
 		});

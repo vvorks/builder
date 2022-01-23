@@ -467,7 +467,6 @@ public class UiApplication implements EventHandler {
 			if ((result & EVENT_AFFECTED) != 0) {
 				refresh();
 			}
-			LOGGER.info("processKeyDown() -> %d", result);
 			return result;
 		} catch (Exception|AssertionError err) {
 			LOGGER.error(err);
