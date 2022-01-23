@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import java.util.EnumSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.github.vvorks.builder.common.logging.Logger;
 
@@ -8,33 +9,48 @@ public class UiSplitGroup extends UiGroup {
 
 	private static final Logger LOGGER = Logger.createLogger(UiSplitGroup.class);
 
+	private static final int MIN_ELDER_SIZE = 4;
+
 	public static final String SPLITTER_NAME = "splitter";
 
 	public enum Param implements LayoutParam {
-		TOP, TOP_BORDER,
-		LEFT, LEFT_BORDER,
-		CENTER,
-		RIGHT, RIGHT_BORDER,
-		BOTTOM, BOTTOM_BORDER
+
+		TOP("ns-resize"), BOTTOM("ns-resize"),
+		LEFT("ew-resize"), RIGHT("ew-resize"),
+		CENTER("default");
+
+		private final String cursorType;
+
+		private Param(String cursorType) {
+			this.cursorType = cursorType;
+		}
+
+		public String getCursorType() {
+			return cursorType;
+		}
+
+		public boolean isSameType(Param p) {
+			return cursorType.equals(((Param)p).cursorType);
+		}
+
 	}
-
-	private static final EnumSet<Param> BORDER_PARAM = EnumSet.of(
-			Param.TOP_BORDER, Param.LEFT_BORDER, Param.RIGHT_BORDER, Param.BOTTOM_BORDER);
-
-	private static final EnumSet<Param> H_PARAM = EnumSet.of(
-			Param.TOP, Param.TOP_BORDER, Param.BOTTOM, Param.BOTTOM_BORDER);
-
-	private static final EnumSet<Param> V_PARAM = EnumSet.of(
-			Param.LEFT, Param.LEFT_BORDER, Param.RIGHT, Param.RIGHT_BORDER);
 
 	private static class UiSplitter extends UiNode {
 
-		public UiSplitter() {
+		private final UiNode elderPane;
+
+		private List<UiNode> youngerPanes;
+
+		private int elderSize;
+
+		public UiSplitter(UiNode elderPane) {
 			super(SPLITTER_NAME);
+			this.elderPane = elderPane;
 		}
 
 		public UiSplitter(UiSplitter src) {
 			super(src);
+			this.elderPane = src.elderPane;
 		}
 
 		@Override
@@ -45,14 +61,51 @@ public class UiSplitGroup extends UiGroup {
 		@Override
 		protected void syncElementStyle(CssStyle.Builder b) {
 			super.syncElementStyle(b);
-			Param dir = (Param) getLayoutParam();
-			if (H_PARAM.contains(dir)) {
-				b.property("cursor", "ns-resize");
-			} else if (V_PARAM.contains(dir)) {
-				b.property("cursor", "ew-resize");
-			}
+			b.property("cursor", getParam().getCursorType());
 		}
+
+		@Override
+		public String getDisplayName() {
+			return elderPane.getName() + "-" + getName();
+		}
+
+		public UiNode getElderPane() {
+			return elderPane;
+		}
+
+		public List<UiNode> getYoungerPanes() {
+			return youngerPanes;
+		}
+
+		public void setYoungerPanes(List<UiNode> youngerPanes) {
+			this.youngerPanes = youngerPanes;
+		}
+
+		public Param getParam() {
+			return (Param) getLayoutParam();
+		}
+
+		public int getElderSize() {
+			return this.elderSize;
+		}
+
+		public void setElderSize(int size) {
+			this.elderSize = size;
+		}
+
 	}
+
+	private UiSplitter downSplitter;
+
+	private int xDown;
+
+	private int yDown;
+
+	private int wDown;
+
+	private int hDown;
+
+	private boolean bDragged;
 
 	public UiSplitGroup(String name) {
 		super(name);
@@ -83,8 +136,8 @@ public class UiSplitGroup extends UiGroup {
 		Param dir = (Param) param;
 		UiNode center = getPane(Param.CENTER);
 		super.insertBefore(newChild, center, dir);
-		if (BORDER_PARAM.contains(dir)) {
-			UiNode splitter = new UiSplitter();
+		if (dir != Param.CENTER) {
+			UiNode splitter = new UiSplitter(newChild);
 			splitter.setStyle(getStyle());
 			super.insertBefore(splitter, center, dir);
 		}
@@ -108,6 +161,7 @@ public class UiSplitGroup extends UiGroup {
 	@Override
 	public void onMount() {
 		locatePanes();
+		collectYoungerPanes();
 		super.onMount();
 	}
 
@@ -120,19 +174,15 @@ public class UiSplitGroup extends UiGroup {
 			if (!(child instanceof UiSplitter)) {
 				switch ((Param) child.getLayoutParam()) {
 				case TOP:
-				case TOP_BORDER:
 					top = locateTop(child, left, top, right, bottom);
 					break;
 				case BOTTOM:
-				case BOTTOM_BORDER:
 					bottom = locateBottom(child, left, top, right, bottom);
 					break;
 				case LEFT:
-				case LEFT_BORDER:
 					left = locateLeft(child, left, top, right, bottom);
 					break;
 				case RIGHT:
-				case RIGHT_BORDER:
 					right = locateRight(child, left, top, right, bottom);
 					break;
 				case CENTER:
@@ -149,7 +199,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private double locateTop(UiNode pane, double left, double top, double right, double bottom) {
-		double height = pane.getHeightPx();
+		int height = pane.getHeightPx();
 		pane.setBounds(
 				Length.pxOf(left), Length.pxOf(top),
 				Length.pxOf(right), null,
@@ -162,12 +212,13 @@ public class UiSplitGroup extends UiGroup {
 					Length.pxOf(right), null,
 					null, getSpacingHeight());
 			top += getSpacingHeightPx();
+			splitter.setElderSize(height);
 		}
 		return top;
 	}
 
 	private double locateBottom(UiNode pane, double left, double top, double right, double bottom) {
-		double height = pane.getHeightPx();
+		int height = pane.getHeightPx();
 		pane.setBounds(
 				Length.pxOf(left), null,
 				Length.pxOf(right), Length.pxOf(bottom),
@@ -180,12 +231,13 @@ public class UiSplitGroup extends UiGroup {
 					Length.pxOf(right), Length.pxOf(bottom),
 					null, getSpacingHeight());
 			bottom += getSpacingHeightPx();
+			splitter.setElderSize(height);
 		}
 		return bottom;
 	}
 
 	private double locateLeft(UiNode pane, double left, double top, double right, double bottom) {
-		double width = pane.getWidthPx();
+		int width = pane.getWidthPx();
 		pane.setBounds(
 				Length.pxOf(left), Length.pxOf(top),
 				null, Length.pxOf(bottom),
@@ -198,12 +250,13 @@ public class UiSplitGroup extends UiGroup {
 					null, Length.pxOf(bottom),
 					getSpacingWidth(), null);
 			left += getSpacingWidthPx();
+			splitter.setElderSize(width);
 		}
 		return left;
 	}
 
 	private double locateRight(UiNode pane, double left, double top, double right, double bottom) {
-		double width = pane.getWidthPx();
+		int width = pane.getWidthPx();
 		pane.setBounds(
 				null, Length.pxOf(top),
 				Length.pxOf(right), Length.pxOf(bottom),
@@ -216,36 +269,309 @@ public class UiSplitGroup extends UiGroup {
 					Length.pxOf(right), Length.pxOf(bottom),
 					getSpacingWidth(), null);
 			right += getSpacingWidthPx();
+			splitter.setElderSize(width);
 		}
 		return right;
 	}
 
-	@Override
-	public int onMouseMove(UiNode target, int x, int y, int mods, int time) {
-		if ((mods & KeyCodes.MOD_LBUTTON) != 0) {
-			LOGGER.debug("onMouseDrag %s", target.getName());
+	private void collectYoungerPanes() {
+		for (UiNode child = getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (child instanceof UiSplitter) {
+				UiSplitter splitter = (UiSplitter) child;
+				switch (splitter.getParam()) {
+				case TOP:
+					splitter.setYoungerPanes(collectYoungerTop(splitter));
+					break;
+				case BOTTOM:
+					splitter.setYoungerPanes(collectYoungerBottom(splitter));
+					break;
+				case LEFT:
+					splitter.setYoungerPanes(collectYoungerLeft(splitter));
+					break;
+				case RIGHT:
+					splitter.setYoungerPanes(collectYoungerRight(splitter));
+					break;
+				default:
+					throw new AssertionError();
+				}
+			}
 		}
-		return super.onMouseMove(target, x, y, mods, time);
+	}
+
+	private List<UiNode> collectYoungerTop(UiSplitter splitter) {
+		int height = this.getHeightPx();
+		int nextEdge = height - splitter.getBottomPx();
+		int left = splitter.getLeftPx();
+		int right = splitter.getRightPx();
+		Param dir = splitter.getParam();
+		List<UiNode> youngers = new ArrayList<>();
+		for (UiNode child = splitter.getNextSibling(); child != null; child = child.getNextSibling()) {
+			int childEdge = child.getTopPx();
+			int childLeft = child.getLeftPx();
+			int childRight = child.getRightPx();
+			if (left <= childLeft && childRight >= right && childEdge == nextEdge) {
+				if (!(child instanceof UiSplitter && dir.isSameType(((UiSplitter)child).getParam()))) {
+					youngers.add(child);
+				}
+			}
+		}
+		return youngers;
+	}
+
+	private List<UiNode> collectYoungerBottom(UiSplitter splitter) {
+		int height = this.getHeightPx();
+		int nextEdge = splitter.getTopPx();
+		int left = splitter.getLeftPx();
+		int right = splitter.getRightPx();
+		Param dir = splitter.getParam();
+		List<UiNode> youngers = new ArrayList<>();
+		for (UiNode child = splitter.getNextSibling(); child != null; child = child.getNextSibling()) {
+			int childEdge = height - child.getBottomPx();
+			int childLeft = child.getLeftPx();
+			int childRight = child.getRightPx();
+			if (left <= childLeft && childRight >= right && childEdge == nextEdge) {
+				if (!(child instanceof UiSplitter && dir.isSameType(((UiSplitter)child).getParam()))) {
+					youngers.add(child);
+				}
+			}
+		}
+		return youngers;
+	}
+
+	private List<UiNode> collectYoungerLeft(UiSplitter splitter) {
+		int width = this.getWidthPx();
+		int nextEdge = width - splitter.getRightPx();
+		int top = splitter.getTopPx();
+		int bottom = splitter.getBottomPx();
+		Param dir = splitter.getParam();
+		List<UiNode> youngers = new ArrayList<>();
+		for (UiNode child = splitter.getNextSibling(); child != null; child = child.getNextSibling()) {
+			int childEdge = child.getLeftPx();
+			int childTop = child.getTopPx();
+			int childBottom = child.getBottomPx();
+			if (top <= childTop && childBottom >= bottom && childEdge == nextEdge) {
+				if (!(child instanceof UiSplitter && dir.isSameType(((UiSplitter)child).getParam()))) {
+					youngers.add(child);
+				}
+			}
+		}
+		return youngers;
+	}
+
+	private List<UiNode> collectYoungerRight(UiSplitter splitter) {
+		int width = this.getWidthPx();
+		int nextEdge = splitter.getLeftPx();
+		int top = splitter.getTopPx();
+		int bottom = splitter.getBottomPx();
+		Param dir = splitter.getParam();
+		List<UiNode> youngers = new ArrayList<>();
+		for (UiNode child = splitter.getNextSibling(); child != null; child = child.getNextSibling()) {
+			int childEdge = width - child.getRightPx();
+			int childTop = child.getTopPx();
+			int childBottom = child.getBottomPx();
+			if (top <= childTop && childBottom >= bottom && childEdge == nextEdge) {
+				if (!(child instanceof UiSplitter && dir.isSameType(((UiSplitter)child).getParam()))) {
+					youngers.add(child);
+				}
+			}
+		}
+		return youngers;
 	}
 
 	@Override
 	public int onMouseDown(UiNode target, int x, int y, int mods, int time) {
-		LOGGER.debug("onMouseDown %s", target.getName());
-		return super.onMouseDown(target, x, y, mods, time);
+		int result = EVENT_IGNORED;
+		UiApplication app = getApplication();
+		if (target instanceof UiSplitter) {
+			downSplitter = (UiSplitter) target;
+			xDown = x;
+			yDown = y;
+			UiNode elder = downSplitter.getElderPane();
+			wDown = elder.getWidthPx();
+			hDown = elder.getHeightPx();
+			bDragged = false;
+			app.setCapture(this);
+			result = EVENT_CONSUMED;
+		}
+		return result;
+	}
+
+	@Override
+	public int onMouseMove(UiNode target, int x, int y, int mods, int time) {
+		int result = EVENT_IGNORED;
+		if (downSplitter != null) {
+			int dx = x - xDown;
+			int dy = y - yDown;
+			bDragged = true;
+			switch (downSplitter.getParam()) {
+			case TOP:
+				result = resizeTop(downSplitter, hDown + dy, true);
+				break;
+			case BOTTOM:
+				result = resizeBottom(downSplitter, hDown - dy, true);
+				break;
+			case LEFT:
+				result = resizeLeft(downSplitter, wDown + dx, true);
+				break;
+			case RIGHT:
+				result = resizeRight(downSplitter, wDown - dx, true);
+				break;
+			default:
+				throw new AssertionError();
+			}
+		}
+		return result;
+	}
+
+	private int resizeTop(UiSplitter splitter, int elderSize, boolean updateSize) {
+		int totalHeight = this.getHeightPx();
+		UiNode elder = splitter.getElderPane();
+		int spacing = getSpacingHeightPx();
+		int minPos = elder.getTopPx();
+		int maxPos = totalHeight;
+		for (UiNode younger : splitter.getYoungerPanes()) {
+			maxPos = Math.min(maxPos, (totalHeight - younger.getBottomPx()) - spacing);
+		}
+		int newPos = Math.min(Math.max(minPos, minPos + elderSize), maxPos);
+		setHorizontal(elder   , minPos, newPos);
+		setHorizontal(splitter, newPos, newPos + spacing);
+		int newSize = newPos - minPos;
+		if (updateSize && newSize >= MIN_ELDER_SIZE) {
+			splitter.setElderSize(newSize);
+		}
+		newPos += spacing;
+		for (UiNode younger : splitter.getYoungerPanes()) {
+			setHorizontal(younger, newPos, totalHeight - younger.getBottomPx());
+		}
+		return EVENT_EATEN;
+	}
+
+	private int resizeBottom(UiSplitter splitter, int elderSize, boolean updateSize) {
+		int totalHeight = this.getHeightPx();
+		UiNode elder = splitter.getElderPane();
+		int spacing = getSpacingHeightPx();
+		int maxPos = totalHeight - elder.getBottomPx();
+		int minPos = spacing;
+		for (UiNode younger : splitter.getYoungerPanes()) {
+			minPos = Math.max(minPos, younger.getTopPx() + spacing);
+		}
+		int newPos = Math.min(Math.max(minPos, maxPos - elderSize), maxPos);
+		setHorizontal(elder   , newPos, maxPos);
+		setHorizontal(splitter, newPos - spacing, newPos);
+		int newSize = maxPos - newPos;
+		if (updateSize && newSize >= MIN_ELDER_SIZE) {
+			splitter.setElderSize(newSize);
+		}
+		newPos -= spacing;
+		for (UiNode younger : splitter.getYoungerPanes()) {
+			setHorizontal(younger, younger.getTopPx(), newPos);
+		}
+		return EVENT_EATEN;
+	}
+
+	private void setHorizontal(UiNode node, int sy, int ey) {
+		int totalHeight = this.getHeightPx();
+		if (node.getTop() != null) {
+			node.setTop(sy);
+		}
+		if (node.getHeight() != null) {
+			node.setHeight(ey - sy);
+		}
+		if (node.getBottom() != null) {
+			node.setBottom(totalHeight - ey);
+		}
+	}
+
+	private int resizeLeft(UiSplitter splitter, int elderSize, boolean updateSize) {
+		int totalWidth = this.getWidthPx();
+		UiNode elder = splitter.getElderPane();
+		int spacing = getSpacingWidthPx();
+		int minPos = elder.getLeftPx();
+		int maxPos = totalWidth;
+		for (UiNode c : splitter.getYoungerPanes()) {
+			maxPos = Math.min(maxPos, (totalWidth - c.getRightPx()) - spacing);
+		}
+		int newPos = Math.min(Math.max(minPos, minPos + elderSize), maxPos);
+		setVertical(elder   , minPos, newPos);
+		setVertical(splitter, newPos, newPos + spacing);
+		int newSize = newPos - minPos;
+		if (updateSize && newSize >= MIN_ELDER_SIZE) {
+			splitter.setElderSize(newSize);
+		}
+		newPos += spacing;
+		for (UiNode younger : splitter.getYoungerPanes()) {
+			setVertical(younger, newPos, totalWidth - younger.getRightPx());
+		}
+		return EVENT_EATEN;
+	}
+
+	private int resizeRight(UiSplitter splitter, int elderSize, boolean updateSize) {
+		int totalWidth = this.getWidthPx();
+		UiNode elder = splitter.getElderPane();
+		int spacing = getSpacingWidthPx();
+		int maxPos = totalWidth - elder.getRightPx();
+		int minPos = spacing;
+		for (UiNode younger : splitter.getYoungerPanes()) {
+			minPos = Math.max(minPos, younger.getLeftPx() + spacing);
+		}
+		int newPos = Math.min(Math.max(minPos, maxPos - elderSize), maxPos);
+		setVertical(elder   , newPos, maxPos);
+		setVertical(splitter, newPos - spacing, newPos);
+		int newSize = maxPos - newPos;
+		if (updateSize && newSize >= MIN_ELDER_SIZE) {
+			splitter.setElderSize(newSize);
+		}
+		newPos -= spacing;
+		for (UiNode younger : splitter.getYoungerPanes()) {
+			setVertical(younger, younger.getLeftPx(), newPos);
+		}
+		return EVENT_EATEN;
+	}
+
+	private void setVertical(UiNode node, int sx, int ex) {
+		int totalWidth = this.getWidthPx();
+		if (node.getLeft() != null) {
+			node.setLeft(sx);
+		}
+		if (node.getWidth() != null) {
+			node.setWidth(ex - sx);
+		}
+		if (node.getRight() != null) {
+			node.setRight(totalWidth - ex);
+		}
 	}
 
 	@Override
 	public int onMouseUp(UiNode target, int x, int y, int mods, int time) {
-		LOGGER.debug("onMouseUp %s", target.getName());
-		return super.onMouseUp(target, x, y, mods, time);
+		int result = EVENT_IGNORED;
+		UiApplication app = getApplication();
+		if (downSplitter != null) {
+			if (!bDragged) {
+				int elderSize = downSplitter.getElderSize();
+				int elderWidth  = wDown != 0 ? 0 : elderSize;
+				int elderHeight = hDown != 0 ? 0 : elderSize;
+				switch (downSplitter.getParam()) {
+				case TOP:
+					result = resizeTop(downSplitter, elderHeight, false);
+					break;
+				case BOTTOM:
+					result = resizeBottom(downSplitter, elderHeight, false);
+					break;
+				case LEFT:
+					result = resizeLeft(downSplitter, elderWidth, false);
+					break;
+				case RIGHT:
+					result = resizeRight(downSplitter, elderWidth, false);
+					break;
+				default:
+					throw new AssertionError();
+				}
+			}
+			bDragged = false;
+			downSplitter = null;
+			app.releaseCapture(this);
+		}
+		return result;
 	}
-
-	@Override
-	public int onMouseClick(UiNode target, int x, int y, int mods, int time) {
-		// TODO 自動生成されたメソッド・スタブ
-		return super.onMouseClick(target, x, y, mods, time);
-	}
-
-
 
 }

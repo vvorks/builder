@@ -98,7 +98,7 @@ public class UiHorizontalScrollBar extends UiScrollBar {
 		if (thumbDown != null) {
 			int delta = (int) Math.round(ratio * (x - xDown));
 			result = invokeHorizontalScroll(offsetDown + delta);
-			getApplication().releaseCapture();
+			getApplication().releaseCapture(thumbDown);
 		} else if (target == this) {
 			//NOP
 		}

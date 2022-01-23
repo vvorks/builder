@@ -341,6 +341,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return list;
 	}
 
+	public String getDisplayName() {
+		return getName();
+	}
+
 	public boolean isMounted() {
 		return isFlagsOn(FLAGS_MOUNTED);
 	}
@@ -403,14 +407,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	public void setEditable(boolean editable) {
 		setFlags(FLAGS_EDITABLE, editable, CHANGED_DISPLAY);
-	}
-
-	public void setCapture() {
-		getApplication().setCapture(this);
-	}
-
-	public void releaseCapture() {
-		getApplication().releaseCapture();
 	}
 
 	public void deleteAfter(int index) {
@@ -1554,25 +1550,13 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		}
 	}
 
-	protected UiNode getFocus() {
-		return getApplication().getFocus(this);
-	}
-
-	protected UiNode setFocus(UiNode node) {
-		return getApplication().setFocus(node);
-	}
-
-	protected UiNode setFocus(UiNode node, int axis) {
-		return getApplication().setFocus(node, axis);
-	}
-
 	public boolean isFocus() {
-		UiNode focus = getFocus();
+		UiNode focus = getApplication().getFocus(this);
 		return this == focus;
 	}
 
 	public boolean hasFocus() {
-		UiNode focus = getFocus();
+		UiNode focus = getApplication().getFocus(this);
 		return this == focus || this.isAncestor(focus);
 	}
 
@@ -1730,8 +1714,11 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	protected void syncElementStyle(CssStyle.Builder b) {
+		boolean viewable =
+				getWidthPx() > getBorderLeftPx() + getBorderRightPx() &&
+				getHeightPx() > getBorderTopPx() + getBorderBottomPx() ;
 		b.property("position", "absolute");
-		b.display(isVisible());
+		b.display(isVisible() && viewable);
 		b.left(left).right(right).width(width);
 		b.top(top).bottom(bottom).height(height);
 	}

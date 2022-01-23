@@ -110,7 +110,7 @@ public class UiPickerField extends UiNode implements DataField {
 
 	@Override
 	public int onMouseClick(UiNode target, int x, int y, int mods, int time) {
-		setFocus(this);
+		getApplication().setFocus(this);
 		showPopup(false);
 		return EVENT_EATEN;
 	}

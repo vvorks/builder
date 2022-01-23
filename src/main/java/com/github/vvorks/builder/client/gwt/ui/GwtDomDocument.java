@@ -15,8 +15,10 @@ import com.github.vvorks.builder.client.common.ui.Rect;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Asserts;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -272,5 +274,16 @@ public class GwtDomDocument implements DomDocument {
 	public void setAxis(int x, int y) {
 		domPanel.setAxis(x, y);
 	}
+
+	@Override
+	public void setCapture(boolean capture) {
+		Element elem = domPanel.getElement();
+		if (capture) {
+			DOM.setCapture(elem);
+		} else {
+			DOM.releaseCapture(elem);
+		}
+	}
+
 
 }

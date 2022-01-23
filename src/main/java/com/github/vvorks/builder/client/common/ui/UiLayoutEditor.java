@@ -818,7 +818,7 @@ public class UiLayoutEditor extends UiNode {
 			result |= EVENT_AFFECTED;
 		}
 		//キーボードフォーカスを設定
-		setFocus(this);
+		getApplication().setFocus(this);
 		return result;
 	}
 

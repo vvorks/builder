@@ -37,22 +37,32 @@ public class SplitTestPage extends UiPage {
 			b.spacing("8px");
 			b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
 			//左
-			b.enter(new UiButton("left"), UiSplitGroup.Param.LEFT_BORDER);
+			b.enter(new UiButton("left"), UiSplitGroup.Param.LEFT);
 				b.style(BuilderUiApplication.BASIC);
 				b.locate(NA, NA, NA, NA, 15.0, NA);
 			b.leave();
 			//右
-			b.enter(new UiButton("right"), UiSplitGroup.Param.RIGHT_BORDER);
+			b.enter(new UiButton("right"), UiSplitGroup.Param.RIGHT);
 				b.style(BuilderUiApplication.BASIC);
 				b.locate(NA, NA, NA, NA, 10.0, NA);
 			b.leave();
-			//上
-			b.enter(new UiButton("top"), UiSplitGroup.Param.TOP_BORDER);
+			//上1
+			b.enter(new UiButton("top1"), UiSplitGroup.Param.TOP);
 				b.style(BuilderUiApplication.BASIC);
 				b.locate(NA, NA, NA, NA, NA, 4.0);
 			b.leave();
-			//下
-			b.enter(new UiButton("bottom"), UiSplitGroup.Param.BOTTOM_BORDER);
+			//上2
+			b.enter(new UiButton("top2"), UiSplitGroup.Param.TOP);
+				b.style(BuilderUiApplication.BASIC);
+				b.locate(NA, NA, NA, NA, NA, 4.0);
+			b.leave();
+			//下1
+			b.enter(new UiButton("bottom1"), UiSplitGroup.Param.BOTTOM);
+				b.style(BuilderUiApplication.BASIC);
+				b.locate(NA, NA, NA, NA, NA, 6.0);
+			b.leave();
+			//下2
+			b.enter(new UiButton("bottom2"), UiSplitGroup.Param.BOTTOM);
 				b.style(BuilderUiApplication.BASIC);
 				b.locate(NA, NA, NA, NA, NA, 6.0);
 			b.leave();

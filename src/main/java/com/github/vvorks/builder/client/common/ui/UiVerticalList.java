@@ -626,7 +626,7 @@ public class UiVerticalList extends UiGroup {
 		if (count <= 0 || linesPerView <= 0) {
 			deleteAfter(0);
 			if (hasFocus) {
-				setFocus(this);
+				getApplication().setFocus(this);
 			}
 			return;
 		}
@@ -656,7 +656,7 @@ public class UiVerticalList extends UiGroup {
 				setScrollTop(scrollTop);
 			}
 			if (hasFocus) {
-				setFocus(app.getFirstFocus(this));
+				app.setFocus(app.getFirstFocus(this));
 			}
 		} else {
 			int index = hasMargin ? lap(offset + count - VIEW_MARGIN, count) : offset;
@@ -766,7 +766,7 @@ public class UiVerticalList extends UiGroup {
 		int index = lap(edgeLine.getIndex() + count - 1, count);
 		pageTopIndex = lap(pageTopIndex - 1, count);
 		UiLine rollLine = (UiLine) removeLastChild();
-		UiNode focus = getFocus();
+		UiNode focus = getApplication().getFocus(this);
 		if (rollLine.isAncestor(focus)) {
 			hiddenDir = +1;
 			saveFocus(rollLine, focus);
@@ -784,7 +784,7 @@ public class UiVerticalList extends UiGroup {
 		int index = lap(edgeLine.getIndex() + 1, count);
 		pageTopIndex = lap(pageTopIndex + 1, count);
 		UiLine rollLine = (UiLine) removeFirstChild();
-		UiNode focus = getFocus();
+		UiNode focus = getApplication().getFocus(this);
 		if (rollLine.isAncestor(focus)) {
 			hiddenDir = -1;
 			saveFocus(rollLine, focus);
@@ -799,12 +799,12 @@ public class UiVerticalList extends UiGroup {
 	private void saveFocus(UiLine rollLine, UiNode focus) {
 		hiddenIndex = rollLine.getIndex();
 		hiddenColumn = rollLine.getDescendantIndex(focus);
-		setFocus(this, AXIS_Y);
+		getApplication().setFocus(this, AXIS_Y);
 	}
 
 	private void restoreFocus(UiLine rollLine) {
 		UiNode restore = rollLine.getDescendantAt(hiddenColumn);
-		setFocus(restore, AXIS_Y);
+		getApplication().setFocus(restore, AXIS_Y);
 		hiddenDir = 0;
 		hiddenIndex = -1;
 		hiddenColumn = -1;

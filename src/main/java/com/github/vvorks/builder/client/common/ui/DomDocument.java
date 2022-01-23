@@ -54,4 +54,11 @@ public interface DomDocument {
 	 */
 	public void setAxis(int x, int y);
 
+	/**
+	 * キャプチャの設定・解放を行う
+	 *
+	 * @param capture 設定の場合、真
+	 */
+	public void setCapture(boolean capture);
+
 }

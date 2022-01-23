@@ -56,6 +56,7 @@ public class UiVerticalScrollBar extends UiScrollBar {
 			offsetDown = lastOffset;
 			yDown = y;
 			app.setCapture(thumbDown);
+			result = EVENT_CONSUMED;
 		} else if (target == this) {
 			//SB上でのDOWN→上又は下へのスクロール
 			Rect rect = getThumbRect();
@@ -98,7 +99,7 @@ public class UiVerticalScrollBar extends UiScrollBar {
 		if (thumbDown != null) {
 			int delta = (int) Math.round(ratio * (y - yDown));
 			result = invokeVerticalScroll(offsetDown + delta);
-			getApplication().releaseCapture();
+			getApplication().releaseCapture(thumbDown);
 		} else if (target == this) {
 			//NOP
 		}

@@ -78,14 +78,16 @@ public class UiApplication implements EventHandler {
 		private final UiPage page;
 		private final Point axis;
 		private UiNode focus;
-		private UiNode capture;
 		private UiNode click;
+		private int xLast;
+		private int yLast;
 		public LivePage(UiPage page) {
 			this.page = page;
 			this.axis = new Point(0, 0);
 			this.focus = null;
-			this.capture = null;
 			this.click = null;
+			this.xLast = 0;
+			this.yLast = 0;
 		}
 	}
 
@@ -123,6 +125,8 @@ public class UiApplication implements EventHandler {
 	private boolean busy;
 
 	private boolean loaded;
+
+	private UiNode capture;
 
 	public UiApplication(DomDocument doc) {
 		this.document = doc;
@@ -264,21 +268,37 @@ public class UiApplication implements EventHandler {
 	}
 
 	public UiNode getCapture() {
-		LivePage p = getLivePage();
-		return p.capture;
+		return capture;
 	}
 
 	public UiNode setCapture(UiNode newCaptureNode) {
-		LivePage p = getLivePage();
-		UiNode oldCaptureNode = p.capture;
-		p.capture = newCaptureNode;
+		Asserts.require(newCaptureNode != null);
+		UiNode oldCaptureNode = capture;
+		if (oldCaptureNode == null) {
+			capture = newCaptureNode;
+			getDocument().setCapture(true);
+		} else if (oldCaptureNode != newCaptureNode) {
+			LOGGER.warn("setCapture changed(%s -> %s)",
+					oldCaptureNode.getDisplayName(),
+					newCaptureNode.getDisplayName());
+			capture = newCaptureNode;
+		} else {
+			LOGGER.warn("setCapture again");
+		}
 		return oldCaptureNode;
 	}
 
-	public UiNode releaseCapture() {
-		LivePage p = getLivePage();
-		UiNode oldCaptureNode = p.capture;
-		p.capture = null;
+	public UiNode releaseCapture(UiNode relCaptureNode) {
+		Asserts.require(relCaptureNode != null);
+		UiNode oldCaptureNode = capture;
+		if (oldCaptureNode == null) {
+			LOGGER.warn("releaseCapture nop");
+		} else if (oldCaptureNode != relCaptureNode) {
+			LOGGER.warn("releaseCapture ignored");
+		} else {
+			capture = null;
+			getDocument().setCapture(false);
+		}
 		return oldCaptureNode;
 	}
 
@@ -557,9 +577,18 @@ public class UiApplication implements EventHandler {
 				LOGGER.warn("BUSY");
 				return EVENT_CONSUMED;
 			}
-			//イベント配信処理
+			//同値チェック
 			Point pt = new Point(x, y);
 			UiNode target = getMouseTarget(pt);
+			UiPage page = target.getPage();
+			Asserts.requireNotNull(page);
+			LivePage p = getLivePageOf(page);
+			if (x == p.xLast && y == p.yLast) {
+				return EVENT_CONSUMED;
+			}
+			p.xLast = x;
+			p.yLast = y;
+			//イベント配信処理
 			UiNode node = target;
 			int result = node.onMouseMove(target, pt.getX(), pt.getY(), mods, time);
 			while ((result & EVENT_CONSUMED) == 0 && node.getParent() != null) {
@@ -785,7 +814,7 @@ public class UiApplication implements EventHandler {
 		UiNode node;
 		if (p == null) {
 			node = root;
-		} else if (p.capture == null) {
+		} else if (capture == null) {
 			UiNode child = p.page;
 			node = child.getParent();
 			while (child != null) {
@@ -797,12 +826,12 @@ public class UiApplication implements EventHandler {
 				child = node.getVisibleChildAt(pt.getX(), pt.getY());
 			}
 		} else {
-			node = p.capture;
+			node = capture;
 			while (node != null) {
 				node.translate(pt, +1);
 				node = node.getParent();
 			}
-			node = p.capture;
+			node = capture;
 		}
 		return node;
 	}
