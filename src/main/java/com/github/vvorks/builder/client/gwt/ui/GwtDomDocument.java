@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -18,7 +19,10 @@ import com.github.vvorks.builder.common.lang.Asserts;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -285,5 +289,21 @@ public class GwtDomDocument implements DomDocument {
 		}
 	}
 
+	@Override
+	public String getLocale() {
+		return LocaleInfo.getCurrentLocale().getLocaleName();
+	}
+
+	@Override
+	public void setLocale(String newLocale) {
+		String oldLocale = getLocale();
+		if (Objects.equals(oldLocale, newLocale)) {
+			return;
+		}
+		UrlBuilder builder = Window.Location.createUrlBuilder();
+		builder.setParameter("locale", newLocale);
+		String newUrl = builder.buildString();
+		Window.Location.assign(newUrl);
+	}
 
 }

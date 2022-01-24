@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.HashMap;
 import com.github.vvorks.builder.common.json.Json;
 
-public class GwtResourceBundleImpl implements GwtResourceBundle {
-	{{#each this}}
+public class GwtResourceBundle_{{locale}} implements GwtResourceBundle {
+	{{#each contents}}
 	{{#each this}}
 
 	private static final String[] {{../@key}}_{{@key}} = {
@@ -18,7 +18,7 @@ public class GwtResourceBundleImpl implements GwtResourceBundle {
 
 	private static final Map<String, Map<String, String[]>> RESOURCES = new HashMap<>();
 	static {
-		{{#each this}}
+		{{#each contents}}
 		{{#each this}}
 		RESOURCES.computeIfAbsent("{{../@key}}", k -> new HashMap<>()).put("{{@key}}", {{../@key}}_{{@key}});
 		{{/each}}
@@ -27,27 +27,11 @@ public class GwtResourceBundleImpl implements GwtResourceBundle {
 
 	private static final Json EMPTY_JSON = Json.createObject();
 
-	private String locale;
-
 	private Map<String, Json> cache = new HashMap<>();
 
 	@Override
 	public String getLocale() {
-		if (locale == null) {
-			setLocale(getBrowserLocale());
-		}
-		return locale;
-	}
-
-	@Override
-	public void setLocale(String newLocale) {
-		if (newLocale == null) {
-			throw new IllegalArgumentException();
-		}
-		if (!newLocale.equals(locale)) {
-			locale = newLocale;
-			cache.clear();
-		}
+		return "{{locale}}";
 	}
 
 	@Override
@@ -97,17 +81,5 @@ public class GwtResourceBundleImpl implements GwtResourceBundle {
 		}
 		return sb.toString();
 	}
-
-	private static String getBrowserLocale() {
-		String lang = getNavigatorLanguage();
-		if (lang == null || lang.isEmpty()) {
-			return "";
-		}
-		return lang.replace('-', '_');
-	}
-
-	private static native String getNavigatorLanguage()/*-{
-		return $wnd.navigator.language;
-	}-*/;
 
 }

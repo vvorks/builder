@@ -61,4 +61,20 @@ public interface DomDocument {
 	 */
 	public void setCapture(boolean capture);
 
+	/**
+	 * ロケールを取得する
+	 *
+	 * @return ロケール
+	 */
+	public String getLocale();
+
+	/**
+	 * ロケールを設定する
+	 *
+	 * 注意：実装によりシステム（アプリ）再起動となる場合がある。（少なくとGWT実装の場合はページがリロードされる）
+	 *
+	 * @param newLocale
+	 */
+	public void setLocale(String newLocale);
+
 }

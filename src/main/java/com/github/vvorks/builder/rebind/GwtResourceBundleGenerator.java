@@ -21,6 +21,7 @@ import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.util.JsonResourcePackage;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.PropertyOracle;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -28,14 +29,42 @@ import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.resource.Resource;
 import com.google.gwt.dev.resource.ResourceOracle;
+import com.google.gwt.i18n.rebind.LocaleUtils;
+import com.google.gwt.i18n.shared.GwtLocale;
 
 public class GwtResourceBundleGenerator extends Generator {
 
 	private static final String SUFFIX = ".json";
 
+	public static class Param {
+
+		private final String locale;
+
+		private final Map<String, Map<String, List<String>>> contents;
+
+		public Param(String locale, Map<String, Map<String, List<String>>> contents) {
+			this.locale = locale;
+			this.contents = contents;
+		}
+
+		public String getLocale() {
+			return locale;
+		}
+
+		public Map<String, Map<String, List<String>>> getContents() {
+			return contents;
+		}
+
+	}
+
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext context, String fullTypeName)
 			throws UnableToCompleteException {
+		//ロケール取得
+		PropertyOracle propertyOracle = context.getPropertyOracle();
+		LocaleUtils localeUtils = LocaleUtils.getInstance(logger, propertyOracle, context);
+		GwtLocale gwtLocale = localeUtils.getCompileLocale();
+		String locale = gwtLocale.toString();
 		//処理準備
 		TypeOracle types = context.getTypeOracle();
 		//処理対象となる型データを取得する
@@ -44,27 +73,29 @@ public class GwtResourceBundleGenerator extends Generator {
 			logger.log(TreeLogger.Type.ERROR, "" + fullTypeName + " not found.");
 			throw new UnableToCompleteException();
 		}
-		if (type == null || type.isInterface() == null) {
+		if (type.isInterface() == null) {
 			logger.log(TreeLogger.Type.ERROR, "" + fullTypeName + " is not interface.");
 			throw new UnableToCompleteException();
 		}
 		String typeName = type.getName();
 		//指定されたタイプのソースが既に出力済みか否かを確認する
 		String packageName = type.getPackage().getName();
-		String className = typeName.replace('.', '_') + "Impl";
+		String className = typeName.replace('.', '_') + "_" + locale;
 		String fullName = packageName + "." + className;
 		PrintWriter pw = context.tryCreate(logger, packageName, className);
 		if (pw == null) {
 			return fullName;
 		}
+		logger.log(TreeLogger.Type.INFO, "gennerate " + fullName);
 		//resource package取得
 		List<Resource> jsonResources = findResources(logger, context);
 		//contents取得
-		Map<String, Map<String, List<String>>> contents = getContents(logger, context, jsonResources);
+		Param param = new Param(
+				locale, getContents(logger, context, jsonResources, locale));
 		//handlebars templateを適用
 		try {
 			Template template = getTemplate("GwtResourceBundleImpl.hbs");
-			pw.print(template.apply(contents));
+			pw.print(template.apply(param));
 			pw.close();
 			context.commit(logger, pw);
 		} catch (IOException err) {
@@ -97,7 +128,7 @@ public class GwtResourceBundleGenerator extends Generator {
 	}
 
 	private Map<String, Map<String, List<String>>> getContents(TreeLogger logger,
-			GeneratorContext context, List<Resource> jsonResources) throws UnableToCompleteException {
+			GeneratorContext context, List<Resource> jsonResources, String locale) throws UnableToCompleteException {
 		int n = jsonResources.size();
 		if (n == 0) {
 			return Collections.emptyMap();
@@ -115,18 +146,20 @@ public class GwtResourceBundleGenerator extends Generator {
 			name = name.replace('/', '.');
 			int sep = name.indexOf('_');
 			String key = (sep == -1) ? name : name.substring(0, sep);
-			String locale = (sep == -1) ? "" : name.substring(sep + 1);
-			try {
-				Reader reader = new InputStreamReader(
-						res.getResourceAsStream(path), StandardCharsets.UTF_8);
-				List<String> lines = Readers.readLines(reader);
-				for (int i = 0; i < lines.size(); i++) {
-					lines.set(i, Strings.toStringConstant(lines.get(i)));
+			String resLocale = (sep == -1) ? "" : name.substring(sep + 1);
+			if (resLocale.isEmpty() || locale.startsWith(resLocale)) {
+				try {
+					Reader reader = new InputStreamReader(
+							res.getResourceAsStream(path), StandardCharsets.UTF_8);
+					List<String> lines = Readers.readLines(reader);
+					for (int i = 0; i < lines.size(); i++) {
+						lines.set(i, Strings.toStringConstant(lines.get(i)));
+					}
+					resourceMap.computeIfAbsent(key, k -> new HashMap<>()).put(resLocale, lines);
+				} catch (IOException err) {
+					logger.log(TreeLogger.Type.ERROR, "IOException");
+					throw new UnableToCompleteException();
 				}
-				resourceMap.computeIfAbsent(key, k -> new HashMap<>()).put(locale, lines);
-			} catch (IOException err) {
-				logger.log(TreeLogger.Type.ERROR, "IOException");
-				throw new UnableToCompleteException();
 			}
 		}
 		return resourceMap;

@@ -10,19 +10,14 @@ public interface JsonResourceBundle {
 	}
 
 	/**
-	 * 現在のロケールを取得する
+	 * ロケールを取得する
 	 *
 	 * @return ロケール
 	 */
 	public String getLocale();
 
 	/**
-	 * ロケールを設定する
-	 */
-	public void setLocale(String newLocale);
-
-	/**
-	 * 設定されたロケールのJSONリソースを取得する
+	 * JSONリソースを取得する
 	 *
 	 * @param resourceName リソース名
 	 * @return リソースJSONオブジェクト

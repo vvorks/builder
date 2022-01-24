@@ -179,16 +179,11 @@ public class UiApplication implements EventHandler {
 	}
 
 	public String getLocale() {
-		return JsonResourceBundle.getBundle().getLocale();
+		return document.getLocale();
 	}
 
 	public void setLocale(String newLocale) {
-		JsonResourceBundle bundle = JsonResourceBundle.getBundle();
-		String oldLocale = bundle.getLocale();
-		if (!Objects.equals(oldLocale, newLocale)) {
-			bundle.setLocale(newLocale);
-			processResourceChanged();
-		}
+		document.setLocale(newLocale);
 	}
 
 	public String getUiResourceName() {
@@ -887,6 +882,7 @@ public class UiApplication implements EventHandler {
 		case KeyCodes.SPACE:
 			if ((mods & KeyCodes.MOD_ACS) == KeyCodes.MOD_CS) {
 				String locale = getLocale();
+				LOGGER.debug("LOCALE %s", locale);
 				if (locale.startsWith("ja")) {
 					setLocale("en");
 				} else {
