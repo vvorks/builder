@@ -405,6 +405,9 @@ public class UiApplication implements EventHandler {
 
 	public void processInitialize(int screenWidth, int screenHeight) {
 		LOGGER.info("processInitialize(%d, %d)", screenWidth, screenHeight);
+		Metrics met = Metrics.get();
+		LOGGER.info("metrics em:%g ex:%g in:%g ", met.getEmSize(), met.getExSize(), met.getInSize());
+		LOGGER.info("locale %s", document.getLocale());
 		try {
 			injectRegisteredStyles();
 			this.onResize(screenWidth, screenHeight);
@@ -880,15 +883,16 @@ public class UiApplication implements EventHandler {
 			result |= clearClicking() | setClicking(target);
 			break;
 		case KeyCodes.SPACE:
-			if ((mods & KeyCodes.MOD_ACS) == KeyCodes.MOD_CS) {
-				String locale = getLocale();
-				LOGGER.debug("LOCALE %s", locale);
-				if (locale.startsWith("ja")) {
-					setLocale("en");
-				} else {
-					setLocale("ja");
+			if (ClientSettings.DEBUG) {
+				if ((mods & KeyCodes.MOD_ACS) == KeyCodes.MOD_CS) {
+					String locale = getLocale();
+					if (!locale.startsWith("en")) {
+						setLocale("en");
+					} else {
+						setLocale(null);
+					}
+					result = EVENT_EATEN;
 				}
-				result = EVENT_EATEN;
 			}
 			break;
 		default:

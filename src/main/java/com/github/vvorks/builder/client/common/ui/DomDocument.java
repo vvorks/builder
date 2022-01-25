@@ -73,7 +73,7 @@ public interface DomDocument {
 	 *
 	 * 注意：実装によりシステム（アプリ）再起動となる場合がある。（少なくとGWT実装の場合はページがリロードされる）
 	 *
-	 * @param newLocale
+	 * @param newLocale 設定するロケール。nullの場合、システム設定に従うという意味となる。
 	 */
 	public void setLocale(String newLocale);
 

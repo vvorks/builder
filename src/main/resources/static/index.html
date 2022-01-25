@@ -2,6 +2,17 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<script>
+		var locale = localStorage.getItem("locale");
+		if (locale == null || locale.length == 0) {
+			locale = navigator.language.replace(/-/g, '_');
+		}
+		var meta = document.createElement("meta");
+		meta.setAttribute("name", "gwt:property");
+		meta.setAttribute("content", "locale=" + locale);
+		var head = document.getElementsByTagName("head")[0];
+		head.appendChild(meta);
+	</script>
 	<script type="text/javascript" src="Builder/Builder.nocache.js"></script>
 	<title>Builder Gwt</title>
 </head>

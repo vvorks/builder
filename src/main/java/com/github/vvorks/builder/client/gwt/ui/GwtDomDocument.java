@@ -19,7 +19,6 @@ import com.github.vvorks.builder.common.lang.Asserts;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.dom.client.StyleInjector;
-import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -300,10 +299,24 @@ public class GwtDomDocument implements DomDocument {
 		if (Objects.equals(oldLocale, newLocale)) {
 			return;
 		}
-		UrlBuilder builder = Window.Location.createUrlBuilder();
-		builder.setParameter("locale", newLocale);
-		String newUrl = builder.buildString();
-		Window.Location.assign(newUrl);
+		if (newLocale != null) {
+			setLocalStorage("locale", newLocale);
+		} else {
+			removeLocalStorage("locale");
+		}
+		Window.Location.reload();
 	}
+
+	private static native String getLocalStorage(String key)/*-{
+		return $wnd.localStorage.getItem(key, value);
+	}-*/;
+
+	private static native void setLocalStorage(String key, String value)/*-{
+		$wnd.localStorage.setItem(key, value);
+	}-*/;
+
+	private static native void removeLocalStorage(String key)/*-{
+		$wnd.localStorage.removeItem(key);
+	}-*/;
 
 }
