@@ -1,9 +1,7 @@
 package com.github.vvorks.builder.server.extender;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,15 +80,16 @@ public class ProjectExtender {
 	}
 
 	public Set<Map.Entry<String, List<MessageContent>>> getMessages(ProjectContent prj) {
-		List<MessageContent> rawList = projectMapper.listMessagesContent(prj, 0, 0);
-		Map<String, List<MessageContent>> localeMap = new LinkedHashMap<>();
-		for (MessageContent c : rawList) {
-			String locale = c.getLocaleId();
-			String key = Strings.isEmpty(locale) ? "" : "_" + locale;
-			List<MessageContent> subList = localeMap.computeIfAbsent(key, k -> new ArrayList<>());
-			subList.add(c);
-		}
-		return localeMap.entrySet();
+		return Collections.emptySet();
+//		List<MessageContent> rawList = projectMapper.listMessagesContent(prj, 0, 0);
+//		Map<String, List<MessageContent>> localeMap = new LinkedHashMap<>();
+//		for (MessageContent c : rawList) {
+//			String locale = c.getLocaleId();
+//			String key = Strings.isEmpty(locale) ? "" : "_" + locale;
+//			List<MessageContent> subList = localeMap.computeIfAbsent(key, k -> new ArrayList<>());
+//			subList.add(c);
+//		}
+//		return localeMap.entrySet();
 	}
 
 }

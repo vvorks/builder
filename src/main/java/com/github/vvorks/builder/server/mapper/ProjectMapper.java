@@ -214,4 +214,28 @@ public interface ProjectMapper {
 		@Param("limit") int limit
 	);
 
+	/**
+	 * resourcesのサマリーを取得する
+	 *
+	 * @param content プロジェクト
+	 * @return resourcesのサマリー
+	 */
+	public ResourceSummary<ResourceContent> listResourcesSummary(
+		@Param("content") ProjectContent content
+	);
+
+	/**
+	 * resourcesを取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return resources
+	 */
+	public List<ResourceContent> listResourcesContent(
+		@Param("content") ProjectContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
 }

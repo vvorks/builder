@@ -6,14 +6,14 @@ package com.github.vvorks.builder.server.domain;
 import java.util.Objects;
 
 /**
- * メッセージの見出し
+ * リソースの見出し
  */
-public class MessageSubject {
+public class ResourceSubject {
 
 	/**
-	 * メッセージID
+	 * resourceId
 	 */
-	private int messageId;
+	private int resourceId;
 
 	/**
 	 * タイトル
@@ -21,20 +21,20 @@ public class MessageSubject {
 	private String _title;
 
 	/**
-	 * 空のメッセージの見出しを作成する
+	 * 空のリソースの見出しを作成する
 	 */
-	public MessageSubject() {
+	public ResourceSubject() {
 	}
 
 	/**
-	 * 指定のキー項目を持つメッセージの見出しを作成する
+	 * 指定のキー項目を持つリソースの見出しを作成する
 	 *
-	 * @param messageId メッセージID
+	 * @param resourceId resourceId
 	 */
-	public MessageSubject(
-		int messageId
+	public ResourceSubject(
+		int resourceId
 	) {
-		this.messageId = messageId;
+		this.resourceId = resourceId;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class MessageSubject {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			messageId
+			resourceId
 			);
 	}
 
@@ -71,21 +71,21 @@ public class MessageSubject {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((MessageSubject) obj);
+			return equals((ResourceSubject) obj);
 		}
 	}
 
-	private boolean equals(MessageSubject other) {
+	private boolean equals(ResourceSubject other) {
 		return
-			this.messageId == other.messageId
+			this.resourceId == other.resourceId
 			;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("MessageSubject [");
-		sb.append("messageId=").append(messageId);
+		sb.append("ResourceSubject [");
+		sb.append("resourceId=").append(resourceId);
 		sb.append("]");
 		return sb.toString();
 	}

@@ -11,24 +11,24 @@ import java.util.Objects;
 public class MessageContent {
 
 	/**
+	 * メッセージID
+	 */
+	private int messageId;
+
+	/**
 	 * 所属プロジェクトのプロジェクトID
 	 */
 	private int ownerProjectId;
 
 	/**
-	 * メッセージID
+	 * メッセージ名
 	 */
-	private String messageId;
+	private String messageName;
 
 	/**
-	 * ロケール
+	 * メッセージのresourceId
 	 */
-	private String localeId;
-
-	/**
-	 * メッセージ文言
-	 */
-	private String text;
+	private int messageResourceId;
 
 	/**
 	 * 最終更新時刻
@@ -46,6 +46,11 @@ public class MessageContent {
 	private String owner_title;
 
 	/**
+	 * メッセージのタイトル
+	 */
+	private String message_title;
+
+	/**
 	 * 空のメッセージを作成する
 	 */
 	public MessageContent() {
@@ -54,18 +59,30 @@ public class MessageContent {
 	/**
 	 * 指定のキー項目を持つメッセージを作成する
 	 *
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
 	 * @param messageId メッセージID
-	 * @param localeId ロケール
 	 */
 	public MessageContent(
-		int ownerProjectId,
-		String messageId,
-		String localeId
+		int messageId
 	) {
-		this.ownerProjectId = ownerProjectId;
 		this.messageId = messageId;
-		this.localeId = localeId;
+	}
+
+	/**
+	 * メッセージIDを取得する
+	 *
+	 * @return メッセージID
+	 */
+	public int getMessageId() {
+		return this.messageId;
+	}
+
+	/**
+	 * メッセージIDを設定する
+	 *
+	 * @param messageId 設定するメッセージID
+	 */
+	public void setMessageId(int messageId) {
+		this.messageId = messageId;
 	}
 
 	/**
@@ -87,57 +104,39 @@ public class MessageContent {
 	}
 
 	/**
-	 * メッセージIDを取得する
+	 * メッセージ名を取得する
 	 *
-	 * @return メッセージID
+	 * @return メッセージ名
 	 */
-	public String getMessageId() {
-		return this.messageId;
+	public String getMessageName() {
+		return this.messageName;
 	}
 
 	/**
-	 * メッセージIDを設定する
+	 * メッセージ名を設定する
 	 *
-	 * @param messageId 設定するメッセージID
+	 * @param messageName 設定するメッセージ名
 	 */
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
+	public void setMessageName(String messageName) {
+		this.messageName = messageName;
 	}
 
 	/**
-	 * ロケールを取得する
+	 * メッセージのresourceIdを取得する
 	 *
-	 * @return ロケール
+	 * @return メッセージのresourceId
 	 */
-	public String getLocaleId() {
-		return this.localeId;
+	public int getMessageResourceId() {
+		return this.messageResourceId;
 	}
 
 	/**
-	 * ロケールを設定する
+	 * メッセージのresourceIdを設定する
 	 *
-	 * @param localeId 設定するロケール
+	 * @param messageResourceId 設定するメッセージのresourceId
 	 */
-	public void setLocaleId(String localeId) {
-		this.localeId = localeId;
-	}
-
-	/**
-	 * メッセージ文言を取得する
-	 *
-	 * @return メッセージ文言
-	 */
-	public String getText() {
-		return this.text;
-	}
-
-	/**
-	 * メッセージ文言を設定する
-	 *
-	 * @param text 設定するメッセージ文言
-	 */
-	public void setText(String text) {
-		this.text = text;
+	public void setMessageResourceId(int messageResourceId) {
+		this.messageResourceId = messageResourceId;
 	}
 
 	/**
@@ -194,13 +193,31 @@ public class MessageContent {
 		this.owner_title = owner_title;
 	}
 
+	/**
+	 * メッセージのタイトルを取得する
+	 *
+	 * @return メッセージのタイトル
+	 */
+	public String getMessage_title() {
+		return this.message_title;
+	}
+
+	/**
+	 * メッセージのタイトルを設定する
+	 *
+	 * @param message_title 設定するメッセージのタイトル
+	 */
+	public void setMessage_title(String message_title) {
+		this.message_title = message_title;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			ownerProjectId,
 			messageId,
-			localeId,
-			text,
+			ownerProjectId,
+			messageName,
+			messageResourceId,
 			_lastUpdatedAt
 			);
 	}
@@ -220,10 +237,10 @@ public class MessageContent {
 
 	private boolean equals(MessageContent other) {
 		return
+			this.messageId == other.messageId && 
 			this.ownerProjectId == other.ownerProjectId && 
-			Objects.equals(this.messageId, other.messageId) && 
-			Objects.equals(this.localeId, other.localeId) && 
-			Objects.equals(this.text, other.text) && 
+			Objects.equals(this.messageName, other.messageName) && 
+			this.messageResourceId == other.messageResourceId && 
 			Objects.equals(this._lastUpdatedAt, other._lastUpdatedAt)
 			;
 	}
@@ -232,10 +249,10 @@ public class MessageContent {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("MessageContent [");
-		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
 		sb.append("messageId=").append(messageId).append(", ");
-		sb.append("localeId=").append(localeId).append(", ");
-		sb.append("text=").append(text).append(", ");
+		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
+		sb.append("messageName=").append(messageName).append(", ");
+		sb.append("messageResourceId=").append(messageResourceId).append(", ");
 		sb.append("_lastUpdatedAt=").append(_lastUpdatedAt);
 		sb.append("]");
 		return sb.toString();
