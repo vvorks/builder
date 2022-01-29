@@ -215,22 +215,22 @@ public interface ProjectMapper {
 	);
 
 	/**
-	 * resourcesのサマリーを取得する
+	 * リソース一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト
-	 * @return resourcesのサマリー
+	 * @return リソース一覧のサマリー
 	 */
 	public ResourceSummary<ResourceContent> listResourcesSummary(
 		@Param("content") ProjectContent content
 	);
 
 	/**
-	 * resourcesを取得する
+	 * リソース一覧を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return resources
+	 * @return リソース一覧
 	 */
 	public List<ResourceContent> listResourcesContent(
 		@Param("content") ProjectContent content,

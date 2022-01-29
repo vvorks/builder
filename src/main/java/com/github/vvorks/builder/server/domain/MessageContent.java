@@ -26,7 +26,7 @@ public class MessageContent {
 	private String messageName;
 
 	/**
-	 * メッセージのresourceId
+	 * メッセージのリソースID
 	 */
 	private int messageResourceId;
 
@@ -122,18 +122,18 @@ public class MessageContent {
 	}
 
 	/**
-	 * メッセージのresourceIdを取得する
+	 * メッセージのリソースIDを取得する
 	 *
-	 * @return メッセージのresourceId
+	 * @return メッセージのリソースID
 	 */
 	public int getMessageResourceId() {
 		return this.messageResourceId;
 	}
 
 	/**
-	 * メッセージのresourceIdを設定する
+	 * メッセージのリソースIDを設定する
 	 *
-	 * @param messageResourceId 設定するメッセージのresourceId
+	 * @param messageResourceId 設定するメッセージのリソースID
 	 */
 	public void setMessageResourceId(int messageResourceId) {
 		this.messageResourceId = messageResourceId;

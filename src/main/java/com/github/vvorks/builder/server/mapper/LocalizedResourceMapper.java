@@ -40,8 +40,8 @@ public interface LocalizedResourceMapper {
 	/**
 	 * ローカライズドリソースを取得する
 	 *
-	 * @param ownerResourceId ownerのresourceId
-	 * @param locale locale
+	 * @param ownerResourceId 所属リソースのリソースID
+	 * @param locale ロケール
 	 * @return 取得したローカライズドリソース
 	 */
 	public LocalizedResourceContent get(
@@ -69,19 +69,19 @@ public interface LocalizedResourceMapper {
 	);
 
 	/**
-	 * ownerを取得する
+	 * 所属リソースを取得する
 	 *
 	 * @param content ローカライズドリソース
-	 * @return owner
+	 * @return 所属リソース
 	 */
 	public ResourceContent getOwner(LocalizedResourceContent content);
 
 	/**
-	 * ownerの候補サマリーを取得する
+	 * 所属リソースの候補サマリーを取得する
 	 *
 	 * @param content ローカライズドリソース
 	 * @param hint ヒント情報
-	 * @return ownerの候補サマリー
+	 * @return 所属リソースの候補サマリー
 	 */
 	public ResourceSummary<ResourceSubject> listOwnerCandidateSummary(
 		@Param("content") LocalizedResourceContent content,
@@ -89,13 +89,13 @@ public interface LocalizedResourceMapper {
 	);
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属リソースの候補一覧を取得する
 	 *
 	 * @param content ローカライズドリソース
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return ownerの候補一覧
+	 * @return 所属リソースの候補一覧
 	 */
 	public List<ResourceSubject> listOwnerCandidateSubject(
 		@Param("content") LocalizedResourceContent content,

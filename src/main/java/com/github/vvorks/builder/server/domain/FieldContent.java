@@ -68,32 +68,46 @@ public class FieldContent {
 	private boolean nullable;
 
 	/**
-	 * needsSum
+	 * 要合計値
 	 */
 	private boolean needsSum;
 
 	/**
-	 * needsAvg
+	 * 要平均値
 	 */
 	private boolean needsAvg;
 
 	/**
-	 * needsMax
+	 * 要最大値
 	 */
 	private boolean needsMax;
 
 	/**
-	 * needsMin
+	 * 要最小値
 	 */
 	private boolean needsMin;
 
 	/**
+	 * ラベルのリソースID
+	 */
+	private int labelResourceId;
+
+	/**
+	 * 書式のリソースID
+	 */
+	private int formatResourceId;
+
+	/**
 	 * タイトル
+	 *
+	 * 仕様書生成用見出し
 	 */
 	private String title;
 
 	/**
 	 * 説明
+	 *
+	 * 仕様書生成用説明文
 	 */
 	private String description;
 
@@ -131,6 +145,16 @@ public class FieldContent {
 	 * フィールド参照先のタイトル
 	 */
 	private String fref_title;
+
+	/**
+	 * ラベルのタイトル
+	 */
+	private String label_title;
+
+	/**
+	 * 書式のタイトル
+	 */
+	private String format_title;
 
 	/**
 	 * フィールド型のタイトル
@@ -353,75 +377,111 @@ public class FieldContent {
 	}
 
 	/**
-	 * needsSumを取得する
+	 * 要合計値を取得する
 	 *
-	 * @return needsSum
+	 * @return 要合計値
 	 */
 	public boolean isNeedsSum() {
 		return this.needsSum;
 	}
 
 	/**
-	 * needsSumを設定する
+	 * 要合計値を設定する
 	 *
-	 * @param needsSum 設定するneedsSum
+	 * @param needsSum 設定する要合計値
 	 */
 	public void setNeedsSum(boolean needsSum) {
 		this.needsSum = needsSum;
 	}
 
 	/**
-	 * needsAvgを取得する
+	 * 要平均値を取得する
 	 *
-	 * @return needsAvg
+	 * @return 要平均値
 	 */
 	public boolean isNeedsAvg() {
 		return this.needsAvg;
 	}
 
 	/**
-	 * needsAvgを設定する
+	 * 要平均値を設定する
 	 *
-	 * @param needsAvg 設定するneedsAvg
+	 * @param needsAvg 設定する要平均値
 	 */
 	public void setNeedsAvg(boolean needsAvg) {
 		this.needsAvg = needsAvg;
 	}
 
 	/**
-	 * needsMaxを取得する
+	 * 要最大値を取得する
 	 *
-	 * @return needsMax
+	 * @return 要最大値
 	 */
 	public boolean isNeedsMax() {
 		return this.needsMax;
 	}
 
 	/**
-	 * needsMaxを設定する
+	 * 要最大値を設定する
 	 *
-	 * @param needsMax 設定するneedsMax
+	 * @param needsMax 設定する要最大値
 	 */
 	public void setNeedsMax(boolean needsMax) {
 		this.needsMax = needsMax;
 	}
 
 	/**
-	 * needsMinを取得する
+	 * 要最小値を取得する
 	 *
-	 * @return needsMin
+	 * @return 要最小値
 	 */
 	public boolean isNeedsMin() {
 		return this.needsMin;
 	}
 
 	/**
-	 * needsMinを設定する
+	 * 要最小値を設定する
 	 *
-	 * @param needsMin 設定するneedsMin
+	 * @param needsMin 設定する要最小値
 	 */
 	public void setNeedsMin(boolean needsMin) {
 		this.needsMin = needsMin;
+	}
+
+	/**
+	 * ラベルのリソースIDを取得する
+	 *
+	 * @return ラベルのリソースID
+	 */
+	public int getLabelResourceId() {
+		return this.labelResourceId;
+	}
+
+	/**
+	 * ラベルのリソースIDを設定する
+	 *
+	 * @param labelResourceId 設定するラベルのリソースID
+	 */
+	public void setLabelResourceId(int labelResourceId) {
+		this.labelResourceId = labelResourceId;
+	}
+
+	/**
+	 * 書式のリソースIDを取得する
+	 *
+	 * @return 書式のリソースID
+	 */
+	public int getFormatResourceId() {
+		return this.formatResourceId;
+	}
+
+	/**
+	 * 書式のリソースIDを設定する
+	 *
+	 * @param formatResourceId 設定する書式のリソースID
+	 */
+	public void setFormatResourceId(int formatResourceId) {
+		this.formatResourceId = formatResourceId;
 	}
 
 	/**
@@ -587,6 +647,42 @@ public class FieldContent {
 	}
 
 	/**
+	 * ラベルのタイトルを取得する
+	 *
+	 * @return ラベルのタイトル
+	 */
+	public String getLabel_title() {
+		return this.label_title;
+	}
+
+	/**
+	 * ラベルのタイトルを設定する
+	 *
+	 * @param label_title 設定するラベルのタイトル
+	 */
+	public void setLabel_title(String label_title) {
+		this.label_title = label_title;
+	}
+
+	/**
+	 * 書式のタイトルを取得する
+	 *
+	 * @return 書式のタイトル
+	 */
+	public String getFormat_title() {
+		return this.format_title;
+	}
+
+	/**
+	 * 書式のタイトルを設定する
+	 *
+	 * @param format_title 設定する書式のタイトル
+	 */
+	public void setFormat_title(String format_title) {
+		this.format_title = format_title;
+	}
+
+	/**
 	 * フィールド型のタイトルを取得する
 	 *
 	 * @return フィールド型のタイトル
@@ -622,6 +718,8 @@ public class FieldContent {
 			needsAvg,
 			needsMax,
 			needsMin,
+			labelResourceId,
+			formatResourceId,
 			title,
 			description,
 			note,
@@ -659,6 +757,8 @@ public class FieldContent {
 			this.needsAvg == other.needsAvg && 
 			this.needsMax == other.needsMax && 
 			this.needsMin == other.needsMin && 
+			this.labelResourceId == other.labelResourceId && 
+			this.formatResourceId == other.formatResourceId && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note) && 
@@ -685,6 +785,8 @@ public class FieldContent {
 		sb.append("needsAvg=").append(needsAvg).append(", ");
 		sb.append("needsMax=").append(needsMax).append(", ");
 		sb.append("needsMin=").append(needsMin).append(", ");
+		sb.append("labelResourceId=").append(labelResourceId).append(", ");
+		sb.append("formatResourceId=").append(formatResourceId).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note).append(", ");

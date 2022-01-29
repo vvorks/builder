@@ -40,7 +40,7 @@ public interface ResourceMapper {
 	/**
 	 * リソースを取得する
 	 *
-	 * @param resourceId resourceId
+	 * @param resourceId リソースID
 	 * @return 取得したリソース
 	 */
 	public ResourceContent get(
@@ -67,19 +67,19 @@ public interface ResourceMapper {
 	);
 
 	/**
-	 * ownerを取得する
+	 * 所属プロジェクトを取得する
 	 *
 	 * @param content リソース
-	 * @return owner
+	 * @return 所属プロジェクト
 	 */
 	public ProjectContent getOwner(ResourceContent content);
 
 	/**
-	 * ownerの候補サマリーを取得する
+	 * 所属プロジェクトの候補サマリーを取得する
 	 *
 	 * @param content リソース
 	 * @param hint ヒント情報
-	 * @return ownerの候補サマリー
+	 * @return 所属プロジェクトの候補サマリー
 	 */
 	public ProjectSummary<ProjectSubject> listOwnerCandidateSummary(
 		@Param("content") ResourceContent content,
@@ -87,13 +87,13 @@ public interface ResourceMapper {
 	);
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属プロジェクトの候補一覧を取得する
 	 *
 	 * @param content リソース
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return ownerの候補一覧
+	 * @return 所属プロジェクトの候補一覧
 	 */
 	public List<ProjectSubject> listOwnerCandidateSubject(
 		@Param("content") ResourceContent content,
@@ -103,22 +103,22 @@ public interface ResourceMapper {
 	);
 
 	/**
-	 * variationsのサマリーを取得する
+	 * ロケール別リソース一覧のサマリーを取得する
 	 *
 	 * @param content リソース
-	 * @return variationsのサマリー
+	 * @return ロケール別リソース一覧のサマリー
 	 */
 	public LocalizedResourceSummary<LocalizedResourceContent> listVariationsSummary(
 		@Param("content") ResourceContent content
 	);
 
 	/**
-	 * variationsを取得する
+	 * ロケール別リソース一覧を取得する
 	 *
 	 * @param content リソース
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return variations
+	 * @return ロケール別リソース一覧
 	 */
 	public List<LocalizedResourceContent> listVariationsContent(
 		@Param("content") ResourceContent content,

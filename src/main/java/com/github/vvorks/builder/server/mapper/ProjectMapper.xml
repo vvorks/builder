@@ -155,16 +155,20 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
+			T1.F_LABEL_RESOURCE_ID AS "labelResourceId",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
 			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title",
-			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
+			T3.F_DEFAULT_VALUE AS "label_title"
 		FROM
 			T_CLASS T1
 		LEFT JOIN T_PROJECT T2 ON
 			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		LEFT JOIN T_RESOURCE T3 ON
+			T1.F_LABEL_RESOURCE_ID = T3.F_RESOURCE_ID
 		WHERE
 			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
 		ORDER BY
@@ -198,16 +202,20 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
+			T1.F_LABEL_RESOURCE_ID AS "labelResourceId",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
 			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title",
-			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
+			T3.F_DEFAULT_VALUE AS "label_title"
 		FROM
 			T_CLASS T1
 		LEFT JOIN T_PROJECT T2 ON
 			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		LEFT JOIN T_RESOURCE T3 ON
+			T1.F_LABEL_RESOURCE_ID = T3.F_RESOURCE_ID
 		WHERE
 			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
 			<![CDATA[

@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.server.component;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -58,9 +59,11 @@ public class XlsxLoader {
 	}
 
 	private static class ColInfo {
+		public final int no;
 		public final String name;
 		public final DataType type;
-		public ColInfo(String name, DataType type) {
+		public ColInfo(int no, String name, DataType type) {
+			this.no = no;
 			this.name = name;
 			this.type = type;
 		}
@@ -73,35 +76,38 @@ public class XlsxLoader {
 	}
 
 	public File process(File xlsxFile) throws Exception {
-		File dbFile = new File(Ios.getBaseName(xlsxFile) + ".db");
+		String baseName = Ios.getBaseName(xlsxFile);
+		File dbFile = new File(baseName + ".db");
+		File sqlFile = new File(baseName + ".sql");
 		try (
 			Workbook book = WorkbookFactory.create(xlsxFile);
+			PrintWriter out = Ios.newWriter(sqlFile);
 			Connection con = DriverManager.getConnection("jdbc:sqlite:" + dbFile.getName())
 		) {
 			for (int i = 0; i < book.getNumberOfSheets(); i++) {
 				Sheet sheet = book.getSheetAt(i);
-				process(sheet, con);
+				out.print(process(sheet, con));
 			}
 		}
 		return dbFile;
 	}
 
-	private void process(Sheet sheet, Connection con) throws SQLException {
+	private String process(Sheet sheet, Connection con) throws SQLException {
 		//行列情報取得
 		int rowFirst = sheet.getFirstRowNum();
 		if (rowFirst < 0) {
-			return;
+			return "";
 		}
 		rowFirst++;
 		int rowLast = sheet.getLastRowNum() + 1;
 		Row headerRow = sheet.getRow(rowFirst - 1);
 		int colFirst = headerRow.getFirstCellNum();
 		if (colFirst < 0) {
-			return;
+			return "";
 		}
 		int colLast = headerRow.getLastCellNum();
 		if (colLast - colFirst <= 0) {
-			return;
+			return "";
 		}
 		//ヘッダ情報取得
 		List<ColInfo> cols = new ArrayList<>();
@@ -109,13 +115,15 @@ public class XlsxLoader {
 			Cell cell = headerRow.getCell(c);
 			String value = Cells.getString(cell, null);
 			Asserts.requireNotEmpty(value);
-			String[] a = value.split(":");
-			String name = a[0];
-			DataType type = (a.length > 1) ? DataType.valueOf(a[1]) : DataType.STRING;
-			cols.add(new ColInfo(name, type));
+			if (!value.startsWith("#")) {
+				String[] a = value.split(":");
+				String name = a[0];
+				DataType type = (a.length > 1) ? DataType.valueOf(a[1]) : DataType.STRING;
+				cols.add(new ColInfo(c, name, type));
+			}
 		}
 		//追加カラム
-		cols.add(new ColInfo("_lastUpdatedAt", DataType.DATE));
+		cols.add(new ColInfo(-1, "_lastUpdatedAt", DataType.DATE));
 		//テーブル作成
 		String tableName = SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(sheet.getSheetName());
 		StringBuilder sql = new StringBuilder();
@@ -167,16 +175,17 @@ public class XlsxLoader {
 			for (int r = rowFirst; r < rowLast; r++) {
 				Row row = sheet.getRow(r);
 				stmt.clearParameters();
-				for (int c = colFirst; c < colLast; c++) {
-					Cell cell = row.getCell(c);
-					ColInfo col = cols.get(c - colFirst);
+				int index = 1;
+				for (ColInfo col : cols) {
 					DataType colType = col.type;
-					int index = c - colFirst + 1;
+					Cell cell = col.no >= 0 ? row.getCell(col.no) : null;
 					setParameter(stmt, index, cell, colType);
+					index++;
 				}
 				stmt.execute();
 			}
 		}
+		return sql.toString();
 	}
 
 	private void setParameter(PreparedStatement stmt, int index, Cell cell, DataType colType) throws SQLException {

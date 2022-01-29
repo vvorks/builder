@@ -329,12 +329,12 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * resources情報を取得する
+	 * リソース一覧情報を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return resources情報
+	 * @return リソース一覧情報
 	 */
 	@JsonRpcMethod
 	public ResourceSummary<ResourceContent> listProjectResources(
@@ -491,6 +491,45 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 表示ラベルを取得する
+	 *
+	 * @param content クラス
+	 * @return 表示ラベル
+	 */
+	@JsonRpcMethod
+	public ResourceContent getClassLabel(
+		@JsonRpcParam("content") ClassContent content
+	) {
+		return classMapper.getLabel(content);
+	}
+
+	/**
+	 * 表示ラベルの候補一覧を取得する
+	 *
+	 * @param content クラス
+	 * @return 表示ラベルの候補一覧
+	 */
+	@JsonRpcMethod
+	public ResourceSummary<ResourceSubject> listClassLabelCandidate(
+		@JsonRpcParam("content") ClassContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ResourceSummary<ResourceSubject> summary = classMapper.listLabelCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ResourceSubject> contents = classMapper.listLabelCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * フィールド一覧情報を取得する
 	 *
 	 * @param content クラス
@@ -547,12 +586,12 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * queries情報を取得する
+	 * クエリー一覧情報を取得する
 	 *
 	 * @param content クラス
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return queries情報
+	 * @return クエリー一覧情報
 	 */
 	@JsonRpcMethod
 	public QuerySummary<QueryContent> listClassQueries(
@@ -819,6 +858,84 @@ public class BuilderRpcController {
 		}
 		summary.setOffset(offset);
 		List<FieldSubject> contents = fieldMapper.listFrefCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * ラベルを取得する
+	 *
+	 * @param content フィールド
+	 * @return ラベル
+	 */
+	@JsonRpcMethod
+	public ResourceContent getFieldLabel(
+		@JsonRpcParam("content") FieldContent content
+	) {
+		return fieldMapper.getLabel(content);
+	}
+
+	/**
+	 * ラベルの候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return ラベルの候補一覧
+	 */
+	@JsonRpcMethod
+	public ResourceSummary<ResourceSubject> listFieldLabelCandidate(
+		@JsonRpcParam("content") FieldContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ResourceSummary<ResourceSubject> summary = fieldMapper.listLabelCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ResourceSubject> contents = fieldMapper.listLabelCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 書式を取得する
+	 *
+	 * @param content フィールド
+	 * @return 書式
+	 */
+	@JsonRpcMethod
+	public ResourceContent getFieldFormat(
+		@JsonRpcParam("content") FieldContent content
+	) {
+		return fieldMapper.getFormat(content);
+	}
+
+	/**
+	 * 書式の候補一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @return 書式の候補一覧
+	 */
+	@JsonRpcMethod
+	public ResourceSummary<ResourceSubject> listFieldFormatCandidate(
+		@JsonRpcParam("content") FieldContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ResourceSummary<ResourceSubject> summary = fieldMapper.listFormatCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ResourceSubject> contents = fieldMapper.listFormatCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1443,7 +1560,7 @@ public class BuilderRpcController {
 	/**
 	 * リソースを取得する
 	 *
-	 * @param resourceId resourceId
+	 * @param resourceId リソースID
 	 * @return 取得したリソース
 	 */
 	@JsonRpcMethod
@@ -1478,10 +1595,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ownerを取得する
+	 * 所属プロジェクトを取得する
 	 *
 	 * @param content リソース
-	 * @return owner
+	 * @return 所属プロジェクト
 	 */
 	@JsonRpcMethod
 	public ProjectContent getResourceOwner(
@@ -1491,10 +1608,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属プロジェクトの候補一覧を取得する
 	 *
 	 * @param content リソース
-	 * @return ownerの候補一覧
+	 * @return 所属プロジェクトの候補一覧
 	 */
 	@JsonRpcMethod
 	public ProjectSummary<ProjectSubject> listResourceOwnerCandidate(
@@ -1517,12 +1634,12 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * variations情報を取得する
+	 * ロケール別リソース一覧情報を取得する
 	 *
 	 * @param content リソース
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return variations情報
+	 * @return ロケール別リソース一覧情報
 	 */
 	@JsonRpcMethod
 	public LocalizedResourceSummary<LocalizedResourceContent> listResourceVariations(
@@ -1577,8 +1694,8 @@ public class BuilderRpcController {
 	/**
 	 * ローカライズドリソースを取得する
 	 *
-	 * @param ownerResourceId ownerのresourceId
-	 * @param locale locale
+	 * @param ownerResourceId 所属リソースのリソースID
+	 * @param locale ロケール
 	 * @return 取得したローカライズドリソース
 	 */
 	@JsonRpcMethod
@@ -1615,10 +1732,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ownerを取得する
+	 * 所属リソースを取得する
 	 *
 	 * @param content ローカライズドリソース
-	 * @return owner
+	 * @return 所属リソース
 	 */
 	@JsonRpcMethod
 	public ResourceContent getLocalizedResourceOwner(
@@ -1628,10 +1745,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属リソースの候補一覧を取得する
 	 *
 	 * @param content ローカライズドリソース
-	 * @return ownerの候補一覧
+	 * @return 所属リソースの候補一覧
 	 */
 	@JsonRpcMethod
 	public ResourceSummary<ResourceSubject> listLocalizedResourceOwnerCandidate(

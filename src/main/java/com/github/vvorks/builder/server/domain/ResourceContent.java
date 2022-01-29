@@ -11,17 +11,17 @@ import java.util.Objects;
 public class ResourceContent {
 
 	/**
-	 * resourceId
+	 * リソースID
 	 */
 	private int resourceId;
 
 	/**
-	 * ownerのプロジェクトID
+	 * 所属プロジェクトのプロジェクトID
 	 */
 	private int ownerProjectId;
 
 	/**
-	 * defaultValue
+	 * 既定値
 	 */
 	private String defaultValue;
 
@@ -36,7 +36,7 @@ public class ResourceContent {
 	private String _title;
 
 	/**
-	 * ownerのタイトル
+	 * 所属プロジェクトのタイトル
 	 */
 	private String owner_title;
 
@@ -49,7 +49,7 @@ public class ResourceContent {
 	/**
 	 * 指定のキー項目を持つリソースを作成する
 	 *
-	 * @param resourceId resourceId
+	 * @param resourceId リソースID
 	 */
 	public ResourceContent(
 		int resourceId
@@ -58,54 +58,54 @@ public class ResourceContent {
 	}
 
 	/**
-	 * resourceIdを取得する
+	 * リソースIDを取得する
 	 *
-	 * @return resourceId
+	 * @return リソースID
 	 */
 	public int getResourceId() {
 		return this.resourceId;
 	}
 
 	/**
-	 * resourceIdを設定する
+	 * リソースIDを設定する
 	 *
-	 * @param resourceId 設定するresourceId
+	 * @param resourceId 設定するリソースID
 	 */
 	public void setResourceId(int resourceId) {
 		this.resourceId = resourceId;
 	}
 
 	/**
-	 * ownerのプロジェクトIDを取得する
+	 * 所属プロジェクトのプロジェクトIDを取得する
 	 *
-	 * @return ownerのプロジェクトID
+	 * @return 所属プロジェクトのプロジェクトID
 	 */
 	public int getOwnerProjectId() {
 		return this.ownerProjectId;
 	}
 
 	/**
-	 * ownerのプロジェクトIDを設定する
+	 * 所属プロジェクトのプロジェクトIDを設定する
 	 *
-	 * @param ownerProjectId 設定するownerのプロジェクトID
+	 * @param ownerProjectId 設定する所属プロジェクトのプロジェクトID
 	 */
 	public void setOwnerProjectId(int ownerProjectId) {
 		this.ownerProjectId = ownerProjectId;
 	}
 
 	/**
-	 * defaultValueを取得する
+	 * 既定値を取得する
 	 *
-	 * @return defaultValue
+	 * @return 既定値
 	 */
 	public String getDefaultValue() {
 		return this.defaultValue;
 	}
 
 	/**
-	 * defaultValueを設定する
+	 * 既定値を設定する
 	 *
-	 * @param defaultValue 設定するdefaultValue
+	 * @param defaultValue 設定する既定値
 	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
@@ -148,18 +148,18 @@ public class ResourceContent {
 	}
 
 	/**
-	 * ownerのタイトルを取得する
+	 * 所属プロジェクトのタイトルを取得する
 	 *
-	 * @return ownerのタイトル
+	 * @return 所属プロジェクトのタイトル
 	 */
 	public String getOwner_title() {
 		return this.owner_title;
 	}
 
 	/**
-	 * ownerのタイトルを設定する
+	 * 所属プロジェクトのタイトルを設定する
 	 *
-	 * @param owner_title 設定するownerのタイトル
+	 * @param owner_title 設定する所属プロジェクトのタイトル
 	 */
 	public void setOwner_title(String owner_title) {
 		this.owner_title = owner_title;

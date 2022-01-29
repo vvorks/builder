@@ -11,17 +11,17 @@ import java.util.Objects;
 public class LocalizedResourceContent {
 
 	/**
-	 * ownerのresourceId
+	 * 所属リソースのリソースID
 	 */
 	private int ownerResourceId;
 
 	/**
-	 * locale
+	 * ロケール
 	 */
 	private String locale;
 
 	/**
-	 * value
+	 * 値
 	 */
 	private String value;
 
@@ -36,7 +36,7 @@ public class LocalizedResourceContent {
 	private String _title;
 
 	/**
-	 * ownerのタイトル
+	 * 所属リソースのタイトル
 	 */
 	private String owner_title;
 
@@ -49,8 +49,8 @@ public class LocalizedResourceContent {
 	/**
 	 * 指定のキー項目を持つローカライズドリソースを作成する
 	 *
-	 * @param ownerResourceId ownerのresourceId
-	 * @param locale locale
+	 * @param ownerResourceId 所属リソースのリソースID
+	 * @param locale ロケール
 	 */
 	public LocalizedResourceContent(
 		int ownerResourceId,
@@ -61,54 +61,54 @@ public class LocalizedResourceContent {
 	}
 
 	/**
-	 * ownerのresourceIdを取得する
+	 * 所属リソースのリソースIDを取得する
 	 *
-	 * @return ownerのresourceId
+	 * @return 所属リソースのリソースID
 	 */
 	public int getOwnerResourceId() {
 		return this.ownerResourceId;
 	}
 
 	/**
-	 * ownerのresourceIdを設定する
+	 * 所属リソースのリソースIDを設定する
 	 *
-	 * @param ownerResourceId 設定するownerのresourceId
+	 * @param ownerResourceId 設定する所属リソースのリソースID
 	 */
 	public void setOwnerResourceId(int ownerResourceId) {
 		this.ownerResourceId = ownerResourceId;
 	}
 
 	/**
-	 * localeを取得する
+	 * ロケールを取得する
 	 *
-	 * @return locale
+	 * @return ロケール
 	 */
 	public String getLocale() {
 		return this.locale;
 	}
 
 	/**
-	 * localeを設定する
+	 * ロケールを設定する
 	 *
-	 * @param locale 設定するlocale
+	 * @param locale 設定するロケール
 	 */
 	public void setLocale(String locale) {
 		this.locale = locale;
 	}
 
 	/**
-	 * valueを取得する
+	 * 値を取得する
 	 *
-	 * @return value
+	 * @return 値
 	 */
 	public String getValue() {
 		return this.value;
 	}
 
 	/**
-	 * valueを設定する
+	 * 値を設定する
 	 *
-	 * @param value 設定するvalue
+	 * @param value 設定する値
 	 */
 	public void setValue(String value) {
 		this.value = value;
@@ -151,18 +151,18 @@ public class LocalizedResourceContent {
 	}
 
 	/**
-	 * ownerのタイトルを取得する
+	 * 所属リソースのタイトルを取得する
 	 *
-	 * @return ownerのタイトル
+	 * @return 所属リソースのタイトル
 	 */
 	public String getOwner_title() {
 		return this.owner_title;
 	}
 
 	/**
-	 * ownerのタイトルを設定する
+	 * 所属リソースのタイトルを設定する
 	 *
-	 * @param owner_title 設定するownerのタイトル
+	 * @param owner_title 設定する所属リソースのタイトル
 	 */
 	public void setOwner_title(String owner_title) {
 		this.owner_title = owner_title;

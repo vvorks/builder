@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ResourceSubject {
 
 	/**
-	 * resourceId
+	 * リソースID
 	 */
 	private int resourceId;
 
@@ -29,7 +29,7 @@ public class ResourceSubject {
 	/**
 	 * 指定のキー項目を持つリソースの見出しを作成する
 	 *
-	 * @param resourceId resourceId
+	 * @param resourceId リソースID
 	 */
 	public ResourceSubject(
 		int resourceId

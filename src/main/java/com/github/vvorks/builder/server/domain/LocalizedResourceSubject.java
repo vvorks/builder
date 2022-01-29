@@ -11,12 +11,12 @@ import java.util.Objects;
 public class LocalizedResourceSubject {
 
 	/**
-	 * ownerのresourceId
+	 * 所属リソースのリソースID
 	 */
 	private int ownerResourceId;
 
 	/**
-	 * locale
+	 * ロケール
 	 */
 	private String locale;
 
@@ -34,8 +34,8 @@ public class LocalizedResourceSubject {
 	/**
 	 * 指定のキー項目を持つローカライズドリソースの見出しを作成する
 	 *
-	 * @param ownerResourceId ownerのresourceId
-	 * @param locale locale
+	 * @param ownerResourceId 所属リソースのリソースID
+	 * @param locale ロケール
 	 */
 	public LocalizedResourceSubject(
 		int ownerResourceId,

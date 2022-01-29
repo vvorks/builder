@@ -42,12 +42,21 @@ public class ClassContent {
 	private String titleExpr;
 
 	/**
+	 * 表示ラベルのリソースID
+	 */
+	private int labelResourceId;
+
+	/**
 	 * タイトル
+	 *
+	 * 仕様書生成用見出し
 	 */
 	private String title;
 
 	/**
 	 * 説明
+	 *
+	 * 仕様書生成用説明文
 	 */
 	private String description;
 
@@ -70,6 +79,11 @@ public class ClassContent {
 	 * 所属プロジェクトのタイトル
 	 */
 	private String owner_title;
+
+	/**
+	 * 表示ラベルのタイトル
+	 */
+	private String label_title;
 
 	/**
 	 * 空のクラスを作成する
@@ -176,6 +190,24 @@ public class ClassContent {
 	 */
 	public void setTitleExpr(String titleExpr) {
 		this.titleExpr = titleExpr;
+	}
+
+	/**
+	 * 表示ラベルのリソースIDを取得する
+	 *
+	 * @return 表示ラベルのリソースID
+	 */
+	public int getLabelResourceId() {
+		return this.labelResourceId;
+	}
+
+	/**
+	 * 表示ラベルのリソースIDを設定する
+	 *
+	 * @param labelResourceId 設定する表示ラベルのリソースID
+	 */
+	public void setLabelResourceId(int labelResourceId) {
+		this.labelResourceId = labelResourceId;
 	}
 
 	/**
@@ -286,6 +318,24 @@ public class ClassContent {
 		this.owner_title = owner_title;
 	}
 
+	/**
+	 * 表示ラベルのタイトルを取得する
+	 *
+	 * @return 表示ラベルのタイトル
+	 */
+	public String getLabel_title() {
+		return this.label_title;
+	}
+
+	/**
+	 * 表示ラベルのタイトルを設定する
+	 *
+	 * @param label_title 設定する表示ラベルのタイトル
+	 */
+	public void setLabel_title(String label_title) {
+		this.label_title = label_title;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(
@@ -294,6 +344,7 @@ public class ClassContent {
 			className,
 			orderExpr,
 			titleExpr,
+			labelResourceId,
 			title,
 			description,
 			note,
@@ -321,6 +372,7 @@ public class ClassContent {
 			Objects.equals(this.className, other.className) && 
 			Objects.equals(this.orderExpr, other.orderExpr) && 
 			Objects.equals(this.titleExpr, other.titleExpr) && 
+			this.labelResourceId == other.labelResourceId && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note) && 
@@ -337,6 +389,7 @@ public class ClassContent {
 		sb.append("className=").append(className).append(", ");
 		sb.append("orderExpr=").append(orderExpr).append(", ");
 		sb.append("titleExpr=").append(titleExpr).append(", ");
+		sb.append("labelResourceId=").append(labelResourceId).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note).append(", ");

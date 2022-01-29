@@ -20,6 +20,8 @@
 			F_NEEDS_AVG,
 			F_NEEDS_MAX,
 			F_NEEDS_MIN,
+			F_LABEL_RESOURCE_ID,
+			F_FORMAT_RESOURCE_ID,
 			F_TITLE,
 			F_DESCRIPTION,
 			F_NOTE,
@@ -40,6 +42,8 @@
 			#{ needsAvg },
 			#{ needsMax },
 			#{ needsMin },
+			#{ labelResourceId },
+			#{ formatResourceId },
 			#{ title },
 			#{ description },
 			#{ note },
@@ -63,6 +67,8 @@
 			F_NEEDS_AVG = #{ needsAvg },
 			F_NEEDS_MAX = #{ needsMax },
 			F_NEEDS_MIN = #{ needsMin },
+			F_LABEL_RESOURCE_ID = #{ labelResourceId },
+			F_FORMAT_RESOURCE_ID = #{ formatResourceId },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
@@ -98,6 +104,8 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_LABEL_RESOURCE_ID AS "labelResourceId",
+			T1.F_FORMAT_RESOURCE_ID AS "formatResourceId",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -107,7 +115,9 @@
 			T3.F_CLASS_NAME || '(' || T3.F_TITLE || ')' AS "cref_title",
 			T4.F_ENUM_NAME || '(' || T4.F_TITLE || ')' AS "eref_title",
 			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "fref_title",
-			T7.F_VALUE_ID AS "type_title"
+			T7.F_DEFAULT_VALUE AS "label_title",
+			T8.F_DEFAULT_VALUE AS "format_title",
+			T9.F_VALUE_ID AS "type_title"
 		FROM
 			T_FIELD T1
 		LEFT JOIN T_CLASS T2 ON
@@ -120,9 +130,13 @@
 			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		LEFT JOIN T_CLASS T6 ON
 			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
-		LEFT JOIN T_ENUM_VALUE T7 ON
-			T7.F_OWNER_ENUM_ID = 1 AND
-			T1.F_TYPE = T7.F_VALUE_ID
+		LEFT JOIN T_RESOURCE T7 ON
+			T1.F_LABEL_RESOURCE_ID = T7.F_RESOURCE_ID
+		LEFT JOIN T_RESOURCE T8 ON
+			T1.F_FORMAT_RESOURCE_ID = T8.F_RESOURCE_ID
+		LEFT JOIN T_ENUM_VALUE T9 ON
+			T9.F_OWNER_ENUM_ID = 1 AND
+			T1.F_TYPE = T9.F_VALUE_ID
 		WHERE
 			T1.F_FIELD_ID = #{ fieldId }
 	</select>
@@ -153,6 +167,8 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_LABEL_RESOURCE_ID AS "labelResourceId",
+			T1.F_FORMAT_RESOURCE_ID AS "formatResourceId",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -162,7 +178,9 @@
 			T3.F_CLASS_NAME || '(' || T3.F_TITLE || ')' AS "cref_title",
 			T4.F_ENUM_NAME || '(' || T4.F_TITLE || ')' AS "eref_title",
 			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "fref_title",
-			T7.F_VALUE_ID AS "type_title"
+			T7.F_DEFAULT_VALUE AS "label_title",
+			T8.F_DEFAULT_VALUE AS "format_title",
+			T9.F_VALUE_ID AS "type_title"
 		FROM
 			T_FIELD T1
 		LEFT JOIN T_CLASS T2 ON
@@ -175,9 +193,13 @@
 			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		LEFT JOIN T_CLASS T6 ON
 			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
-		LEFT JOIN T_ENUM_VALUE T7 ON
-			T7.F_OWNER_ENUM_ID = 1 AND
-			T1.F_TYPE = T7.F_VALUE_ID
+		LEFT JOIN T_RESOURCE T7 ON
+			T1.F_LABEL_RESOURCE_ID = T7.F_RESOURCE_ID
+		LEFT JOIN T_RESOURCE T8 ON
+			T1.F_FORMAT_RESOURCE_ID = T8.F_RESOURCE_ID
+		LEFT JOIN T_ENUM_VALUE T9 ON
+			T9.F_OWNER_ENUM_ID = 1 AND
+			T1.F_TYPE = T9.F_VALUE_ID
 		ORDER BY
 			T1.F_FIELD_ID ASC
 		<if test="limit &gt; 0">
@@ -218,6 +240,8 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_LABEL_RESOURCE_ID AS "labelResourceId",
+			T1.F_FORMAT_RESOURCE_ID AS "formatResourceId",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -227,7 +251,9 @@
 			T3.F_CLASS_NAME || '(' || T3.F_TITLE || ')' AS "cref_title",
 			T4.F_ENUM_NAME || '(' || T4.F_TITLE || ')' AS "eref_title",
 			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "fref_title",
-			T7.F_VALUE_ID AS "type_title"
+			T7.F_DEFAULT_VALUE AS "label_title",
+			T8.F_DEFAULT_VALUE AS "format_title",
+			T9.F_VALUE_ID AS "type_title"
 		FROM
 			T_FIELD T1
 		LEFT JOIN T_CLASS T2 ON
@@ -240,9 +266,13 @@
 			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		LEFT JOIN T_CLASS T6 ON
 			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
-		LEFT JOIN T_ENUM_VALUE T7 ON
-			T7.F_OWNER_ENUM_ID = 1 AND
-			T1.F_TYPE = T7.F_VALUE_ID
+		LEFT JOIN T_RESOURCE T7 ON
+			T1.F_LABEL_RESOURCE_ID = T7.F_RESOURCE_ID
+		LEFT JOIN T_RESOURCE T8 ON
+			T1.F_FORMAT_RESOURCE_ID = T8.F_RESOURCE_ID
+		LEFT JOIN T_ENUM_VALUE T9 ON
+			T9.F_OWNER_ENUM_ID = 1 AND
+			T1.F_TYPE = T9.F_VALUE_ID
 		WHERE
 			<![CDATA[
 			T1.F_FIELD_NAME = #{name}
@@ -264,16 +294,20 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
+			T1.F_LABEL_RESOURCE_ID AS "labelResourceId",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
 			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title",
-			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
+			T3.F_DEFAULT_VALUE AS "label_title"
 		FROM
 			T_CLASS T1
 		LEFT JOIN T_PROJECT T2 ON
 			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		LEFT JOIN T_RESOURCE T3 ON
+			T1.F_LABEL_RESOURCE_ID = T3.F_RESOURCE_ID
 		WHERE
 			T1.F_CLASS_ID = #{ ownerClassId }
 	</select>
@@ -318,16 +352,20 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
+			T1.F_LABEL_RESOURCE_ID AS "labelResourceId",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
 			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title",
-			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
+			T3.F_DEFAULT_VALUE AS "label_title"
 		FROM
 			T_CLASS T1
 		LEFT JOIN T_PROJECT T2 ON
 			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		LEFT JOIN T_RESOURCE T3 ON
+			T1.F_LABEL_RESOURCE_ID = T3.F_RESOURCE_ID
 		WHERE
 			T1.F_CLASS_ID = #{ crefClassId }
 	</select>
@@ -435,6 +473,8 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_LABEL_RESOURCE_ID AS "labelResourceId",
+			T1.F_FORMAT_RESOURCE_ID AS "formatResourceId",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -444,7 +484,9 @@
 			T3.F_CLASS_NAME || '(' || T3.F_TITLE || ')' AS "cref_title",
 			T4.F_ENUM_NAME || '(' || T4.F_TITLE || ')' AS "eref_title",
 			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "fref_title",
-			T7.F_VALUE_ID AS "type_title"
+			T7.F_DEFAULT_VALUE AS "label_title",
+			T8.F_DEFAULT_VALUE AS "format_title",
+			T9.F_VALUE_ID AS "type_title"
 		FROM
 			T_FIELD T1
 		LEFT JOIN T_CLASS T2 ON
@@ -457,9 +499,13 @@
 			T1.F_FREF_FIELD_ID = T5.F_FIELD_ID
 		LEFT JOIN T_CLASS T6 ON
 			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
-		LEFT JOIN T_ENUM_VALUE T7 ON
-			T7.F_OWNER_ENUM_ID = 1 AND
-			T1.F_TYPE = T7.F_VALUE_ID
+		LEFT JOIN T_RESOURCE T7 ON
+			T1.F_LABEL_RESOURCE_ID = T7.F_RESOURCE_ID
+		LEFT JOIN T_RESOURCE T8 ON
+			T1.F_FORMAT_RESOURCE_ID = T8.F_RESOURCE_ID
+		LEFT JOIN T_ENUM_VALUE T9 ON
+			T9.F_OWNER_ENUM_ID = 1 AND
+			T1.F_TYPE = T9.F_VALUE_ID
 		WHERE
 			T1.F_FIELD_ID = #{ frefFieldId }
 	</select>
@@ -491,6 +537,104 @@
 		<where>
 			<if test="hint != null">
 				T2.F_CLASS_NAME || '/' || T1.F_FIELD_NAME LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	
+	<select id="getLabel" resultType="ResourceContent">
+		SELECT
+			T1.F_RESOURCE_ID AS "resourceId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_DEFAULT_VALUE AS "defaultValue",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_DEFAULT_VALUE AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_RESOURCE T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_RESOURCE_ID = #{ labelResourceId }
+	</select>
+
+	<select id="listLabelCandidateSummary" resultType="ResourceSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_RESOURCE T1
+		<where>
+			<if test="hint != null">
+				T1.F_DEFAULT_VALUE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listLabelCandidateSubject" resultType="ResourceSubject">
+		SELECT
+			T1.F_RESOURCE_ID AS "resourceId",
+			T1.F_DEFAULT_VALUE AS "_title"
+		FROM
+			T_RESOURCE T1
+		<where>
+			<if test="hint != null">
+				T1.F_DEFAULT_VALUE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	
+	<select id="getFormat" resultType="ResourceContent">
+		SELECT
+			T1.F_RESOURCE_ID AS "resourceId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_DEFAULT_VALUE AS "defaultValue",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_DEFAULT_VALUE AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_RESOURCE T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_RESOURCE_ID = #{ formatResourceId }
+	</select>
+
+	<select id="listFormatCandidateSummary" resultType="ResourceSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_RESOURCE T1
+		<where>
+			<if test="hint != null">
+				T1.F_DEFAULT_VALUE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listFormatCandidateSubject" resultType="ResourceSubject">
+		SELECT
+			T1.F_RESOURCE_ID AS "resourceId",
+			T1.F_DEFAULT_VALUE AS "_title"
+		FROM
+			T_RESOURCE T1
+		<where>
+			<if test="hint != null">
+				T1.F_DEFAULT_VALUE LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
 		<if test="limit &gt; 0">

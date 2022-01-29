@@ -3,6 +3,9 @@ package com.github.vvorks.builder.server.common.io;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -63,8 +66,16 @@ public class Ios {
 		return new BufferedReader(new InputStreamReader(in));
 	}
 
+	public static BufferedReader newReader(File file) throws FileNotFoundException {
+		return new BufferedReader(new FileReader(file));
+	}
+
 	public static PrintWriter newWriter(OutputStream out) {
 		return new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
+	}
+
+	public static PrintWriter newWriter(File file) throws IOException {
+		return new PrintWriter(new BufferedWriter(new FileWriter(file)));
 	}
 
 	public static void deleteAll(File fileOrDir) throws IOException {
