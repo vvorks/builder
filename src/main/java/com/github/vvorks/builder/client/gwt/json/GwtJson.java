@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.util.SimpleEntry;
@@ -325,16 +326,35 @@ public class GwtJson extends Json {
 
 	@Override
 	public Json get(String key) {
-		return wrap(asObject(nativeValue).get(key));
+		JSONValue node = asObject(nativeValue).get(key);
+		if (node != null) {
+			return wrap(node);
+		}
+		return null;
+	}
+
+	@Override
+	public Json computeIfAbsent(String key, Function<String, Json> creator) {
+		JSONValue node = asObject(nativeValue).get(key);
+		if (node != null) {
+			return wrap(node);
+		}
+		Json newObj = creator.apply(key);
+		node = toNativeValue(newObj);
+		asObject(nativeValue).put(key, node);
+		return newObj;
 	}
 
 	@Override
 	public Json get(Iterable<String> path) {
-		JSONValue v = nativeValue;
+		JSONValue node = nativeValue;
 		for (String s : path) {
-			v = trace(v, s);
+			node = trace(node, s);
 		}
-		return v != null ? wrap(v) : null;
+		if (node != null) {
+			return wrap(node);
+		}
+		return null;
 	}
 
 	private JSONValue trace(JSONValue v, String nameOrNumber) {
@@ -456,7 +476,7 @@ public class GwtJson extends Json {
 	}
 
 	@Override
-	public String toJsonString() {
+	public String toJsonString(boolean humanReadable) {
 		return nativeValue.toString();
 	}
 

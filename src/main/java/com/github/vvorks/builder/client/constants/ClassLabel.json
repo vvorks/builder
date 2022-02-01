@@ -1,0 +1,11 @@
+{
+  "Project" : "Project",
+  "Class" : "Class",
+  "Field" : "Field",
+  "Query" : "Query",
+  "Enum" : "Enum",
+  "EnumValue" : "EnumValue",
+  "Message" : "Message",
+  "Resource" : "Resource",
+  "LocalizedResource" : "LocalizedResource"
+}

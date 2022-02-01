@@ -1,0 +1,95 @@
+{
+  "Project" : {
+    "projectId" : "プロジェクトID",
+    "projectName" : "プロジェクト名",
+    "gradleName" : "gradleサブプロジェクト名",
+    "title" : "タイトル",
+    "description" : "説明",
+    "note" : "メモ",
+    "copyrights" : "著作権",
+    "classes" : "クラス一覧",
+    "enums" : "列挙一覧",
+    "messages" : "メッセージ一覧",
+    "resources" : "リソース一覧"
+  },
+  "Class" : {
+    "classId" : "クラスID",
+    "owner" : "所属プロジェクト",
+    "className" : "クラス名",
+    "orderExpr" : "オーダー式",
+    "titleExpr" : "タイトル表示式",
+    "label" : "表示ラベル",
+    "title" : "タイトル",
+    "description" : "説明",
+    "note" : "メモ",
+    "fields" : "フィールド一覧",
+    "queries" : "クエリー一覧"
+  },
+  "Field" : {
+    "fieldId" : "フィールドID",
+    "owner" : "所属クラス",
+    "fieldName" : "フィールド名",
+    "type" : "フィールド型",
+    "width" : "フィールド型の幅",
+    "scale" : "フィールド型精度",
+    "cref" : "クラス参照先",
+    "eref" : "列挙参照先",
+    "fref" : "フィールド参照先",
+    "pk" : "プライマリキー",
+    "nullable" : "NULL許容",
+    "needsSum" : "要合計値",
+    "needsAvg" : "要平均値",
+    "needsMax" : "要最大値",
+    "needsMin" : "要最小値",
+    "label" : "ラベル",
+    "format" : "書式",
+    "title" : "タイトル",
+    "description" : "説明",
+    "note" : "メモ"
+  },
+  "Query" : {
+    "queryId" : "クエリーID",
+    "owner" : "所属クラス",
+    "queryName" : "クエリー名",
+    "filter" : "抽出条件",
+    "order" : "ソート条件",
+    "title" : "タイトル",
+    "description" : "説明",
+    "note" : "メモ"
+  },
+  "Enum" : {
+    "enumId" : "列挙ID",
+    "owner" : "所属プロジェクト",
+    "enumName" : "列挙名",
+    "encodeString" : "文字列エンコード",
+    "title" : "タイトル",
+    "description" : "説明",
+    "note" : "メモ",
+    "values" : "列挙値一覧"
+  },
+  "EnumValue" : {
+    "owner" : "所属列挙",
+    "valueId" : "列挙名",
+    "code" : "列挙コード",
+    "title" : "タイトル",
+    "description" : "説明",
+    "note" : "メモ"
+  },
+  "Message" : {
+    "messageId" : "メッセージID",
+    "owner" : "所属プロジェクト",
+    "messageName" : "メッセージ名",
+    "message" : "メッセージ"
+  },
+  "Resource" : {
+    "resourceId" : "リソースID",
+    "owner" : "所属プロジェクト",
+    "defaultValue" : "既定値",
+    "variations" : "ロケール別リソース一覧"
+  },
+  "LocalizedResource" : {
+    "owner" : "所属リソース",
+    "locale" : "ロケール",
+    "value" : "値"
+  }
+}

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -424,16 +425,35 @@ public class JacksonJson extends Json {
 
 	@Override
 	public Json get(String key) {
-		return wrap(asObject(nativeValue).get(key));
+		JsonNode node = asObject(nativeValue).get(key);
+		if (node != null) {
+			return wrap(node);
+		}
+		return null;
+	}
+
+	@Override
+	public Json computeIfAbsent(String key, Function<String, Json> creator) {
+		JsonNode node = asObject(nativeValue).get(key);
+		if (node != null) {
+			return wrap(node);
+		}
+		Json newObj = creator.apply(key);
+		node = toNativeValue(newObj);
+		asObject(nativeValue).set(key, node);
+		return newObj;
 	}
 
 	@Override
 	public Json get(Iterable<String> path) {
-		JsonNode v = nativeValue;
+		JsonNode node = nativeValue;
 		for (String s : path) {
-			v = trace(v, s);
+			node = trace(node, s);
 		}
-		return v != null ? wrap(v) : null;
+		if (node != null) {
+			return wrap(node);
+		}
+		return null;
 	}
 
 	private JsonNode trace(JsonNode v, String nameOrNumber) {
@@ -555,8 +575,12 @@ public class JacksonJson extends Json {
 	}
 
 	@Override
-	public String toJsonString() {
-		return nativeValue.toString();
+	public String toJsonString(boolean humanReadable) {
+		if (humanReadable) {
+			return nativeValue.toPrettyString();
+		} else {
+			return nativeValue.toString();
+		}
 	}
 
 	private <X> Iterable<X> asIterable(Iterator<X> itr) {

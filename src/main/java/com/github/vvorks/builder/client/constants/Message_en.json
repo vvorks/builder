@@ -1,4 +1,4 @@
 {
-	"M001" : "Hello", 
-	"M002" : "Good Bye"
+  "hello" : "Hello",
+  "bye" : "Good Bye"
 }

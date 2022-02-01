@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.github.vvorks.builder.common.lang.Factory;
 
@@ -175,6 +176,9 @@ public abstract class Json {
 	/** 指定したキー値で得られる子ノードを返す */
 	public abstract Json get(String key);
 
+	/** 指定したキー値で得られる子ノードを返す。ない場合にはcreateで作成し、設定する */
+	public abstract Json computeIfAbsent(String key, Function<String, Json> creator);
+
 	/** 指定したパスで得られる子孫ノードを返す */
 	public abstract Json get(Iterable<String> path);
 
@@ -319,7 +323,12 @@ public abstract class Json {
 	public abstract String getString(int index, String defaultValue);
 
 	/** Json文字列を返す */
-	public abstract String toJsonString();
+	public String toJsonString() {
+		return toJsonString(false);
+	}
+
+	/** Json文字列を返す */
+	public abstract String toJsonString(boolean humanReadable);
 
 	/** 子ノードの値一式を返す */
 	public abstract Collection<Json> values();
@@ -445,7 +454,11 @@ public abstract class Json {
 	}
 
 	public String toString() {
-		return toJsonString();
+		return toJsonString(false);
+	}
+
+	public String getContent() {
+		return toJsonString(true);
 	}
 
 	public abstract Json merge(Json other);
