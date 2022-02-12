@@ -9,6 +9,7 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.common.util.TestRunner;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -263,10 +264,33 @@ public class DomPanel extends FocusWidget {
 	}-*/;
 
 	public void load(String tag, Map<String, String> parameters) {
+		if (Factory.isRegistered(TestRunner.class)) {
+			executeTest();
+		}
+		//launch initial page
 		int screenWidth = Window.getClientWidth();
 		int screenHeight = Window.getClientHeight();
 		app.processInitialize(screenWidth, screenHeight);
 		app.processLoad(tag, parameters);
+	}
+
+	private void executeTest() {
+		TestRunner runner = Factory.getInstance(TestRunner.class);
+		Map<String, Throwable> result = runner.run();
+		int errorCount = 0;
+		for (Map.Entry<String, Throwable> e : result.entrySet()) {
+			String k = e.getKey();
+			String title = k.substring(k.lastIndexOf('.') + 1);
+			Throwable v = e.getValue();
+			if (v == null) {
+				LOGGER.info("Test %s OK", title);
+			} else {
+				LOGGER.error(v, "Test %s FAILED", title);
+				errorCount++;
+			}
+		}
+		int totalCount = result.size();
+		LOGGER.info("Test Done(%d/%d)", totalCount - errorCount, totalCount);
 	}
 
 	public void startEditing(Rect r, UiAtomicStyle style, String text, boolean fireInputEvent) {

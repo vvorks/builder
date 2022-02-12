@@ -7,15 +7,20 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.gwt.json.GwtJson;
 import com.github.vvorks.builder.client.gwt.logging.AltConsoleHandler;
 import com.github.vvorks.builder.client.gwt.net.GwtWebSocket;
+import com.github.vvorks.builder.client.gwt.text.GwtDecimalFormatter;
 import com.github.vvorks.builder.client.gwt.util.GwtDelayedExecuter;
 import com.github.vvorks.builder.client.gwt.util.GwtResourceBundle;
+import com.github.vvorks.builder.client.gwt.util.GwtTestRunner;
 import com.github.vvorks.builder.client.ui.BuilderUiApplication;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.JavaLogger;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.common.text.DecimalFormatter;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.github.vvorks.builder.common.util.JsonResourceBundle;
+import com.github.vvorks.builder.common.util.TestRunner;
+import com.google.gwt.core.client.GWT;
 
 public class ClientSettings {
 
@@ -48,10 +53,12 @@ public class ClientSettings {
 			.bindTo(Logger.class, args -> new JavaLogger((Class<?>) args[0]))
 			.bindTo(Json.class, args -> new GwtJson(args[0]))
 			.bindTo(WebSocket.class, args -> new GwtWebSocket())
+			.bindTo(DecimalFormatter.class, a -> new GwtDecimalFormatter())
 			//singleton settings
 			.bindIn(DelayedExecuter.class, args -> new GwtDelayedExecuter())
 			.bindIn(Metrics.class, args -> new Metrics())
-			.bindIn(JsonResourceBundle.class, args -> GwtResourceBundle.get())
+			.bindIn(JsonResourceBundle.class, args -> GWT.create(GwtResourceBundle.class))
+			.bindIn(TestRunner.class, args -> GWT.create(GwtTestRunner.class))
 			;
 
 	}

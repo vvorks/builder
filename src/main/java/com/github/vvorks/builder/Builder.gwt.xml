@@ -44,6 +44,9 @@
 	<generate-with class="com.github.vvorks.builder.rebind.GwtResourceBundleGenerator">
 		<when-type-assignable class="com.github.vvorks.builder.client.gwt.util.GwtResourceBundle" />
 	</generate-with>
+	<generate-with class="com.github.vvorks.builder.rebind.GwtTestRunnerGenerator">
+		<when-type-assignable class="com.github.vvorks.builder.client.gwt.util.GwtTestRunner" />
+	</generate-with>
 
 	<!-- **************************************** -->
 	<!-- path settings.                           -->

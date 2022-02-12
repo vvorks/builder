@@ -1,5 +1,7 @@
 package com.github.vvorks.builder.common.lang;
 
+import java.util.Objects;
+
 public class Asserts {
 
 	private Asserts() {
@@ -85,6 +87,18 @@ public class Asserts {
 
 	public static void checkNotNull(Object obj, String errorMessage) {
 		if (obj == null) {
+			throw new AssertionError(errorMessage);
+		}
+	}
+
+	public static void checkEquals(Object a, Object b) {
+		if (!Objects.equals(a, b)) {
+			throw new AssertionError("[" + a + "] != [" + b + "]");
+		}
+	}
+
+	public static void checkEquals(Object a, Object b, String errorMessage) {
+		if (!Objects.equals(a, b)) {
 			throw new AssertionError(errorMessage);
 		}
 	}

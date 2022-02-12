@@ -1,0 +1,31 @@
+package com.github.vvorks.builder.client.gwt.util;
+
+import java.util.Map;
+import java.util.LinkedHashMap;
+import com.github.vvorks.builder.common.util.TestCase;
+
+public class GwtTestRunnerImpl implements GwtTestRunner {
+
+	{{#each this}}
+
+	private void testcase{{@index}}(Map<String, Throwable> resultMap) {
+		{{@key}} t = new {{@key}}();
+		String n = "{{@key}}";
+		if (doBeforeAfter(t, n, "#beforeTestCase", x -> t.beforeTestCase(), resultMap)) {
+			{{#each this}}
+			doTest(t, n, "#{{this}}", x -> t.{{this}}(), resultMap);
+			{{/each}}
+			doBeforeAfter(t, n, "#afterTestCase", x -> t.afterTestCase(), resultMap);
+		}
+	}
+	{{/each}}
+
+	public Map<String, Throwable> run() {
+		Map<String, Throwable> resultMap = new LinkedHashMap<>();
+		{{#each this}}
+		testcase{{@index}}(resultMap);
+		{{/each}}
+		return resultMap;
+	}
+
+}

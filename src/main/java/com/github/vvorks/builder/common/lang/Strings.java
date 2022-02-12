@@ -15,26 +15,6 @@ public final class Strings {
 	/** 小数点 */
 	private static final char DECIMAL_POINT = '.';
 
-	public static class CharReader {
-
-		private final CharSequence str;
-
-		private int pos;
-
-		public CharReader(CharSequence str) {
-			this.str = str;
-			this.pos = 0;
-		}
-
-		public int read() {
-			return pos < str.length() ? str.charAt(pos++) : -1;
-		}
-
-		public int position() {
-			return pos;
-		}
-	}
-
 	/**
 	 * このクラスはインスタンス化されない
 	 */
@@ -78,20 +58,20 @@ public final class Strings {
 	 */
 	public static String sprintf(String msg, Object... args) {
 		StringBuilder sb = new StringBuilder(msg.length());
-		CharReader cursor = new CharReader(msg);
-		int ch = cursor.read();
+		CharSequenceReader cursor = new CharSequenceReader(msg);
+		int ch = cursor.next();
 		int index = 0;
 		while (ch != -1) {
 			//copy non format text
 			while (ch != -1 && ch != '%') {
 				sb.append((char) ch);
-				ch = cursor.read();
+				ch = cursor.next();
 			}
 			//exit if eof
 			if (ch == -1) {
 				break;
 			}
-			ch = cursor.read();
+			ch = cursor.next();
 			//init flags
 			boolean left = false;
 			boolean plus = false;
@@ -101,26 +81,26 @@ public final class Strings {
 			//process justify
 			if (ch == '-') {
 				left = true;
-				ch = cursor.read();
+				ch = cursor.next();
 			}
 			//process sign/zero
 			if (ch == '+') {
 				plus = true;
-				ch = cursor.read();
+				ch = cursor.next();
 			} else if (ch == '0') {
 				zero = true;
-				ch = cursor.read();
+				ch = cursor.next();
 			}
 			//process digit
 			while ('0' <= ch && ch <= '9') {
 				digits = digits * 10 + (ch - '0');
-				ch = cursor.read();
+				ch = cursor.next();
 			}
 			if (ch == DECIMAL_POINT) {
-				ch = cursor.read();
+				ch = cursor.next();
 				while ('0' <= ch && ch <= '9') {
 					decimal = decimal * 10 + (ch - '0');
-					ch = cursor.read();
+					ch = cursor.next();
 				}
 			}
 			//exit if eof
@@ -261,7 +241,7 @@ public final class Strings {
 			default:
 				break;
 			}
-			ch = cursor.read();
+			ch = cursor.next();
 		}
 		return sb.toString();
 	}
@@ -482,14 +462,14 @@ public final class Strings {
 		if (isEmpty(str)) {
 			return EMPTY_STRINGS;
 		}
-		CharReader in = new CharReader(str);
+		CharSequenceReader in = new CharSequenceReader(str);
 		List<String> result = new ArrayList<>();
 		int spos = in.position();
 		int epos = spos;
-		int curr = in.read();
+		int curr = in.next();
 		while (curr != -1 && !Character.isUpperCase((char)curr)) {
 			epos = in.position();
-			curr = in.read();
+			curr = in.next();
 		}
 		if (spos < epos) {
 			result.add(str.substring(spos, epos));
@@ -497,13 +477,13 @@ public final class Strings {
 		}
 		while (curr != -1) {
 			spos = epos;
-			curr = in.read();
+			curr = in.next();
 			if (curr != -1 && Character.isUpperCase((char)curr)) {
 				int bpos = epos;
 				while (curr != -1 && Character.isUpperCase((char)curr)) {
 					bpos = epos;
 					epos = in.position();
-					curr = in.read();
+					curr = in.next();
 				}
 				if (curr == -1) {
 					bpos = in.position();
@@ -515,7 +495,7 @@ public final class Strings {
 			}
 			while (curr != -1 && !Character.isUpperCase((char)curr)) {
 				epos = in.position();
-				curr = in.read();
+				curr = in.next();
 			}
 			if (curr == -1) {
 				epos = in.position();

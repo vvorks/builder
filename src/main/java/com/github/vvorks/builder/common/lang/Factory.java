@@ -109,6 +109,16 @@ public class Factory {
 	}
 
 	/**
+	 * ファクトリが登録済みが否かを得る
+	 *
+	 * @param cls 対象クラス
+	 * @return 登録済みの場合、真
+	 */
+	public static boolean isRegistered(Class<?> cls) {
+		return conf.getCreator(cls) != null;
+	}
+
+	/**
 	 * 新しいインスタンスを作成する
 	 *
 	 * @param <T>
