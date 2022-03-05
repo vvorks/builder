@@ -1,9 +1,16 @@
+buildscript {
+	dependencies {
+		classpath 'org.webjars.bowergithub.globalizejs:globalize:1.7.0'
+    }
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id "de.esoco.gwt" version "1.1.0"
 	id "ca.coglinc.javacc" version "2.4.0"
+	id "de.undercouch.download" version "5.0.1"
 }
 
 apply plugin: 'eclipse'
@@ -55,6 +62,54 @@ gwt {
 	}
 }
 
+void copyResource(String inDir, String outDir, String name) {
+	ClassLoader loader = this.getClass().getClassLoader()
+	copy {
+		from resources.text.fromUri(loader.getResource(inDir + "/" + name)).asFile("UTF-8")
+		into file(outDir)
+		rename { x -> name }
+	}
+}
+
+task copyCldr() {
+	def from = "META-INF/resources/webjars/cldrjs/dist"
+	def to   = "${buildDir}/resources/main/static/cldrjs"
+	copyResource(from, to, "cldr.js")
+	copyResource(from, to, "cldr/event.js")
+	copyResource(from, to, "cldr/supplemental.js")
+	copyResource(from, to, "cldr/unresolved.js")
+}
+
+task copyGlobalize() {
+	def from = "META-INF/resources/webjars/globalize/dist"
+	def to   = "${buildDir}/resources/main/static/globalize"
+	copyResource(from, to, "globalize.js")
+	copyResource(from, to, "globalize/unit.js")
+	copyResource(from, to, "globalize/currency.js")
+	copyResource(from, to, "globalize/date.js")
+	copyResource(from, to, "globalize/message.js")
+	copyResource(from, to, "globalize/number.js")
+	copyResource(from, to, "globalize/plural.js")
+	copyResource(from, to, "globalize/relative-time.js")
+}
+
+task downloadCldrJson(type: Download) {
+	src 'https://github.com/unicode-org/cldr-json/releases/download/40.0.0/cldr-40.0.0-json-full.zip'
+	dest new File(buildDir, 'tmp/cldr/cldr-json.zip')
+	onlyIfModified true
+}
+
+task downloadAndUnzipCldrJson(dependsOn: downloadCldrJson, type: Copy) {
+	from zipTree(downloadCldrJson.dest)
+    into file("${buildDir}/resources/main/static/cldr-json")
+}
+
+classes {
+	dependsOn copyCldr
+	dependsOn copyGlobalize
+	dependsOn downloadAndUnzipCldrJson
+}
+
 task copyGWTCode(dependsOn: ["gwtCompile"], type: Copy) {
 	from file("${buildDir}/gwt/out")
 	into file("${buildDir}/resources/main/static")
@@ -73,7 +128,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	compileOnly group: "org.fusesource.restygwt", name: "restygwt", version: "2.2.0"
+	compileOnly 'org.fusesource.restygwt:restygwt:2.2.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.apache.poi:poi:5.1.0'
 	implementation 'org.apache.poi:poi-ooxml:5.1.0'
