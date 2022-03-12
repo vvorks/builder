@@ -21,35 +21,39 @@ public abstract class Formatter {
 
 	public static class Params {
 
-		public static final String FLAG_SYMBOLS = "-0+ ,$¥€£¤";
+		public static final String FLAG_SYMBOLS = "-0+ ,$¥€£¤#";
 
-		public static final int FLAGS_LEFT     = 0x00000001;
+		public static final int FLAGS_LEFT			= 0x00000001;
 
-		public static final int FLAGS_ZERO     = 0x00000002;
+		public static final int FLAGS_ZERO			= 0x00000002;
 
-		public static final int FLAGS_PLUS     = 0x00000004;
+		public static final int FLAGS_PLUS			= 0x00000004;
 
-		public static final int FLAGS_SPACE    = 0x00000008;
+		public static final int FLAGS_SPACE			= 0x00000008;
 
-		public static final int FLAGS_GROUP    = 0x00000010;
+		public static final int FLAGS_GROUP			= 0x00000010;
 
-		public static final int FLAGS_DOLLER   = 0x00000020;
+		public static final int FLAGS_DOLLER		= 0x00000020;
 
-		public static final int FLAGS_YEN      = 0x00000040;
+		public static final int FLAGS_YEN			= 0x00000040;
 
-		public static final int FLAGS_EURO     = 0x00000080;
+		public static final int FLAGS_EURO			= 0x00000080;
 
-		public static final int FLAGS_POUND    = 0x00000100;
+		public static final int FLAGS_POUND			= 0x00000100;
 
-		public static final int FLAGS_CURRENCY = 0x00000200;
+		public static final int FLAGS_CURRENCY		= 0x00000200;
 
-		public static final int FLAGS_NOTFILL  = 0x80000000;
+		public static final int FLAGS_ALTERNATIVE	= 0x00000400;
+
+		public static final int FLAGS_NOTFILL		= 0x80000000;
 
 		private int flags;
 
 		private int width;
 
 		private int precision;
+
+		private int command;
 
 		public boolean isLeftSide() {
 			return (flags & FLAGS_LEFT) != 0;
@@ -91,6 +95,10 @@ public abstract class Formatter {
 			return 0;
 		}
 
+		public boolean isAlternative() {
+			return (flags & FLAGS_ALTERNATIVE) != 0;
+		}
+
 		public void setFlag(int flag, boolean on) {
 			if (on) {
 				this.flags |= flag;
@@ -107,7 +115,7 @@ public abstract class Formatter {
 			return width;
 		}
 
-		private void setWidth(int width) {
+		public void setWidth(int width) {
 			this.width = width;
 		}
 
@@ -115,20 +123,47 @@ public abstract class Formatter {
 			return precision;
 		}
 
-		private void setPrecision(int precision) {
+		public void setPrecision(int precision) {
 			this.precision = precision;
+		}
+
+		public int getCommand() {
+			return command;
+		}
+
+		private void setCommand(int command) {
+			this.command = command;
 		}
 
 	}
 
 	private static final Map<Integer, IntFunction<Formatter>> FACTORIES = new HashMap<>();
 	static {
+		//number formatter
 		FACTORIES.put((int) 'b', code -> newBinaryFormatter(code));
 		FACTORIES.put((int) 'o', code -> newOctalFormatter(code));
 		FACTORIES.put((int) 'd', code -> newDecimalFormatter(code));
 		FACTORIES.put((int) 'x', code -> newHexadecimalFormatter(code));
+		//string formatter
 		FACTORIES.put((int) 'c', code -> newCharFormatter(code));
 		FACTORIES.put((int) 's', code -> newStringFormatter(code));
+		//date formatter
+		FACTORIES.put((int) 'G', code -> newDateFormatter(code));	//ERA
+		FACTORIES.put((int) 'Y', code -> newDateFormatter(code));	//YEAR
+		FACTORIES.put((int) 'm', code -> newDateFormatter(code));	//MONTH
+		FACTORIES.put((int) 'D', code -> newDateFormatter(code));	//DAY OF MONTH
+		FACTORIES.put((int) 'A', code -> newDateFormatter(code));	//WEEK
+		FACTORIES.put((int) 'P', code -> newDateFormatter(code));	//AM, PM
+		FACTORIES.put((int) 'H', code -> newDateFormatter(code));	//HOUR
+		FACTORIES.put((int) 'I', code -> newDateFormatter(code));	//HOUR(am, pm)
+		FACTORIES.put((int) 'M', code -> newDateFormatter(code));	//MINUTES
+		FACTORIES.put((int) 'S', code -> newDateFormatter(code));	//SECONDS
+		FACTORIES.put((int) 'L', code -> newDateFormatter(code));	//MILLISECONDS
+		FACTORIES.put((int) 'Z', code -> newDateFormatter(code));	//TIMEZONE
+		FACTORIES.put((int) 'F', code -> newDateFormatter(code));	//YYYY-MM-DD
+		FACTORIES.put((int) 'R', code -> newDateFormatter(code));	//HH:MM
+		FACTORIES.put((int) 'T', code -> newDateFormatter(code));	//HH:MM:SS
+		//other formatter
 		FACTORIES.put((int) '%', code -> new ConstFormatter("%"));
 		FACTORIES.put((int) 'n', code -> new LineFormatter());
 	}
@@ -181,6 +216,14 @@ public abstract class Formatter {
 		}
 	}
 
+	private static Formatter newDateFormatter(int code) {
+		if (Factory.isRegistered(DateFormatter.class)) {
+			return Factory.newInstance(DateFormatter.class, code);
+		} else {
+			return new DateFormatter();
+		}
+	}
+
 	public static CharSequence format(CharSequence pattern, Object value) {
 		return parse(pattern).apply(value);
 	}
@@ -199,6 +242,7 @@ public abstract class Formatter {
 				int ch = in.next();
 				IntFunction<Formatter> factory = FACTORIES.get(ch);
 				if (factory != null) {
+					params.setCommand(ch);
 					Formatter newFormatter = factory.apply(ch);
 					newFormatter.setParams(params);
 					fragments.add(newFormatter);
@@ -335,6 +379,15 @@ public abstract class Formatter {
 				return Double.parseDouble(str);
 			} catch (NumberFormatException err) {
 			}
+		}
+		throw new IllegalArgumentException();
+	}
+
+	protected Date asDate(Object obj) {
+		if (obj instanceof Date) {
+			return (Date) obj;
+		} else if (obj instanceof Long) {
+			return new Date(((Long) obj).longValue());
 		}
 		throw new IllegalArgumentException();
 	}

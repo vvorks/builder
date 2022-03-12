@@ -20,7 +20,6 @@ public class Iterables {
 	public static <T> T getFirst(Iterable<T> itb, T defaultValue) {
 		Iterator<T> itr = itb.iterator();
 		return itr.hasNext() ? itr.next() : defaultValue;
-
 	}
 
 	public static <T> T getLast(Iterable<T> itb, T defaultValue) {
@@ -35,7 +34,15 @@ public class Iterables {
 			}
 			return last;
 		}
+	}
 
+	public static <T> boolean exists(Iterable<T> itb, Predicate<T> func) {
+		for (T t : itb) {
+			if (func.test(t)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static <T> boolean isEmpty(Iterable<T> itr) {

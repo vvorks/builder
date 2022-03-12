@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
@@ -98,14 +97,12 @@ public abstract class AbstractGenerator extends Generator {
 		return result;
 	}
 
-	protected List<String> getTextResource(String path, Function<String, String> escape) throws IOException {
-		InputStream is = context.getResourcesOracle().getResourceAsStream(path);
-		Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-		List<String> lines = Readers.readLines(reader);
-		for (int i = 0; i < lines.size(); i++) {
-			lines.set(i, escape.apply(lines.get(i)));
+	protected List<String> getTextResource(String path, UnaryOperator<String> escape) throws IOException {
+		try (
+			InputStream is = context.getResourcesOracle().getResourceAsStream(path)
+		) {
+			return Readers.readLines(new InputStreamReader(is, StandardCharsets.UTF_8), escape);
 		}
-		return lines;
 	}
 
 	protected JClassType getType(Class<?> cls) {

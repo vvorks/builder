@@ -10,6 +10,11 @@ public class LineFormatter extends Formatter {
 	}
 
 	@Override
+	public int preferredHeight() {
+		return Math.max(1, getParams().getWidth());
+	}
+
+	@Override
 	public CharSequence apply(Object obj) {
 		int width = Math.max(1, getParams().getWidth());
 		return Strings.repeat("\n", width);

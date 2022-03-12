@@ -972,6 +972,9 @@ public final class Strings {
 		for (int i = 0; i < n; i++) {
 			char ch = str.charAt(i);
 			switch (ch) {
+			case '\0':
+				sb.append("\\0");
+				break;
 			case '\r':
 				sb.append("\\r");
 				break;
@@ -989,6 +992,9 @@ public final class Strings {
 				break;
 			case '"':
 				sb.append("\\\"");
+				break;
+			case '\\':
+				sb.append("\\\\");
 				break;
 			default:
 				if (isInvisibleChar(ch)) {

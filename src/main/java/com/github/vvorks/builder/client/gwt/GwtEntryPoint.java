@@ -1,15 +1,21 @@
 package com.github.vvorks.builder.client.gwt;
 
+import java.util.Date;
+
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.client.gwt.ui.DomPanel;
 import com.github.vvorks.builder.client.gwt.ui.ImePanel;
 import com.github.vvorks.builder.client.gwt.ui.InputEvent;
+import com.github.vvorks.builder.client.gwt.util.GlobalizeJs;
+import com.github.vvorks.builder.client.gwt.util.GlobalizeResource;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.net.URLFragment;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
@@ -18,8 +24,10 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.layout.client.Layout;
 import com.google.gwt.media.client.Video;
+import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HTML;
@@ -29,9 +37,31 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class GwtEntryPoint implements EntryPoint {
 
+	public static interface Resource extends ClientBundle {
+		@GlobalizeResource.Require({
+			"number", "currency", "date" //, "message", "plural", "relativeTime", "unit"
+		})
+		GlobalizeResource globalizeResource();
+	}
+
 	public void onModuleLoad() {
 		//クライアント構成セットアップ
-		ClientSettings.setup();
+		String locale = LocaleInfo.getCurrentLocale().getLocaleName();
+		ClientSettings.setup(locale);
+		Logger logger = Logger.createLogger(GwtEntryPoint.class);
+		logger.info("START %s(locale=%s)", GWT.getModuleName(), locale);
+		//Globalize初期化
+		logger.info("INTL %s", testIntl());
+		GlobalizeResource res = ((Resource) GWT.create(Resource.class)).globalizeResource();
+		GlobalizeJs.install(res.getJsContents());
+		GlobalizeJs.load(res.getJsonContents());
+		GlobalizeJs.setLocale(res.getLocale());
+		{
+			//test globalize
+			GlobalizeJs g = GlobalizeJs.create("ja-JP-u-ca-japanese");
+			String s = g.formatDate(new Date());
+			logger.info("date %s", s);
+		}
 		//ルート要素の初期化
 		String bgColor = ClientSettings.DEBUG ? "#000040" : "rgba(0, 0, 0, 0.0)";
 		RootLayoutPanel root = RootLayoutPanel.get();
@@ -63,6 +93,12 @@ public class GwtEntryPoint implements EntryPoint {
 			initialize(root);
 		});
 	}
+
+	private static native String testIntl()/*-{
+		var date = new Date(2019, 4, 1, 0, 0, 00);
+		var options = {era: 'long'};
+		return new Intl.DateTimeFormat('ja-JP-u-ca-japanese', options).format(date);
+	}-*/;
 
 	private void initialize(RootLayoutPanel root) {
 		//背景ビデオ(FOR DEBUG/DEMO)

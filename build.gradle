@@ -1,9 +1,3 @@
-buildscript {
-	dependencies {
-		classpath 'org.webjars.bowergithub.globalizejs:globalize:1.7.0'
-    }
-}
-
 plugins {
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -62,52 +56,14 @@ gwt {
 	}
 }
 
-void copyResource(String inDir, String outDir, String name) {
-	ClassLoader loader = this.getClass().getClassLoader()
-	copy {
-		from resources.text.fromUri(loader.getResource(inDir + "/" + name)).asFile("UTF-8")
-		into file(outDir)
-		rename { x -> name }
-	}
-}
-
-task copyCldr() {
-	def from = "META-INF/resources/webjars/cldrjs/dist"
-	def to   = "${buildDir}/resources/main/static/cldrjs"
-	copyResource(from, to, "cldr.js")
-	copyResource(from, to, "cldr/event.js")
-	copyResource(from, to, "cldr/supplemental.js")
-	copyResource(from, to, "cldr/unresolved.js")
-}
-
-task copyGlobalize() {
-	def from = "META-INF/resources/webjars/globalize/dist"
-	def to   = "${buildDir}/resources/main/static/globalize"
-	copyResource(from, to, "globalize.js")
-	copyResource(from, to, "globalize/unit.js")
-	copyResource(from, to, "globalize/currency.js")
-	copyResource(from, to, "globalize/date.js")
-	copyResource(from, to, "globalize/message.js")
-	copyResource(from, to, "globalize/number.js")
-	copyResource(from, to, "globalize/plural.js")
-	copyResource(from, to, "globalize/relative-time.js")
-}
-
 task downloadCldrJson(type: Download) {
 	src 'https://github.com/unicode-org/cldr-json/releases/download/40.0.0/cldr-40.0.0-json-full.zip'
-	dest new File(buildDir, 'tmp/cldr/cldr-json.zip')
+	dest new File(buildDir, 'resources/main/cldr-json.zip')
 	onlyIfModified true
 }
 
-task downloadAndUnzipCldrJson(dependsOn: downloadCldrJson, type: Copy) {
-	from zipTree(downloadCldrJson.dest)
-    into file("${buildDir}/resources/main/static/cldr-json")
-}
-
-classes {
-	dependsOn copyCldr
-	dependsOn copyGlobalize
-	dependsOn downloadAndUnzipCldrJson
+gwtCompile {
+	dependsOn downloadCldrJson
 }
 
 task copyGWTCode(dependsOn: ["gwtCompile"], type: Copy) {
@@ -118,6 +74,7 @@ task copyGWTCode(dependsOn: ["gwtCompile"], type: Copy) {
 bootJar {
 	dependsOn copyGWTCode
 	archiveName = "vvorksbuilder-${version}.jar"
+	exclude('**/cldr-json.zip')
 }
 
 bootRun {
@@ -136,6 +93,7 @@ dependencies {
 	implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
 	implementation 'com.google.googlejavaformat:google-java-format:1.13.0'
+	compileOnly 'org.webjars.bowergithub.globalizejs:globalize:1.7.0'
 }
 
 test {
