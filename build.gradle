@@ -56,16 +56,6 @@ gwt {
 	}
 }
 
-task downloadCldrJson(type: Download) {
-	src 'https://github.com/unicode-org/cldr-json/releases/download/40.0.0/cldr-40.0.0-json-full.zip'
-	dest new File(buildDir, 'resources/main/cldr-json.zip')
-	onlyIfModified true
-}
-
-gwtCompile {
-	dependsOn downloadCldrJson
-}
-
 task copyGWTCode(dependsOn: ["gwtCompile"], type: Copy) {
 	from file("${buildDir}/gwt/out")
 	into file("${buildDir}/resources/main/static")
@@ -74,7 +64,6 @@ task copyGWTCode(dependsOn: ["gwtCompile"], type: Copy) {
 bootJar {
 	dependsOn copyGWTCode
 	archiveName = "vvorksbuilder-${version}.jar"
-	exclude('**/cldr-json.zip')
 }
 
 bootRun {
@@ -93,7 +82,6 @@ dependencies {
 	implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
 	implementation 'com.google.googlejavaformat:google-java-format:1.13.0'
-	compileOnly 'org.webjars.bowergithub.globalizejs:globalize:1.7.0'
 }
 
 test {
