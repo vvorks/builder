@@ -6,7 +6,7 @@ import java.util.List;
 import com.github.vvorks.builder.client.gwt.intl.Currency;
 import com.github.vvorks.builder.client.gwt.intl.CurrencyDisplay;
 import com.github.vvorks.builder.client.gwt.intl.FormatPart;
-import com.github.vvorks.builder.client.gwt.intl.FormatUtil;
+import com.github.vvorks.builder.client.gwt.intl.IntlUtil;
 import com.github.vvorks.builder.client.gwt.intl.MaximumFractionDigits;
 import com.github.vvorks.builder.client.gwt.intl.MinimumFractionDigits;
 import com.github.vvorks.builder.client.gwt.intl.NumberFormat;
@@ -49,7 +49,7 @@ public class GwtDecimalFormatter extends DecimalFormatter {
 			options.add(getSignDisplay(pc));
 		}
 		formatter = NumberFormat.create(
-				FormatUtil.getLocale(),
+				IntlUtil.getLocale(),
 				options.toArray(new Option[options.size()]));
 	}
 
@@ -136,7 +136,7 @@ public class GwtDecimalFormatter extends DecimalFormatter {
 		int remain = width - len;
 		String ins;
 		if (params.isGrouping()) {
-			String sep = FormatUtil.getGroupSymbol();
+			String sep = IntlUtil.getGroupSymbol();
 			int n = 3 - parts.get(index).getValue().length();
 			sb.append(Strings.repeat("0", Math.min(remain, n)));
 			remain -= n;

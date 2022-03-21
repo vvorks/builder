@@ -8,7 +8,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.i18n.client.LocaleInfo;
 
-public class FormatUtil {
+public class IntlUtil {
 
 	private static final String LOCALE;
 
@@ -36,7 +36,7 @@ public class FormatUtil {
 		DECIMAL_SYMBOL = dSym;
 	}
 
-	private FormatUtil( ) {
+	private IntlUtil( ) {
 	}
 
 	public static String getLocale() {
