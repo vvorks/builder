@@ -35,7 +35,7 @@ public class NumberFormat extends JavaScriptObject {
 	}-*/;
 
 	public final List<FormatPart> formatToParts(double value) {
-		return FormatUtil.toList(formatToParts0(value));
+		return FormatUtil.toFormatParts(formatToParts0(value));
 	}
 
 	private final native JsArray<JavaScriptObject> formatToParts0(double time)/*-{

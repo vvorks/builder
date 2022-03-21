@@ -1,14 +1,7 @@
 package com.github.vvorks.builder.client.gwt;
 
-import java.util.Date;
-
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.ui.Metrics;
-import com.github.vvorks.builder.client.gwt.intl.Calendar;
-import com.github.vvorks.builder.client.gwt.intl.DateStyle;
-import com.github.vvorks.builder.client.gwt.intl.DateTimeFormat;
-import com.github.vvorks.builder.client.gwt.intl.FormatPart;
-import com.github.vvorks.builder.client.gwt.intl.TimeStyle;
 import com.github.vvorks.builder.client.gwt.ui.DomPanel;
 import com.github.vvorks.builder.client.gwt.ui.ImePanel;
 import com.github.vvorks.builder.client.gwt.ui.InputEvent;
@@ -43,12 +36,12 @@ public class GwtEntryPoint implements EntryPoint {
 
 	public void onModuleLoad() {
 		//クライアント構成セットアップ
-		String locale = LocaleInfo.getCurrentLocale().getLocaleName();
+		LocaleInfo localeInfo = LocaleInfo.getCurrentLocale();
+		String locale = localeInfo.getLocaleName();
+		String currency = localeInfo.getNumberConstants().defCurrencyCode();
 		ClientSettings.setup(locale);
 		logger = Logger.createLogger(GwtEntryPoint.class);
-		logger.info("START %s(locale=%s)", GWT.getModuleName(), locale);
-		//Globalizeテスト
-		testIntl(locale);
+		logger.info("START %s(locale=%s, currency=%s)", GWT.getModuleName(), locale, currency);
 		//ルート要素の初期化
 		String bgColor = ClientSettings.DEBUG ? "#000040" : "rgba(0, 0, 0, 0.0)";
 		RootLayoutPanel root = RootLayoutPanel.get();
@@ -79,18 +72,6 @@ public class GwtEntryPoint implements EntryPoint {
 			//実初期化開始
 			initialize(root);
 		});
-	}
-
-	private void testIntl(String locale) {
-		DateTimeFormat f = DateTimeFormat.create(locale,
-				Calendar.JAPANESE,
-				DateStyle.LONG,
-				TimeStyle.LONG);
-		Date date = new Date();
-		logger.debug("format %s", f.format(date));
-		for (FormatPart p : f.formatToParts(date)) {
-			logger.debug("formatToParts %s : %s", p.getType(), p.getValue());
-		}
 	}
 
 	private void initialize(RootLayoutPanel root) {

@@ -2,6 +2,9 @@ package com.github.vvorks.builder.common.text;
 
 import java.util.List;
 
+/**
+ * 文字列分割表示フォーマッタ
+ */
 public class StringsFormatter extends CompositeFormatter {
 
 	public static boolean isAcceptable(List<Formatter> fragments) {
@@ -36,7 +39,7 @@ public class StringsFormatter extends CompositeFormatter {
 		for (Formatter f : fragments) {
 			if (f instanceof StringFormatter) {
 				int width = f.getParams().getWidth();
-				if (width == 0) {
+				if (width == -1) {
 					width = len - spos;
 				}
 				int epos = Math.min(spos + width, len);

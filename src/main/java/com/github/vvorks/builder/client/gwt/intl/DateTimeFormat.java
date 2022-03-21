@@ -41,11 +41,11 @@ public class DateTimeFormat extends JavaScriptObject {
 	}-*/;
 
 	public final List<FormatPart> formatToParts(Date date) {
-		return FormatUtil.toList(formatToParts0((double) date.getTime()));
+		return FormatUtil.toFormatParts(formatToParts0((double) date.getTime()));
 	}
 
 	public final List<FormatPart> formatToParts(long t) {
-		return FormatUtil.toList(formatToParts0((double) t));
+		return FormatUtil.toFormatParts(formatToParts0((double) t));
 	}
 
 	private final native JsArray<JavaScriptObject> formatToParts0(double time)/*-{

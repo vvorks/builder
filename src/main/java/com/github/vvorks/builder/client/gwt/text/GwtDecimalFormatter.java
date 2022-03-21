@@ -1,8 +1,22 @@
 package com.github.vvorks.builder.client.gwt.text;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.github.vvorks.builder.client.gwt.intl.Currency;
+import com.github.vvorks.builder.client.gwt.intl.CurrencyDisplay;
+import com.github.vvorks.builder.client.gwt.intl.FormatPart;
+import com.github.vvorks.builder.client.gwt.intl.FormatUtil;
+import com.github.vvorks.builder.client.gwt.intl.MaximumFractionDigits;
+import com.github.vvorks.builder.client.gwt.intl.MinimumFractionDigits;
+import com.github.vvorks.builder.client.gwt.intl.NumberFormat;
+import com.github.vvorks.builder.client.gwt.intl.Option;
+import com.github.vvorks.builder.client.gwt.intl.SignDisplay;
+import com.github.vvorks.builder.client.gwt.intl.Style;
+import com.github.vvorks.builder.client.gwt.intl.UseGrouping;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.common.text.DecimalFormatter;
-import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.i18n.client.LocaleInfo;
 
 public class GwtDecimalFormatter extends DecimalFormatter {
 
@@ -15,39 +29,56 @@ public class GwtDecimalFormatter extends DecimalFormatter {
 	}
 
 	private void prepareFormatter(Params params) {
-		StringBuilder sb = new StringBuilder();
+		List<Option<?>> options = new ArrayList<>();
 		char cc = params.getCurrencyChar();
 		if (cc != 0) {
-			sb.append(cc);
+			options.add(Style.CURRENCY);
+			options.add(CurrencyDisplay.NARROW_SYMBOL);
+			options.add(getCurrency(cc));
 		}
-		int width = params.getWidth();
-		String udigit = params.isZeroFill() ? "0" : "#";
-		if (params.isGrouping() && width > 3) {
-			for (int i = width; i > 1; i--) {
-				if (i % 3 == 0) {
-					sb.append(",");
-				}
-				sb.append(udigit);
-			}
-			sb.append("0");
-		} else {
-			sb.append(Strings.repeat(udigit, width - 1));
-			sb.append("0");
+		if (params.isGrouping()) {
+			options.add(UseGrouping.TRUE);
 		}
 		int precision = params.getPrecision();
-		if (precision > 0) {
-			sb.append(".").append(Strings.repeat("0", precision));
+		if (precision >= 0) {
+			options.add(MinimumFractionDigits.of(precision));
+			options.add(MaximumFractionDigits.of(precision));
 		}
-		String format = sb.toString();
 		char pc = params.getPositiveChar();
 		if (pc != 0) {
-			sb.setLength(0);
-			sb.append(pc).append(format);
-			sb.append(';');
-			sb.append('-').append(format);
-			format = sb.toString();
+			options.add(getSignDisplay(pc));
 		}
-		formatter = NumberFormat.getFormat(format);
+		formatter = NumberFormat.create(
+				FormatUtil.getLocale(),
+				options.toArray(new Option[options.size()]));
+	}
+
+	private Currency getCurrency(char cc) {
+		switch (cc) {
+		case '¥': return Currency.JPY;
+		case '€': return Currency.EUR;
+		case '£': return Currency.GBP;
+		case '$': return Currency.USD;
+		case '¤':
+		default:
+			String code = LocaleInfo
+					.getCurrentLocale()
+					.getNumberConstants()
+					.defCurrencyCode();
+			try {
+				return Currency.valueOf(code);
+			} catch (IllegalArgumentException e) {
+				return Currency.USD;
+			}
+		}
+	}
+
+	private SignDisplay getSignDisplay(char pc) {
+		switch (pc) {
+		case '+': return SignDisplay.ALWAYS;
+		case ' ': return SignDisplay.ALWAYS; //一旦'+'で整形。後処理で' 'に置換
+		default:  return SignDisplay.AUTO;
+		}
 	}
 
 	@Override
@@ -70,10 +101,73 @@ public class GwtDecimalFormatter extends DecimalFormatter {
 
 	@Override
 	public CharSequence apply(Object obj) {
+		Params params = getParams();
 		Number number = asNumber(obj);
-		String str = formatter.format(number);
+		double value = number.doubleValue();
+		String str = formatter.format(value);
+		if (params.isZeroFill()) {
+			str = insertZero(str, value);
+		}
+		if (params.getPositiveChar() == ' ') {
+			str = str.replace('+', ' ');
+		}
 		str = str.replace('￥', '¥');
 		return fill(str, false);
+	}
+
+	private String insertZero(String str, double value) {
+		//ZERO挿入が必要か否か判定
+		int width = preferredWidth();
+		int len = measureText(str);
+		if (!(len < width)) {
+			return str;
+		}
+		//ZERO挿入ポイントを探索
+		List<FormatPart> parts = formatter.formatToParts(value);
+		int index = getIndexOfInteger(parts);
+		if (index < 0) {
+			return str;
+		}
+		//処理準備
+		Params params = getParams();
+		StringBuilder sb = new StringBuilder();
+		//追加ZEROデータを作成
+		sb.setLength(0);
+		int remain = width - len;
+		String ins;
+		if (params.isGrouping()) {
+			String sep = FormatUtil.getGroupSymbol();
+			int n = 3 - parts.get(index).getValue().length();
+			sb.append(Strings.repeat("0", Math.min(remain, n)));
+			remain -= n;
+			while (remain > 0) {
+				sb.append(sep);
+				n = 3;
+				sb.append(Strings.repeat("0", Math.min(remain, n)));
+				remain -= n;
+			}
+			ins = sb.reverse().toString();
+		} else {
+			ins = Strings.repeat("0", remain);
+		}
+		//文字列を編集して返す
+		sb.setLength(0);
+		for (int i = 0; i < index; i++) {
+			sb.append(parts.get(i).getValue());
+		}
+		int after = sb.length();
+		sb.append(ins);
+		sb.append(str.substring(after));
+		return sb.toString();
+	}
+
+	private int getIndexOfInteger(List<FormatPart> parts) {
+		for (int i = 0; i < parts.size(); i++) {
+			if (parts.get(i).getType().equals("integer")) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }

@@ -2,136 +2,150 @@ package com.github.vvorks.builder.client.test;
 
 import java.util.Date;
 
-import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.text.Formatter;
 import com.github.vvorks.builder.common.util.Test;
 import com.github.vvorks.builder.common.util.TestCase;
 
 public class FormatterTest implements TestCase {
 
+	private static final Logger LOGGER = Logger.createLogger(FormatterTest.class);
+
+	private void checkEquals(int no, CharSequence e, CharSequence r) {
+		if (!e.equals(r)) {
+			LOGGER.error("%2d: [%s] != [%s]", no, e, r);
+		}
+	}
+
 	@Test
 	public void testBinary() {
-		Asserts.checkEquals("   1"   , Formatter.format("%4b" , 1));
-		Asserts.checkEquals("0010"   , Formatter.format("%04b", 2));
-		Asserts.checkEquals("11  "   , Formatter.format("%-4b", 3));
-		Asserts.checkEquals("100"    , Formatter.format("%b",   4));
-		Asserts.checkEquals("101"    , Formatter.format("%b", "5"));
-		Asserts.checkEquals("110"    , Formatter.format("%b", "6.2"));
-		Asserts.checkEquals("111"    , Formatter.format("%b", 7.12));
-		Asserts.checkEquals("1000000", Formatter.format("%b", '@'));
+		checkEquals( 1, "   1"   , Formatter.format("%4b" , 1));
+		checkEquals( 2, "0010"   , Formatter.format("%04b", 2));
+		checkEquals( 3, "11  "   , Formatter.format("%-4b", 3));
+		checkEquals( 4, "100"    , Formatter.format("%b",   4));
+		checkEquals( 5, "101"    , Formatter.format("%b", "5"));
+		checkEquals( 6, "110"    , Formatter.format("%b", "6.2"));
+		checkEquals( 7, "111"    , Formatter.format("%b", 7.12));
+		checkEquals( 8, "1000000", Formatter.format("%b", '@'));
 		Date now = new Date();
-		Asserts.checkEquals(Long.toBinaryString(now.getTime()), Formatter.format("%b", now));
-		Asserts.checkEquals("0", Formatter.format("%b", null));
+		checkEquals( 9, Long.toBinaryString(now.getTime()), Formatter.format("%b", now));
+		checkEquals(10, "0", Formatter.format("%b", null));
 	}
 
 	@Test
 	public void testOctal() {
-		Asserts.checkEquals("   1", Formatter.format("%4o" , 1));
-		Asserts.checkEquals("0002", Formatter.format("%04o", 2));
-		Asserts.checkEquals("3   ", Formatter.format("%-4o", 3));
-		Asserts.checkEquals("4"   , Formatter.format("%o",   4));
-		Asserts.checkEquals("5"   , Formatter.format("%o", "5"));
-		Asserts.checkEquals("6"   , Formatter.format("%o", "6.2"));
-		Asserts.checkEquals("7"   , Formatter.format("%o", 7.12));
-		Asserts.checkEquals("100" , Formatter.format("%o", '@'));
+		checkEquals( 1, "   1", Formatter.format("%4o" , 1));
+		checkEquals( 2, "0002", Formatter.format("%04o", 2));
+		checkEquals( 3, "3   ", Formatter.format("%-4o", 3));
+		checkEquals( 4, "4"   , Formatter.format("%o",   4));
+		checkEquals( 5, "5"   , Formatter.format("%o", "5"));
+		checkEquals( 6, "6"   , Formatter.format("%o", "6.2"));
+		checkEquals( 7, "7"   , Formatter.format("%o", 7.12));
+		checkEquals( 8, "100" , Formatter.format("%o", '@'));
 		Date now = new Date();
-		Asserts.checkEquals(Long.toOctalString(now.getTime()), Formatter.format("%o", now));
-		Asserts.checkEquals("0", Formatter.format("%o", null));
+		checkEquals( 9, Long.toOctalString(now.getTime()), Formatter.format("%o", now));
+		checkEquals(10, "0", Formatter.format("%o", null));
 	}
 
 	@Test
 	public void testDecimal() {
-		Asserts.checkEquals("   1", Formatter.format("%4d" , 1));
-		Asserts.checkEquals("0002", Formatter.format("%04d", 2));
-		Asserts.checkEquals("3   ", Formatter.format("%-4d", 3));
+		checkEquals( 1, "   1", Formatter.format("%4d" , 1));
+		checkEquals( 2, "0002", Formatter.format("%04d", 2));
+		checkEquals( 3, "3   ", Formatter.format("%-4d", 3));
 
-		Asserts.checkEquals("1,234,567", Formatter.format("%,7d" , +1234567));
-		Asserts.checkEquals("1,234,567", Formatter.format("%,07d", +1234567));
-		Asserts.checkEquals("1,234,567", Formatter.format("%,-7d", +1234567));
-		Asserts.checkEquals("-1,234,567", Formatter.format("%,7d" , -1234567));
-		Asserts.checkEquals("-1,234,567", Formatter.format("%,07d", -1234567));
-		Asserts.checkEquals("-1,234,567", Formatter.format("%,-7d", -1234567));
+		checkEquals(11, "1,234,567", Formatter.format("%,7d" , +1234567));
+		checkEquals(12, "1,234,567", Formatter.format("%,07d", +1234567));
+		checkEquals(13, "1,234,567", Formatter.format("%,-7d", +1234567));
+		checkEquals(14, "-1,234,567", Formatter.format("%,7d" , -1234567));
+		checkEquals(15, "-1,234,567", Formatter.format("%,07d", -1234567));
+		checkEquals(16, "-1,234,567", Formatter.format("%,-7d", -1234567));
 
-		Asserts.checkEquals("+1,234,567", Formatter.format("%,+7d" , +1234567));
-		Asserts.checkEquals("+1,234,567", Formatter.format("%,+07d", +1234567));
-		Asserts.checkEquals("+1,234,567", Formatter.format("%-,+7d", +1234567));
-		Asserts.checkEquals("-1,234,567", Formatter.format("%,+7d" , -1234567));
-		Asserts.checkEquals("-1,234,567", Formatter.format("%,+07d", -1234567));
-		Asserts.checkEquals("-1,234,567", Formatter.format("%-,+7d", -1234567));
-
-		//locale ja前提
-		Asserts.checkEquals(" +¥1,234,567", Formatter.format("%,+¤8d" , +1234567));
-		Asserts.checkEquals("+¥01,234,567", Formatter.format("%,+¤08d", +1234567));
-		Asserts.checkEquals("+¥1,234,567 ", Formatter.format("%-,+¤8d", +1234567));
-		Asserts.checkEquals(" -¥1,234,567", Formatter.format("%,+¤8d" , -1234567));
-		Asserts.checkEquals("-¥01,234,567", Formatter.format("%,+¤08d", -1234567));
-		Asserts.checkEquals("-¥1,234,567 ", Formatter.format("%-,+¤8d", -1234567));
+		checkEquals(21, " +1,234,567", Formatter.format("%,+8d" , +1234567));
+		checkEquals(22, "+01,234,567", Formatter.format("%,+08d", +1234567));
+		checkEquals(23, "+1,234,567 ", Formatter.format("%-,+8d", +1234567));
+		checkEquals(24, " -1,234,567", Formatter.format("%,+8d" , -1234567));
+		checkEquals(25, "-01,234,567", Formatter.format("%,+08d", -1234567));
+		checkEquals(26, "-1,234,567 ", Formatter.format("%-,+8d", -1234567));
 
 		//locale ja前提
-		Asserts.checkEquals("  ¥1,234,567", Formatter.format("%, ¤8d" , +1234567));
-		Asserts.checkEquals(" ¥01,234,567", Formatter.format("%, ¤08d", +1234567));
-		Asserts.checkEquals(" ¥1,234,567 ", Formatter.format("%-, ¤8d", +1234567));
-		Asserts.checkEquals(" -¥1,234,567", Formatter.format("%, ¤8d" , -1234567));
-		Asserts.checkEquals("-¥01,234,567", Formatter.format("%, ¤08d", -1234567));
-		Asserts.checkEquals("-¥1,234,567 ", Formatter.format("%-, ¤8d", -1234567));
+		checkEquals(31, " +¥1,234,567", Formatter.format("%,+¤8d" , +1234567));
+		checkEquals(32, "+¥01,234,567", Formatter.format("%,+¤08d", +1234567));
+		checkEquals(33, "+¥1,234,567 ", Formatter.format("%-,+¤8d", +1234567));
+		checkEquals(34, " -¥1,234,567", Formatter.format("%,+¤8d" , -1234567));
+		checkEquals(35, "-¥01,234,567", Formatter.format("%,+¤08d", -1234567));
+		checkEquals(36, "-¥1,234,567 ", Formatter.format("%-,+¤8d", -1234567));
+
+		//locale ja前提
+		checkEquals(41, "  ¥1,234,567", Formatter.format("%, ¤8d" , +1234567));
+		checkEquals(42, " ¥01,234,567", Formatter.format("%, ¤08d", +1234567));
+		checkEquals(43, " ¥1,234,567 ", Formatter.format("%-, ¤8d", +1234567));
+		checkEquals(44, " -¥1,234,567", Formatter.format("%, ¤8d" , -1234567));
+		checkEquals(45, "-¥01,234,567", Formatter.format("%, ¤08d", -1234567));
+		checkEquals(46, "-¥1,234,567 ", Formatter.format("%-, ¤8d", -1234567));
 
 		//locale 不問
-		Asserts.checkEquals("  ¥1,234,567", Formatter.format("%, ¥8d" , +1234567));
-		Asserts.checkEquals(" ¥01,234,567", Formatter.format("%, ¥08d", +1234567));
-		Asserts.checkEquals(" ¥1,234,567 ", Formatter.format("%-, ¥8d", +1234567));
-		Asserts.checkEquals(" -¥1,234,567", Formatter.format("%, ¥8d" , -1234567));
-		Asserts.checkEquals("-¥01,234,567", Formatter.format("%, ¥08d", -1234567));
-		Asserts.checkEquals("-¥1,234,567 ", Formatter.format("%-, ¥8d", -1234567));
+		checkEquals(51, "  ¥1,234,567", Formatter.format("%, ¥8d" , +1234567));
+		checkEquals(52, " ¥01,234,567", Formatter.format("%, ¥08d", +1234567));
+		checkEquals(53, " ¥1,234,567 ", Formatter.format("%-, ¥8d", +1234567));
+		checkEquals(54, " -¥1,234,567", Formatter.format("%, ¥8d" , -1234567));
+		checkEquals(55, "-¥01,234,567", Formatter.format("%, ¥08d", -1234567));
+		checkEquals(56, "-¥1,234,567 ", Formatter.format("%-, ¥8d", -1234567));
 
-		Asserts.checkEquals("+1,234,567.123", Formatter.format("%,+7.3d" , +1234567.1234));
-		Asserts.checkEquals("+1,234,567.568", Formatter.format("%,+07.3d", +1234567.5678));
-		Asserts.checkEquals("+1,234,567.123", Formatter.format("%-,+7.3d", +1234567.1234));
-		Asserts.checkEquals("-1,234,567.568", Formatter.format("%,+7.3d" , -1234567.5678));
-		Asserts.checkEquals("-1,234,567.123", Formatter.format("%,+07.3d", -1234567.1234));
-		Asserts.checkEquals("-1,234,567.568", Formatter.format("%-,+7.3d", -1234567.5678));
+		checkEquals(61, "+1,234,567.123", Formatter.format("%,+7.3d" , +1234567.1234));
+		checkEquals(62, "+1,234,567.568", Formatter.format("%,+07.3d", +1234567.5678));
+		checkEquals(63, "+1,234,567.123", Formatter.format("%-,+7.3d", +1234567.1234));
+		checkEquals(64, "-1,234,567.568", Formatter.format("%,+7.3d" , -1234567.5678));
+		checkEquals(65, "-1,234,567.123", Formatter.format("%,+07.3d", -1234567.1234));
+		checkEquals(66, "-1,234,567.568", Formatter.format("%-,+7.3d", -1234567.5678));
+
+		checkEquals(71, " +1,234,567.123", Formatter.format("%,+8.3d" , +1234567.1234));
+		checkEquals(72, "+01,234,567.568", Formatter.format("%,+08.3d", +1234567.5678));
+		checkEquals(73, "+1,234,567.123 ", Formatter.format("%-,+8.3d", +1234567.1234));
+		checkEquals(74, " -1,234,567.568", Formatter.format("%,+8.3d" , -1234567.5678));
+		checkEquals(75, "-01,234,567.123", Formatter.format("%,+08.3d", -1234567.1234));
+		checkEquals(76, "-1,234,567.568 ", Formatter.format("%-,+8.3d", -1234567.5678));
 	}
 
 	@Test
 	public void testHexaDecimal() {
-		Asserts.checkEquals("   1", Formatter.format("%4x" , 1));
-		Asserts.checkEquals("0002", Formatter.format("%04x", 2));
-		Asserts.checkEquals("3   ", Formatter.format("%-4x", 3));
-		Asserts.checkEquals("4"   , Formatter.format("%x",   4));
-		Asserts.checkEquals("5"   , Formatter.format("%x", "5"));
-		Asserts.checkEquals("6"   , Formatter.format("%x", "6.2"));
-		Asserts.checkEquals("7"   , Formatter.format("%x", 7.12));
-		Asserts.checkEquals("40"  , Formatter.format("%x", '@'));
+		checkEquals( 1, "   1", Formatter.format("%4x" , 1));
+		checkEquals( 2, "0002", Formatter.format("%04x", 2));
+		checkEquals( 3, "3   ", Formatter.format("%-4x", 3));
+		checkEquals( 4, "4"   , Formatter.format("%x",   4));
+		checkEquals( 5, "5"   , Formatter.format("%x", "5"));
+		checkEquals( 6, "6"   , Formatter.format("%x", "6.2"));
+		checkEquals( 7, "7"   , Formatter.format("%x", 7.12));
+		checkEquals( 8, "40"  , Formatter.format("%x", '@'));
 		Date now = new Date();
-		Asserts.checkEquals(Long.toHexString(now.getTime()), Formatter.format("%x", now));
-		Asserts.checkEquals("0", Formatter.format("%x", null));
+		checkEquals( 9, Long.toHexString(now.getTime()), Formatter.format("%x", now));
+		checkEquals(10, "0", Formatter.format("%x", null));
 	}
 
 	@Test
 	public void testString() {
-		Asserts.checkEquals("   1", Formatter.format("%4s" , "1"));
-		Asserts.checkEquals("   2", Formatter.format("%04s", "2"));
-		Asserts.checkEquals("3   ", Formatter.format("%-4s", "3"));
-		Asserts.checkEquals("4"   , Formatter.format("%s",   "4"));
-		Asserts.checkEquals("5"   , Formatter.format("%s", 5));
-		Asserts.checkEquals("6.2" , Formatter.format("%s", "6.2"));
-		Asserts.checkEquals("7.12", Formatter.format("%s", 7.12));
-		Asserts.checkEquals("@"   , Formatter.format("%s", '@'));
-		Asserts.checkEquals("null", Formatter.format("%s", null));
+		checkEquals( 1, "   1", Formatter.format("%4s" , "1"));
+		checkEquals( 2, "   2", Formatter.format("%04s", "2"));
+		checkEquals( 3, "3   ", Formatter.format("%-4s", "3"));
+		checkEquals( 4, "4"   , Formatter.format("%s",   "4"));
+		checkEquals( 5, "5"   , Formatter.format("%s", 5));
+		checkEquals( 6, "6.2" , Formatter.format("%s", "6.2"));
+		checkEquals( 7, "7.12", Formatter.format("%s", 7.12));
+		checkEquals( 8, "@"   , Formatter.format("%s", '@'));
+		checkEquals( 9, "null", Formatter.format("%s", null));
 	}
 
 	@Test
 	public void testStrings() {
-		Asserts.checkEquals("abcHELLOdef", Formatter.format("abc%sdef" , "HELLO"));
-		Asserts.checkEquals("123-4567", Formatter.format("%3s-%4s" , "1234567"));
-		Asserts.checkEquals("123-45", Formatter.format("%3s-%4s" , "12345"));
-		Asserts.checkEquals("123", Formatter.format("%3s-%4s" , "123"));
+		checkEquals( 1, "abcHELLOdef", Formatter.format("abc%sdef" , "HELLO"));
+		checkEquals( 2, "123-4567", Formatter.format("%3s-%4s" , "1234567"));
+		checkEquals( 3, "123-45", Formatter.format("%3s-%4s" , "12345"));
+		checkEquals( 4, "123", Formatter.format("%3s-%4s" , "123"));
 	}
 
 	@Test
 	public void testChar() {
-		Asserts.checkEquals("abc@def", Formatter.format("abc%cdef" , '@'));
-		Asserts.checkEquals("abcあdef", Formatter.format("abc%cdef" , 0x3042));
+		checkEquals( 1, "abc@def", Formatter.format("abc%cdef" , '@'));
+		checkEquals( 2, "abcあdef", Formatter.format("abc%cdef" , 0x3042));
 	}
-
 
 }

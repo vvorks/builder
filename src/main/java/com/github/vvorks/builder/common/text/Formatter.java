@@ -314,8 +314,8 @@ public abstract class Formatter {
 			ch = in.peek();
 		}
 		int epos = in.position();
-		int w = 0;
-		int p = 0;
+		int w = -1;
+		int p = -1;
 		if (spos == epos) {
 			//empty. do nothing
 		} else if (mpos == -1) {

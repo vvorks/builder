@@ -6,7 +6,7 @@ public class DateFormatter extends Formatter {
 
 	public DateFormatter() {
 		Params params = getParams();
-		if (params.getWidth() == 0) {
+		if (params.getWidth() == -1) {
 			params.setWidth(getDefaultWidth(params.getCommand()));
 			params.setFlag(Params.FLAGS_ZERO, true);
 		}

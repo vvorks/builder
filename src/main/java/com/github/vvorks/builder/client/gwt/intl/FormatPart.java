@@ -11,7 +11,7 @@ public class FormatPart {
 
 	private final String value;
 
-	FormatPart(String type, String value) {
+	public FormatPart(String type, String value) {
 		this.type = type;
 		this.value = value;
 	}

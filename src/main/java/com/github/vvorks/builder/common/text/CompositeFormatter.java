@@ -14,7 +14,7 @@ public class CompositeFormatter extends Formatter {
 	public int preferredWidth() {
 		int width = 0;
 		for (Formatter f : fragments) {
-			width += f.preferredWidth();
+			width += Math.max(0, f.preferredWidth());
 		}
 		return width;
 	}

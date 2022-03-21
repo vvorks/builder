@@ -17,7 +17,7 @@ public enum CompactDisplay implements StringOption {
 
 	@Override
 	public final String key() {
-		return "dateStyle";
+		return "compactDisplay";
 	}
 
 	@Override
