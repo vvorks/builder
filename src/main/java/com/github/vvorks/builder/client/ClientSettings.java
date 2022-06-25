@@ -1,5 +1,7 @@
 package com.github.vvorks.builder.client;
 
+import java.util.List;
+
 import com.github.vvorks.builder.client.common.net.WebSocket;
 import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.Metrics;
@@ -8,7 +10,7 @@ import com.github.vvorks.builder.client.gwt.json.GwtJson;
 import com.github.vvorks.builder.client.gwt.logging.AltConsoleHandler;
 import com.github.vvorks.builder.client.gwt.net.GwtWebSocket;
 import com.github.vvorks.builder.client.gwt.text.GwtDateFormatter;
-import com.github.vvorks.builder.client.gwt.text.GwtDecimalFormatter;
+import com.github.vvorks.builder.client.gwt.text.GwtNumberFormatter;
 import com.github.vvorks.builder.client.gwt.util.GwtDelayedExecuter;
 import com.github.vvorks.builder.client.gwt.util.GwtResourceBundle;
 import com.github.vvorks.builder.client.gwt.util.GwtTestRunner;
@@ -18,7 +20,8 @@ import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.JavaLogger;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.text.DateFormatter;
-import com.github.vvorks.builder.common.text.DecimalFormatter;
+import com.github.vvorks.builder.common.text.NumberFormatter;
+import com.github.vvorks.builder.common.text.Pattern;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.github.vvorks.builder.common.util.JsonResourceBundle;
 import com.github.vvorks.builder.common.util.TestRunner;
@@ -46,7 +49,8 @@ public class ClientSettings {
 	private ClientSettings() {
 	}
 
-	public static void setup(String locale) {
+	@SuppressWarnings("unchecked")
+	public static void setup() {
 		java.util.logging.Logger.getGlobal().addHandler(new AltConsoleHandler());
 		// configure factory
 		Factory.configure()
@@ -55,8 +59,8 @@ public class ClientSettings {
 			.bindTo(Logger.class, args -> new JavaLogger((Class<?>) args[0]))
 			.bindTo(Json.class, args -> new GwtJson(args[0]))
 			.bindTo(WebSocket.class, args -> new GwtWebSocket())
-			.bindTo(DecimalFormatter.class, a -> new GwtDecimalFormatter())
-			.bindTo(DateFormatter.class, a -> new GwtDateFormatter(locale))
+			.bindTo(NumberFormatter.class, args -> new GwtNumberFormatter((List<Pattern>) args[0]))
+			.bindTo(DateFormatter.class, args -> new GwtDateFormatter((List<Pattern>) args[0]))
 			//singleton settings
 			.bindIn(DelayedExecuter.class, args -> new GwtDelayedExecuter())
 			.bindIn(Metrics.class, args -> new Metrics())

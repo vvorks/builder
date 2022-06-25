@@ -7,7 +7,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
 /**
- * 日付時刻フォーマット
+ * 数値フォーマット
  */
 public class NumberFormat extends JavaScriptObject {
 
@@ -38,9 +38,8 @@ public class NumberFormat extends JavaScriptObject {
 		return IntlUtil.toFormatParts(formatToParts0(value));
 	}
 
-	private final native JsArray<JavaScriptObject> formatToParts0(double time)/*-{
-		var jsDate = new Date(time);
-		return this.formatToParts(jsDate);
+	private final native JsArray<JavaScriptObject> formatToParts0(double value)/*-{
+		return this.formatToParts(value);
 	}-*/;
 
 }

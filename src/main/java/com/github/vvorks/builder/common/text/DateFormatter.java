@@ -1,143 +1,183 @@
 package com.github.vvorks.builder.common.text;
 
 import java.util.Date;
+import java.util.List;
+
+import com.github.vvorks.builder.common.lang.Iterables;
 
 public class DateFormatter extends Formatter {
 
-	public DateFormatter() {
-		Params params = getParams();
-		if (params.getWidth() == -1) {
-			params.setWidth(getDefaultWidth(params.getCommand()));
-			params.setFlag(Params.FLAGS_ZERO, true);
-		}
-	}
+	private static final String[] WEEK2 = {
+			"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"
+	};
 
-	protected int getDefaultWidth(int command) {
-		switch (command) {
-			case 'G': return 2;
-			case 'Y': return 4;
-			case 'A': return 3;
-			case 'm': return 2;
-			case 'D': return 2;
-			case 'P': return 2;
-			case 'H': return 2;
-			case 'I': return 2;
-			case 'M': return 2;
-			case 'S': return 2;
-			case 'L': return 3;
-			case 'Z': return 5;
-			case 'F': return 10;
-			case 'R': return 5;
-			case 'T': return 8;
-			default:  return 0;
-		}
+	private static final String[] WEEK3 = {
+			"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+	};
+
+	public DateFormatter(List<Pattern> patterns) {
+		super(patterns);
 	}
 
 	@Override
-	public CharSequence apply(Object obj) {
-		Date date = asDate(obj);
-		Params params = getParams();
-		int command = params.getCommand();
-		if ("GPZFRT".indexOf((char)command) >= 0) {
-			switch (command) {
-				case 'G': return fill(getEra(date), false);
-				case 'P': return fill(getAMPM(date), false);
-				case 'Z': return fill(getTimezone(date), false);
-				case 'F': return fill(getDate(date), false);
-				case 'R': return fill(getHHMM(date), false);
-				case 'T': return fill(getTime(date), false);
-				default: throw new AssertionError();
-			}
-		} else {
-			switch (command) {
-				case 'Y': return fill(toString(getYear(date)), true);
-				case 'm': return fill(toString(getMonth(date)), true);
-				case 'D': return fill(toString(getDay(date)), true);
-				case 'H': return fill(toString(getHour24(date)), true);
-				case 'I': return fill(toString(getHour12(date)), true);
-				case 'M': return fill(toString(getMinutes(date)), true);
-				case 'S': return fill(toString(getSeconds(date)), true);
-				case 'L': return fill(toString(getMillis(date)), true);
-				default: throw new IllegalArgumentException();
+	public String format(Object value) {
+		Date date = asDate(value);
+		StringBuilder sb = new StringBuilder();
+		boolean hasDayPeriod = Iterables.exists(patterns, e -> e.isDayPeriod());
+		for (Pattern p : patterns) {
+			switch (p.getCommand()) {
+			case Pattern.CMD_DATE:
+				sb.append(formatYear(date, p));
+				sb.append("-");
+				sb.append(formatMonth(date, p));
+				sb.append("-");
+				sb.append(formatDay(date, p));
+				break;
+			case Pattern.CMD_DATE_ERA:
+				break;
+			case Pattern.CMD_DATE_YEAR:
+				sb.append(formatYear(date, p));
+				break;
+			case Pattern.CMD_DATE_MONTH:
+				sb.append(formatMonth(date, p));
+				break;
+			case Pattern.CMD_DATE_DAY:
+				sb.append(formatDay(date, p));
+				break;
+			case Pattern.CMD_DATE_WEEK:
+				sb.append(formatWeek(date, p));
+				break;
+			case Pattern.CMD_TIME:
+				sb.append(formatHour24(date, p));
+				sb.append(":");
+				sb.append(formatMinute(date, p));
+				sb.append(":");
+				sb.append(formatSecond(date, p));
+				break;
+			case Pattern.CMD_TIME_DAY_PERIOD:
+				sb.append(formatAMPM(date, p));
+				break;
+			case Pattern.CMD_TIME_HOUR:
+				if (hasDayPeriod) {
+					sb.append(formatHour12(date, p));
+				} else {
+					sb.append(formatHour24(date, p));
+				}
+				break;
+			case Pattern.CMD_TIME_MINUTE:
+				sb.append(formatMinute(date, p));
+				break;
+			case Pattern.CMD_TIME_SECOND:
+				sb.append(formatSecond(date, p));
+				break;
+			case Pattern.CMD_TIME_MSEC:
+				sb.append(formatMsec(date, p));
+				break;
+			case Pattern.CMD_TIME_TIMEZONE:
+				sb.append(formatTimezone(date, p));
+				break;
+			case Pattern.CMD_LITERAL:
+				sb.append(p.getLiteral());
+				break;
 			}
 		}
+		String result = sb.toString();
+		LOGGER.debug("%s -> %s", date, result);
+		return result;
 	}
 
-	protected String getEra(Date date) {
-		return "AD";
-	}
-
-	protected int getYear(Date date) {
-		return date.getYear() + 1900;
-	}
-
-	protected int getMonth(Date date) {
-		return date.getMonth() + 1;
-	}
-
-	protected int getDay(Date date) {
-		return date.getDate();
-	}
-
-	private static final String[] WEEK_NAMES = {
-		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-	};
-
-	protected String getWeek(Date date) {
-		return WEEK_NAMES[date.getDay() % 7];
-	}
-
-	protected String getAMPM(Date date) {
-		int hours = date.getHours();
-		return 1 <= hours && hours <= 12 ? "AM" : "PM";
-	}
-
-	protected int getHour24(Date date) {
-		return date.getHours();
-	}
-
-	protected int getHour12(Date date) {
-		int hours = date.getHours();
-		if (hours == 0) {
-			return 12;
+	protected Date asDate(Object obj) {
+		if (obj instanceof Date) {
+			return (Date) obj;
+		} else if (obj instanceof Number) {
+			return new Date(((Number)obj).longValue());
+		} else if (obj == null) {
+			return new Date(0L);
 		}
-		return 1 <= hours && hours <= 12 ? hours : hours - 12;
+		throw new IllegalArgumentException();
 	}
 
-	protected int getMinutes(Date date) {
-		return date.getMinutes();
+	private String formatYear(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int year = date.getYear() + 1900;
+		String str = Integer.toString(year);
+		return fill(str, p, true);
 	}
 
-	protected int getSeconds(Date date) {
-		return date.getSeconds();
+	private String formatMonth(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int month = date.getMonth() + 1;
+		String str = Integer.toString(month);
+		return fill(str, p, true);
 	}
 
-	protected int getMillis(Date date) {
-		return (1000 + (int)(date.getTime() % 1000)) % 1000;
+	private String formatDay(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int day = date.getDate();
+		String str = Integer.toString(day);
+		return fill(str, p, true);
 	}
 
-	protected String getTimezone(Date date) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	private String formatWeek(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int week = date.getDay();
+		String[] array = (p.getPreferredWidth() < 3) ? WEEK2 : WEEK3;
+		String str = array[week];
+		return fill(str, p, true);
 	}
 
-	protected String getDate(Date date) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	private String formatAMPM(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int hour24 = date.getHours();
+		String str = (hour24 < 12) ? "AM" : "PM";
+		return fill(str, p, false);
 	}
 
-	protected String getHHMM(Date date) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	private String formatHour24(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int hour24 = date.getHours();
+		String str = Integer.toString(hour24);
+		return fill(str, p, true);
 	}
 
-	protected String getTime(Date date) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	private String formatHour12(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int hour = date.getHours() % 12;
+		int hour12 = (hour == 0) ? 12 : hour;
+		String str = Integer.toString(hour12);
+		return fill(str, p, true);
 	}
 
-	protected String toString(int value) {
-		return Integer.toString(value);
+	private String formatMinute(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int minute = date.getMinutes();
+		String str = Integer.toString(minute);
+		return fill(str, p, true);
+	}
+
+	private String formatSecond(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int sec = date.getSeconds();
+		String str = Integer.toString(sec);
+		return fill(str, p, true);
+	}
+
+	private String formatMsec(Date date, Pattern p) {
+		int msec = (int)(date.getTime() % 1000);
+		String str = Integer.toString(msec);
+		return fill(str, p, true);
+	}
+
+	private String formatTimezone(Date date, Pattern p) {
+		@SuppressWarnings("deprecation")
+		int v = date.getTimezoneOffset();
+		String s = v < 0 ? "+" : "-";
+		int a = Math.abs(v);
+		int h = a / 60;
+		int m = a % 60;
+		String t = "0000" + Integer.toString(h * 100 + m);
+		String str = s + t.substring(t.length() - 4);
+		return fill(str, p, false);
 	}
 
 }

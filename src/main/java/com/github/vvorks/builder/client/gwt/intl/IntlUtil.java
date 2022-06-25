@@ -3,10 +3,10 @@ package com.github.vvorks.builder.client.gwt.intl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.client.gwt.util.JsObject;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.i18n.client.LocaleInfo;
 
 public class IntlUtil {
 
@@ -17,7 +17,7 @@ public class IntlUtil {
 	private static final String DECIMAL_SYMBOL;
 
 	static {
-		LOCALE = LocaleInfo.getCurrentLocale().getLocaleName();
+		LOCALE = Metrics.get().getLocale();
 		NumberFormat f = NumberFormat.create(
 				LOCALE,
 				UseGrouping.TRUE,
@@ -39,10 +39,6 @@ public class IntlUtil {
 	private IntlUtil( ) {
 	}
 
-	public static String getLocale() {
-		return LOCALE;
-	}
-
 	public static String getGroupSymbol() {
 		return GROUP_SYMBOL;
 	}
@@ -61,6 +57,15 @@ public class IntlUtil {
 			list.add(new FormatPart(key, value));
 		}
 		return list;
+	}
+
+	public static int indexOf(List<FormatPart> parts, String type) {
+		for (int i = 0; i < parts.size(); i++) {
+			if (parts.get(i).getType().equals(type)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }

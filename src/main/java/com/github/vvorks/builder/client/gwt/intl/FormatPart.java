@@ -24,4 +24,8 @@ public class FormatPart {
 		return value;
 	}
 
+	public boolean isLiteral() {
+		return "literal".equals(type);
+	}
+
 }

@@ -264,8 +264,10 @@ public class DomPanel extends FocusWidget {
 	}-*/;
 
 	public void load(String tag, Map<String, String> parameters) {
-		if (Factory.isRegistered(TestRunner.class)) {
-			executeTest();
+		TestRunner runner = TestRunner.getRunnerIfExists();
+		if (runner != null) {
+			Map<String, Throwable> result = runner.run();
+			dumpTestResult(result);
 		}
 		//launch initial page
 		int screenWidth = Window.getClientWidth();
@@ -274,22 +276,24 @@ public class DomPanel extends FocusWidget {
 		app.processLoad(tag, parameters);
 	}
 
-	private void executeTest() {
-		TestRunner runner = Factory.getInstance(TestRunner.class);
-		Map<String, Throwable> result = runner.run();
+	private void dumpTestResult(Map<String, Throwable> result) {
 		int errorCount = 0;
+		int totalCount = 0;
 		for (Map.Entry<String, Throwable> e : result.entrySet()) {
 			String k = e.getKey();
 			String title = k.substring(k.lastIndexOf('.') + 1);
 			Throwable v = e.getValue();
 			if (v == null) {
-				LOGGER.info("Test %s OK", title);
+				LOGGER.info("Test %s SUCCESS.", title);
+				totalCount++;
+			} else if (v instanceof UnsupportedOperationException) {
+				LOGGER.warn("Test %s SKIPPED.", title);
 			} else {
-				LOGGER.error(v, "Test %s FAILED", title);
+				LOGGER.error(v, "Test %s FAILED.", title);
+				totalCount++;
 				errorCount++;
 			}
 		}
-		int totalCount = result.size();
 		LOGGER.info("Test Done(%d/%d)", totalCount - errorCount, totalCount);
 	}
 

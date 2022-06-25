@@ -36,12 +36,13 @@ public class GwtEntryPoint implements EntryPoint {
 
 	public void onModuleLoad() {
 		//クライアント構成セットアップ
+		ClientSettings.setup();
+		logger = Logger.createLogger(GwtEntryPoint.class);
 		LocaleInfo localeInfo = LocaleInfo.getCurrentLocale();
 		String locale = localeInfo.getLocaleName();
 		String currency = localeInfo.getNumberConstants().defCurrencyCode();
-		ClientSettings.setup(locale);
-		logger = Logger.createLogger(GwtEntryPoint.class);
 		logger.info("START %s(locale=%s, currency=%s)", GWT.getModuleName(), locale, currency);
+		String[] locales = LocaleInfo.getAvailableLocaleNames();
 		//ルート要素の初期化
 		String bgColor = ClientSettings.DEBUG ? "#000040" : "rgba(0, 0, 0, 0.0)";
 		RootLayoutPanel root = RootLayoutPanel.get();
@@ -62,6 +63,8 @@ public class GwtEntryPoint implements EntryPoint {
 		DelayedExecuter.get().runLator(() -> {
 			//メトリックス計測結果を保存
 			Metrics met = Metrics.get();
+			met.setLocale(locale);
+			met.setLocales(locales);
 			met.setEmSize(em.getOffsetWidth() / 10.0);
 			met.setExSize(ex.getOffsetWidth() / 10.0);
 			met.setInSize(in.getOffsetWidth() /  1.0);

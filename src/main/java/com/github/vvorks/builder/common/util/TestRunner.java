@@ -7,8 +7,11 @@ import com.github.vvorks.builder.common.lang.Factory;
 
 public interface TestRunner {
 
-	public static TestRunner getRunner() {
-		return Factory.getInstance(TestRunner.class);
+	public static TestRunner getRunnerIfExists() {
+		if (Factory.isRegistered(TestRunner.class)) {
+			return Factory.getInstance(TestRunner.class);
+		}
+		return null;
 	}
 
 	public default boolean doBeforeAfter(

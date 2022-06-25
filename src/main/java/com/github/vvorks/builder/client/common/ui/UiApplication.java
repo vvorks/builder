@@ -3,6 +3,7 @@ package com.github.vvorks.builder.client.common.ui;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Deque;
 import java.util.HashMap;
@@ -886,11 +887,14 @@ public class UiApplication implements EventHandler {
 			if (ClientSettings.DEBUG) {
 				if ((mods & KeyCodes.MOD_ACS) == KeyCodes.MOD_CS) {
 					String locale = getLocale();
-					if (!locale.startsWith("en")) {
-						setLocale("en");
+					List<String> langs = Arrays.asList(Metrics.get().getLanguages());
+					int index = langs.indexOf(locale);
+					if (index == -1) {
+						index = 0;
 					} else {
-						setLocale(null);
+						index = (index + 1) % langs.size();
 					}
+					setLocale(langs.get(index));
 					result = EVENT_EATEN;
 				}
 			}

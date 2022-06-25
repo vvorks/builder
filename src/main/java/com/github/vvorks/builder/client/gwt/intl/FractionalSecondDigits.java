@@ -8,7 +8,7 @@ public class FractionalSecondDigits implements NumberOption {
 	private final double value;
 
 	public static FractionalSecondDigits of(int value) {
-		if (!(0 <= value && value <= 3)) {
+		if (!(1 <= value && value <= 3)) {
 			throw new IllegalArgumentException();
 		}
 		return new FractionalSecondDigits(value);

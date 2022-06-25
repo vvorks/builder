@@ -1,5 +1,8 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.json.Jsonizable;
 import com.github.vvorks.builder.common.lang.Factory;
@@ -9,6 +12,21 @@ public class Metrics implements Jsonizable {
 	public static Metrics get() {
 		return Factory.getInstance(Metrics.class);
 	}
+
+	/**
+	 * locale
+	 */
+	private String locale;
+
+	/**
+	 * locales
+	 */
+	private String[] locales;
+
+	/**
+	 * languages
+	 */
+	private String[] languages;
 
 	/**
 	 * スクリーン幅
@@ -34,6 +52,36 @@ public class Metrics implements Jsonizable {
 	 * inサイズ（ピクセル単位）
 	 */
 	private double inSize;
+
+	public Metrics() {
+	}
+
+	public String getLocale() {
+		return locale;
+	}
+
+	public void setLocale(String locale) {
+		this.locale = locale;
+	}
+
+	public String[] getLocales() {
+		return locales;
+	}
+
+	public void setLocales(String[] locales) {
+		this.locales = locales;
+		List<String> list = new ArrayList<>();
+		for (String loc : locales) {
+			if (loc.length() == 2) {
+				list.add(loc);
+			}
+		}
+		this.languages = list.toArray(new String[list.size()]);
+	}
+
+	public String[] getLanguages() {
+		return languages;
+	}
 
 	public int getScreenWidth() {
 		return screenWidth;

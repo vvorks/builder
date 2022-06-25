@@ -28,11 +28,13 @@ public class DateTimeFormat extends JavaScriptObject {
 	}
 
 	public final String format(Date date) {
-		return format0((double) date.getTime());
+		double dt = (double) date.getTime();
+		return format0(dt);
 	}
 
 	public final String format(long t) {
-		return format0((double) t);
+		double dt = (double) t;
+		return format0(dt);
 	}
 
 	private final native String format0(double time)/*-{
@@ -41,11 +43,13 @@ public class DateTimeFormat extends JavaScriptObject {
 	}-*/;
 
 	public final List<FormatPart> formatToParts(Date date) {
-		return IntlUtil.toFormatParts(formatToParts0((double) date.getTime()));
+		double dt = date.getTime();
+		return IntlUtil.toFormatParts(formatToParts0(dt));
 	}
 
 	public final List<FormatPart> formatToParts(long t) {
-		return IntlUtil.toFormatParts(formatToParts0((double) t));
+		double dt = t;
+		return IntlUtil.toFormatParts(formatToParts0(dt));
 	}
 
 	private final native JsArray<JavaScriptObject> formatToParts0(double time)/*-{
