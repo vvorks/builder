@@ -256,10 +256,6 @@ public class GwtDateFormatter extends DateFormatter {
 	public String format(Object value) {
 		Date date = asDate(value);
 		List<FormatPart> parts = format.formatToParts(date);
-//		LOGGER.debug("----- [%s] -----", format.format(date));
-//		for (FormatPart pa : parts) {
-//			LOGGER.debug("%s:%s", pa.getType(), pa.getValue());
-//		}
 		StringBuilder sb = new StringBuilder();
 		for (Pattern p : patterns) {
 			int cmd = p.getCommand();
