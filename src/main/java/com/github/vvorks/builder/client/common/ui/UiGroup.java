@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 
@@ -16,8 +15,6 @@ public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 		public int setHorizontalScroll(int offset) { return EVENT_IGNORED; }
 		public int setVerticalScroll(int offset) { return EVENT_IGNORED; }
 	};
-
-	private static final Logger LOGGER = Logger.createLogger(UiGroup.class);
 
 	private Scrollable masterGroup;
 

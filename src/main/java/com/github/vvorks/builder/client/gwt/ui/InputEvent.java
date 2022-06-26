@@ -18,7 +18,7 @@ public class InputEvent extends DomEvent<InputHandler> {
 
 	@Override
 	public Type<InputHandler> getAssociatedType() {
-		return TYPE;
+		return getType();
 	}
 
 	@Override

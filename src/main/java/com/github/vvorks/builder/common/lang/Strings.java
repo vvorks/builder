@@ -356,10 +356,10 @@ public final class Strings {
 			return str;
 		}
 		StringBuilder sb = new StringBuilder();
-		for (int i = str.length() - 1; i >= 0; i--) {
-			char ch = str.charAt(i);
-			if (Character.isLowSurrogate(ch) && i > 0) {
-				sb.append(str.charAt(--i));
+		for (int i = str.length() - 1; i >= 0;) {
+			char ch = str.charAt(i--);
+			if (Character.isLowSurrogate(ch) && i >= 0) {
+				sb.append(str.charAt(i--));
 			}
 			sb.append(ch);
 		}
@@ -473,7 +473,6 @@ public final class Strings {
 		}
 		if (spos < epos) {
 			result.add(str.substring(spos, epos));
-			spos = epos;
 		}
 		while (curr != -1) {
 			spos = epos;

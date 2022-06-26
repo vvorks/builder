@@ -31,9 +31,6 @@ public class RpcController {
 	@Autowired
 	private ProjectMapper projectMapper;
 
-//	@Autowired
-//	private JsonRpcServer server;
-
 	@JsonRpcMethod("subtract")
 	public int test(@JsonRpcParam("x") int x, @JsonRpcParam("y") int y) {
 		return x - y;

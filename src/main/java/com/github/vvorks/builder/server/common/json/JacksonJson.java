@@ -449,6 +449,9 @@ public class JacksonJson extends Json {
 		JsonNode node = nativeValue;
 		for (String s : path) {
 			node = trace(node, s);
+			if (node == null) {
+				break;
+			}
 		}
 		if (node != null) {
 			return wrap(node);

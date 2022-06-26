@@ -44,7 +44,6 @@ public class JavaTextWriter implements Expression.Visitor<Object, String> {
 		SYMBOL_MAP.put(Operation.Code.PLUS, "+");
 		SYMBOL_MAP.put(Operation.Code.MINUS, "-");
 		SYMBOL_MAP.put(Operation.Code.NOT, "!");
-		//SYMBOL_MAP.put(Operation.Code.NOT, "~");
 		SYMBOL_MAP.put(Operation.Code.GET, ".");
 		SYMBOL_MAP.put(Operation.Code.CALL, ".");
 	}

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.ServerSettings;
 import com.github.vvorks.builder.server.common.util.Patterns;
 import com.github.vvorks.builder.server.domain.ClassContent;
@@ -30,8 +29,6 @@ import com.github.vvorks.builder.server.mapper.ResourceMapper;
 
 @Component
 public class ProjectExtender {
-
-	private static final Logger LOGGER = Logger.createLogger(ProjectExtender.class);
 
     @Autowired
     private ProjectMapper projectMapper;
@@ -69,7 +66,7 @@ public class ProjectExtender {
 	public List<String> getCopyrightLines(ProjectContent prj) {
 		String copyrights = prj.getCopyrights();
 		if (copyrights == null || copyrights.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 		String[] lines = Patterns.EOL.split(copyrights, -1);
 		return Arrays.asList(lines);

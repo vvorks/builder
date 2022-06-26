@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.server.component;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.io.Ios;
 import com.github.vvorks.builder.server.common.poi.Cells;
 import com.github.vvorks.builder.server.domain.DataType;
@@ -29,8 +29,6 @@ import com.github.vvorks.builder.server.extender.SqlWriter;
 
 @Component
 public class XlsxLoader {
-
-	private static final Logger LOGGER = Logger.createLogger(XlsxLoader.class);
 
 	private static final String EOL = "\n";
 
@@ -75,7 +73,7 @@ public class XlsxLoader {
 		}
 	}
 
-	public File process(File xlsxFile) throws Exception {
+	public File process(File xlsxFile) throws IOException, SQLException  {
 		String baseName = Ios.getBaseName(xlsxFile);
 		File dbFile = new File(baseName + ".db");
 		File sqlFile = new File(baseName + ".sql");

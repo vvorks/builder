@@ -79,6 +79,8 @@ public class DateFormatter extends Formatter {
 			case Pattern.CMD_LITERAL:
 				sb.append(p.getLiteral());
 				break;
+			default:
+				break;
 			}
 		}
 		String result = sb.toString();

@@ -4,14 +4,11 @@ import java.util.Date;
 
 import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.text.Formatter;
 import com.github.vvorks.builder.common.util.Test;
 import com.github.vvorks.builder.common.util.TestCase;
 
 public class FormatterTest implements TestCase {
-
-	private static final Logger LOGGER = Logger.createLogger(FormatterTest.class);
 
 	private void checkFormat(StringBuilder errors, String e, String f, Object v) {
 		String r = Formatter.format(f, v);

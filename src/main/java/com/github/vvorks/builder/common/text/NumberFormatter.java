@@ -50,16 +50,17 @@ public class NumberFormatter extends Formatter {
 			return ((Date)obj).getTime();
 		} else if (obj == null) {
 			return 0L;
-		} else {
-			String str = obj.toString();
-			try {
-				return Long.decode(str);
-			} catch (NumberFormatException err) {
-			}
-			try {
-				return Double.parseDouble(str);
-			} catch (NumberFormatException err) {
-			}
+		}
+		String str = obj.toString();
+		try {
+			return Long.decode(str);
+		} catch (NumberFormatException err) {
+			//fall next step
+		}
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException err) {
+			//fall next step
 		}
 		throw new IllegalArgumentException();
 	}

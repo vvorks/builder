@@ -90,7 +90,7 @@ public class DomPanel extends FocusWidget {
 		}
 	}
 
-	private static native void flush(Element element)/*-{
+	protected static native void flush(Element element)/*-{
   		var disp = element.style.display;
 		element.style.display = 'none';
 		var trick = element.offsetHeight;

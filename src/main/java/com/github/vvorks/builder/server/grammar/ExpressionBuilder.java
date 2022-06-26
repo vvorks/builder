@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.EnumContent;
@@ -43,8 +42,6 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 
 @Component
 public class ExpressionBuilder implements ExprParserVisitor {
-
-	private static final Logger LOGGER = Logger.createLogger(ExpressionBuilder.class);
 
 	private static final String UNDER_CONSTRUCTION = "under construction";
 	private static final String TYPE_UNMATCH = "type unmatch";

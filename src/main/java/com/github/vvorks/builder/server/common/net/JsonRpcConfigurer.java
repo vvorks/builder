@@ -12,14 +12,11 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 
 @Configuration
 @EnableWebSocket
 public class JsonRpcConfigurer implements WebSocketConfigurer {
-
-	private static final Logger LOGGER = Logger.createLogger(JsonRpcConfigurer.class);
 
 	@Autowired
 	private ApplicationContext context;

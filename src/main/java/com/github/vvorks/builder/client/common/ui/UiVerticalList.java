@@ -6,11 +6,8 @@ import java.util.Date;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiVerticalList extends UiGroup {
-
-	private static final Logger LOGGER = Logger.createLogger(UiVerticalList.class);
 
 	/**
 	 * 行IDを示す特殊カラム名

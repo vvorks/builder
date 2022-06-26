@@ -91,7 +91,7 @@ public class Operation extends Expression {
 	}
 
 	@Override
-	public Iterable<? extends Expression> getChildren() {
+	public Iterable<Expression> getChildren() {
 		return getOperands();
 	}
 

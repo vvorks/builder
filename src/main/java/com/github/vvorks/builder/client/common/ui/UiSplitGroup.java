@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.github.vvorks.builder.common.logging.Logger;
-
 public class UiSplitGroup extends UiGroup {
-
-	private static final Logger LOGGER = Logger.createLogger(UiSplitGroup.class);
 
 	private static final int MIN_ELDER_SIZE = 4;
 

@@ -253,6 +253,7 @@ public class GwtDateFormatter extends DateFormatter {
 	}
 
 	@Override
+	@SuppressWarnings({"squid:S3776"})
 	public String format(Object value) {
 		Date date = asDate(value);
 		List<FormatPart> parts = format.formatToParts(date);

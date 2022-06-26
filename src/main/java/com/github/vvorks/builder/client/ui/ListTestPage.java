@@ -35,6 +35,7 @@ public class ListTestPage extends UiPage {
 	@Override
 	protected void initialize() {
 		UiApplication app = getApplication();
+		@SuppressWarnings("unused")
 		JsonRpcClient rpc = app.getRpcClient();
 		DataSource ds = createDataSource();
 		final double NA = UiNodeBuilder.NA;

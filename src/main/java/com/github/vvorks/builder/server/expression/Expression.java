@@ -38,7 +38,7 @@ public abstract class Expression {
 		return 0;
 	}
 
-	public Iterable<? extends Expression> getChildren() {
+	public Iterable<Expression> getChildren() {
 		return Collections.emptyList();
 	}
 

@@ -17,8 +17,6 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.layout.client.Layout;
@@ -130,11 +128,7 @@ public class GwtEntryPoint implements EntryPoint {
 		});
 		//フォーカス設定
 		p.setFocus(true);
-		q.addFocusHandler(new FocusHandler() {
-			public void onFocus(FocusEvent event) {
-				p.setFocus(true);
-			}
-		});
+		q.addFocusHandler(event -> p.setFocus(true));
 		//起動パラメータの取得
 		String encStr = Window.Location.getHash();
 		String hashStr = URL.decodeQueryString(encStr);

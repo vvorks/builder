@@ -6,7 +6,9 @@ package com.github.vvorks.builder.server.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
@@ -14,33 +16,29 @@ import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.ClassSubject;
 import com.github.vvorks.builder.server.domain.ClassSummary;
+import com.github.vvorks.builder.server.domain.DataType;
+import com.github.vvorks.builder.server.domain.DataTypeSubject;
+import com.github.vvorks.builder.server.domain.DataTypeSummary;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumSubject;
 import com.github.vvorks.builder.server.domain.EnumSummary;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
-import com.github.vvorks.builder.server.domain.EnumValueSubject;
 import com.github.vvorks.builder.server.domain.EnumValueSummary;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.FieldSubject;
 import com.github.vvorks.builder.server.domain.FieldSummary;
 import com.github.vvorks.builder.server.domain.LocalizedResourceContent;
-import com.github.vvorks.builder.server.domain.LocalizedResourceSubject;
 import com.github.vvorks.builder.server.domain.LocalizedResourceSummary;
 import com.github.vvorks.builder.server.domain.MessageContent;
-import com.github.vvorks.builder.server.domain.MessageSubject;
 import com.github.vvorks.builder.server.domain.MessageSummary;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.ProjectSubject;
 import com.github.vvorks.builder.server.domain.ProjectSummary;
 import com.github.vvorks.builder.server.domain.QueryContent;
-import com.github.vvorks.builder.server.domain.QuerySubject;
 import com.github.vvorks.builder.server.domain.QuerySummary;
 import com.github.vvorks.builder.server.domain.ResourceContent;
 import com.github.vvorks.builder.server.domain.ResourceSubject;
 import com.github.vvorks.builder.server.domain.ResourceSummary;
-import com.github.vvorks.builder.server.domain.DataType;
-import com.github.vvorks.builder.server.domain.DataTypeSubject;
-import com.github.vvorks.builder.server.domain.DataTypeSummary;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
@@ -1306,11 +1304,11 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public EnumValueContent getEnumValue(
-		@JsonRpcParam("ownerEnumId") int ownerEnumId, 
+		@JsonRpcParam("ownerEnumId") int ownerEnumId,
 		@JsonRpcParam("valueId") String valueId
 	) {
 		return enumValueMapper.get(
-				ownerEnumId, 
+				ownerEnumId,
 				valueId
 				);
 	}
@@ -1700,11 +1698,11 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public LocalizedResourceContent getLocalizedResource(
-		@JsonRpcParam("ownerResourceId") int ownerResourceId, 
+		@JsonRpcParam("ownerResourceId") int ownerResourceId,
 		@JsonRpcParam("locale") String locale
 	) {
 		return localizedResourceMapper.get(
-				ownerResourceId, 
+				ownerResourceId,
 				locale
 				);
 	}

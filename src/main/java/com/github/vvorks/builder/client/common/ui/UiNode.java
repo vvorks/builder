@@ -22,7 +22,7 @@ import com.github.vvorks.builder.common.logging.Logger;
 
 public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
-	private static final Logger LOGGER = Logger.createLogger(UiNode.class);
+	protected static final Logger LOGGER = Logger.createLogger(UiNode.class);
 
 	protected static final int VISIT_DEFAULT_ORDER = 0;
 
@@ -339,9 +339,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		List<String> list = new ArrayList<>();
 		UiNode node = this;
 		while (node != null && node != top) {
-			String name = node.getName();
-			if (!Strings.isEmpty(name)) {
-				list.add(name);
+			String partName = node.getName();
+			if (!Strings.isEmpty(partName)) {
+				list.add(partName);
 			}
 			node = node.parent;
 		}
@@ -960,20 +960,21 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public UiNode removeLastChild() {
-		Asserts.requireNotNull(firstChild);
-		UiNode prev = null;
 		UiNode last = firstChild;
-		for (UiNode node = last; node != null; node = node.nextSibling) {
-			prev = last;
-			last = node;
+		if (last != null) {
+			UiNode prev = null;
+			while (last.nextSibling != null) {
+				prev = last;
+				last = last.nextSibling;
+			}
+			if (prev == null) {
+				this.firstChild = null;
+			} else {
+				prev.nextSibling = null;
+			}
+			last.parent = null;
+			this.setChanged(CHANGED_HIERARCHY);
 		}
-		if (prev == null) {
-			this.firstChild = null;
-		} else {
-			prev.nextSibling = null;
-		}
-		last.parent = null;
-		this.setChanged(CHANGED_HIERARCHY);
 		return last;
 	}
 

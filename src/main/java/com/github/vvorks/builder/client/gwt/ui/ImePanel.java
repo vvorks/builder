@@ -18,10 +18,6 @@ import com.google.gwt.dom.client.Style.TextAlign;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.dom.client.Text;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.ui.FocusWidget;
 
 public class ImePanel extends FocusWidget {
@@ -69,16 +65,8 @@ public class ImePanel extends FocusWidget {
 		innerStyle.setDisplay(Display.TABLE_CELL);
 		innerStyle.setOutlineWidth(0, Unit.PX);
 		outer.appendChild(inner);
-		addFocusHandler(new FocusHandler() {
-			public void onFocus(FocusEvent event) {
-				setFocus(true);
-			}
-		});
-		addBlurHandler(new BlurHandler() {
-			public void onBlur(BlurEvent event) {
-				setFocus(false);
-			}
-		});
+		addFocusHandler(event -> setFocus(true));
+		addBlurHandler(event -> setFocus(false));
 		createAxis();
 	}
 

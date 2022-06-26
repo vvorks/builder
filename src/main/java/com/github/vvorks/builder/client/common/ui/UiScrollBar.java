@@ -1,13 +1,9 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.common.logging.Logger;
-
 public abstract class UiScrollBar extends UiNode implements Scrollable.Listener {
 
 	/** スクロールバー内部のつまみのノード名称（スタイル設定時に使用する） */
 	public static final String THUMB_NAME = "thumb";
-
-	private static final Logger LOGGER = Logger.createLogger(UiScrollBar.class);
 
 	protected static class UiThumb extends UiNode {
 
@@ -40,7 +36,7 @@ public abstract class UiScrollBar extends UiNode implements Scrollable.Listener 
 
 	protected double ratio;
 
-	public UiScrollBar(String name, Scrollable scrollable) {
+	protected UiScrollBar(String name, Scrollable scrollable) {
 		super(name);
 		if (scrollable != null) {
 			this.scrollable = scrollable;

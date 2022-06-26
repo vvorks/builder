@@ -28,7 +28,8 @@ public class OrderByExpression extends Expression {
 		return asc;
 	}
 
-	public Iterable<? extends Expression> getChildren() {
+	@Override
+	public Iterable<Expression> getChildren() {
 		return Collections.singleton(expr);
 	}
 
