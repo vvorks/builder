@@ -28,6 +28,7 @@ import com.github.vvorks.builder.client.gwt.intl.TimeZoneName;
 import com.github.vvorks.builder.client.gwt.intl.Weekday;
 import com.github.vvorks.builder.client.gwt.intl.Year;
 import com.github.vvorks.builder.common.lang.Iterables;
+import com.github.vvorks.builder.common.text.CalendarSelecter;
 import com.github.vvorks.builder.common.text.DateFormatter;
 import com.github.vvorks.builder.common.text.Pattern;
 
@@ -245,13 +246,10 @@ public class GwtDateFormatter extends DateFormatter {
 		}
 	}
 
-	//TODO Configurationに追い出す
 	private Calendar getAlternativeCalendar(String locale, int alternativeCount) {
-		if (locale.startsWith("ja")) {
-			return Calendar.JAPANESE;
-		} else {
-			return Calendar.GREGORY;
-		}
+		CalendarSelecter selecter = CalendarSelecter.get();
+		String name = selecter.getCalendarName(locale, alternativeCount);
+		return Calendar.getCalendar(name);
 	}
 
 	@Override

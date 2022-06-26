@@ -19,6 +19,8 @@ import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.JavaLogger;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.common.text.CalendarSelecter;
+import com.github.vvorks.builder.common.text.CalendarSelecterJa;
 import com.github.vvorks.builder.common.text.DateFormatter;
 import com.github.vvorks.builder.common.text.NumberFormatter;
 import com.github.vvorks.builder.common.text.Pattern;
@@ -66,6 +68,7 @@ public class ClientSettings {
 			.bindIn(Metrics.class, args -> new Metrics())
 			.bindIn(JsonResourceBundle.class, args -> GWT.create(GwtResourceBundle.class))
 			.bindIn(TestRunner.class, args -> GWT.create(GwtTestRunner.class))
+			.bindIn(CalendarSelecter.class, args -> new CalendarSelecterJa());
 			;
 
 	}

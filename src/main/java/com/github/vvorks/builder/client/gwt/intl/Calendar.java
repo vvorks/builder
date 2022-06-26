@@ -60,4 +60,13 @@ public enum Calendar implements StringOption {
 		return value;
 	}
 
+	public static Calendar getCalendar(String name) {
+		for (Calendar c : Calendar.values()) {
+			if (name.equals(c.value())) {
+				return c;
+			}
+		}
+		return null;
+	}
+
 }
