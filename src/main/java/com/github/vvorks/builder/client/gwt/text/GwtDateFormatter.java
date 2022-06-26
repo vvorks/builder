@@ -197,7 +197,7 @@ public class GwtDateFormatter extends DateFormatter {
 					//apply locale default pattern.
 				} else if (positiveCount == 2) {
 					options.add(DayPeriod.NARROW);
-				} else if (positiveCount == 2) {
+				} else if (positiveCount == 3) {
 					options.add(DayPeriod.SHORT);
 				} else {
 					options.add(DayPeriod.LONG);
