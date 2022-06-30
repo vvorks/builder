@@ -1,4 +1,76 @@
 //
+// Mapper基底インターフェース
+//
+{{#java this "server/mapper/" upperLastName "Mapper" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.mapper;
+
+import java.util.List;
+
+/**
+ * Mapper基底クラス
+ */
+public interface {{upperLastName}}Mapper<T> {
+
+	/**
+	 * 全データを取得する
+	 */
+	public List<T> listAll();
+
+}
+{{/java}}
+
+//
+// Mapperユーティリティクラス
+//
+{{#java this "server/mapper/Mappers" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.mapper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Mappers {
+
+	{{#each classes}}
+
+	/** {{titleOrName}}のMapper */
+	@Autowired
+	private {{className}}Mapper {{lowerName}}Mapper;
+	{{/each}}
+
+	private final Map<String, {{upperLastName}}Mapper<?>> mappers = new HashMap<>();
+
+	public Mappers() {
+		{{#each classes}}
+		mappers.put("{{className}}", {{lowerName}}Mapper);
+		{{/each}}
+	}
+
+	public Map<String, {{upperLastName}}Mapper<?>> getMappers() {
+		return mappers;
+	}
+
+}
+{{/java}}
+
+//
 // Mapperインターフェーステンプレート
 //
 {{#each this.classes}}
@@ -20,7 +92,12 @@ import org.apache.ibatis.annotations.Param;
 import {{global.project.projectName}}.server.domain.*;
 
 @Mapper
-public interface {{className}}Mapper {
+public interface {{className}}Mapper extends {{../upperLastName}}Mapper<{{className}}Content> {
+
+	@Override
+	public default List<{{className}}Content> listAll() {
+		return listContent(0, 0);
+	}
 
 	/**
 	 * {{titleOrName}}を挿入する

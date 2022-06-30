@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
@@ -27,6 +28,8 @@ import com.github.vvorks.builder.server.mapper.FieldMapper;
 
 @Component
 public class FieldExtender {
+
+	private static final Logger LOGGER = Logger.createLogger(FieldExtender.class);
 
 	private static final EnumMap<DataType, Class<?>> TYPE_MAP = new EnumMap<>(DataType.class);
 	static {

@@ -13,7 +13,7 @@ import com.github.vvorks.builder.common.json.Json;
 public class ProjectAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static ProjectAgent INSTANCE = new ProjectAgent();
+	public static final ProjectAgent INSTANCE = new ProjectAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する

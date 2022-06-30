@@ -6,9 +6,7 @@ package com.github.vvorks.builder.server.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
@@ -16,36 +14,48 @@ import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.ClassSubject;
 import com.github.vvorks.builder.server.domain.ClassSummary;
-import com.github.vvorks.builder.server.domain.DataType;
-import com.github.vvorks.builder.server.domain.DataTypeSubject;
-import com.github.vvorks.builder.server.domain.DataTypeSummary;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumSubject;
 import com.github.vvorks.builder.server.domain.EnumSummary;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
+import com.github.vvorks.builder.server.domain.EnumValueSubject;
 import com.github.vvorks.builder.server.domain.EnumValueSummary;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.FieldSubject;
 import com.github.vvorks.builder.server.domain.FieldSummary;
+import com.github.vvorks.builder.server.domain.LocaleContent;
+import com.github.vvorks.builder.server.domain.LocaleSubject;
+import com.github.vvorks.builder.server.domain.LocaleSummary;
 import com.github.vvorks.builder.server.domain.LocalizedResourceContent;
+import com.github.vvorks.builder.server.domain.LocalizedResourceSubject;
 import com.github.vvorks.builder.server.domain.LocalizedResourceSummary;
 import com.github.vvorks.builder.server.domain.MessageContent;
+import com.github.vvorks.builder.server.domain.MessageSubject;
 import com.github.vvorks.builder.server.domain.MessageSummary;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.ProjectSubject;
 import com.github.vvorks.builder.server.domain.ProjectSummary;
+import com.github.vvorks.builder.server.domain.ProjectI18nContent;
+import com.github.vvorks.builder.server.domain.ProjectI18nSubject;
+import com.github.vvorks.builder.server.domain.ProjectI18nSummary;
 import com.github.vvorks.builder.server.domain.QueryContent;
+import com.github.vvorks.builder.server.domain.QuerySubject;
 import com.github.vvorks.builder.server.domain.QuerySummary;
 import com.github.vvorks.builder.server.domain.ResourceContent;
 import com.github.vvorks.builder.server.domain.ResourceSubject;
 import com.github.vvorks.builder.server.domain.ResourceSummary;
+import com.github.vvorks.builder.server.domain.DataType;
+import com.github.vvorks.builder.server.domain.DataTypeSubject;
+import com.github.vvorks.builder.server.domain.DataTypeSummary;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
+import com.github.vvorks.builder.server.mapper.LocaleMapper;
 import com.github.vvorks.builder.server.mapper.LocalizedResourceMapper;
 import com.github.vvorks.builder.server.mapper.MessageMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.github.vvorks.builder.server.mapper.ProjectI18nMapper;
 import com.github.vvorks.builder.server.mapper.QueryMapper;
 import com.github.vvorks.builder.server.mapper.ResourceMapper;
 
@@ -58,6 +68,10 @@ public class BuilderRpcController {
 	/** プロジェクトのMapper */
 	@Autowired
 	private ProjectMapper projectMapper;
+
+	/** プロジェクト(I18n)のMapper */
+	@Autowired
+	private ProjectI18nMapper projectI18nMapper;
 
 	/** クラスのMapper */
 	@Autowired
@@ -82,6 +96,10 @@ public class BuilderRpcController {
 	/** メッセージのMapper */
 	@Autowired
 	private MessageMapper messageMapper;
+
+	/** ロケールのMapper */
+	@Autowired
+	private LocaleMapper localeMapper;
 
 	/** リソースのMapper */
 	@Autowired
@@ -327,6 +345,31 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * locales情報を取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return locales情報
+	 */
+	@JsonRpcMethod
+	public LocaleSummary<LocaleContent> listProjectLocales(
+		@JsonRpcParam("content") ProjectContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LocaleSummary<LocaleContent> summary = projectMapper.listLocalesSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LocaleContent> contents =
+				projectMapper.listLocalesContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * リソース一覧情報を取得する
 	 *
 	 * @param content プロジェクト
@@ -347,6 +390,157 @@ public class BuilderRpcController {
 		summary.setOffset(offset);
 		List<ResourceContent> contents =
 				projectMapper.listResourcesContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * プロジェクト(I18n)を挿入する
+	 *
+	 * @param content 挿入するプロジェクト(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertProjectI18n(ProjectI18nContent content) {
+		return projectI18nMapper.insert(content);
+	}
+
+	/**
+	 * プロジェクト(I18n)を更新する
+	 *
+	 * @param content 更新するプロジェクト(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateProjectI18n(ProjectI18nContent content) {
+		return projectI18nMapper.update(content);
+	}
+
+	/**
+	 * プロジェクト(I18n)を削除する
+	 *
+	 * @param content 削除するプロジェクト(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteProjectI18n(ProjectI18nContent content) {
+		return projectI18nMapper.delete(content);
+	}
+
+	/**
+	 * プロジェクト(I18n)を取得する
+	 *
+	 * @param ownerProjectId ownerのプロジェクトID
+	 * @param targetLocaleId targetのlocaleId
+	 * @return 取得したプロジェクト(I18n)
+	 */
+	@JsonRpcMethod
+	public ProjectI18nContent getProjectI18n(
+		@JsonRpcParam("ownerProjectId") int ownerProjectId, 
+		@JsonRpcParam("targetLocaleId") String targetLocaleId
+	) {
+		return projectI18nMapper.get(
+				ownerProjectId, 
+				targetLocaleId
+				);
+	}
+
+	/**
+	 * 全てのプロジェクト(I18n)情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return プロジェクト(I18n)情報
+	 */
+	@JsonRpcMethod
+	public ProjectI18nSummary<ProjectI18nContent> listProjectI18n(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ProjectI18nSummary<ProjectI18nContent> summary = projectI18nMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ProjectI18nContent> contents = projectI18nMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * ownerを取得する
+	 *
+	 * @param content プロジェクト(I18n)
+	 * @return owner
+	 */
+	@JsonRpcMethod
+	public ProjectContent getProjectI18nOwner(
+		@JsonRpcParam("content") ProjectI18nContent content
+	) {
+		return projectI18nMapper.getOwner(content);
+	}
+
+	/**
+	 * ownerの候補一覧を取得する
+	 *
+	 * @param content プロジェクト(I18n)
+	 * @return ownerの候補一覧
+	 */
+	@JsonRpcMethod
+	public ProjectSummary<ProjectSubject> listProjectI18nOwnerCandidate(
+		@JsonRpcParam("content") ProjectI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ProjectSummary<ProjectSubject> summary = projectI18nMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ProjectSubject> contents = projectI18nMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * targetを取得する
+	 *
+	 * @param content プロジェクト(I18n)
+	 * @return target
+	 */
+	@JsonRpcMethod
+	public LocaleContent getProjectI18nTarget(
+		@JsonRpcParam("content") ProjectI18nContent content
+	) {
+		return projectI18nMapper.getTarget(content);
+	}
+
+	/**
+	 * targetの候補一覧を取得する
+	 *
+	 * @param content プロジェクト(I18n)
+	 * @return targetの候補一覧
+	 */
+	@JsonRpcMethod
+	public LocaleSummary<LocaleSubject> listProjectI18nTargetCandidate(
+		@JsonRpcParam("content") ProjectI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LocaleSummary<LocaleSubject> summary = projectI18nMapper.listTargetCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LocaleSubject> contents = projectI18nMapper.listTargetCandidateSubject(
+				content, hint,
+				offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1304,11 +1498,11 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public EnumValueContent getEnumValue(
-		@JsonRpcParam("ownerEnumId") int ownerEnumId,
+		@JsonRpcParam("ownerEnumId") int ownerEnumId, 
 		@JsonRpcParam("valueId") String valueId
 	) {
 		return enumValueMapper.get(
-				ownerEnumId,
+				ownerEnumId, 
 				valueId
 				);
 	}
@@ -1523,6 +1717,115 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * ロケールを挿入する
+	 *
+	 * @param content 挿入するロケール
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertLocale(LocaleContent content) {
+		return localeMapper.insert(content);
+	}
+
+	/**
+	 * ロケールを更新する
+	 *
+	 * @param content 更新するロケール
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateLocale(LocaleContent content) {
+		return localeMapper.update(content);
+	}
+
+	/**
+	 * ロケールを削除する
+	 *
+	 * @param content 削除するロケール
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteLocale(LocaleContent content) {
+		return localeMapper.delete(content);
+	}
+
+	/**
+	 * ロケールを取得する
+	 *
+	 * @param localeId localeId
+	 * @return 取得したロケール
+	 */
+	@JsonRpcMethod
+	public LocaleContent getLocale(
+		@JsonRpcParam("localeId") String localeId
+	) {
+		return localeMapper.get(
+				localeId
+				);
+	}
+
+	/**
+	 * 全てのロケール情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return ロケール情報
+	 */
+	@JsonRpcMethod
+	public LocaleSummary<LocaleContent> listLocale(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LocaleSummary<LocaleContent> summary = localeMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LocaleContent> contents = localeMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * ownerを取得する
+	 *
+	 * @param content ロケール
+	 * @return owner
+	 */
+	@JsonRpcMethod
+	public ProjectContent getLocaleOwner(
+		@JsonRpcParam("content") LocaleContent content
+	) {
+		return localeMapper.getOwner(content);
+	}
+
+	/**
+	 * ownerの候補一覧を取得する
+	 *
+	 * @param content ロケール
+	 * @return ownerの候補一覧
+	 */
+	@JsonRpcMethod
+	public ProjectSummary<ProjectSubject> listLocaleOwnerCandidate(
+		@JsonRpcParam("content") LocaleContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ProjectSummary<ProjectSubject> summary = localeMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ProjectSubject> contents = localeMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * リソースを挿入する
 	 *
 	 * @param content 挿入するリソース
@@ -1698,11 +2001,11 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public LocalizedResourceContent getLocalizedResource(
-		@JsonRpcParam("ownerResourceId") int ownerResourceId,
+		@JsonRpcParam("ownerResourceId") int ownerResourceId, 
 		@JsonRpcParam("locale") String locale
 	) {
 		return localizedResourceMapper.get(
-				ownerResourceId,
+				ownerResourceId, 
 				locale
 				);
 	}

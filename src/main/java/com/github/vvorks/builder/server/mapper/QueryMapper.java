@@ -11,7 +11,12 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface QueryMapper {
+public interface QueryMapper extends BuilderMapper<QueryContent> {
+
+	@Override
+	public default List<QueryContent> listAll() {
+		return listContent(0, 0);
+	}
 
 	/**
 	 * クエリーを挿入する

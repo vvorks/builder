@@ -73,7 +73,8 @@ public class ProjectExtender {
 	}
 
 	public List<ClassContent> getClasses(ProjectContent prj) {
-		return projectMapper.listClassesContent(prj, 0, 0);
+		List<ClassContent> result = projectMapper.listClassesContent(prj, 0, 0);
+		return result;
 	}
 
 	public List<ClassContent> getClassesByName(ProjectContent prj) {

@@ -11,7 +11,12 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface LocalizedResourceMapper {
+public interface LocalizedResourceMapper extends BuilderMapper<LocalizedResourceContent> {
+
+	@Override
+	public default List<LocalizedResourceContent> listAll() {
+		return listContent(0, 0);
+	}
 
 	/**
 	 * ローカライズドリソースを挿入する

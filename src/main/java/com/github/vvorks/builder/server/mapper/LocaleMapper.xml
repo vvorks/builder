@@ -1,80 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.github.vvorks.builder.server.mapper.ResourceMapper">
+<mapper namespace="com.github.vvorks.builder.server.mapper.LocaleMapper">
 
-	<insert id="insert" parameterType="ResourceContent">
-		INSERT INTO T_RESOURCE (
-			F_RESOURCE_ID,
+	<insert id="insert" parameterType="LocaleContent">
+		INSERT INTO T_LOCALE (
+			F_LOCALE_ID,
 			F_OWNER_PROJECT_ID,
-			F_DEFAULT_VALUE,
+			F_TITLE,
+			F_DESCRIPTION,
 			F__LAST_UPDATED_AT
 		) VALUES (
-			#{ resourceId },
+			#{ localeId },
 			#{ ownerProjectId },
-			#{ defaultValue },
+			#{ title },
+			#{ description },
 			(strftime('%s', 'now') * 1000)
 		)
 	</insert>
 
-	<update id="update" parameterType="ResourceContent">
-		UPDATE T_RESOURCE SET
+	<update id="update" parameterType="LocaleContent">
+		UPDATE T_LOCALE SET
 			F_OWNER_PROJECT_ID = #{ ownerProjectId },
-			F_DEFAULT_VALUE = #{ defaultValue },
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
 			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
 		WHERE
-			F_RESOURCE_ID = #{ resourceId }
+			F_LOCALE_ID = #{ localeId }
 			AND
 			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</update>
 
-	<delete id="delete" parameterType="ResourceContent">
-		DELETE FROM T_RESOURCE
+	<delete id="delete" parameterType="LocaleContent">
+		DELETE FROM T_LOCALE
 		WHERE
-			F_RESOURCE_ID = #{ resourceId }
+			F_LOCALE_ID = #{ localeId }
 			AND
 			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
 	</delete>
 
-	<select id="get" resultType="ResourceContent">
+	<select id="get" resultType="LocaleContent">
 		SELECT
-			T1.F_RESOURCE_ID AS "resourceId",
+			T1.F_LOCALE_ID AS "localeId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
-			T1.F_DEFAULT_VALUE AS "defaultValue",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_DEFAULT_VALUE AS "_title",
+			T1.F_TITLE AS "_title",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
 		FROM
-			T_RESOURCE T1
+			T_LOCALE T1
 		LEFT JOIN T_PROJECT T2 ON
 			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
-			T1.F_RESOURCE_ID = #{ resourceId }
+			T1.F_LOCALE_ID = #{ localeId }
 	</select>
 
-	<select id="listSummary" resultType="ResourceSummary">
+	<select id="listSummary" resultType="LocaleSummary">
 		SELECT
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_RESOURCE T1
+			T_LOCALE T1
 	</select>
 
-	<select id="listContent" resultType="ResourceContent">
+	<select id="listContent" resultType="LocaleContent">
 		SELECT
-			T1.F_RESOURCE_ID AS "resourceId",
+			T1.F_LOCALE_ID AS "localeId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
-			T1.F_DEFAULT_VALUE AS "defaultValue",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_DEFAULT_VALUE AS "_title",
+			T1.F_TITLE AS "_title",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
 		FROM
-			T_RESOURCE T1
+			T_LOCALE T1
 		LEFT JOIN T_PROJECT T2 ON
 			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		ORDER BY
-			T1.F_RESOURCE_ID ASC
+			T1.F_TITLE
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -126,41 +131,6 @@
 				T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
-		<if test="limit &gt; 0">
-			LIMIT #{limit}
-		<if test="offset &gt;= 0">
-			OFFSET #{offset}
-		</if>
-		</if>
-	</select>
-
-	<select id="listVariationsSummary" resultType="LocalizedResourceSummary">
-		SELECT
-			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
-			COUNT(*) AS "count",
-			0 AS "focus"
-		FROM
-			T_LOCALIZED_RESOURCE T1
-		WHERE
-			F_OWNER_RESOURCE_ID = #{ content.resourceId }
-	</select>
-
-	<select id="listVariationsContent" resultType="LocalizedResourceContent">
-		SELECT
-			T1.F_OWNER_RESOURCE_ID AS "ownerResourceId",
-			T1.F_LOCALE AS "locale",
-			T1.F_VALUE AS "value",
-			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_VALUE AS "_title",
-			T2.F_DEFAULT_VALUE AS "owner_title"
-		FROM
-			T_LOCALIZED_RESOURCE T1
-		LEFT JOIN T_RESOURCE T2 ON
-			T1.F_OWNER_RESOURCE_ID = T2.F_RESOURCE_ID
-		WHERE
-			T1.F_OWNER_RESOURCE_ID = #{ content.resourceId }
-		ORDER BY
-			T2.F_RESOURCE_ID ASC, T1.F_LOCALE ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

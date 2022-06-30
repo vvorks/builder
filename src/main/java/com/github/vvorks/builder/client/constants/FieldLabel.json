@@ -3,6 +3,7 @@
     "projectId" : "プロジェクトID",
     "projectName" : "プロジェクト名",
     "gradleName" : "gradleサブプロジェクト名",
+    "label" : "label",
     "title" : "タイトル",
     "description" : "説明",
     "note" : "メモ",
@@ -10,7 +11,13 @@
     "classes" : "クラス一覧",
     "enums" : "列挙一覧",
     "messages" : "メッセージ一覧",
+    "locales" : "locales",
     "resources" : "リソース一覧"
+  },
+  "ProjectI18n" : {
+    "owner" : "owner",
+    "target" : "target",
+    "label" : "label"
   },
   "Class" : {
     "classId" : "クラスID",
@@ -81,15 +88,21 @@
     "messageName" : "メッセージ名",
     "message" : "メッセージ"
   },
+  "Locale" : {
+    "localeId" : "localeId",
+    "owner" : "owner",
+    "title" : "title",
+    "description" : "description"
+  },
   "Resource" : {
-    "resourceId" : "リソースID",
-    "owner" : "所属プロジェクト",
-    "defaultValue" : "既定値",
-    "variations" : "ロケール別リソース一覧"
+    "resourceId" : "resourceId",
+    "owner" : "owner",
+    "defaultValue" : "defaultValue",
+    "variations" : "variations"
   },
   "LocalizedResource" : {
-    "owner" : "所属リソース",
-    "locale" : "ロケール",
-    "value" : "値"
+    "owner" : "owner",
+    "locale" : "locale",
+    "value" : "value"
   }
 }

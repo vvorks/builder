@@ -8,34 +8,36 @@ import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.common.json.Json;
 
 /**
- * メッセージエージェント
+ * プロジェクト(I18n)エージェント
  */
-public class MessageAgent extends DataRecordAgent {
+public class ProjectI18nAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static final MessageAgent INSTANCE = new MessageAgent();
+	public static final ProjectI18nAgent INSTANCE = new ProjectI18nAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final MessageAgent get() {
+	public static final ProjectI18nAgent get() {
 		return INSTANCE;
 	}
 
 	/** プライベートコンストラクタ */
-	private MessageAgent() {
+	private ProjectI18nAgent() {
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setInt(name + "MessageId", from.getInt("messageId"));
+		rec.setInt(name + "OwnerProjectId", from.getInt("ownerProjectId"));
+		rec.setString(name + "TargetLocaleId", from.getString("targetLocaleId"));
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setInt(name + "MessageId", candidate.getInt("messageId"));
+		rec.setInt(name + "OwnerProjectId", candidate.getInt("ownerProjectId"));
+		rec.setString(name + "TargetLocaleId", candidate.getString("targetLocaleId"));
 	}
 
 }

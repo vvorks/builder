@@ -11,7 +11,12 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface ResourceMapper {
+public interface ResourceMapper extends BuilderMapper<ResourceContent> {
+
+	@Override
+	public default List<ResourceContent> listAll() {
+		return listContent(0, 0);
+	}
 
 	/**
 	 * リソースを挿入する

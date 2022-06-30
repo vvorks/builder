@@ -11,7 +11,12 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface EnumValueMapper {
+public interface EnumValueMapper extends BuilderMapper<EnumValueContent> {
+
+	@Override
+	public default List<EnumValueContent> listAll() {
+		return listContent(0, 0);
+	}
 
 	/**
 	 * 列挙値を挿入する

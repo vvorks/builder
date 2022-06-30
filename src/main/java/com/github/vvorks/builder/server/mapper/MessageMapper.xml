@@ -99,6 +99,7 @@
 			T1.F_PROJECT_ID AS "projectId",
 			T1.F_PROJECT_NAME AS "projectName",
 			T1.F_GRADLE_NAME AS "gradleName",
+			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",

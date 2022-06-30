@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +25,9 @@ import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.EnumContent;
-import com.github.vvorks.builder.server.domain.EnumValueContent;
 import com.github.vvorks.builder.server.domain.FieldContent;
-import com.github.vvorks.builder.server.domain.LocalizedResourceContent;
-import com.github.vvorks.builder.server.domain.MessageContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.QueryContent;
-import com.github.vvorks.builder.server.domain.ResourceContent;
 import com.github.vvorks.builder.server.expression.Argument;
 import com.github.vvorks.builder.server.expression.Expression;
 import com.github.vvorks.builder.server.expression.FieldRef;
@@ -41,15 +36,10 @@ import com.github.vvorks.builder.server.grammar.ExprNode;
 import com.github.vvorks.builder.server.grammar.ExprParser;
 import com.github.vvorks.builder.server.grammar.ExpressionBuilder;
 import com.github.vvorks.builder.server.grammar.ParseException;
+import com.github.vvorks.builder.server.mapper.BuilderMapper;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
-import com.github.vvorks.builder.server.mapper.EnumValueMapper;
-import com.github.vvorks.builder.server.mapper.FieldMapper;
-import com.github.vvorks.builder.server.mapper.LocalizedResourceMapper;
-import com.github.vvorks.builder.server.mapper.MessageMapper;
-import com.github.vvorks.builder.server.mapper.ProjectMapper;
-import com.github.vvorks.builder.server.mapper.QueryMapper;
-import com.github.vvorks.builder.server.mapper.ResourceMapper;
+import com.github.vvorks.builder.server.mapper.Mappers;
 
 @Component
 public class ClassExtender {
@@ -151,31 +141,13 @@ public class ClassExtender {
 			DataType.STRING);
 
 	@Autowired
-	private ProjectMapper projectMapper;
+	private Mappers mappers;
 
 	@Autowired
 	private ClassMapper classMapper;
 
 	@Autowired
-	private FieldMapper fieldMapper;
-
-	@Autowired
-	private QueryMapper queryMapper;
-
-	@Autowired
 	private EnumMapper enumMapper;
-
-	@Autowired
-	private EnumValueMapper enumValueMapper;
-
-	@Autowired
-	private MessageMapper messageMapper;
-
-	@Autowired
-	private ResourceMapper resourceMapper;
-
-	@Autowired
-	private LocalizedResourceMapper localizedResourceMapper;
 
 	@Autowired
 	private FieldExtender fieldExtender;
@@ -355,51 +327,26 @@ public class ClassExtender {
 	}
 
 	private static class Joint {
-		private final Class<?> type;
-		private final Function<ClassExtender, List<?>> func;
 		private FieldContent[] fields;
 		private Method[] getters;
-		private Joint(Class<?> type, Function<ClassExtender, List<?>> func) {
-			this.type = type;
-			this.func = func;
-			this.fields = null;
-			this.getters = null;
-		}
-		private boolean hasGetters() {
-			return getters != null;
+		private Joint(FieldContent[] fields, Method[] getters) {
+			this.fields = fields;
+			this.getters = getters;
 		}
 	}
 
-	private static final Map<String, Joint> JOINT_MAP = new HashMap<>();
-	static {
-		add(new Joint(ProjectContent.class, me -> me.projectMapper.listContent(0, 0)));
-		add(new Joint(ClassContent.class, me -> me.classMapper.listContent(0, 0)));
-		add(new Joint(FieldContent.class, me -> me.fieldMapper.listContent(0, 0)));
-		add(new Joint(QueryContent.class, me -> me.queryMapper.listContent(0, 0)));
-		add(new Joint(EnumContent.class, me -> me.enumMapper.listContent(0, 0)));
-		add(new Joint(EnumValueContent.class, me -> me.enumValueMapper.listContent(0, 0)));
-		add(new Joint(MessageContent.class, me -> me.messageMapper.listContent(0, 0)));
-		add(new Joint(ResourceContent.class, me -> me.resourceMapper.listContent(0, 0)));
-		add(new Joint(LocalizedResourceContent.class, me -> me.localizedResourceMapper.listContent(0, 0)));
-	}
-
-	private static void add(Joint joint) {
-		String name = joint.type.getSimpleName();
-		String baseName = name.substring(0, name.length() - "Content".length());
-		JOINT_MAP.put(baseName, joint);
-	}
+	private Map<String, Joint> joints = new HashMap<>();
 
 	public List<String[]> getValues(ClassContent cls) {
 		String name = cls.getClassName();
-		Joint joint = JOINT_MAP.get(name);
-		if (joint == null) {
+		BuilderMapper<?> mapper = mappers.getMappers().get(name);
+		List<?> list = mapper.listAll();
+		if (list.isEmpty()) {
 			return Collections.emptyList();
 		}
-		if (!joint.hasGetters()) {
-			setupJoint(joint, cls);
-		}
+		Class<?> type = list.get(0).getClass();
+		Joint joint = joints.computeIfAbsent(name, e -> createJoint(cls, type));
 		List<String[]> recs = new ArrayList<>();
-		List<?> list = joint.func.apply(this);
 		int n = joint.getters.length;
 		for (Object rec : list) {
 			String[] flds = new String[n];
@@ -415,7 +362,7 @@ public class ClassExtender {
 		return recs;
 	}
 
-	private void setupJoint(Joint joint, ClassContent cls) {
+	private Joint createJoint(ClassContent cls, Class<?> type) {
 		List<FieldContent> list = new ArrayList<>();
 		Iterables.addAll(list, getProperties(cls));
 		FieldContent[] fields = list.toArray(new FieldContent[list.size()]);
@@ -424,14 +371,13 @@ public class ClassExtender {
 		for (int i = 0; i < n; i++) {
 			String getterName = fieldExtender.getGetterName(fields[i]);
 			try {
-				getters[i] = joint.type.getMethod(getterName);
+				getters[i] = type.getMethod(getterName);
 			} catch (NoSuchMethodException|SecurityException err) {
 				LOGGER.warn(err, "getter %s not found.", getterName);
 				getters[i] = null;
 			}
 		}
-		joint.fields = fields;
-		joint.getters = getters;
+		return new Joint(fields, getters);
 	}
 
 	private String getConstant(Object rec, Joint joint, int index) {

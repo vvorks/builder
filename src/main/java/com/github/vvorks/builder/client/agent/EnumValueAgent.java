@@ -13,7 +13,7 @@ import com.github.vvorks.builder.common.json.Json;
 public class EnumValueAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static EnumValueAgent INSTANCE = new EnumValueAgent();
+	public static final EnumValueAgent INSTANCE = new EnumValueAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する

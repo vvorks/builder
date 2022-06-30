@@ -8,6 +8,7 @@
 			F_PROJECT_ID,
 			F_PROJECT_NAME,
 			F_GRADLE_NAME,
+			F_LABEL,
 			F_TITLE,
 			F_DESCRIPTION,
 			F_NOTE,
@@ -17,6 +18,7 @@
 			#{ projectId },
 			#{ projectName },
 			#{ gradleName },
+			#{ label },
 			#{ title },
 			#{ description },
 			#{ note },
@@ -29,6 +31,7 @@
 		UPDATE T_PROJECT SET
 			F_PROJECT_NAME = #{ projectName },
 			F_GRADLE_NAME = #{ gradleName },
+			F_LABEL = #{ label },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
@@ -53,6 +56,7 @@
 			T1.F_PROJECT_ID AS "projectId",
 			T1.F_PROJECT_NAME AS "projectName",
 			T1.F_GRADLE_NAME AS "gradleName",
+			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -79,6 +83,7 @@
 			T1.F_PROJECT_ID AS "projectId",
 			T1.F_PROJECT_NAME AS "projectName",
 			T1.F_GRADLE_NAME AS "gradleName",
+			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -115,6 +120,7 @@
 			T1.F_PROJECT_ID AS "projectId",
 			T1.F_PROJECT_NAME AS "projectName",
 			T1.F_GRADLE_NAME AS "gradleName",
+			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -346,6 +352,42 @@
 			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
 		ORDER BY
 			T1.F_MESSAGE_ID ASC
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="listLocalesSummary" resultType="LocaleSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_LOCALE T1
+		WHERE
+			F_OWNER_PROJECT_ID = #{ content.projectId }
+	</select>
+
+	<select id="listLocalesContent" resultType="LocaleContent">
+		SELECT
+			T1.F_LOCALE_ID AS "localeId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_LOCALE T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_OWNER_PROJECT_ID = #{ content.projectId }
+		ORDER BY
+			T1.F_TITLE
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

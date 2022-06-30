@@ -11,7 +11,12 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface ProjectMapper {
+public interface ProjectMapper extends BuilderMapper<ProjectContent> {
+
+	@Override
+	public default List<ProjectContent> listAll() {
+		return listContent(0, 0);
+	}
 
 	/**
 	 * プロジェクトを挿入する
@@ -209,6 +214,30 @@ public interface ProjectMapper {
 	 * @return メッセージ一覧
 	 */
 	public List<MessageContent> listMessagesContent(
+		@Param("content") ProjectContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
+	 * localesのサマリーを取得する
+	 *
+	 * @param content プロジェクト
+	 * @return localesのサマリー
+	 */
+	public LocaleSummary<LocaleContent> listLocalesSummary(
+		@Param("content") ProjectContent content
+	);
+
+	/**
+	 * localesを取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return locales
+	 */
+	public List<LocaleContent> listLocalesContent(
 		@Param("content") ProjectContent content,
 		@Param("offset") int offset,
 		@Param("limit") int limit
