@@ -1,13 +1,12 @@
 {
-  "Project" : "Project",
-  "ProjectI18n" : "ProjectI18n",
-  "Class" : "Class",
-  "Field" : "Field",
-  "Query" : "Query",
-  "Enum" : "Enum",
-  "EnumValue" : "EnumValue",
-  "Message" : "Message",
-  "Locale" : "Locale",
-  "Resource" : "Resource",
-  "LocalizedResource" : "LocalizedResource"
+  "Project" : "プロジェクト",
+  "ProjectI18n" : "プロジェクト(I18n)",
+  "Class" : "クラス",
+  "ClassI18n" : "クラス(I18n)",
+  "Field" : "フィールド",
+  "Query" : "クエリー",
+  "Enum" : "列挙",
+  "EnumValue" : "列挙値",
+  "Message" : "メッセージ",
+  "Locale" : "ロケール"
 }

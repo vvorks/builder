@@ -107,40 +107,4 @@ public interface MessageMapper extends BuilderMapper<MessageContent> {
 		@Param("limit") int limit
 	);
 
-	/**
-	 * メッセージを取得する
-	 *
-	 * @param content メッセージ
-	 * @return メッセージ
-	 */
-	public ResourceContent getMessage(MessageContent content);
-
-	/**
-	 * メッセージの候補サマリーを取得する
-	 *
-	 * @param content メッセージ
-	 * @param hint ヒント情報
-	 * @return メッセージの候補サマリー
-	 */
-	public ResourceSummary<ResourceSubject> listMessageCandidateSummary(
-		@Param("content") MessageContent content,
-		@Param("hint") String hint
-	);
-
-	/**
-	 * メッセージの候補一覧を取得する
-	 *
-	 * @param content メッセージ
-	 * @param hint ヒント情報
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return メッセージの候補一覧
-	 */
-	public List<ResourceSubject> listMessageCandidateSubject(
-		@Param("content") MessageContent content,
-		@Param("hint") String hint,
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-
 }

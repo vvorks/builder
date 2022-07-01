@@ -6,14 +6,14 @@ package com.github.vvorks.builder.server.domain;
 import java.util.Objects;
 
 /**
- * プロジェクト(I18n)
+ * クラス(I18n)
  */
-public class ProjectI18nContent {
+public class ClassI18nContent {
 
 	/**
-	 * 所属プロジェクトのプロジェクトID
+	 * 所属クラスのクラスID
 	 */
-	private int ownerProjectId;
+	private int ownerClassId;
 
 	/**
 	 * 対象ロケールのロケールID
@@ -21,7 +21,7 @@ public class ProjectI18nContent {
 	private String targetLocaleId;
 
 	/**
-	 * I18nラベル
+	 * I18nテキスト
 	 */
 	private String label;
 
@@ -36,7 +36,7 @@ public class ProjectI18nContent {
 	private String _title;
 
 	/**
-	 * 所属プロジェクトのタイトル
+	 * 所属クラスのタイトル
 	 */
 	private String owner_title;
 
@@ -46,41 +46,41 @@ public class ProjectI18nContent {
 	private String target_title;
 
 	/**
-	 * 空のプロジェクト(I18n)を作成する
+	 * 空のクラス(I18n)を作成する
 	 */
-	public ProjectI18nContent() {
+	public ClassI18nContent() {
 	}
 
 	/**
-	 * 指定のキー項目を持つプロジェクト(I18n)を作成する
+	 * 指定のキー項目を持つクラス(I18n)を作成する
 	 *
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
+	 * @param ownerClassId 所属クラスのクラスID
 	 * @param targetLocaleId 対象ロケールのロケールID
 	 */
-	public ProjectI18nContent(
-		int ownerProjectId,
+	public ClassI18nContent(
+		int ownerClassId,
 		String targetLocaleId
 	) {
-		this.ownerProjectId = ownerProjectId;
+		this.ownerClassId = ownerClassId;
 		this.targetLocaleId = targetLocaleId;
 	}
 
 	/**
-	 * 所属プロジェクトのプロジェクトIDを取得する
+	 * 所属クラスのクラスIDを取得する
 	 *
-	 * @return 所属プロジェクトのプロジェクトID
+	 * @return 所属クラスのクラスID
 	 */
-	public int getOwnerProjectId() {
-		return this.ownerProjectId;
+	public int getOwnerClassId() {
+		return this.ownerClassId;
 	}
 
 	/**
-	 * 所属プロジェクトのプロジェクトIDを設定する
+	 * 所属クラスのクラスIDを設定する
 	 *
-	 * @param ownerProjectId 設定する所属プロジェクトのプロジェクトID
+	 * @param ownerClassId 設定する所属クラスのクラスID
 	 */
-	public void setOwnerProjectId(int ownerProjectId) {
-		this.ownerProjectId = ownerProjectId;
+	public void setOwnerClassId(int ownerClassId) {
+		this.ownerClassId = ownerClassId;
 	}
 
 	/**
@@ -102,18 +102,18 @@ public class ProjectI18nContent {
 	}
 
 	/**
-	 * I18nラベルを取得する
+	 * I18nテキストを取得する
 	 *
-	 * @return I18nラベル
+	 * @return I18nテキスト
 	 */
 	public String getLabel() {
 		return this.label;
 	}
 
 	/**
-	 * I18nラベルを設定する
+	 * I18nテキストを設定する
 	 *
-	 * @param label 設定するI18nラベル
+	 * @param label 設定するI18nテキスト
 	 */
 	public void setLabel(String label) {
 		this.label = label;
@@ -156,18 +156,18 @@ public class ProjectI18nContent {
 	}
 
 	/**
-	 * 所属プロジェクトのタイトルを取得する
+	 * 所属クラスのタイトルを取得する
 	 *
-	 * @return 所属プロジェクトのタイトル
+	 * @return 所属クラスのタイトル
 	 */
 	public String getOwner_title() {
 		return this.owner_title;
 	}
 
 	/**
-	 * 所属プロジェクトのタイトルを設定する
+	 * 所属クラスのタイトルを設定する
 	 *
-	 * @param owner_title 設定する所属プロジェクトのタイトル
+	 * @param owner_title 設定する所属クラスのタイトル
 	 */
 	public void setOwner_title(String owner_title) {
 		this.owner_title = owner_title;
@@ -194,7 +194,7 @@ public class ProjectI18nContent {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			ownerProjectId,
+			ownerClassId,
 			targetLocaleId,
 			label,
 			_lastUpdatedAt
@@ -210,13 +210,13 @@ public class ProjectI18nContent {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((ProjectI18nContent) obj);
+			return equals((ClassI18nContent) obj);
 		}
 	}
 
-	private boolean equals(ProjectI18nContent other) {
+	private boolean equals(ClassI18nContent other) {
 		return
-			this.ownerProjectId == other.ownerProjectId && 
+			this.ownerClassId == other.ownerClassId && 
 			Objects.equals(this.targetLocaleId, other.targetLocaleId) && 
 			Objects.equals(this.label, other.label) && 
 			Objects.equals(this._lastUpdatedAt, other._lastUpdatedAt)
@@ -226,8 +226,8 @@ public class ProjectI18nContent {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("ProjectI18nContent [");
-		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
+		sb.append("ClassI18nContent [");
+		sb.append("ownerClassId=").append(ownerClassId).append(", ");
 		sb.append("targetLocaleId=").append(targetLocaleId).append(", ");
 		sb.append("label=").append(label).append(", ");
 		sb.append("_lastUpdatedAt=").append(_lastUpdatedAt);

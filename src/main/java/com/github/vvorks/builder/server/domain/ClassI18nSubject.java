@@ -6,14 +6,14 @@ package com.github.vvorks.builder.server.domain;
 import java.util.Objects;
 
 /**
- * プロジェクト(I18n)の見出し
+ * クラス(I18n)の見出し
  */
-public class ProjectI18nSubject {
+public class ClassI18nSubject {
 
 	/**
-	 * 所属プロジェクトのプロジェクトID
+	 * 所属クラスのクラスID
 	 */
-	private int ownerProjectId;
+	private int ownerClassId;
 
 	/**
 	 * 対象ロケールのロケールID
@@ -26,22 +26,22 @@ public class ProjectI18nSubject {
 	private String _title;
 
 	/**
-	 * 空のプロジェクト(I18n)の見出しを作成する
+	 * 空のクラス(I18n)の見出しを作成する
 	 */
-	public ProjectI18nSubject() {
+	public ClassI18nSubject() {
 	}
 
 	/**
-	 * 指定のキー項目を持つプロジェクト(I18n)の見出しを作成する
+	 * 指定のキー項目を持つクラス(I18n)の見出しを作成する
 	 *
-	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
+	 * @param ownerClassId 所属クラスのクラスID
 	 * @param targetLocaleId 対象ロケールのロケールID
 	 */
-	public ProjectI18nSubject(
-		int ownerProjectId,
+	public ClassI18nSubject(
+		int ownerClassId,
 		String targetLocaleId
 	) {
-		this.ownerProjectId = ownerProjectId;
+		this.ownerClassId = ownerClassId;
 		this.targetLocaleId = targetLocaleId;
 	}
 
@@ -66,7 +66,7 @@ public class ProjectI18nSubject {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			ownerProjectId,
+			ownerClassId,
 			targetLocaleId
 			);
 	}
@@ -80,13 +80,13 @@ public class ProjectI18nSubject {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((ProjectI18nSubject) obj);
+			return equals((ClassI18nSubject) obj);
 		}
 	}
 
-	private boolean equals(ProjectI18nSubject other) {
+	private boolean equals(ClassI18nSubject other) {
 		return
-			this.ownerProjectId == other.ownerProjectId && 
+			this.ownerClassId == other.ownerClassId && 
 			Objects.equals(this.targetLocaleId, other.targetLocaleId)
 			;
 	}
@@ -94,8 +94,8 @@ public class ProjectI18nSubject {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("ProjectI18nSubject [");
-		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
+		sb.append("ClassI18nSubject [");
+		sb.append("ownerClassId=").append(ownerClassId).append(", ");
 		sb.append("targetLocaleId=").append(targetLocaleId);
 		sb.append("]");
 		return sb.toString();

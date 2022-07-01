@@ -132,42 +132,6 @@ public interface ClassMapper extends BuilderMapper<ClassContent> {
 	);
 
 	/**
-	 * 表示ラベルを取得する
-	 *
-	 * @param content クラス
-	 * @return 表示ラベル
-	 */
-	public ResourceContent getLabel(ClassContent content);
-
-	/**
-	 * 表示ラベルの候補サマリーを取得する
-	 *
-	 * @param content クラス
-	 * @param hint ヒント情報
-	 * @return 表示ラベルの候補サマリー
-	 */
-	public ResourceSummary<ResourceSubject> listLabelCandidateSummary(
-		@Param("content") ClassContent content,
-		@Param("hint") String hint
-	);
-
-	/**
-	 * 表示ラベルの候補一覧を取得する
-	 *
-	 * @param content クラス
-	 * @param hint ヒント情報
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return 表示ラベルの候補一覧
-	 */
-	public List<ResourceSubject> listLabelCandidateSubject(
-		@Param("content") ClassContent content,
-		@Param("hint") String hint,
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-
-	/**
 	 * フィールド一覧のサマリーを取得する
 	 *
 	 * @param content クラス

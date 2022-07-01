@@ -45,7 +45,7 @@ public interface LocaleMapper extends BuilderMapper<LocaleContent> {
 	/**
 	 * ロケールを取得する
 	 *
-	 * @param localeId localeId
+	 * @param localeId ロケールID
 	 * @return 取得したロケール
 	 */
 	public LocaleContent get(
@@ -72,19 +72,19 @@ public interface LocaleMapper extends BuilderMapper<LocaleContent> {
 	);
 
 	/**
-	 * ownerを取得する
+	 * 所属プロジェクトを取得する
 	 *
 	 * @param content ロケール
-	 * @return owner
+	 * @return 所属プロジェクト
 	 */
 	public ProjectContent getOwner(LocaleContent content);
 
 	/**
-	 * ownerの候補サマリーを取得する
+	 * 所属プロジェクトの候補サマリーを取得する
 	 *
 	 * @param content ロケール
 	 * @param hint ヒント情報
-	 * @return ownerの候補サマリー
+	 * @return 所属プロジェクトの候補サマリー
 	 */
 	public ProjectSummary<ProjectSubject> listOwnerCandidateSummary(
 		@Param("content") LocaleContent content,
@@ -92,13 +92,13 @@ public interface LocaleMapper extends BuilderMapper<LocaleContent> {
 	);
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属プロジェクトの候補一覧を取得する
 	 *
 	 * @param content ロケール
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return ownerの候補一覧
+	 * @return 所属プロジェクトの候補一覧
 	 */
 	public List<ProjectSubject> listOwnerCandidateSubject(
 		@Param("content") LocaleContent content,

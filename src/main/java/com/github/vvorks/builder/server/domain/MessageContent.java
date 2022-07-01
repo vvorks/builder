@@ -26,9 +26,9 @@ public class MessageContent {
 	private String messageName;
 
 	/**
-	 * メッセージのリソースID
+	 * メッセージ
 	 */
-	private int messageResourceId;
+	private String message;
 
 	/**
 	 * 最終更新時刻
@@ -44,11 +44,6 @@ public class MessageContent {
 	 * 所属プロジェクトのタイトル
 	 */
 	private String owner_title;
-
-	/**
-	 * メッセージのタイトル
-	 */
-	private String message_title;
 
 	/**
 	 * 空のメッセージを作成する
@@ -122,21 +117,21 @@ public class MessageContent {
 	}
 
 	/**
-	 * メッセージのリソースIDを取得する
+	 * メッセージを取得する
 	 *
-	 * @return メッセージのリソースID
+	 * @return メッセージ
 	 */
-	public int getMessageResourceId() {
-		return this.messageResourceId;
+	public String getMessage() {
+		return this.message;
 	}
 
 	/**
-	 * メッセージのリソースIDを設定する
+	 * メッセージを設定する
 	 *
-	 * @param messageResourceId 設定するメッセージのリソースID
+	 * @param message 設定するメッセージ
 	 */
-	public void setMessageResourceId(int messageResourceId) {
-		this.messageResourceId = messageResourceId;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	/**
@@ -193,31 +188,13 @@ public class MessageContent {
 		this.owner_title = owner_title;
 	}
 
-	/**
-	 * メッセージのタイトルを取得する
-	 *
-	 * @return メッセージのタイトル
-	 */
-	public String getMessage_title() {
-		return this.message_title;
-	}
-
-	/**
-	 * メッセージのタイトルを設定する
-	 *
-	 * @param message_title 設定するメッセージのタイトル
-	 */
-	public void setMessage_title(String message_title) {
-		this.message_title = message_title;
-	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(
 			messageId,
 			ownerProjectId,
 			messageName,
-			messageResourceId,
+			message,
 			_lastUpdatedAt
 			);
 	}
@@ -240,7 +217,7 @@ public class MessageContent {
 			this.messageId == other.messageId && 
 			this.ownerProjectId == other.ownerProjectId && 
 			Objects.equals(this.messageName, other.messageName) && 
-			this.messageResourceId == other.messageResourceId && 
+			Objects.equals(this.message, other.message) && 
 			Objects.equals(this._lastUpdatedAt, other._lastUpdatedAt)
 			;
 	}
@@ -252,7 +229,7 @@ public class MessageContent {
 		sb.append("messageId=").append(messageId).append(", ");
 		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
 		sb.append("messageName=").append(messageName).append(", ");
-		sb.append("messageResourceId=").append(messageResourceId).append(", ");
+		sb.append("message=").append(message).append(", ");
 		sb.append("_lastUpdatedAt=").append(_lastUpdatedAt);
 		sb.append("]");
 		return sb.toString();

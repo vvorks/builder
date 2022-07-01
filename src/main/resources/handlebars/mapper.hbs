@@ -55,16 +55,16 @@ public class Mappers {
 	private {{className}}Mapper {{lowerName}}Mapper;
 	{{/each}}
 
-	private final Map<String, {{upperLastName}}Mapper<?>> mappers = new HashMap<>();
+	private Map<String, {{upperLastName}}Mapper<?>> mapperMap;
 
-	public Mappers() {
-		{{#each classes}}
-		mappers.put("{{className}}", {{lowerName}}Mapper);
-		{{/each}}
-	}
-
-	public Map<String, {{upperLastName}}Mapper<?>> getMappers() {
-		return mappers;
+	public {{upperLastName}}Mapper<?> getMapperOf(String name) {
+		if (mapperMap == null) {
+			mapperMap = new HashMap<>();
+			{{#each classes}}
+			mapperMap.put("{{className}}", {{lowerName}}Mapper);
+			{{/each}}
+		}
+		return mapperMap.get(name);
 	}
 
 }

@@ -17,15 +17,12 @@ import com.github.vvorks.builder.server.common.util.Patterns;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.FieldContent;
-import com.github.vvorks.builder.server.domain.LocalizedResourceContent;
 import com.github.vvorks.builder.server.domain.MessageContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
-import com.github.vvorks.builder.server.domain.ResourceContent;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
 import com.github.vvorks.builder.server.mapper.MessageMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
-import com.github.vvorks.builder.server.mapper.ResourceMapper;
 
 @Component
 public class ProjectExtender {
@@ -41,9 +38,6 @@ public class ProjectExtender {
 
     @Autowired
     private MessageMapper messageMapper;
-
-    @Autowired
-    private ResourceMapper resourceMapper;
 
 	public String getTitleOrName(ProjectContent prj) {
 		if (!Strings.isEmpty(prj.getTitle())) {
@@ -111,20 +105,19 @@ public class ProjectExtender {
 		List<ClassContent> classes = projectMapper.listClassesContent(prj, 0, 0);
 		Map<String, Json> jsonMap = new LinkedHashMap<>();
 		for (ClassContent cls : classes) {
-			ResourceContent lab = classMapper.getLabel(cls);
 			String key = cls.getClassName();
-			String value = lab != null ? lab.getDefaultValue() : key;
 			Json json = jsonMap.computeIfAbsent("", k -> Json.createObject());
-			json.setString(key, value);
-			if (lab != null) {
-				List<LocalizedResourceContent> locs = resourceMapper.listVariationsContent(lab, 0, 0);
-				for (LocalizedResourceContent loc : locs) {
-					String suffix = "_" + loc.getLocale();
-					Json locJson = jsonMap.computeIfAbsent(suffix, k -> Json.createObject());
-					String locValue = loc.getValue();
-					locJson.setString(key, locValue);
-				}
-			}
+			json.setString(key, cls.getLabel());
+//			classMapper.
+//			if (lab != null) {
+//				List<LocalizedResourceContent> locs = resourceMapper.listVariationsContent(lab, 0, 0);
+//				for (LocalizedResourceContent loc : locs) {
+//					String suffix = "_" + loc.getLocale();
+//					Json locJson = jsonMap.computeIfAbsent(suffix, k -> Json.createObject());
+//					String locValue = loc.getValue();
+//					locJson.setString(key, locValue);
+//				}
+//			}
 		}
 		return jsonMap.entrySet();
 	}
@@ -146,18 +139,16 @@ public class ProjectExtender {
 			List<FieldContent> fields = classMapper.listFieldsContent(cls, 0, 0);
 			for (FieldContent fld : fields) {
 				String fldName = fld.getFieldName();
-				ResourceContent lab = fieldMapper.getLabel(fld);
-				String value = (lab != null) ? lab.getDefaultValue() : fldName;
-				fldJson.setString(fldName, value);
-				if (lab != null) {
-					List<LocalizedResourceContent> locs = resourceMapper.listVariationsContent(lab, 0, 0);
-					for (LocalizedResourceContent loc : locs) {
-						String suffix = "_" + loc.getLocale();
-						Json locJson = jsonMap.computeIfAbsent(suffix, k -> Json.createObject());
-						Json locFldJson = locJson.computeIfAbsent(clsName, k -> Json.createObject());
-						locFldJson.setString(fldName, loc.getValue());
-					}
-				}
+				fldJson.setString(fldName, fld.getLabel());
+//				if (lab != null) {
+//					List<LocalizedResourceContent> locs = resourceMapper.listVariationsContent(lab, 0, 0);
+//					for (LocalizedResourceContent loc : locs) {
+//						String suffix = "_" + loc.getLocale();
+//						Json locJson = jsonMap.computeIfAbsent(suffix, k -> Json.createObject());
+//						Json locFldJson = locJson.computeIfAbsent(clsName, k -> Json.createObject());
+//						locFldJson.setString(fldName, loc.getValue());
+//					}
+//				}
 			}
 		}
 		return jsonMap.entrySet();
@@ -173,20 +164,18 @@ public class ProjectExtender {
 		List<MessageContent> messages = projectMapper.listMessagesContent(prj, 0, 0);
 		Map<String, Json> jsonMap = new LinkedHashMap<>();
 		for (MessageContent msg : messages) {
-			ResourceContent res = messageMapper.getMessage(msg);
 			String key = msg.getMessageName();
-			String value = res != null ? res.getDefaultValue() : key;
 			Json json = jsonMap.computeIfAbsent("", k -> Json.createObject());
-			json.setString(key, value);
-			if (res != null) {
-				List<LocalizedResourceContent> locs = resourceMapper.listVariationsContent(res, 0, 0);
-				for (LocalizedResourceContent loc : locs) {
-					String suffix = "_" + loc.getLocale();
-					Json locJson = jsonMap.computeIfAbsent(suffix, k -> Json.createObject());
-					String locValue = loc.getValue();
-					locJson.setString(key, locValue);
-				}
-			}
+			json.setString(key, msg.getMessage());
+//			if (res != null) {
+//				List<LocalizedResourceContent> locs = resourceMapper.listVariationsContent(res, 0, 0);
+//				for (LocalizedResourceContent loc : locs) {
+//					String suffix = "_" + loc.getLocale();
+//					Json locJson = jsonMap.computeIfAbsent(suffix, k -> Json.createObject());
+//					String locValue = loc.getValue();
+//					locJson.setString(key, locValue);
+//				}
+//			}
 		}
 		return jsonMap.entrySet();
 	}

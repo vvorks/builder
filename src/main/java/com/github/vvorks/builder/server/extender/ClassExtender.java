@@ -339,7 +339,10 @@ public class ClassExtender {
 
 	public List<String[]> getValues(ClassContent cls) {
 		String name = cls.getClassName();
-		BuilderMapper<?> mapper = mappers.getMappers().get(name);
+		BuilderMapper<?> mapper = mappers.getMapperOf(name);
+		if (mapper == null) {
+			return Collections.emptyList();
+		}
 		List<?> list = mapper.listAll();
 		if (list.isEmpty()) {
 			return Collections.emptyList();

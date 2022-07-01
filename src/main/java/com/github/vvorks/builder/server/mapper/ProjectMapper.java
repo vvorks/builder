@@ -220,22 +220,22 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 	);
 
 	/**
-	 * localesのサマリーを取得する
+	 * ロケール一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト
-	 * @return localesのサマリー
+	 * @return ロケール一覧のサマリー
 	 */
 	public LocaleSummary<LocaleContent> listLocalesSummary(
 		@Param("content") ProjectContent content
 	);
 
 	/**
-	 * localesを取得する
+	 * ロケール一覧を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return locales
+	 * @return ロケール一覧
 	 */
 	public List<LocaleContent> listLocalesContent(
 		@Param("content") ProjectContent content,
@@ -244,24 +244,24 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 	);
 
 	/**
-	 * リソース一覧のサマリーを取得する
+	 * I18n一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト
-	 * @return リソース一覧のサマリー
+	 * @return I18n一覧のサマリー
 	 */
-	public ResourceSummary<ResourceContent> listResourcesSummary(
+	public ProjectI18nSummary<ProjectI18nContent> listI18nsSummary(
 		@Param("content") ProjectContent content
 	);
 
 	/**
-	 * リソース一覧を取得する
+	 * I18n一覧を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return リソース一覧
+	 * @return I18n一覧
 	 */
-	public List<ResourceContent> listResourcesContent(
+	public List<ProjectI18nContent> listI18nsContent(
 		@Param("content") ProjectContent content,
 		@Param("offset") int offset,
 		@Param("limit") int limit

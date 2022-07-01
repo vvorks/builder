@@ -45,8 +45,8 @@ public interface ProjectI18nMapper extends BuilderMapper<ProjectI18nContent> {
 	/**
 	 * プロジェクト(I18n)を取得する
 	 *
-	 * @param ownerProjectId ownerのプロジェクトID
-	 * @param targetLocaleId targetのlocaleId
+	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
+	 * @param targetLocaleId 対象ロケールのロケールID
 	 * @return 取得したプロジェクト(I18n)
 	 */
 	public ProjectI18nContent get(
@@ -74,19 +74,19 @@ public interface ProjectI18nMapper extends BuilderMapper<ProjectI18nContent> {
 	);
 
 	/**
-	 * ownerを取得する
+	 * 所属プロジェクトを取得する
 	 *
 	 * @param content プロジェクト(I18n)
-	 * @return owner
+	 * @return 所属プロジェクト
 	 */
 	public ProjectContent getOwner(ProjectI18nContent content);
 
 	/**
-	 * ownerの候補サマリーを取得する
+	 * 所属プロジェクトの候補サマリーを取得する
 	 *
 	 * @param content プロジェクト(I18n)
 	 * @param hint ヒント情報
-	 * @return ownerの候補サマリー
+	 * @return 所属プロジェクトの候補サマリー
 	 */
 	public ProjectSummary<ProjectSubject> listOwnerCandidateSummary(
 		@Param("content") ProjectI18nContent content,
@@ -94,13 +94,13 @@ public interface ProjectI18nMapper extends BuilderMapper<ProjectI18nContent> {
 	);
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属プロジェクトの候補一覧を取得する
 	 *
 	 * @param content プロジェクト(I18n)
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return ownerの候補一覧
+	 * @return 所属プロジェクトの候補一覧
 	 */
 	public List<ProjectSubject> listOwnerCandidateSubject(
 		@Param("content") ProjectI18nContent content,
@@ -110,19 +110,19 @@ public interface ProjectI18nMapper extends BuilderMapper<ProjectI18nContent> {
 	);
 
 	/**
-	 * targetを取得する
+	 * 対象ロケールを取得する
 	 *
 	 * @param content プロジェクト(I18n)
-	 * @return target
+	 * @return 対象ロケール
 	 */
 	public LocaleContent getTarget(ProjectI18nContent content);
 
 	/**
-	 * targetの候補サマリーを取得する
+	 * 対象ロケールの候補サマリーを取得する
 	 *
 	 * @param content プロジェクト(I18n)
 	 * @param hint ヒント情報
-	 * @return targetの候補サマリー
+	 * @return 対象ロケールの候補サマリー
 	 */
 	public LocaleSummary<LocaleSubject> listTargetCandidateSummary(
 		@Param("content") ProjectI18nContent content,
@@ -130,13 +130,13 @@ public interface ProjectI18nMapper extends BuilderMapper<ProjectI18nContent> {
 	);
 
 	/**
-	 * targetの候補一覧を取得する
+	 * 対象ロケールの候補一覧を取得する
 	 *
 	 * @param content プロジェクト(I18n)
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return targetの候補一覧
+	 * @return 対象ロケールの候補一覧
 	 */
 	public List<LocaleSubject> listTargetCandidateSubject(
 		@Param("content") ProjectI18nContent content,

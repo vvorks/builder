@@ -42,9 +42,9 @@ public class ClassContent {
 	private String titleExpr;
 
 	/**
-	 * 表示ラベルのリソースID
+	 * 表示ラベル
 	 */
-	private int labelResourceId;
+	private String label;
 
 	/**
 	 * タイトル
@@ -79,11 +79,6 @@ public class ClassContent {
 	 * 所属プロジェクトのタイトル
 	 */
 	private String owner_title;
-
-	/**
-	 * 表示ラベルのタイトル
-	 */
-	private String label_title;
 
 	/**
 	 * 空のクラスを作成する
@@ -193,21 +188,21 @@ public class ClassContent {
 	}
 
 	/**
-	 * 表示ラベルのリソースIDを取得する
+	 * 表示ラベルを取得する
 	 *
-	 * @return 表示ラベルのリソースID
+	 * @return 表示ラベル
 	 */
-	public int getLabelResourceId() {
-		return this.labelResourceId;
+	public String getLabel() {
+		return this.label;
 	}
 
 	/**
-	 * 表示ラベルのリソースIDを設定する
+	 * 表示ラベルを設定する
 	 *
-	 * @param labelResourceId 設定する表示ラベルのリソースID
+	 * @param label 設定する表示ラベル
 	 */
-	public void setLabelResourceId(int labelResourceId) {
-		this.labelResourceId = labelResourceId;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	/**
@@ -318,24 +313,6 @@ public class ClassContent {
 		this.owner_title = owner_title;
 	}
 
-	/**
-	 * 表示ラベルのタイトルを取得する
-	 *
-	 * @return 表示ラベルのタイトル
-	 */
-	public String getLabel_title() {
-		return this.label_title;
-	}
-
-	/**
-	 * 表示ラベルのタイトルを設定する
-	 *
-	 * @param label_title 設定する表示ラベルのタイトル
-	 */
-	public void setLabel_title(String label_title) {
-		this.label_title = label_title;
-	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(
@@ -344,7 +321,7 @@ public class ClassContent {
 			className,
 			orderExpr,
 			titleExpr,
-			labelResourceId,
+			label,
 			title,
 			description,
 			note,
@@ -372,7 +349,7 @@ public class ClassContent {
 			Objects.equals(this.className, other.className) && 
 			Objects.equals(this.orderExpr, other.orderExpr) && 
 			Objects.equals(this.titleExpr, other.titleExpr) && 
-			this.labelResourceId == other.labelResourceId && 
+			Objects.equals(this.label, other.label) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note) && 
@@ -389,7 +366,7 @@ public class ClassContent {
 		sb.append("className=").append(className).append(", ");
 		sb.append("orderExpr=").append(orderExpr).append(", ");
 		sb.append("titleExpr=").append(titleExpr).append(", ");
-		sb.append("labelResourceId=").append(labelResourceId).append(", ");
+		sb.append("label=").append(label).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note).append(", ");

@@ -88,14 +88,18 @@ public class FieldContent {
 	private boolean needsMin;
 
 	/**
-	 * ラベルのリソースID
+	 * ラベル
+	 *
+	 * 画面用項目ラベル
 	 */
-	private int labelResourceId;
+	private String label;
 
 	/**
-	 * 書式のリソースID
+	 * 書式
+	 *
+	 * 画面用項目書式
 	 */
-	private int formatResourceId;
+	private String format;
 
 	/**
 	 * タイトル
@@ -145,16 +149,6 @@ public class FieldContent {
 	 * フィールド参照先のタイトル
 	 */
 	private String fref_title;
-
-	/**
-	 * ラベルのタイトル
-	 */
-	private String label_title;
-
-	/**
-	 * 書式のタイトル
-	 */
-	private String format_title;
 
 	/**
 	 * フィールド型のタイトル
@@ -449,39 +443,39 @@ public class FieldContent {
 	}
 
 	/**
-	 * ラベルのリソースIDを取得する
+	 * ラベルを取得する
 	 *
-	 * @return ラベルのリソースID
+	 * @return ラベル
 	 */
-	public int getLabelResourceId() {
-		return this.labelResourceId;
+	public String getLabel() {
+		return this.label;
 	}
 
 	/**
-	 * ラベルのリソースIDを設定する
+	 * ラベルを設定する
 	 *
-	 * @param labelResourceId 設定するラベルのリソースID
+	 * @param label 設定するラベル
 	 */
-	public void setLabelResourceId(int labelResourceId) {
-		this.labelResourceId = labelResourceId;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	/**
-	 * 書式のリソースIDを取得する
+	 * 書式を取得する
 	 *
-	 * @return 書式のリソースID
+	 * @return 書式
 	 */
-	public int getFormatResourceId() {
-		return this.formatResourceId;
+	public String getFormat() {
+		return this.format;
 	}
 
 	/**
-	 * 書式のリソースIDを設定する
+	 * 書式を設定する
 	 *
-	 * @param formatResourceId 設定する書式のリソースID
+	 * @param format 設定する書式
 	 */
-	public void setFormatResourceId(int formatResourceId) {
-		this.formatResourceId = formatResourceId;
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	/**
@@ -647,42 +641,6 @@ public class FieldContent {
 	}
 
 	/**
-	 * ラベルのタイトルを取得する
-	 *
-	 * @return ラベルのタイトル
-	 */
-	public String getLabel_title() {
-		return this.label_title;
-	}
-
-	/**
-	 * ラベルのタイトルを設定する
-	 *
-	 * @param label_title 設定するラベルのタイトル
-	 */
-	public void setLabel_title(String label_title) {
-		this.label_title = label_title;
-	}
-
-	/**
-	 * 書式のタイトルを取得する
-	 *
-	 * @return 書式のタイトル
-	 */
-	public String getFormat_title() {
-		return this.format_title;
-	}
-
-	/**
-	 * 書式のタイトルを設定する
-	 *
-	 * @param format_title 設定する書式のタイトル
-	 */
-	public void setFormat_title(String format_title) {
-		this.format_title = format_title;
-	}
-
-	/**
 	 * フィールド型のタイトルを取得する
 	 *
 	 * @return フィールド型のタイトル
@@ -718,8 +676,8 @@ public class FieldContent {
 			needsAvg,
 			needsMax,
 			needsMin,
-			labelResourceId,
-			formatResourceId,
+			label,
+			format,
 			title,
 			description,
 			note,
@@ -757,8 +715,8 @@ public class FieldContent {
 			this.needsAvg == other.needsAvg && 
 			this.needsMax == other.needsMax && 
 			this.needsMin == other.needsMin && 
-			this.labelResourceId == other.labelResourceId && 
-			this.formatResourceId == other.formatResourceId && 
+			Objects.equals(this.label, other.label) && 
+			Objects.equals(this.format, other.format) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note) && 
@@ -785,8 +743,8 @@ public class FieldContent {
 		sb.append("needsAvg=").append(needsAvg).append(", ");
 		sb.append("needsMax=").append(needsMax).append(", ");
 		sb.append("needsMin=").append(needsMin).append(", ");
-		sb.append("labelResourceId=").append(labelResourceId).append(", ");
-		sb.append("formatResourceId=").append(formatResourceId).append(", ");
+		sb.append("label=").append(label).append(", ");
+		sb.append("format=").append(format).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note).append(", ");

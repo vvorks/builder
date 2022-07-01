@@ -24,6 +24,10 @@ public class Mappers {
 	@Autowired
 	private ClassMapper classMapper;
 
+	/** クラス(I18n)のMapper */
+	@Autowired
+	private ClassI18nMapper classI18nMapper;
+
 	/** フィールドのMapper */
 	@Autowired
 	private FieldMapper fieldMapper;
@@ -48,32 +52,23 @@ public class Mappers {
 	@Autowired
 	private LocaleMapper localeMapper;
 
-	/** リソースのMapper */
-	@Autowired
-	private ResourceMapper resourceMapper;
+	private Map<String, BuilderMapper<?>> mapperMap;
 
-	/** ローカライズドリソースのMapper */
-	@Autowired
-	private LocalizedResourceMapper localizedResourceMapper;
-
-	private final Map<String, BuilderMapper<?>> mappers = new HashMap<>();
-
-	public Mappers() {
-		mappers.put("Project", projectMapper);
-		mappers.put("ProjectI18n", projectI18nMapper);
-		mappers.put("Class", classMapper);
-		mappers.put("Field", fieldMapper);
-		mappers.put("Query", queryMapper);
-		mappers.put("Enum", enumMapper);
-		mappers.put("EnumValue", enumValueMapper);
-		mappers.put("Message", messageMapper);
-		mappers.put("Locale", localeMapper);
-		mappers.put("Resource", resourceMapper);
-		mappers.put("LocalizedResource", localizedResourceMapper);
-	}
-
-	public Map<String, BuilderMapper<?>> getMappers() {
-		return mappers;
+	public BuilderMapper<?> getMapperOf(String name) {
+		if (mapperMap == null) {
+			mapperMap = new HashMap<>();
+			mapperMap.put("Project", projectMapper);
+			mapperMap.put("ProjectI18n", projectI18nMapper);
+			mapperMap.put("Class", classMapper);
+			mapperMap.put("ClassI18n", classI18nMapper);
+			mapperMap.put("Field", fieldMapper);
+			mapperMap.put("Query", queryMapper);
+			mapperMap.put("Enum", enumMapper);
+			mapperMap.put("EnumValue", enumValueMapper);
+			mapperMap.put("Message", messageMapper);
+			mapperMap.put("Locale", localeMapper);
+		}
+		return mapperMap.get(name);
 	}
 
 }

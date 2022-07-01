@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * リソースのサマリー情報
+ * クラス(I18n)のサマリー情報
  */
-public class ResourceSummary<T> {
+public class ClassI18nSummary<T> {
 
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
@@ -133,12 +133,12 @@ public class ResourceSummary<T> {
 			return false;
 		} else {
 			@SuppressWarnings("unchecked")
-			ResourceSummary<T> other = (ResourceSummary<T>) obj;
+			ClassI18nSummary<T> other = (ClassI18nSummary<T>) obj;
 			return equals(other);
 		}
 	}
 
-	private boolean equals(ResourceSummary<T> other) {
+	private boolean equals(ClassI18nSummary<T> other) {
 		return
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
@@ -150,7 +150,7 @@ public class ResourceSummary<T> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("ResourceContent [");
+		sb.append("ClassI18nContent [");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

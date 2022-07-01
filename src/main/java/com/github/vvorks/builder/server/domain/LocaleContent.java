@@ -15,22 +15,22 @@ import java.util.Objects;
 public class LocaleContent {
 
 	/**
-	 * localeId
+	 * ロケールID
 	 */
 	private String localeId;
 
 	/**
-	 * ownerのプロジェクトID
+	 * 所属プロジェクトのプロジェクトID
 	 */
 	private int ownerProjectId;
 
 	/**
-	 * title
+	 * タイトル
 	 */
 	private String title;
 
 	/**
-	 * description
+	 * 説明
 	 */
 	private String description;
 
@@ -45,7 +45,7 @@ public class LocaleContent {
 	private String _title;
 
 	/**
-	 * ownerのタイトル
+	 * 所属プロジェクトのタイトル
 	 */
 	private String owner_title;
 
@@ -58,7 +58,7 @@ public class LocaleContent {
 	/**
 	 * 指定のキー項目を持つロケールを作成する
 	 *
-	 * @param localeId localeId
+	 * @param localeId ロケールID
 	 */
 	public LocaleContent(
 		String localeId
@@ -67,72 +67,72 @@ public class LocaleContent {
 	}
 
 	/**
-	 * localeIdを取得する
+	 * ロケールIDを取得する
 	 *
-	 * @return localeId
+	 * @return ロケールID
 	 */
 	public String getLocaleId() {
 		return this.localeId;
 	}
 
 	/**
-	 * localeIdを設定する
+	 * ロケールIDを設定する
 	 *
-	 * @param localeId 設定するlocaleId
+	 * @param localeId 設定するロケールID
 	 */
 	public void setLocaleId(String localeId) {
 		this.localeId = localeId;
 	}
 
 	/**
-	 * ownerのプロジェクトIDを取得する
+	 * 所属プロジェクトのプロジェクトIDを取得する
 	 *
-	 * @return ownerのプロジェクトID
+	 * @return 所属プロジェクトのプロジェクトID
 	 */
 	public int getOwnerProjectId() {
 		return this.ownerProjectId;
 	}
 
 	/**
-	 * ownerのプロジェクトIDを設定する
+	 * 所属プロジェクトのプロジェクトIDを設定する
 	 *
-	 * @param ownerProjectId 設定するownerのプロジェクトID
+	 * @param ownerProjectId 設定する所属プロジェクトのプロジェクトID
 	 */
 	public void setOwnerProjectId(int ownerProjectId) {
 		this.ownerProjectId = ownerProjectId;
 	}
 
 	/**
-	 * titleを取得する
+	 * タイトルを取得する
 	 *
-	 * @return title
+	 * @return タイトル
 	 */
 	public String getTitle() {
 		return this.title;
 	}
 
 	/**
-	 * titleを設定する
+	 * タイトルを設定する
 	 *
-	 * @param title 設定するtitle
+	 * @param title 設定するタイトル
 	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
 	/**
-	 * descriptionを取得する
+	 * 説明を取得する
 	 *
-	 * @return description
+	 * @return 説明
 	 */
 	public String getDescription() {
 		return this.description;
 	}
 
 	/**
-	 * descriptionを設定する
+	 * 説明を設定する
 	 *
-	 * @param description 設定するdescription
+	 * @param description 設定する説明
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -175,18 +175,18 @@ public class LocaleContent {
 	}
 
 	/**
-	 * ownerのタイトルを取得する
+	 * 所属プロジェクトのタイトルを取得する
 	 *
-	 * @return ownerのタイトル
+	 * @return 所属プロジェクトのタイトル
 	 */
 	public String getOwner_title() {
 		return this.owner_title;
 	}
 
 	/**
-	 * ownerのタイトルを設定する
+	 * 所属プロジェクトのタイトルを設定する
 	 *
-	 * @param owner_title 設定するownerのタイトル
+	 * @param owner_title 設定する所属プロジェクトのタイトル
 	 */
 	public void setOwner_title(String owner_title) {
 		this.owner_title = owner_title;

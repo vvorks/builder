@@ -15,7 +15,7 @@ import java.util.Objects;
 public class LocaleSubject {
 
 	/**
-	 * localeId
+	 * ロケールID
 	 */
 	private String localeId;
 
@@ -33,7 +33,7 @@ public class LocaleSubject {
 	/**
 	 * 指定のキー項目を持つロケールの見出しを作成する
 	 *
-	 * @param localeId localeId
+	 * @param localeId ロケールID
 	 */
 	public LocaleSubject(
 		String localeId

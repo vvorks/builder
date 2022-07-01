@@ -14,6 +14,9 @@ import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.ClassSubject;
 import com.github.vvorks.builder.server.domain.ClassSummary;
+import com.github.vvorks.builder.server.domain.ClassI18nContent;
+import com.github.vvorks.builder.server.domain.ClassI18nSubject;
+import com.github.vvorks.builder.server.domain.ClassI18nSummary;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumSubject;
 import com.github.vvorks.builder.server.domain.EnumSummary;
@@ -26,9 +29,6 @@ import com.github.vvorks.builder.server.domain.FieldSummary;
 import com.github.vvorks.builder.server.domain.LocaleContent;
 import com.github.vvorks.builder.server.domain.LocaleSubject;
 import com.github.vvorks.builder.server.domain.LocaleSummary;
-import com.github.vvorks.builder.server.domain.LocalizedResourceContent;
-import com.github.vvorks.builder.server.domain.LocalizedResourceSubject;
-import com.github.vvorks.builder.server.domain.LocalizedResourceSummary;
 import com.github.vvorks.builder.server.domain.MessageContent;
 import com.github.vvorks.builder.server.domain.MessageSubject;
 import com.github.vvorks.builder.server.domain.MessageSummary;
@@ -41,23 +41,19 @@ import com.github.vvorks.builder.server.domain.ProjectI18nSummary;
 import com.github.vvorks.builder.server.domain.QueryContent;
 import com.github.vvorks.builder.server.domain.QuerySubject;
 import com.github.vvorks.builder.server.domain.QuerySummary;
-import com.github.vvorks.builder.server.domain.ResourceContent;
-import com.github.vvorks.builder.server.domain.ResourceSubject;
-import com.github.vvorks.builder.server.domain.ResourceSummary;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.DataTypeSubject;
 import com.github.vvorks.builder.server.domain.DataTypeSummary;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
+import com.github.vvorks.builder.server.mapper.ClassI18nMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
 import com.github.vvorks.builder.server.mapper.LocaleMapper;
-import com.github.vvorks.builder.server.mapper.LocalizedResourceMapper;
 import com.github.vvorks.builder.server.mapper.MessageMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 import com.github.vvorks.builder.server.mapper.ProjectI18nMapper;
 import com.github.vvorks.builder.server.mapper.QueryMapper;
-import com.github.vvorks.builder.server.mapper.ResourceMapper;
 
 /**
  * ビルダープロジェクトの Json-Rpc (on Websocket) API
@@ -76,6 +72,10 @@ public class BuilderRpcController {
 	/** クラスのMapper */
 	@Autowired
 	private ClassMapper classMapper;
+
+	/** クラス(I18n)のMapper */
+	@Autowired
+	private ClassI18nMapper classI18nMapper;
 
 	/** フィールドのMapper */
 	@Autowired
@@ -100,14 +100,6 @@ public class BuilderRpcController {
 	/** ロケールのMapper */
 	@Autowired
 	private LocaleMapper localeMapper;
-
-	/** リソースのMapper */
-	@Autowired
-	private ResourceMapper resourceMapper;
-
-	/** ローカライズドリソースのMapper */
-	@Autowired
-	private LocalizedResourceMapper localizedResourceMapper;
 
 	/**
 	 * プロジェクトを挿入する
@@ -345,12 +337,12 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * locales情報を取得する
+	 * ロケール一覧情報を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return locales情報
+	 * @return ロケール一覧情報
 	 */
 	@JsonRpcMethod
 	public LocaleSummary<LocaleContent> listProjectLocales(
@@ -370,26 +362,26 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * リソース一覧情報を取得する
+	 * I18n一覧情報を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return リソース一覧情報
+	 * @return I18n一覧情報
 	 */
 	@JsonRpcMethod
-	public ResourceSummary<ResourceContent> listProjectResources(
+	public ProjectI18nSummary<ProjectI18nContent> listProjectI18ns(
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ResourceSummary<ResourceContent> summary = projectMapper.listResourcesSummary(content);
+		ProjectI18nSummary<ProjectI18nContent> summary = projectMapper.listI18nsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ResourceContent> contents =
-				projectMapper.listResourcesContent(content, offset, limit);
+		List<ProjectI18nContent> contents =
+				projectMapper.listI18nsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -430,8 +422,8 @@ public class BuilderRpcController {
 	/**
 	 * プロジェクト(I18n)を取得する
 	 *
-	 * @param ownerProjectId ownerのプロジェクトID
-	 * @param targetLocaleId targetのlocaleId
+	 * @param ownerProjectId 所属プロジェクトのプロジェクトID
+	 * @param targetLocaleId 対象ロケールのロケールID
 	 * @return 取得したプロジェクト(I18n)
 	 */
 	@JsonRpcMethod
@@ -468,10 +460,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ownerを取得する
+	 * 所属プロジェクトを取得する
 	 *
 	 * @param content プロジェクト(I18n)
-	 * @return owner
+	 * @return 所属プロジェクト
 	 */
 	@JsonRpcMethod
 	public ProjectContent getProjectI18nOwner(
@@ -481,10 +473,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属プロジェクトの候補一覧を取得する
 	 *
 	 * @param content プロジェクト(I18n)
-	 * @return ownerの候補一覧
+	 * @return 所属プロジェクトの候補一覧
 	 */
 	@JsonRpcMethod
 	public ProjectSummary<ProjectSubject> listProjectI18nOwnerCandidate(
@@ -507,10 +499,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * targetを取得する
+	 * 対象ロケールを取得する
 	 *
 	 * @param content プロジェクト(I18n)
-	 * @return target
+	 * @return 対象ロケール
 	 */
 	@JsonRpcMethod
 	public LocaleContent getProjectI18nTarget(
@@ -520,10 +512,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * targetの候補一覧を取得する
+	 * 対象ロケールの候補一覧を取得する
 	 *
 	 * @param content プロジェクト(I18n)
-	 * @return targetの候補一覧
+	 * @return 対象ロケールの候補一覧
 	 */
 	@JsonRpcMethod
 	public LocaleSummary<LocaleSubject> listProjectI18nTargetCandidate(
@@ -683,45 +675,6 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * 表示ラベルを取得する
-	 *
-	 * @param content クラス
-	 * @return 表示ラベル
-	 */
-	@JsonRpcMethod
-	public ResourceContent getClassLabel(
-		@JsonRpcParam("content") ClassContent content
-	) {
-		return classMapper.getLabel(content);
-	}
-
-	/**
-	 * 表示ラベルの候補一覧を取得する
-	 *
-	 * @param content クラス
-	 * @return 表示ラベルの候補一覧
-	 */
-	@JsonRpcMethod
-	public ResourceSummary<ResourceSubject> listClassLabelCandidate(
-		@JsonRpcParam("content") ClassContent content,
-		@JsonRpcParam("hint") String hint,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		ResourceSummary<ResourceSubject> summary = classMapper.listLabelCandidateSummary(
-				content, hint);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<ResourceSubject> contents = classMapper.listLabelCandidateSubject(
-				content, hint,
-				offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
 	 * フィールド一覧情報を取得する
 	 *
 	 * @param content クラス
@@ -798,6 +751,157 @@ public class BuilderRpcController {
 		summary.setOffset(offset);
 		List<QueryContent> contents =
 				classMapper.listQueriesContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * クラス(I18n)を挿入する
+	 *
+	 * @param content 挿入するクラス(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertClassI18n(ClassI18nContent content) {
+		return classI18nMapper.insert(content);
+	}
+
+	/**
+	 * クラス(I18n)を更新する
+	 *
+	 * @param content 更新するクラス(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateClassI18n(ClassI18nContent content) {
+		return classI18nMapper.update(content);
+	}
+
+	/**
+	 * クラス(I18n)を削除する
+	 *
+	 * @param content 削除するクラス(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteClassI18n(ClassI18nContent content) {
+		return classI18nMapper.delete(content);
+	}
+
+	/**
+	 * クラス(I18n)を取得する
+	 *
+	 * @param ownerClassId 所属クラスのクラスID
+	 * @param targetLocaleId 対象ロケールのロケールID
+	 * @return 取得したクラス(I18n)
+	 */
+	@JsonRpcMethod
+	public ClassI18nContent getClassI18n(
+		@JsonRpcParam("ownerClassId") int ownerClassId, 
+		@JsonRpcParam("targetLocaleId") String targetLocaleId
+	) {
+		return classI18nMapper.get(
+				ownerClassId, 
+				targetLocaleId
+				);
+	}
+
+	/**
+	 * 全てのクラス(I18n)情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return クラス(I18n)情報
+	 */
+	@JsonRpcMethod
+	public ClassI18nSummary<ClassI18nContent> listClassI18n(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ClassI18nSummary<ClassI18nContent> summary = classI18nMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ClassI18nContent> contents = classI18nMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 所属クラスを取得する
+	 *
+	 * @param content クラス(I18n)
+	 * @return 所属クラス
+	 */
+	@JsonRpcMethod
+	public ClassContent getClassI18nOwner(
+		@JsonRpcParam("content") ClassI18nContent content
+	) {
+		return classI18nMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属クラスの候補一覧を取得する
+	 *
+	 * @param content クラス(I18n)
+	 * @return 所属クラスの候補一覧
+	 */
+	@JsonRpcMethod
+	public ClassSummary<ClassSubject> listClassI18nOwnerCandidate(
+		@JsonRpcParam("content") ClassI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ClassSummary<ClassSubject> summary = classI18nMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ClassSubject> contents = classI18nMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 対象ロケールを取得する
+	 *
+	 * @param content クラス(I18n)
+	 * @return 対象ロケール
+	 */
+	@JsonRpcMethod
+	public LocaleContent getClassI18nTarget(
+		@JsonRpcParam("content") ClassI18nContent content
+	) {
+		return classI18nMapper.getTarget(content);
+	}
+
+	/**
+	 * 対象ロケールの候補一覧を取得する
+	 *
+	 * @param content クラス(I18n)
+	 * @return 対象ロケールの候補一覧
+	 */
+	@JsonRpcMethod
+	public LocaleSummary<LocaleSubject> listClassI18nTargetCandidate(
+		@JsonRpcParam("content") ClassI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LocaleSummary<LocaleSubject> summary = classI18nMapper.listTargetCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LocaleSubject> contents = classI18nMapper.listTargetCandidateSubject(
+				content, hint,
+				offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1050,84 +1154,6 @@ public class BuilderRpcController {
 		}
 		summary.setOffset(offset);
 		List<FieldSubject> contents = fieldMapper.listFrefCandidateSubject(
-				content, hint,
-				offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * ラベルを取得する
-	 *
-	 * @param content フィールド
-	 * @return ラベル
-	 */
-	@JsonRpcMethod
-	public ResourceContent getFieldLabel(
-		@JsonRpcParam("content") FieldContent content
-	) {
-		return fieldMapper.getLabel(content);
-	}
-
-	/**
-	 * ラベルの候補一覧を取得する
-	 *
-	 * @param content フィールド
-	 * @return ラベルの候補一覧
-	 */
-	@JsonRpcMethod
-	public ResourceSummary<ResourceSubject> listFieldLabelCandidate(
-		@JsonRpcParam("content") FieldContent content,
-		@JsonRpcParam("hint") String hint,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		ResourceSummary<ResourceSubject> summary = fieldMapper.listLabelCandidateSummary(
-				content, hint);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<ResourceSubject> contents = fieldMapper.listLabelCandidateSubject(
-				content, hint,
-				offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * 書式を取得する
-	 *
-	 * @param content フィールド
-	 * @return 書式
-	 */
-	@JsonRpcMethod
-	public ResourceContent getFieldFormat(
-		@JsonRpcParam("content") FieldContent content
-	) {
-		return fieldMapper.getFormat(content);
-	}
-
-	/**
-	 * 書式の候補一覧を取得する
-	 *
-	 * @param content フィールド
-	 * @return 書式の候補一覧
-	 */
-	@JsonRpcMethod
-	public ResourceSummary<ResourceSubject> listFieldFormatCandidate(
-		@JsonRpcParam("content") FieldContent content,
-		@JsonRpcParam("hint") String hint,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		ResourceSummary<ResourceSubject> summary = fieldMapper.listFormatCandidateSummary(
-				content, hint);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<ResourceSubject> contents = fieldMapper.listFormatCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1678,45 +1704,6 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * メッセージを取得する
-	 *
-	 * @param content メッセージ
-	 * @return メッセージ
-	 */
-	@JsonRpcMethod
-	public ResourceContent getMessageMessage(
-		@JsonRpcParam("content") MessageContent content
-	) {
-		return messageMapper.getMessage(content);
-	}
-
-	/**
-	 * メッセージの候補一覧を取得する
-	 *
-	 * @param content メッセージ
-	 * @return メッセージの候補一覧
-	 */
-	@JsonRpcMethod
-	public ResourceSummary<ResourceSubject> listMessageMessageCandidate(
-		@JsonRpcParam("content") MessageContent content,
-		@JsonRpcParam("hint") String hint,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		ResourceSummary<ResourceSubject> summary = messageMapper.listMessageCandidateSummary(
-				content, hint);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<ResourceSubject> contents = messageMapper.listMessageCandidateSubject(
-				content, hint,
-				offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
 	 * ロケールを挿入する
 	 *
 	 * @param content 挿入するロケール
@@ -1752,7 +1739,7 @@ public class BuilderRpcController {
 	/**
 	 * ロケールを取得する
 	 *
-	 * @param localeId localeId
+	 * @param localeId ロケールID
 	 * @return 取得したロケール
 	 */
 	@JsonRpcMethod
@@ -1787,10 +1774,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ownerを取得する
+	 * 所属プロジェクトを取得する
 	 *
 	 * @param content ロケール
-	 * @return owner
+	 * @return 所属プロジェクト
 	 */
 	@JsonRpcMethod
 	public ProjectContent getLocaleOwner(
@@ -1800,10 +1787,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属プロジェクトの候補一覧を取得する
 	 *
 	 * @param content ロケール
-	 * @return ownerの候補一覧
+	 * @return 所属プロジェクトの候補一覧
 	 */
 	@JsonRpcMethod
 	public ProjectSummary<ProjectSubject> listLocaleOwnerCandidate(
@@ -1819,252 +1806,6 @@ public class BuilderRpcController {
 		}
 		summary.setOffset(offset);
 		List<ProjectSubject> contents = localeMapper.listOwnerCandidateSubject(
-				content, hint,
-				offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * リソースを挿入する
-	 *
-	 * @param content 挿入するリソース
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean insertResource(ResourceContent content) {
-		return resourceMapper.insert(content);
-	}
-
-	/**
-	 * リソースを更新する
-	 *
-	 * @param content 更新するリソース
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean updateResource(ResourceContent content) {
-		return resourceMapper.update(content);
-	}
-
-	/**
-	 * リソースを削除する
-	 *
-	 * @param content 削除するリソース
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean deleteResource(ResourceContent content) {
-		return resourceMapper.delete(content);
-	}
-
-	/**
-	 * リソースを取得する
-	 *
-	 * @param resourceId リソースID
-	 * @return 取得したリソース
-	 */
-	@JsonRpcMethod
-	public ResourceContent getResource(
-		@JsonRpcParam("resourceId") int resourceId
-	) {
-		return resourceMapper.get(
-				resourceId
-				);
-	}
-
-	/**
-	 * 全てのリソース情報を取得する
-	 *
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return リソース情報
-	 */
-	@JsonRpcMethod
-	public ResourceSummary<ResourceContent> listResource(
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		ResourceSummary<ResourceContent> summary = resourceMapper.listSummary();
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<ResourceContent> contents = resourceMapper.listContent(offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * 所属プロジェクトを取得する
-	 *
-	 * @param content リソース
-	 * @return 所属プロジェクト
-	 */
-	@JsonRpcMethod
-	public ProjectContent getResourceOwner(
-		@JsonRpcParam("content") ResourceContent content
-	) {
-		return resourceMapper.getOwner(content);
-	}
-
-	/**
-	 * 所属プロジェクトの候補一覧を取得する
-	 *
-	 * @param content リソース
-	 * @return 所属プロジェクトの候補一覧
-	 */
-	@JsonRpcMethod
-	public ProjectSummary<ProjectSubject> listResourceOwnerCandidate(
-		@JsonRpcParam("content") ResourceContent content,
-		@JsonRpcParam("hint") String hint,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		ProjectSummary<ProjectSubject> summary = resourceMapper.listOwnerCandidateSummary(
-				content, hint);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<ProjectSubject> contents = resourceMapper.listOwnerCandidateSubject(
-				content, hint,
-				offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * ロケール別リソース一覧情報を取得する
-	 *
-	 * @param content リソース
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return ロケール別リソース一覧情報
-	 */
-	@JsonRpcMethod
-	public LocalizedResourceSummary<LocalizedResourceContent> listResourceVariations(
-		@JsonRpcParam("content") ResourceContent content,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		LocalizedResourceSummary<LocalizedResourceContent> summary = resourceMapper.listVariationsSummary(content);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<LocalizedResourceContent> contents =
-				resourceMapper.listVariationsContent(content, offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * ローカライズドリソースを挿入する
-	 *
-	 * @param content 挿入するローカライズドリソース
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean insertLocalizedResource(LocalizedResourceContent content) {
-		return localizedResourceMapper.insert(content);
-	}
-
-	/**
-	 * ローカライズドリソースを更新する
-	 *
-	 * @param content 更新するローカライズドリソース
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean updateLocalizedResource(LocalizedResourceContent content) {
-		return localizedResourceMapper.update(content);
-	}
-
-	/**
-	 * ローカライズドリソースを削除する
-	 *
-	 * @param content 削除するローカライズドリソース
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean deleteLocalizedResource(LocalizedResourceContent content) {
-		return localizedResourceMapper.delete(content);
-	}
-
-	/**
-	 * ローカライズドリソースを取得する
-	 *
-	 * @param ownerResourceId 所属リソースのリソースID
-	 * @param locale ロケール
-	 * @return 取得したローカライズドリソース
-	 */
-	@JsonRpcMethod
-	public LocalizedResourceContent getLocalizedResource(
-		@JsonRpcParam("ownerResourceId") int ownerResourceId, 
-		@JsonRpcParam("locale") String locale
-	) {
-		return localizedResourceMapper.get(
-				ownerResourceId, 
-				locale
-				);
-	}
-
-	/**
-	 * 全てのローカライズドリソース情報を取得する
-	 *
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return ローカライズドリソース情報
-	 */
-	@JsonRpcMethod
-	public LocalizedResourceSummary<LocalizedResourceContent> listLocalizedResource(
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		LocalizedResourceSummary<LocalizedResourceContent> summary = localizedResourceMapper.listSummary();
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<LocalizedResourceContent> contents = localizedResourceMapper.listContent(offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * 所属リソースを取得する
-	 *
-	 * @param content ローカライズドリソース
-	 * @return 所属リソース
-	 */
-	@JsonRpcMethod
-	public ResourceContent getLocalizedResourceOwner(
-		@JsonRpcParam("content") LocalizedResourceContent content
-	) {
-		return localizedResourceMapper.getOwner(content);
-	}
-
-	/**
-	 * 所属リソースの候補一覧を取得する
-	 *
-	 * @param content ローカライズドリソース
-	 * @return 所属リソースの候補一覧
-	 */
-	@JsonRpcMethod
-	public ResourceSummary<ResourceSubject> listLocalizedResourceOwnerCandidate(
-		@JsonRpcParam("content") LocalizedResourceContent content,
-		@JsonRpcParam("hint") String hint,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		ResourceSummary<ResourceSubject> summary = localizedResourceMapper.listOwnerCandidateSummary(
-				content, hint);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<ResourceSubject> contents = localizedResourceMapper.listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
