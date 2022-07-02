@@ -36,15 +36,11 @@ public class EnumContent {
 
 	/**
 	 * タイトル
-	 *
-	 * 仕様書生成用見出し
 	 */
 	private String title;
 
 	/**
 	 * 説明
-	 *
-	 * 仕様書生成用説明文
 	 */
 	private String description;
 

@@ -1,0 +1,8 @@
+{
+  "hello" : {
+    "message" : "hello"
+  },
+  "bye" : {
+    "message" : "good bye"
+  }
+}

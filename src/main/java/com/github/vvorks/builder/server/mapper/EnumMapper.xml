@@ -151,7 +151,6 @@
 			T1.F_PROJECT_ID AS "projectId",
 			T1.F_PROJECT_NAME AS "projectName",
 			T1.F_GRADLE_NAME AS "gradleName",
-			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -227,6 +226,45 @@
 			T1.F_OWNER_ENUM_ID = #{ content.enumId }
 		ORDER BY
 			T1.F_CODE ASC
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="listI18nsSummary" resultType="EnumI18nSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_ENUM_I18N T1
+		WHERE
+			F_OWNER_ENUM_ID = #{ content.enumId }
+	</select>
+
+	<select id="listI18nsContent" resultType="EnumI18nContent">
+		SELECT
+			T1.F_OWNER_ENUM_ID AS "ownerEnumId",
+			T1.F_TARGET_LOCALE_ID AS "targetLocaleId",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T2.F_ENUM_NAME || '(' || T2.F_TITLE || ')' AS "_title",
+			T2.F_ENUM_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
+			T3.F_TITLE AS "target_title"
+		FROM
+			T_ENUM_I18N T1
+		LEFT JOIN T_ENUM T2 ON
+			T1.F_OWNER_ENUM_ID = T2.F_ENUM_ID
+		LEFT JOIN T_LOCALE T3 ON
+			T1.F_TARGET_LOCALE_ID = T3.F_LOCALE_ID
+		WHERE
+			T1.F_OWNER_ENUM_ID = #{ content.enumId }
+		ORDER BY
+			T2.F_ENUM_ID ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

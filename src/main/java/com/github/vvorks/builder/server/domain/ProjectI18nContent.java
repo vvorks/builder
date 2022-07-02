@@ -21,9 +21,14 @@ public class ProjectI18nContent {
 	private String targetLocaleId;
 
 	/**
-	 * I18nラベル
+	 * タイトル
 	 */
-	private String label;
+	private String title;
+
+	/**
+	 * 説明
+	 */
+	private String description;
 
 	/**
 	 * 最終更新時刻
@@ -102,21 +107,39 @@ public class ProjectI18nContent {
 	}
 
 	/**
-	 * I18nラベルを取得する
+	 * タイトルを取得する
 	 *
-	 * @return I18nラベル
+	 * @return タイトル
 	 */
-	public String getLabel() {
-		return this.label;
+	public String getTitle() {
+		return this.title;
 	}
 
 	/**
-	 * I18nラベルを設定する
+	 * タイトルを設定する
 	 *
-	 * @param label 設定するI18nラベル
+	 * @param title 設定するタイトル
 	 */
-	public void setLabel(String label) {
-		this.label = label;
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * 説明を取得する
+	 *
+	 * @return 説明
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+
+	/**
+	 * 説明を設定する
+	 *
+	 * @param description 設定する説明
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	/**
@@ -196,7 +219,8 @@ public class ProjectI18nContent {
 		return Objects.hash(
 			ownerProjectId,
 			targetLocaleId,
-			label,
+			title,
+			description,
 			_lastUpdatedAt
 			);
 	}
@@ -218,7 +242,8 @@ public class ProjectI18nContent {
 		return
 			this.ownerProjectId == other.ownerProjectId && 
 			Objects.equals(this.targetLocaleId, other.targetLocaleId) && 
-			Objects.equals(this.label, other.label) && 
+			Objects.equals(this.title, other.title) && 
+			Objects.equals(this.description, other.description) && 
 			Objects.equals(this._lastUpdatedAt, other._lastUpdatedAt)
 			;
 	}
@@ -229,7 +254,8 @@ public class ProjectI18nContent {
 		sb.append("ProjectI18nContent [");
 		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
 		sb.append("targetLocaleId=").append(targetLocaleId).append(", ");
-		sb.append("label=").append(label).append(", ");
+		sb.append("title=").append(title).append(", ");
+		sb.append("description=").append(description).append(", ");
 		sb.append("_lastUpdatedAt=").append(_lastUpdatedAt);
 		sb.append("]");
 		return sb.toString();

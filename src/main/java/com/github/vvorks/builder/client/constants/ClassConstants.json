@@ -1,0 +1,45 @@
+{
+  "Project" : {
+    "title" : "プロジェクト"
+  },
+  "ProjectI18n" : {
+    "title" : "プロジェクト(I18n)"
+  },
+  "Class" : {
+    "title" : "クラス"
+  },
+  "ClassI18n" : {
+    "title" : "クラス(I18n)"
+  },
+  "Field" : {
+    "title" : "フィールド"
+  },
+  "FieldI18n" : {
+    "title" : "フィールド(I18n)"
+  },
+  "Query" : {
+    "title" : "クエリー"
+  },
+  "Enum" : {
+    "title" : "列挙"
+  },
+  "EnumI18n" : {
+    "title" : "列挙(I18n)"
+  },
+  "EnumValue" : {
+    "title" : "列挙値"
+  },
+  "EnumValueI18n" : {
+    "title" : "列挙値(I18n)"
+  },
+  "Message" : {
+    "title" : "メッセージ"
+  },
+  "MessageI18n" : {
+    "title" : "メッセージ(I18n)"
+  },
+  "Locale" : {
+    "title" : "ロケール",
+    "description" : "ロケールマスタ"
+  }
+}

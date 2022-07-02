@@ -88,13 +88,6 @@ public class FieldContent {
 	private boolean needsMin;
 
 	/**
-	 * ラベル
-	 *
-	 * 画面用項目ラベル
-	 */
-	private String label;
-
-	/**
 	 * 書式
 	 *
 	 * 画面用項目書式
@@ -103,15 +96,11 @@ public class FieldContent {
 
 	/**
 	 * タイトル
-	 *
-	 * 仕様書生成用見出し
 	 */
 	private String title;
 
 	/**
 	 * 説明
-	 *
-	 * 仕様書生成用説明文
 	 */
 	private String description;
 
@@ -443,24 +432,6 @@ public class FieldContent {
 	}
 
 	/**
-	 * ラベルを取得する
-	 *
-	 * @return ラベル
-	 */
-	public String getLabel() {
-		return this.label;
-	}
-
-	/**
-	 * ラベルを設定する
-	 *
-	 * @param label 設定するラベル
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	/**
 	 * 書式を取得する
 	 *
 	 * @return 書式
@@ -676,7 +647,6 @@ public class FieldContent {
 			needsAvg,
 			needsMax,
 			needsMin,
-			label,
 			format,
 			title,
 			description,
@@ -715,7 +685,6 @@ public class FieldContent {
 			this.needsAvg == other.needsAvg && 
 			this.needsMax == other.needsMax && 
 			this.needsMin == other.needsMin && 
-			Objects.equals(this.label, other.label) && 
 			Objects.equals(this.format, other.format) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
@@ -743,7 +712,6 @@ public class FieldContent {
 		sb.append("needsAvg=").append(needsAvg).append(", ");
 		sb.append("needsMax=").append(needsMax).append(", ");
 		sb.append("needsMin=").append(needsMin).append(", ");
-		sb.append("label=").append(label).append(", ");
 		sb.append("format=").append(format).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");

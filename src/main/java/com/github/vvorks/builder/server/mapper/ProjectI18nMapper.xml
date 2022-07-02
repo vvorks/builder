@@ -7,19 +7,22 @@
 		INSERT INTO T_PROJECT_I18N (
 			F_OWNER_PROJECT_ID,
 			F_TARGET_LOCALE_ID,
-			F_LABEL,
+			F_TITLE,
+			F_DESCRIPTION,
 			F__LAST_UPDATED_AT
 		) VALUES (
 			#{ ownerProjectId },
 			#{ targetLocaleId },
-			#{ label },
+			#{ title },
+			#{ description },
 			(strftime('%s', 'now') * 1000)
 		)
 	</insert>
 
 	<update id="update" parameterType="ProjectI18nContent">
 		UPDATE T_PROJECT_I18N SET
-			F_LABEL = #{ label },
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
 			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
 		WHERE
 			F_OWNER_PROJECT_ID = #{ ownerProjectId } AND 
@@ -41,7 +44,8 @@
 		SELECT
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
 			T1.F_TARGET_LOCALE_ID AS "targetLocaleId",
-			T1.F_LABEL AS "label",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || '/I18n)' AS "_title",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
@@ -70,7 +74,8 @@
 		SELECT
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
 			T1.F_TARGET_LOCALE_ID AS "targetLocaleId",
-			T1.F_LABEL AS "label",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || '/I18n)' AS "_title",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
@@ -96,7 +101,6 @@
 			T1.F_PROJECT_ID AS "projectId",
 			T1.F_PROJECT_NAME AS "projectName",
 			T1.F_GRADLE_NAME AS "gradleName",
-			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",

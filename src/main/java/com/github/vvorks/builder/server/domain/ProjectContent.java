@@ -30,21 +30,12 @@ public class ProjectContent {
 	private String gradleName;
 
 	/**
-	 * ラベル
-	 */
-	private String label;
-
-	/**
 	 * タイトル
-	 *
-	 * 仕様書生成用見出し
 	 */
 	private String title;
 
 	/**
 	 * 説明
-	 *
-	 * 仕様書生成用説明文
 	 */
 	private String description;
 
@@ -137,24 +128,6 @@ public class ProjectContent {
 	 */
 	public void setGradleName(String gradleName) {
 		this.gradleName = gradleName;
-	}
-
-	/**
-	 * ラベルを取得する
-	 *
-	 * @return ラベル
-	 */
-	public String getLabel() {
-		return this.label;
-	}
-
-	/**
-	 * ラベルを設定する
-	 *
-	 * @param label 設定するラベル
-	 */
-	public void setLabel(String label) {
-		this.label = label;
 	}
 
 	/**
@@ -271,7 +244,6 @@ public class ProjectContent {
 			projectId,
 			projectName,
 			gradleName,
-			label,
 			title,
 			description,
 			note,
@@ -298,7 +270,6 @@ public class ProjectContent {
 			this.projectId == other.projectId && 
 			Objects.equals(this.projectName, other.projectName) && 
 			Objects.equals(this.gradleName, other.gradleName) && 
-			Objects.equals(this.label, other.label) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this.note, other.note) && 
@@ -314,7 +285,6 @@ public class ProjectContent {
 		sb.append("projectId=").append(projectId).append(", ");
 		sb.append("projectName=").append(projectName).append(", ");
 		sb.append("gradleName=").append(gradleName).append(", ");
-		sb.append("label=").append(label).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("note=").append(note).append(", ");

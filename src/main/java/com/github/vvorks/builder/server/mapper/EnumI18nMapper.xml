@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.vvorks.builder.server.mapper.EnumI18nMapper">
+
+	<insert id="insert" parameterType="EnumI18nContent">
+		INSERT INTO T_ENUM_I18N (
+			F_OWNER_ENUM_ID,
+			F_TARGET_LOCALE_ID,
+			F_TITLE,
+			F_DESCRIPTION,
+			F__LAST_UPDATED_AT
+		) VALUES (
+			#{ ownerEnumId },
+			#{ targetLocaleId },
+			#{ title },
+			#{ description },
+			(strftime('%s', 'now') * 1000)
+		)
+	</insert>
+
+	<update id="update" parameterType="EnumI18nContent">
+		UPDATE T_ENUM_I18N SET
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
+			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
+		WHERE
+			F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
+			F_TARGET_LOCALE_ID = #{ targetLocaleId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</update>
+
+	<delete id="delete" parameterType="EnumI18nContent">
+		DELETE FROM T_ENUM_I18N
+		WHERE
+			F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
+			F_TARGET_LOCALE_ID = #{ targetLocaleId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</delete>
+
+	<select id="get" resultType="EnumI18nContent">
+		SELECT
+			T1.F_OWNER_ENUM_ID AS "ownerEnumId",
+			T1.F_TARGET_LOCALE_ID AS "targetLocaleId",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T2.F_ENUM_NAME || '(' || T2.F_TITLE || ')' AS "_title",
+			T2.F_ENUM_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
+			T3.F_TITLE AS "target_title"
+		FROM
+			T_ENUM_I18N T1
+		LEFT JOIN T_ENUM T2 ON
+			T1.F_OWNER_ENUM_ID = T2.F_ENUM_ID
+		LEFT JOIN T_LOCALE T3 ON
+			T1.F_TARGET_LOCALE_ID = T3.F_LOCALE_ID
+		WHERE
+			T1.F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
+			T1.F_TARGET_LOCALE_ID = #{ targetLocaleId }
+	</select>
+
+	<select id="listSummary" resultType="EnumI18nSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_ENUM_I18N T1
+	</select>
+
+	<select id="listContent" resultType="EnumI18nContent">
+		SELECT
+			T1.F_OWNER_ENUM_ID AS "ownerEnumId",
+			T1.F_TARGET_LOCALE_ID AS "targetLocaleId",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T2.F_ENUM_NAME || '(' || T2.F_TITLE || ')' AS "_title",
+			T2.F_ENUM_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
+			T3.F_TITLE AS "target_title"
+		FROM
+			T_ENUM_I18N T1
+		LEFT JOIN T_ENUM T2 ON
+			T1.F_OWNER_ENUM_ID = T2.F_ENUM_ID
+		LEFT JOIN T_LOCALE T3 ON
+			T1.F_TARGET_LOCALE_ID = T3.F_LOCALE_ID
+		ORDER BY
+			T2.F_ENUM_ID ASC
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="getOwner" resultType="EnumContent">
+		SELECT
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_ENUM_NAME AS "enumName",
+			T1.F_ENCODE_STRING AS "encodeString",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_ENUM T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_ENUM_ID = #{ ownerEnumId }
+	</select>
+
+	<select id="listOwnerCandidateSummary" resultType="EnumSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_ENUM T1
+		<where>
+			<if test="hint != null">
+				T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listOwnerCandidateSubject" resultType="EnumSubject">
+		SELECT
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' AS "_title"
+		FROM
+			T_ENUM T1
+		<where>
+			<if test="hint != null">
+				T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	
+	<select id="getTarget" resultType="LocaleContent">
+		SELECT
+			T1.F_LOCALE_ID AS "localeId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_TITLE AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_LOCALE T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_LOCALE_ID = #{ targetLocaleId }
+	</select>
+
+	<select id="listTargetCandidateSummary" resultType="LocaleSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_LOCALE T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listTargetCandidateSubject" resultType="LocaleSubject">
+		SELECT
+			T1.F_LOCALE_ID AS "localeId",
+			T1.F_TITLE AS "_title"
+		FROM
+			T_LOCALE T1
+		<where>
+			<if test="hint != null">
+				T1.F_TITLE LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+</mapper>

@@ -367,6 +367,12 @@ public abstract class Json {
 		}
 	}
 
+	public void setStringIfExists(String key, String value) {
+		if (value != null && !value.isEmpty()) {
+			setString(key, value);
+		}
+	}
+
 	public abstract void set(String key, Json value);
 
 	public abstract Json setNewObject(String key);

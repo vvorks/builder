@@ -1,0 +1,37 @@
+{
+  "DataType" : {
+    "KEY" : {
+      "title" : "（自動）キー"
+    },
+    "REF" : {
+      "title" : "クラス参照型"
+    },
+    "ENUM" : {
+      "title" : "列挙参照型"
+    },
+    "SET" : {
+      "title" : "集合（被参照）型"
+    },
+    "ENUM_VALUE" : {
+      "title" : "列挙値型"
+    },
+    "BOOLEAN" : {
+      "title" : "真偽値"
+    },
+    "INTEGER" : {
+      "title" : "整数"
+    },
+    "REAL" : {
+      "title" : "浮動小数"
+    },
+    "NUMERIC" : {
+      "title" : "１０進小数"
+    },
+    "DATE" : {
+      "title" : "日付・時刻"
+    },
+    "STRING" : {
+      "title" : "文字列"
+    }
+  }
+}

@@ -205,4 +205,28 @@ public interface ClassMapper extends BuilderMapper<ClassContent> {
 		@Param("limit") int limit
 	);
 
+	/**
+	 * I18n一覧のサマリーを取得する
+	 *
+	 * @param content クラス
+	 * @return I18n一覧のサマリー
+	 */
+	public ClassI18nSummary<ClassI18nContent> listI18nsSummary(
+		@Param("content") ClassContent content
+	);
+
+	/**
+	 * I18n一覧を取得する
+	 *
+	 * @param content クラス
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return I18n一覧
+	 */
+	public List<ClassI18nContent> listI18nsContent(
+		@Param("content") ClassContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
 }

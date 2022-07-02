@@ -1,0 +1,44 @@
+{
+  "Project" : {
+    "title" : "Project"
+  },
+  "ProjectI18n" : {
+    "title" : "ProjectI18n"
+  },
+  "Class" : {
+    "title" : "Class"
+  },
+  "ClassI18n" : {
+    "title" : "ClassI18n"
+  },
+  "Field" : {
+    "title" : "Field"
+  },
+  "FieldI18n" : {
+    "title" : "FieldI18n"
+  },
+  "Query" : {
+    "title" : "Query"
+  },
+  "Enum" : {
+    "title" : "Enum"
+  },
+  "EnumI18n" : {
+    "title" : "EnumI18n"
+  },
+  "EnumValue" : {
+    "title" : "EnumValue"
+  },
+  "EnumValueI18n" : {
+    "title" : "EnumValueI18n"
+  },
+  "Message" : {
+    "title" : "Message"
+  },
+  "MessageI18n" : {
+    "title" : "MessageI18n"
+  },
+  "Locale" : {
+    "title" : "Locale"
+  }
+}

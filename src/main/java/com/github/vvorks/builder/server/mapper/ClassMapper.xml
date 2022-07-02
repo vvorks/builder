@@ -10,7 +10,6 @@
 			F_CLASS_NAME,
 			F_ORDER_EXPR,
 			F_TITLE_EXPR,
-			F_LABEL,
 			F_TITLE,
 			F_DESCRIPTION,
 			F_NOTE,
@@ -21,7 +20,6 @@
 			#{ className },
 			#{ orderExpr },
 			#{ titleExpr },
-			#{ label },
 			#{ title },
 			#{ description },
 			#{ note },
@@ -35,7 +33,6 @@
 			F_CLASS_NAME = #{ className },
 			F_ORDER_EXPR = #{ orderExpr },
 			F_TITLE_EXPR = #{ titleExpr },
-			F_LABEL = #{ label },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
@@ -61,7 +58,6 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
-			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -92,7 +88,6 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
-			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -133,7 +128,6 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
-			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -163,7 +157,6 @@
 			T1.F_PROJECT_ID AS "projectId",
 			T1.F_PROJECT_NAME AS "projectName",
 			T1.F_GRADLE_NAME AS "gradleName",
-			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -237,7 +230,6 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
-			T1.F_LABEL AS "label",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -307,7 +299,6 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
-			T1.F_LABEL AS "label",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -381,6 +372,45 @@
 			T1.F_OWNER_CLASS_ID = #{ content.classId }
 		ORDER BY
 			T1.F_QUERY_ID ASC
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="listI18nsSummary" resultType="ClassI18nSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_CLASS_I18N T1
+		WHERE
+			F_OWNER_CLASS_ID = #{ content.classId }
+	</select>
+
+	<select id="listI18nsContent" resultType="ClassI18nContent">
+		SELECT
+			T1.F_OWNER_CLASS_ID AS "ownerClassId",
+			T1.F_TARGET_LOCALE_ID AS "targetLocaleId",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T2.F_CLASS_NAME || '(' || T2.F_TITLE || ')' AS "_title",
+			T2.F_CLASS_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
+			T3.F_TITLE AS "target_title"
+		FROM
+			T_CLASS_I18N T1
+		LEFT JOIN T_CLASS T2 ON
+			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
+		LEFT JOIN T_LOCALE T3 ON
+			T1.F_TARGET_LOCALE_ID = T3.F_LOCALE_ID
+		WHERE
+			T1.F_OWNER_CLASS_ID = #{ content.classId }
+		ORDER BY
+			T2.F_CLASS_ID ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

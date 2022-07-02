@@ -155,4 +155,28 @@ public interface EnumMapper extends BuilderMapper<EnumContent> {
 		@Param("limit") int limit
 	);
 
+	/**
+	 * I18n一覧のサマリーを取得する
+	 *
+	 * @param content 列挙
+	 * @return I18n一覧のサマリー
+	 */
+	public EnumI18nSummary<EnumI18nContent> listI18nsSummary(
+		@Param("content") EnumContent content
+	);
+
+	/**
+	 * I18n一覧を取得する
+	 *
+	 * @param content 列挙
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return I18n一覧
+	 */
+	public List<EnumI18nContent> listI18nsContent(
+		@Param("content") EnumContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
 }

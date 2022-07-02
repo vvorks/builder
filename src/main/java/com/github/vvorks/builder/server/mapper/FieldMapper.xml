@@ -20,7 +20,6 @@
 			F_NEEDS_AVG,
 			F_NEEDS_MAX,
 			F_NEEDS_MIN,
-			F_LABEL,
 			F_FORMAT,
 			F_TITLE,
 			F_DESCRIPTION,
@@ -42,7 +41,6 @@
 			#{ needsAvg },
 			#{ needsMax },
 			#{ needsMin },
-			#{ label },
 			#{ format },
 			#{ title },
 			#{ description },
@@ -67,7 +65,6 @@
 			F_NEEDS_AVG = #{ needsAvg },
 			F_NEEDS_MAX = #{ needsMax },
 			F_NEEDS_MIN = #{ needsMin },
-			F_LABEL = #{ label },
 			F_FORMAT = #{ format },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
@@ -104,7 +101,6 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
-			T1.F_LABEL AS "label",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -161,7 +157,6 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
-			T1.F_LABEL AS "label",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -228,7 +223,6 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
-			T1.F_LABEL AS "label",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -276,7 +270,6 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
-			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -331,7 +324,6 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
-			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
@@ -449,7 +441,6 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
-			T1.F_LABEL AS "label",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -509,6 +500,48 @@
 				T2.F_CLASS_NAME || '/' || T1.F_FIELD_NAME LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="listI18nsSummary" resultType="FieldI18nSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_FIELD_I18N T1
+		WHERE
+			F_OWNER_FIELD_ID = #{ content.fieldId }
+	</select>
+
+	<select id="listI18nsContent" resultType="FieldI18nContent">
+		SELECT
+			T1.F_OWNER_FIELD_ID AS "ownerFieldId",
+			T1.F_TARGET_LOCALE_ID AS "targetLocaleId",
+			T1.F_FORMAT AS "format",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T3.F_CLASS_NAME || '/' || T2.F_FIELD_NAME AS "_title",
+			T3.F_CLASS_NAME || '/' || T2.F_FIELD_NAME AS "owner_title",
+			T4.F_TITLE AS "target_title"
+		FROM
+			T_FIELD_I18N T1
+		LEFT JOIN T_FIELD T2 ON
+			T1.F_OWNER_FIELD_ID = T2.F_FIELD_ID
+		LEFT JOIN T_CLASS T3 ON
+			T2.F_OWNER_CLASS_ID = T3.F_CLASS_ID
+		LEFT JOIN T_LOCALE T4 ON
+			T1.F_TARGET_LOCALE_ID = T4.F_LOCALE_ID
+		WHERE
+			T1.F_OWNER_FIELD_ID = #{ content.fieldId }
+		ORDER BY
+			T2.F_FIELD_ID ASC
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

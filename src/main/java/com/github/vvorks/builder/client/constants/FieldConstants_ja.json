@@ -1,0 +1,322 @@
+{
+  "Project" : {
+    "projectId" : {
+      "title" : "プロジェクトID"
+    },
+    "projectName" : {
+      "title" : "プロジェクト名"
+    },
+    "gradleName" : {
+      "title" : "gradleサブプロジェクト名"
+    },
+    "title" : {
+      "title" : "タイトル"
+    },
+    "description" : {
+      "title" : "説明"
+    },
+    "note" : {
+      "title" : "メモ"
+    },
+    "copyrights" : {
+      "title" : "著作権"
+    },
+    "classes" : {
+      "title" : "クラス一覧"
+    },
+    "enums" : {
+      "title" : "列挙一覧"
+    },
+    "messages" : {
+      "title" : "メッセージ一覧"
+    },
+    "locales" : {
+      "title" : "ロケール一覧"
+    },
+    "i18ns" : {
+      "title" : "I18n一覧"
+    }
+  },
+  "ProjectI18n" : {
+    "owner" : {
+      "title" : "所属プロジェクト"
+    },
+    "target" : {
+      "title" : "対象ロケール"
+    },
+    "title" : {
+      "title" : "タイトル"
+    },
+    "description" : {
+      "title" : "説明"
+    }
+  },
+  "Class" : {
+    "classId" : {
+      "title" : "クラスID"
+    },
+    "owner" : {
+      "title" : "所属プロジェクト"
+    },
+    "className" : {
+      "title" : "クラス名"
+    },
+    "orderExpr" : {
+      "title" : "オーダー式",
+      "description" : "デフォルトの表示順を表す式"
+    },
+    "titleExpr" : {
+      "title" : "タイトル表示式",
+      "description" : "オブジェクトのタイトルを表現する式"
+    },
+    "title" : {
+      "title" : "タイトル"
+    },
+    "description" : {
+      "title" : "説明"
+    },
+    "note" : {
+      "title" : "メモ"
+    },
+    "fields" : {
+      "title" : "フィールド一覧"
+    },
+    "queries" : {
+      "title" : "クエリー一覧"
+    },
+    "i18ns" : {
+      "title" : "I18n一覧"
+    }
+  },
+  "ClassI18n" : {
+    "owner" : {
+      "title" : "所属クラス"
+    },
+    "target" : {
+      "title" : "対象ロケール"
+    },
+    "title" : {
+      "title" : "タイトル"
+    },
+    "description" : {
+      "title" : "説明"
+    }
+  },
+  "Field" : {
+    "fieldId" : {
+      "title" : "フィールドID"
+    },
+    "owner" : {
+      "title" : "所属クラス"
+    },
+    "fieldName" : {
+      "title" : "フィールド名"
+    },
+    "type" : {
+      "title" : "フィールド型"
+    },
+    "width" : {
+      "title" : "フィールド型の幅"
+    },
+    "scale" : {
+      "title" : "フィールド型精度"
+    },
+    "cref" : {
+      "title" : "クラス参照先"
+    },
+    "eref" : {
+      "title" : "列挙参照先"
+    },
+    "fref" : {
+      "title" : "フィールド参照先"
+    },
+    "pk" : {
+      "title" : "プライマリキー"
+    },
+    "nullable" : {
+      "title" : "NULL許容"
+    },
+    "needsSum" : {
+      "title" : "要合計値"
+    },
+    "needsAvg" : {
+      "title" : "要平均値"
+    },
+    "needsMax" : {
+      "title" : "要最大値"
+    },
+    "needsMin" : {
+      "title" : "要最小値"
+    },
+    "format" : {
+      "title" : "書式",
+      "description" : "画面用項目書式"
+    },
+    "title" : {
+      "title" : "タイトル"
+    },
+    "description" : {
+      "title" : "説明"
+    },
+    "note" : {
+      "title" : "メモ"
+    },
+    "i18ns" : {
+      "title" : "所属フィールド"
+    }
+  },
+  "FieldI18n" : {
+    "owner" : {
+      "title" : "対象ロケール"
+    },
+    "target" : {
+      "title" : "書式"
+    },
+    "format" : {
+      "title" : "タイトル"
+    },
+    "title" : {
+      "title" : "説明"
+    },
+    "description" : {
+      "title" : "クエリーID"
+    }
+  },
+  "Query" : {
+    "queryId" : {
+      "title" : "所属クラス"
+    },
+    "owner" : {
+      "title" : "クエリー名"
+    },
+    "queryName" : {
+      "title" : "抽出条件",
+      "description" : "抽出条件を式形式で記載する"
+    },
+    "filter" : {
+      "title" : "ソート条件",
+      "description" : "ソート条件を式形式で記載する"
+    },
+    "order" : {
+      "title" : "タイトル"
+    },
+    "title" : {
+      "title" : "説明"
+    },
+    "description" : {
+      "title" : "メモ"
+    },
+    "note" : {
+      "title" : "列挙ID"
+    }
+  },
+  "Enum" : {
+    "enumId" : {
+      "title" : "所属プロジェクト"
+    },
+    "owner" : {
+      "title" : "列挙名"
+    },
+    "enumName" : {
+      "title" : "文字列エンコード",
+      "description" : "文字列エンコードする場合、真"
+    },
+    "encodeString" : {
+      "title" : "タイトル"
+    },
+    "title" : {
+      "title" : "説明"
+    },
+    "description" : {
+      "title" : "メモ"
+    },
+    "note" : {
+      "title" : "列挙値一覧"
+    },
+    "values" : {
+      "title" : "所属列挙"
+    },
+    "i18ns" : {
+      "title" : "対象ロケール"
+    }
+  },
+  "EnumI18n" : {
+    "owner" : {
+      "title" : "タイトル"
+    },
+    "target" : {
+      "title" : "説明"
+    },
+    "title" : {
+      "title" : "所属列挙"
+    },
+    "description" : {
+      "title" : "列挙名"
+    }
+  },
+  "EnumValue" : {
+    "owner" : {
+      "title" : "列挙コード"
+    },
+    "valueId" : {
+      "title" : "タイトル"
+    },
+    "code" : {
+      "title" : "説明"
+    },
+    "title" : {
+      "title" : "メモ"
+    },
+    "description" : {
+      "title" : "所属列挙値"
+    },
+    "note" : {
+      "title" : "対象ロケール"
+    },
+    "i18ns" : {
+      "title" : "タイトル"
+    }
+  },
+  "EnumValueI18n" : {
+    "owner" : {
+      "title" : "説明"
+    },
+    "target" : {
+      "title" : "メッセージID"
+    },
+    "title" : {
+      "title" : "所属プロジェクト"
+    },
+    "description" : {
+      "title" : "メッセージ名"
+    }
+  },
+  "Message" : {
+    "messageId" : {
+      "title" : "メッセージ"
+    },
+    "owner" : {
+      "title" : "所属列挙値"
+    },
+    "messageName" : {
+      "title" : "対象ロケール"
+    },
+    "message" : {
+      "title" : "メッセージ"
+    },
+    "i18ns" : {
+      "title" : "ロケールID"
+    }
+  },
+  "MessageI18n" : {
+    "owner" : {
+      "title" : "所属プロジェクト"
+    },
+    "target" : {
+      "title" : "タイトル"
+    },
+    "message" : {
+      "title" : "説明"
+    }
+  }
+}

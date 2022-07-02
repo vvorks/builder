@@ -20,18 +20,30 @@ import com.github.vvorks.builder.server.domain.ClassI18nSummary;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumSubject;
 import com.github.vvorks.builder.server.domain.EnumSummary;
+import com.github.vvorks.builder.server.domain.EnumI18nContent;
+import com.github.vvorks.builder.server.domain.EnumI18nSubject;
+import com.github.vvorks.builder.server.domain.EnumI18nSummary;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
 import com.github.vvorks.builder.server.domain.EnumValueSubject;
 import com.github.vvorks.builder.server.domain.EnumValueSummary;
+import com.github.vvorks.builder.server.domain.EnumValueI18nContent;
+import com.github.vvorks.builder.server.domain.EnumValueI18nSubject;
+import com.github.vvorks.builder.server.domain.EnumValueI18nSummary;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.FieldSubject;
 import com.github.vvorks.builder.server.domain.FieldSummary;
+import com.github.vvorks.builder.server.domain.FieldI18nContent;
+import com.github.vvorks.builder.server.domain.FieldI18nSubject;
+import com.github.vvorks.builder.server.domain.FieldI18nSummary;
 import com.github.vvorks.builder.server.domain.LocaleContent;
 import com.github.vvorks.builder.server.domain.LocaleSubject;
 import com.github.vvorks.builder.server.domain.LocaleSummary;
 import com.github.vvorks.builder.server.domain.MessageContent;
 import com.github.vvorks.builder.server.domain.MessageSubject;
 import com.github.vvorks.builder.server.domain.MessageSummary;
+import com.github.vvorks.builder.server.domain.MessageI18nContent;
+import com.github.vvorks.builder.server.domain.MessageI18nSubject;
+import com.github.vvorks.builder.server.domain.MessageI18nSummary;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.ProjectSubject;
 import com.github.vvorks.builder.server.domain.ProjectSummary;
@@ -47,10 +59,14 @@ import com.github.vvorks.builder.server.domain.DataTypeSummary;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.ClassI18nMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
+import com.github.vvorks.builder.server.mapper.EnumI18nMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
+import com.github.vvorks.builder.server.mapper.EnumValueI18nMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
+import com.github.vvorks.builder.server.mapper.FieldI18nMapper;
 import com.github.vvorks.builder.server.mapper.LocaleMapper;
 import com.github.vvorks.builder.server.mapper.MessageMapper;
+import com.github.vvorks.builder.server.mapper.MessageI18nMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 import com.github.vvorks.builder.server.mapper.ProjectI18nMapper;
 import com.github.vvorks.builder.server.mapper.QueryMapper;
@@ -81,6 +97,10 @@ public class BuilderRpcController {
 	@Autowired
 	private FieldMapper fieldMapper;
 
+	/** フィールド(I18n)のMapper */
+	@Autowired
+	private FieldI18nMapper fieldI18nMapper;
+
 	/** クエリーのMapper */
 	@Autowired
 	private QueryMapper queryMapper;
@@ -89,13 +109,25 @@ public class BuilderRpcController {
 	@Autowired
 	private EnumMapper enumMapper;
 
+	/** 列挙(I18n)のMapper */
+	@Autowired
+	private EnumI18nMapper enumI18nMapper;
+
 	/** 列挙値のMapper */
 	@Autowired
 	private EnumValueMapper enumValueMapper;
 
+	/** 列挙値(I18n)のMapper */
+	@Autowired
+	private EnumValueI18nMapper enumValueI18nMapper;
+
 	/** メッセージのMapper */
 	@Autowired
 	private MessageMapper messageMapper;
+
+	/** メッセージ(I18n)のMapper */
+	@Autowired
+	private MessageI18nMapper messageI18nMapper;
 
 	/** ロケールのMapper */
 	@Autowired
@@ -756,6 +788,31 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * I18n一覧情報を取得する
+	 *
+	 * @param content クラス
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return I18n一覧情報
+	 */
+	@JsonRpcMethod
+	public ClassI18nSummary<ClassI18nContent> listClassI18ns(
+		@JsonRpcParam("content") ClassContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ClassI18nSummary<ClassI18nContent> summary = classMapper.listI18nsSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ClassI18nContent> contents =
+				classMapper.listI18nsContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * クラス(I18n)を挿入する
 	 *
 	 * @param content 挿入するクラス(I18n)
@@ -1212,6 +1269,182 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * I18n一覧情報を取得する
+	 *
+	 * @param content フィールド
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return I18n一覧情報
+	 */
+	@JsonRpcMethod
+	public FieldI18nSummary<FieldI18nContent> listFieldI18ns(
+		@JsonRpcParam("content") FieldContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		FieldI18nSummary<FieldI18nContent> summary = fieldMapper.listI18nsSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<FieldI18nContent> contents =
+				fieldMapper.listI18nsContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * フィールド(I18n)を挿入する
+	 *
+	 * @param content 挿入するフィールド(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertFieldI18n(FieldI18nContent content) {
+		return fieldI18nMapper.insert(content);
+	}
+
+	/**
+	 * フィールド(I18n)を更新する
+	 *
+	 * @param content 更新するフィールド(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateFieldI18n(FieldI18nContent content) {
+		return fieldI18nMapper.update(content);
+	}
+
+	/**
+	 * フィールド(I18n)を削除する
+	 *
+	 * @param content 削除するフィールド(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteFieldI18n(FieldI18nContent content) {
+		return fieldI18nMapper.delete(content);
+	}
+
+	/**
+	 * フィールド(I18n)を取得する
+	 *
+	 * @param ownerFieldId 所属フィールドのフィールドID
+	 * @param targetLocaleId 対象ロケールのロケールID
+	 * @return 取得したフィールド(I18n)
+	 */
+	@JsonRpcMethod
+	public FieldI18nContent getFieldI18n(
+		@JsonRpcParam("ownerFieldId") int ownerFieldId, 
+		@JsonRpcParam("targetLocaleId") String targetLocaleId
+	) {
+		return fieldI18nMapper.get(
+				ownerFieldId, 
+				targetLocaleId
+				);
+	}
+
+	/**
+	 * 全てのフィールド(I18n)情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return フィールド(I18n)情報
+	 */
+	@JsonRpcMethod
+	public FieldI18nSummary<FieldI18nContent> listFieldI18n(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		FieldI18nSummary<FieldI18nContent> summary = fieldI18nMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<FieldI18nContent> contents = fieldI18nMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 所属フィールドを取得する
+	 *
+	 * @param content フィールド(I18n)
+	 * @return 所属フィールド
+	 */
+	@JsonRpcMethod
+	public FieldContent getFieldI18nOwner(
+		@JsonRpcParam("content") FieldI18nContent content
+	) {
+		return fieldI18nMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属フィールドの候補一覧を取得する
+	 *
+	 * @param content フィールド(I18n)
+	 * @return 所属フィールドの候補一覧
+	 */
+	@JsonRpcMethod
+	public FieldSummary<FieldSubject> listFieldI18nOwnerCandidate(
+		@JsonRpcParam("content") FieldI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		FieldSummary<FieldSubject> summary = fieldI18nMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<FieldSubject> contents = fieldI18nMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 対象ロケールを取得する
+	 *
+	 * @param content フィールド(I18n)
+	 * @return 対象ロケール
+	 */
+	@JsonRpcMethod
+	public LocaleContent getFieldI18nTarget(
+		@JsonRpcParam("content") FieldI18nContent content
+	) {
+		return fieldI18nMapper.getTarget(content);
+	}
+
+	/**
+	 * 対象ロケールの候補一覧を取得する
+	 *
+	 * @param content フィールド(I18n)
+	 * @return 対象ロケールの候補一覧
+	 */
+	@JsonRpcMethod
+	public LocaleSummary<LocaleSubject> listFieldI18nTargetCandidate(
+		@JsonRpcParam("content") FieldI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LocaleSummary<LocaleSubject> summary = fieldI18nMapper.listTargetCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LocaleSubject> contents = fieldI18nMapper.listTargetCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * クエリーを挿入する
 	 *
 	 * @param content 挿入するクエリー
@@ -1483,6 +1716,182 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * I18n一覧情報を取得する
+	 *
+	 * @param content 列挙
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return I18n一覧情報
+	 */
+	@JsonRpcMethod
+	public EnumI18nSummary<EnumI18nContent> listEnumI18ns(
+		@JsonRpcParam("content") EnumContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		EnumI18nSummary<EnumI18nContent> summary = enumMapper.listI18nsSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<EnumI18nContent> contents =
+				enumMapper.listI18nsContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 列挙(I18n)を挿入する
+	 *
+	 * @param content 挿入する列挙(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertEnumI18n(EnumI18nContent content) {
+		return enumI18nMapper.insert(content);
+	}
+
+	/**
+	 * 列挙(I18n)を更新する
+	 *
+	 * @param content 更新する列挙(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateEnumI18n(EnumI18nContent content) {
+		return enumI18nMapper.update(content);
+	}
+
+	/**
+	 * 列挙(I18n)を削除する
+	 *
+	 * @param content 削除する列挙(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteEnumI18n(EnumI18nContent content) {
+		return enumI18nMapper.delete(content);
+	}
+
+	/**
+	 * 列挙(I18n)を取得する
+	 *
+	 * @param ownerEnumId 所属列挙の列挙ID
+	 * @param targetLocaleId 対象ロケールのロケールID
+	 * @return 取得した列挙(I18n)
+	 */
+	@JsonRpcMethod
+	public EnumI18nContent getEnumI18n(
+		@JsonRpcParam("ownerEnumId") int ownerEnumId, 
+		@JsonRpcParam("targetLocaleId") String targetLocaleId
+	) {
+		return enumI18nMapper.get(
+				ownerEnumId, 
+				targetLocaleId
+				);
+	}
+
+	/**
+	 * 全ての列挙(I18n)情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 列挙(I18n)情報
+	 */
+	@JsonRpcMethod
+	public EnumI18nSummary<EnumI18nContent> listEnumI18n(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		EnumI18nSummary<EnumI18nContent> summary = enumI18nMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<EnumI18nContent> contents = enumI18nMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 所属列挙を取得する
+	 *
+	 * @param content 列挙(I18n)
+	 * @return 所属列挙
+	 */
+	@JsonRpcMethod
+	public EnumContent getEnumI18nOwner(
+		@JsonRpcParam("content") EnumI18nContent content
+	) {
+		return enumI18nMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属列挙の候補一覧を取得する
+	 *
+	 * @param content 列挙(I18n)
+	 * @return 所属列挙の候補一覧
+	 */
+	@JsonRpcMethod
+	public EnumSummary<EnumSubject> listEnumI18nOwnerCandidate(
+		@JsonRpcParam("content") EnumI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		EnumSummary<EnumSubject> summary = enumI18nMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<EnumSubject> contents = enumI18nMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 対象ロケールを取得する
+	 *
+	 * @param content 列挙(I18n)
+	 * @return 対象ロケール
+	 */
+	@JsonRpcMethod
+	public LocaleContent getEnumI18nTarget(
+		@JsonRpcParam("content") EnumI18nContent content
+	) {
+		return enumI18nMapper.getTarget(content);
+	}
+
+	/**
+	 * 対象ロケールの候補一覧を取得する
+	 *
+	 * @param content 列挙(I18n)
+	 * @return 対象ロケールの候補一覧
+	 */
+	@JsonRpcMethod
+	public LocaleSummary<LocaleSubject> listEnumI18nTargetCandidate(
+		@JsonRpcParam("content") EnumI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LocaleSummary<LocaleSubject> summary = enumI18nMapper.listTargetCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LocaleSubject> contents = enumI18nMapper.listTargetCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * 列挙値を挿入する
 	 *
 	 * @param content 挿入する列挙値
@@ -1595,6 +2004,185 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * I18n一覧情報を取得する
+	 *
+	 * @param content 列挙値
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return I18n一覧情報
+	 */
+	@JsonRpcMethod
+	public EnumValueI18nSummary<EnumValueI18nContent> listEnumValueI18ns(
+		@JsonRpcParam("content") EnumValueContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		EnumValueI18nSummary<EnumValueI18nContent> summary = enumValueMapper.listI18nsSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<EnumValueI18nContent> contents =
+				enumValueMapper.listI18nsContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 列挙値(I18n)を挿入する
+	 *
+	 * @param content 挿入する列挙値(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertEnumValueI18n(EnumValueI18nContent content) {
+		return enumValueI18nMapper.insert(content);
+	}
+
+	/**
+	 * 列挙値(I18n)を更新する
+	 *
+	 * @param content 更新する列挙値(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateEnumValueI18n(EnumValueI18nContent content) {
+		return enumValueI18nMapper.update(content);
+	}
+
+	/**
+	 * 列挙値(I18n)を削除する
+	 *
+	 * @param content 削除する列挙値(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteEnumValueI18n(EnumValueI18nContent content) {
+		return enumValueI18nMapper.delete(content);
+	}
+
+	/**
+	 * 列挙値(I18n)を取得する
+	 *
+	 * @param ownerOwnerEnumId 所属列挙値の所属列挙の列挙ID
+	 * @param ownerValueId 所属列挙値の列挙名
+	 * @param targetLocaleId 対象ロケールのロケールID
+	 * @return 取得した列挙値(I18n)
+	 */
+	@JsonRpcMethod
+	public EnumValueI18nContent getEnumValueI18n(
+		@JsonRpcParam("ownerOwnerEnumId") int ownerOwnerEnumId, 
+		@JsonRpcParam("ownerValueId") String ownerValueId, 
+		@JsonRpcParam("targetLocaleId") String targetLocaleId
+	) {
+		return enumValueI18nMapper.get(
+				ownerOwnerEnumId, 
+				ownerValueId, 
+				targetLocaleId
+				);
+	}
+
+	/**
+	 * 全ての列挙値(I18n)情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 列挙値(I18n)情報
+	 */
+	@JsonRpcMethod
+	public EnumValueI18nSummary<EnumValueI18nContent> listEnumValueI18n(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		EnumValueI18nSummary<EnumValueI18nContent> summary = enumValueI18nMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<EnumValueI18nContent> contents = enumValueI18nMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 所属列挙値を取得する
+	 *
+	 * @param content 列挙値(I18n)
+	 * @return 所属列挙値
+	 */
+	@JsonRpcMethod
+	public EnumValueContent getEnumValueI18nOwner(
+		@JsonRpcParam("content") EnumValueI18nContent content
+	) {
+		return enumValueI18nMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属列挙値の候補一覧を取得する
+	 *
+	 * @param content 列挙値(I18n)
+	 * @return 所属列挙値の候補一覧
+	 */
+	@JsonRpcMethod
+	public EnumValueSummary<EnumValueSubject> listEnumValueI18nOwnerCandidate(
+		@JsonRpcParam("content") EnumValueI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		EnumValueSummary<EnumValueSubject> summary = enumValueI18nMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<EnumValueSubject> contents = enumValueI18nMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 対象ロケールを取得する
+	 *
+	 * @param content 列挙値(I18n)
+	 * @return 対象ロケール
+	 */
+	@JsonRpcMethod
+	public LocaleContent getEnumValueI18nTarget(
+		@JsonRpcParam("content") EnumValueI18nContent content
+	) {
+		return enumValueI18nMapper.getTarget(content);
+	}
+
+	/**
+	 * 対象ロケールの候補一覧を取得する
+	 *
+	 * @param content 列挙値(I18n)
+	 * @return 対象ロケールの候補一覧
+	 */
+	@JsonRpcMethod
+	public LocaleSummary<LocaleSubject> listEnumValueI18nTargetCandidate(
+		@JsonRpcParam("content") EnumValueI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LocaleSummary<LocaleSubject> summary = enumValueI18nMapper.listTargetCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LocaleSubject> contents = enumValueI18nMapper.listTargetCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * メッセージを挿入する
 	 *
 	 * @param content 挿入するメッセージ
@@ -1697,6 +2285,182 @@ public class BuilderRpcController {
 		}
 		summary.setOffset(offset);
 		List<ProjectSubject> contents = messageMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * I18n一覧情報を取得する
+	 *
+	 * @param content メッセージ
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return I18n一覧情報
+	 */
+	@JsonRpcMethod
+	public MessageI18nSummary<MessageI18nContent> listMessageI18ns(
+		@JsonRpcParam("content") MessageContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		MessageI18nSummary<MessageI18nContent> summary = messageMapper.listI18nsSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<MessageI18nContent> contents =
+				messageMapper.listI18nsContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * メッセージ(I18n)を挿入する
+	 *
+	 * @param content 挿入するメッセージ(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertMessageI18n(MessageI18nContent content) {
+		return messageI18nMapper.insert(content);
+	}
+
+	/**
+	 * メッセージ(I18n)を更新する
+	 *
+	 * @param content 更新するメッセージ(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateMessageI18n(MessageI18nContent content) {
+		return messageI18nMapper.update(content);
+	}
+
+	/**
+	 * メッセージ(I18n)を削除する
+	 *
+	 * @param content 削除するメッセージ(I18n)
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteMessageI18n(MessageI18nContent content) {
+		return messageI18nMapper.delete(content);
+	}
+
+	/**
+	 * メッセージ(I18n)を取得する
+	 *
+	 * @param ownerMessageId 所属列挙値のメッセージID
+	 * @param targetLocaleId 対象ロケールのロケールID
+	 * @return 取得したメッセージ(I18n)
+	 */
+	@JsonRpcMethod
+	public MessageI18nContent getMessageI18n(
+		@JsonRpcParam("ownerMessageId") int ownerMessageId, 
+		@JsonRpcParam("targetLocaleId") String targetLocaleId
+	) {
+		return messageI18nMapper.get(
+				ownerMessageId, 
+				targetLocaleId
+				);
+	}
+
+	/**
+	 * 全てのメッセージ(I18n)情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return メッセージ(I18n)情報
+	 */
+	@JsonRpcMethod
+	public MessageI18nSummary<MessageI18nContent> listMessageI18n(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		MessageI18nSummary<MessageI18nContent> summary = messageI18nMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<MessageI18nContent> contents = messageI18nMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 所属列挙値を取得する
+	 *
+	 * @param content メッセージ(I18n)
+	 * @return 所属列挙値
+	 */
+	@JsonRpcMethod
+	public MessageContent getMessageI18nOwner(
+		@JsonRpcParam("content") MessageI18nContent content
+	) {
+		return messageI18nMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属列挙値の候補一覧を取得する
+	 *
+	 * @param content メッセージ(I18n)
+	 * @return 所属列挙値の候補一覧
+	 */
+	@JsonRpcMethod
+	public MessageSummary<MessageSubject> listMessageI18nOwnerCandidate(
+		@JsonRpcParam("content") MessageI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		MessageSummary<MessageSubject> summary = messageI18nMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<MessageSubject> contents = messageI18nMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 対象ロケールを取得する
+	 *
+	 * @param content メッセージ(I18n)
+	 * @return 対象ロケール
+	 */
+	@JsonRpcMethod
+	public LocaleContent getMessageI18nTarget(
+		@JsonRpcParam("content") MessageI18nContent content
+	) {
+		return messageI18nMapper.getTarget(content);
+	}
+
+	/**
+	 * 対象ロケールの候補一覧を取得する
+	 *
+	 * @param content メッセージ(I18n)
+	 * @return 対象ロケールの候補一覧
+	 */
+	@JsonRpcMethod
+	public LocaleSummary<LocaleSubject> listMessageI18nTargetCandidate(
+		@JsonRpcParam("content") MessageI18nContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LocaleSummary<LocaleSubject> summary = messageI18nMapper.listTargetCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LocaleSubject> contents = messageI18nMapper.listTargetCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);

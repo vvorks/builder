@@ -239,4 +239,28 @@ public interface FieldMapper extends BuilderMapper<FieldContent> {
 		@Param("limit") int limit
 	);
 
+	/**
+	 * I18n一覧のサマリーを取得する
+	 *
+	 * @param content フィールド
+	 * @return I18n一覧のサマリー
+	 */
+	public FieldI18nSummary<FieldI18nContent> listI18nsSummary(
+		@Param("content") FieldContent content
+	);
+
+	/**
+	 * I18n一覧を取得する
+	 *
+	 * @param content フィールド
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return I18n一覧
+	 */
+	public List<FieldI18nContent> listI18nsContent(
+		@Param("content") FieldContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
 }

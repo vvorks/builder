@@ -7,19 +7,46 @@ package {{global.project.projectName}}.client.constants;
 {{/java}}
 
 //
-// class label
+// class constants
 //
-{{#each classLabels}}
-{{#java this "client/constants/ClassLabel" key ".json"}}
+{{#each projectConstants}}
+{{#java this "client/constants/ProjectConstants" key ".json"}}
 {{value.content}}
 {{/java}}
 {{/each}}
 
 //
-// field label
+// class constants
 //
-{{#each fieldLabels}}
-{{#java this "client/constants/FieldLabel" key ".json"}}
+{{#each classConstants}}
+{{#java this "client/constants/ClassConstants" key ".json"}}
+{{value.content}}
+{{/java}}
+{{/each}}
+
+//
+// field constants
+//
+{{#each fieldConstants}}
+{{#java this "client/constants/FieldConstants" key ".json"}}
+{{value.content}}
+{{/java}}
+{{/each}}
+
+//
+// enum constants
+//
+{{#each enumConstants}}
+{{#java this "client/constants/EnumConstants" key ".json"}}
+{{value.content}}
+{{/java}}
+{{/each}}
+
+//
+// enum value constants
+//
+{{#each enumValueConstants}}
+{{#java this "client/constants/EnumValueConstants" key ".json"}}
 {{value.content}}
 {{/java}}
 {{/each}}

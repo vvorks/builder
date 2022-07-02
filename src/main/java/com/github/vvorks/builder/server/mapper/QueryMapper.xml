@@ -115,7 +115,6 @@
 			T1.F_CLASS_NAME AS "className",
 			T1.F_ORDER_EXPR AS "orderExpr",
 			T1.F_TITLE_EXPR AS "titleExpr",
-			T1.F_LABEL AS "label",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
 			T1.F_NOTE AS "note",
