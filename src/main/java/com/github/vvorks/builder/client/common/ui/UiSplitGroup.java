@@ -436,7 +436,7 @@ public class UiSplitGroup extends UiGroup {
 		for (UiNode younger : splitter.getYoungerPanes()) {
 			maxPos = Math.min(maxPos, (totalHeight - younger.getBottomPx()) - spacing);
 		}
-		int newPos = Math.min(Math.max(minPos, minPos + elderSize), maxPos);
+		int newPos = between(minPos + elderSize, minPos, maxPos);
 		setHorizontal(elder   , minPos, newPos);
 		setHorizontal(splitter, newPos, newPos + spacing);
 		int newSize = newPos - minPos;
@@ -459,7 +459,7 @@ public class UiSplitGroup extends UiGroup {
 		for (UiNode younger : splitter.getYoungerPanes()) {
 			minPos = Math.max(minPos, younger.getTopPx() + spacing);
 		}
-		int newPos = Math.min(Math.max(minPos, maxPos - elderSize), maxPos);
+		int newPos = between(maxPos - elderSize, minPos, maxPos);
 		setHorizontal(elder   , newPos, maxPos);
 		setHorizontal(splitter, newPos - spacing, newPos);
 		int newSize = maxPos - newPos;
@@ -495,7 +495,7 @@ public class UiSplitGroup extends UiGroup {
 		for (UiNode c : splitter.getYoungerPanes()) {
 			maxPos = Math.min(maxPos, (totalWidth - c.getRightPx()) - spacing);
 		}
-		int newPos = Math.min(Math.max(minPos, minPos + elderSize), maxPos);
+		int newPos = between(minPos + elderSize, minPos, maxPos);
 		setVertical(elder   , minPos, newPos);
 		setVertical(splitter, newPos, newPos + spacing);
 		int newSize = newPos - minPos;
@@ -518,7 +518,7 @@ public class UiSplitGroup extends UiGroup {
 		for (UiNode younger : splitter.getYoungerPanes()) {
 			minPos = Math.max(minPos, younger.getLeftPx() + spacing);
 		}
-		int newPos = Math.min(Math.max(minPos, maxPos - elderSize), maxPos);
+		int newPos = between(maxPos - elderSize, minPos, maxPos);
 		setVertical(elder   , newPos, maxPos);
 		setVertical(splitter, newPos - spacing, newPos);
 		int newSize = maxPos - newPos;

@@ -134,6 +134,7 @@ public abstract class UiScrollBar extends UiNode implements Scrollable.Listener 
 	public void onVerticalScroll(UiNode node, int offset, int limit, int count) {
 		lastOffset = offset;
 		lastLimit = limit;
+		lastCount = count;
 		ratio = (double) count / getHeightPx();
 		if (offset + limit <= count) {
 			//通常のケース

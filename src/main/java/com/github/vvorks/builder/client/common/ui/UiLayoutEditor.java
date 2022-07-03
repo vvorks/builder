@@ -271,27 +271,27 @@ public class UiLayoutEditor extends UiNode {
 			int w = getWidthPx();
 			int h = getHeightPx();
 			HandleType type;
-			if (between(x, HANDLE_HALF, w - HANDLE_HALF) &&
-				between(y, HANDLE_HALF, h - HANDLE_HALF)  ) {
+			if (contains(x, HANDLE_HALF, w - HANDLE_HALF) &&
+				contains(y, HANDLE_HALF, h - HANDLE_HALF)  ) {
 				type = HandleType.C;
 			} else {
 				type = HandleType.OB;
 			}
 			int index = 0;
-			if (between(y, h - HANDLE_SIZE, h)) {
+			if (contains(y, h - HANDLE_SIZE, h)) {
 				index += HandleType.S.row() * 3;
-			} else if (between(y, h/2 - HANDLE_HALF, h/2 + HANDLE_HALF)) {
+			} else if (contains(y, h/2 - HANDLE_HALF, h/2 + HANDLE_HALF)) {
 				index += HandleType.C.row() * 3;
-			} else if (between(y, 0, HANDLE_SIZE)) {
+			} else if (contains(y, 0, HANDLE_SIZE)) {
 				index += HandleType.N.row() * 3;
 			} else {
 				return type;
 			}
-			if (between(x, w - HANDLE_SIZE, w)) {
+			if (contains(x, w - HANDLE_SIZE, w)) {
 				index += HandleType.E.col();
-			} else if (between(x, w/2 - HANDLE_HALF, w/2 + HANDLE_HALF)) {
+			} else if (contains(x, w/2 - HANDLE_HALF, w/2 + HANDLE_HALF)) {
 				index += HandleType.C.col();
-			} else if (between(x, 0, HANDLE_SIZE)) {
+			} else if (contains(x, 0, HANDLE_SIZE)) {
 				index += HandleType.W.col();
 			} else {
 				return type;
@@ -299,7 +299,7 @@ public class UiLayoutEditor extends UiNode {
 			return HandleType.valueOf(index);
 		}
 
-		private boolean between(int v, int min, int max) {
+		private boolean contains(int v, int min, int max) {
 			return min <= v && v < max;
 		}
 

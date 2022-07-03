@@ -2,6 +2,7 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.common.json.Json;
@@ -316,7 +317,7 @@ public class UiVerticalList extends UiGroup {
 
 	@Override
 	public boolean isFocusable() {
-		return template == null || getFirstChild() == null;
+		return template == null || getFirstChild() == null || isFocusHidden(this);
 	}
 
 	private boolean isScrollable() {
@@ -324,30 +325,36 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	@Override
-	protected void notifyVerticalScroll(int _offset, int _limit, int _count) {
-		if (size() >= linesPerView) {
+	protected void notifyVerticalScroll(int unusedOffset, int unusedLimit, int unusedCount) {
+		if (isScrollable()) {
+			int count = getDataSource().getCount();
+			int totalHeight = count * lineHeight;
 			UiLine first = (UiLine) getFirstChild();
-			int count = getDataSource().getCount() * lineHeight;
-			int offset = (first.getIndex() * lineHeight + getScrollTopPx()) % count;
-			super.notifyVerticalScroll(offset, pageHeight, count);
+			int index = lap(first.getIndex() + VIEW_MARGIN, count) - VIEW_MARGIN;
+			int scrollTop = getScrollTopPx();
+			int newOffset = index * lineHeight + scrollTop;
+			super.notifyVerticalScroll(newOffset, pageHeight, totalHeight);
 		} else {
 			super.notifyVerticalScroll(0, pageHeight, pageHeight);
 		}
 	}
 
 	@Override
-	public int setVerticalScroll(int offset) {
+	public int setVerticalScroll(int newOffset) {
 		if (!isMounted()) {
 			return EVENT_IGNORED;
 		}
-		int count = getDataSource().getCount() * lineHeight;
-		int len = count - pageHeight;
-		int index = ((UiLine) getFirstChild()).getIndex();
-		int oldOffset = (index * lineHeight + getScrollTopPx()) % count;
-		if (!isLoopMode() || !(0 == oldOffset || oldOffset == len)) {
-			offset = Math.min(Math.max(0, offset), len);
+		int count = getDataSource().getCount();
+		int totalHeight = count * lineHeight;
+		UiLine first = (UiLine) getFirstChild();
+		int index = lap(first.getIndex() + VIEW_MARGIN, count) - VIEW_MARGIN;
+		int scrollTop = getScrollTopPx();
+		int oldOffset = index * lineHeight + scrollTop;
+		int endHeight = totalHeight - pageHeight;
+		if (!isLoopMode() || !(0 == oldOffset || oldOffset == endHeight)) {
+			newOffset = between(newOffset, 0, endHeight);
 		}
-		int newTop = offset - index * lineHeight;
+		int newTop = scrollTop + (newOffset - oldOffset);
 		scrollVirtual(newTop);
 		return EVENT_EATEN;
 	}
@@ -423,7 +430,7 @@ public class UiVerticalList extends UiGroup {
 		} else {
 			limit = Math.max(0, count - (linesPerView - 1));
 		}
-		return Math.min(Math.max(0, index), limit);
+		return between(index, 0, limit);
 	}
 
 	@Override
@@ -431,8 +438,8 @@ public class UiVerticalList extends UiGroup {
 		int result;
 		if (isFocusHidden(target)) {
 			recoverFocus(target);
-		}
-		if (isScrollable() && !isLoopMode()) {
+			result = EVENT_EATEN;
+		} else if (isScrollable() && !isLoopMode()) {
 			result = onKeyDownScroll(target, keyCode, charCode, mods, time);
 		} else if (!isScrollable() && isLoopMode()) {
 			result = onKeyDownSingle(target, keyCode, charCode, mods, time);
@@ -448,7 +455,7 @@ public class UiVerticalList extends UiGroup {
 
 	private void recoverFocus(UiNode target) {
 		int count = getDataSource().getCount();
-		int relative = hiddenDir == 1 ? linesPerView : 0;
+		int relative = (hiddenDir == +1) ? linesPerView - 1 : 0;
 		int index = lap(hiddenIndex - relative - VIEW_MARGIN, count);
 		renumberChildren(count, index);
 		setScrollTop(lineHeight * VIEW_MARGIN);
@@ -656,7 +663,7 @@ public class UiVerticalList extends UiGroup {
 				app.setFocus(app.getFirstFocus(this));
 			}
 		} else {
-			int index = hasMargin ? lap(offset + count - VIEW_MARGIN, count) : offset;
+			int index = hasMargin ? lap(offset - VIEW_MARGIN, count) : offset;
 			renumberChildren(count, index);
 			reloadChildren();
 		}
@@ -701,19 +708,25 @@ public class UiVerticalList extends UiGroup {
 	@Override
 	public int onMouseWheel(UiNode target, int x, int y, int dx, int dy, int mods, int time) {
 		int result = EVENT_CONSUMED;
-		if (size() >= linesPerView) {
+		dy *= ClientSettings.WHEEL_SCALE;
+		if (isScrollable()) {
 			int count = getDataSource().getCount();
 			int scrollTop = getScrollTopPx();
 			int newTop;
 			if (isLoopMode()) {
-				newTop = scrollTop + dy * ClientSettings.WHEEL_SCALE;
+				newTop = scrollTop + dy;
 			} else {
-				int index = ((UiLine) getFirstChild()).getIndex();
-				int diff = (lap(index + VIEW_MARGIN, count) - VIEW_MARGIN) * lineHeight;
-				int top = scrollTop + diff;
-				int len = count * lineHeight - pageHeight;
-				top = Math.min(Math.max(0, top + dy * ClientSettings.WHEEL_SCALE), len);
-				newTop = top - diff;
+				int totalHeight = count * lineHeight;
+				UiLine first = (UiLine) getFirstChild();
+				int index = lap(first.getIndex() + VIEW_MARGIN, count) - VIEW_MARGIN;
+				int oldOffset = index * lineHeight + scrollTop;
+				int newOffset = oldOffset + dy;
+				LOGGER.debug("offset %d -> %d", oldOffset, newOffset);
+				int endHeight = totalHeight - pageHeight;
+				newOffset = between(newOffset, 0, endHeight);
+				LOGGER.debug("adjust%d", newOffset);
+				newTop = scrollTop + (newOffset - oldOffset);
+				LOGGER.debug("newTop %d", newTop);
 			}
 			if (scrollTop != newTop) {
 				scrollVirtual(newTop);
@@ -727,7 +740,7 @@ public class UiVerticalList extends UiGroup {
 	@Override
 	public void scrollFor(UiNode child) {
 		super.scrollFor(child);
-		if (size() >= linesPerView) {
+		if (isScrollable()) {
 			int scrollTop = getScrollTopPx();
 			int scrollHeight = getScrollHeightPx();
 			int margin = lineHeight * VIEW_MARGIN;
@@ -745,22 +758,20 @@ public class UiVerticalList extends UiGroup {
 				rollUp();
 				scrollTop += lineHeight;
 			}
-			setScrollTop(scrollTop);
-			relocateChildren();
 		} else if (scrollHeight - (scrollTop + pageHeight) < margin) {
 			while (scrollHeight - (scrollTop + pageHeight) < margin) {
 				rollDown();
 				scrollTop -= lineHeight;
 			}
-			setScrollTop(scrollTop);
-			relocateChildren();
 		}
+		setScrollTop(scrollTop);
+		relocateChildren();
 	}
 
 	private void rollUp() {
 		int count = getDataSource().getCount();
 		UiLine edgeLine = (UiLine) getFirstChild();
-		int index = lap(edgeLine.getIndex() + count - 1, count);
+		int index = lap(edgeLine.getIndex() - 1, count);
 		pageTopIndex = lap(pageTopIndex - 1, count);
 		UiLine rollLine = (UiLine) removeLastChild();
 		UiNode focus = getApplication().getFocus(this);
@@ -793,14 +804,27 @@ public class UiVerticalList extends UiGroup {
 		}
 	}
 
+	@Override
+	public void setScrollTop(Length newValue) {
+		Asserts.requireNotNull(newValue);
+		LOGGER.debug("setScrollTop %d", newValue.getValuePx(0));
+		if (!Objects.equals(getScrollTop(), newValue)) {
+			super.setScrollTop(newValue);
+		} else {
+			this.notifyVerticalScroll(0, 0, 0);
+		}
+	}
+
 	private void saveFocus(UiLine rollLine, UiNode focus) {
 		hiddenIndex = rollLine.getIndex();
+		LOGGER.debug("hide %d %s %s", hiddenIndex, this.getFullName(), this.isFocusable());
 		hiddenColumn = rollLine.getDescendantIndex(focus);
 		getApplication().setFocus(this, AXIS_Y);
 	}
 
 	private void restoreFocus(UiLine rollLine) {
 		UiNode restore = rollLine.getDescendantAt(hiddenColumn);
+		LOGGER.debug("show %d", rollLine.getIndex());
 		getApplication().setFocus(restore, AXIS_Y);
 		hiddenDir = 0;
 		hiddenIndex = -1;

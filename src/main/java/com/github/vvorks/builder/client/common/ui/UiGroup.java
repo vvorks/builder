@@ -184,7 +184,7 @@ public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 		int result = EVENT_IGNORED;
 		int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
 		int count = getScrollWidthPx();
-		offset = Math.min(Math.max(0, offset), count - limit);
+		offset = between(offset, 0, count - limit);
 		if (offset != getScrollLeftPx()) {
 			setScrollLeft(offset);
 			result = EVENT_AFFECTED;
@@ -197,7 +197,7 @@ public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 		int result = EVENT_IGNORED;
 		int limit = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
 		int count = getScrollHeightPx();
-		offset = Math.min(Math.max(0, offset), count - limit);
+		offset = between(offset, 0, count - limit);
 		if (offset != getScrollTopPx()) {
 			setScrollTop(offset);
 			result = EVENT_AFFECTED;

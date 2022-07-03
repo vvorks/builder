@@ -55,7 +55,7 @@ public class ImePanel extends FocusWidget {
 		elem.appendChild(outer);
 		outer.setTabIndex(-1);
 		Style outerStyle = outer.getStyle();
-		resetStyle(outerStyle);
+		resetAxisStyle(outerStyle);
 		outerStyle.setDisplay(Display.TABLE);
 		hide();
 		inner = doc.createDivElement();
@@ -76,7 +76,7 @@ public class ImePanel extends FocusWidget {
 			Element elem = getElement();
 			xAxis = doc.createDivElement();
 			Style xStyle = xAxis.getStyle();
-			resetStyle(xStyle);
+			resetAxisStyle(xStyle);
 			xStyle.setLeft(0, Unit.PX);
 			xStyle.setWidth(1, Unit.PX);
 			xStyle.setTop(0, Unit.PX);
@@ -84,7 +84,7 @@ public class ImePanel extends FocusWidget {
 			xStyle.setBackgroundColor("cyan");
 			yAxis = doc.createDivElement();
 			Style yStyle = yAxis.getStyle();
-			resetStyle(yStyle);
+			resetAxisStyle(yStyle);
 			yStyle.setLeft(0, Unit.PX);
 			yStyle.setRight(0, Unit.PX);
 			yStyle.setTop(0, Unit.PX);
@@ -95,7 +95,7 @@ public class ImePanel extends FocusWidget {
 		}
 	}
 
-	private void resetStyle(Style style) {
+	private void resetAxisStyle(Style style) {
 		style.setPosition(Position.ABSOLUTE);
 		style.setMargin(0, Unit.PX);
 		style.setBorderWidth(0, Unit.PX);

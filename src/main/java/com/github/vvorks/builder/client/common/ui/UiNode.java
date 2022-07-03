@@ -1796,6 +1796,21 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return parent != null ? parent.getDataRecord() : null;
 	}
 
+	protected int between(int x, int minValue, int maxValue) {
+		if (minValue > maxValue) {
+			int t = minValue;
+			minValue = maxValue;
+			maxValue = t;
+		}
+		if (x < minValue) {
+			return minValue;
+		} else if (x > maxValue) {
+			return maxValue;
+		} else {
+			return x;
+		}
+	}
+
 	@Override
 	public int onKeyDown(UiNode target, int keyCode, int charCode, int mods, int time) {
 		return UiNode.EVENT_IGNORED;

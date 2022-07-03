@@ -33,7 +33,7 @@ public class UiHorizontalGroup extends UiGroup {
 		int delta = dy * ClientSettings.WHEEL_SCALE;
 		int oldLeft = getScrollLeftPx();
 		int maxLeft = getScrollWidthPx() - (getWidthPx() - getBorderLeftPx() - getBorderRightPx());
-		int newLeft = Math.min(Math.max(0, oldLeft + delta), maxLeft);
+		int newLeft = between(oldLeft + delta, 0, maxLeft);
 		if (oldLeft != newLeft) {
 			setScrollLeft(newLeft);
 			result |= EVENT_AFFECTED;

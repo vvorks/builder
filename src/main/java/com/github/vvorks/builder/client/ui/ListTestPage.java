@@ -94,7 +94,7 @@ public class ListTestPage extends UiPage {
 
 	private DataSource createDataSource() {
 		List<Json> list = new ArrayList<>();
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 100; i++) {
 			Json json = Json.createObject();
 			json.setString("_key", i);
 			json.setString("title", "title " + i);
