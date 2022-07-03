@@ -721,12 +721,9 @@ public class UiVerticalList extends UiGroup {
 				int index = lap(first.getIndex() + VIEW_MARGIN, count) - VIEW_MARGIN;
 				int oldOffset = index * lineHeight + scrollTop;
 				int newOffset = oldOffset + dy;
-				LOGGER.debug("offset %d -> %d", oldOffset, newOffset);
 				int endHeight = totalHeight - pageHeight;
 				newOffset = between(newOffset, 0, endHeight);
-				LOGGER.debug("adjust%d", newOffset);
 				newTop = scrollTop + (newOffset - oldOffset);
-				LOGGER.debug("newTop %d", newTop);
 			}
 			if (scrollTop != newTop) {
 				scrollVirtual(newTop);
@@ -807,7 +804,6 @@ public class UiVerticalList extends UiGroup {
 	@Override
 	public void setScrollTop(Length newValue) {
 		Asserts.requireNotNull(newValue);
-		LOGGER.debug("setScrollTop %d", newValue.getValuePx(0));
 		if (!Objects.equals(getScrollTop(), newValue)) {
 			super.setScrollTop(newValue);
 		} else {
@@ -817,14 +813,12 @@ public class UiVerticalList extends UiGroup {
 
 	private void saveFocus(UiLine rollLine, UiNode focus) {
 		hiddenIndex = rollLine.getIndex();
-		LOGGER.debug("hide %d %s %s", hiddenIndex, this.getFullName(), this.isFocusable());
 		hiddenColumn = rollLine.getDescendantIndex(focus);
 		getApplication().setFocus(this, AXIS_Y);
 	}
 
 	private void restoreFocus(UiLine rollLine) {
 		UiNode restore = rollLine.getDescendantAt(hiddenColumn);
-		LOGGER.debug("show %d", rollLine.getIndex());
 		getApplication().setFocus(restore, AXIS_Y);
 		hiddenDir = 0;
 		hiddenIndex = -1;
