@@ -30,6 +30,9 @@
     "messages" : {
       "title" : "メッセージ一覧"
     },
+    "styles" : {
+      "title" : "スタイル一覧"
+    },
     "locales" : {
       "title" : "ロケール一覧"
     },
@@ -317,6 +320,71 @@
     },
     "message" : {
       "title" : "メッセージ"
+    }
+  },
+  "Style" : {
+    "styleId" : {
+      "title" : "スタイルID"
+    },
+    "owner" : {
+      "title" : "所属プロジェクト"
+    },
+    "name" : {
+      "title" : "スタイル名"
+    },
+    "children" : {
+      "title" : "派生スタイル"
+    },
+    "parent" : {
+      "title" : "基底スタイル"
+    },
+    "cond" : {
+      "title" : "適用条件"
+    },
+    "condParam" : {
+      "title" : "適用条件パラメータ"
+    },
+    "textColor" : {
+      "title" : "前景色"
+    },
+    "backgroundColor" : {
+      "title" : "背景色"
+    },
+    "backgroundImage" : {
+      "title" : "背景画像URL"
+    },
+    "borderLeft" : {
+      "title" : "ボーダーサイズ(Length)（左）"
+    },
+    "borderTop" : {
+      "title" : "ボーダーサイズ(Length)（上）"
+    },
+    "borderRight" : {
+      "title" : "ボーダーサイズ(Length)（右）"
+    },
+    "borderBottom" : {
+      "title" : "ボーダーサイズ(Length)（下）"
+    },
+    "borderColor" : {
+      "title" : "ボーダー色"
+    },
+    "borderImage" : {
+      "title" : "ボーダー画像URL"
+    },
+    "fontSize" : {
+      "title" : "フォントサイズ(Length)"
+    },
+    "fontFamily" : {
+      "title" : "フォントの種類"
+    },
+    "lineHeight" : {
+      "title" : "行の高さ(Length)"
+    },
+    "textAlign" : {
+      "title" : "行の揃え位置"
+    },
+    "verticalAlign" : {
+      "title" : "縦方向の揃え位置"
     }
   },
   "Locale" : {

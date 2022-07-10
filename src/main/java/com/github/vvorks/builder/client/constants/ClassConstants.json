@@ -38,6 +38,9 @@
   "MessageI18n" : {
     "title" : "メッセージ(I18n)"
   },
+  "Style" : {
+    "title" : "スタイル"
+  },
   "Locale" : {
     "title" : "ロケール",
     "description" : "ロケールマスタ"

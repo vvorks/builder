@@ -220,6 +220,30 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 	);
 
 	/**
+	 * スタイル一覧のサマリーを取得する
+	 *
+	 * @param content プロジェクト
+	 * @return スタイル一覧のサマリー
+	 */
+	public StyleSummary<StyleContent> listStylesSummary(
+		@Param("content") ProjectContent content
+	);
+
+	/**
+	 * スタイル一覧を取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return スタイル一覧
+	 */
+	public List<StyleContent> listStylesContent(
+		@Param("content") ProjectContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
 	 * ロケール一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト

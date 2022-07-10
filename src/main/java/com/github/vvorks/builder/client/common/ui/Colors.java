@@ -161,6 +161,9 @@ public class Colors {
 	public static final int YELLOW = 0xFFFFFF00;
 	public static final int YELLOW_GREEN = 0xFF9ACD32;
 
+	/** 透明色 */
+	public static final int TRANSPARENT = 0x00000000;
+
 	/** CSS色名マップ */
 	private static final Map<String, Integer> COLOR_NAME_MAP;
 	static {
@@ -313,10 +316,8 @@ public class Colors {
 		map.put("whitesmoke"            ,WHITE_SMOKE             );
 		map.put("yellow"                ,YELLOW                  );
 		map.put("yellowgreen"           ,YELLOW_GREEN            );
+		map.put("transparent"           ,TRANSPARENT             );
 	}
-
-	/** 透明色 */
-	public static final int TRANSPARENT = 0x00000000;
 
 	/**
 	 * このクラスはインスタンス化しない

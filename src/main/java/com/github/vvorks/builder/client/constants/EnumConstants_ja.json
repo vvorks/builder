@@ -2,5 +2,9 @@
   "DataType" : {
     "title" : "データ型",
     "description" : "データ型"
+  },
+  "StyleCondition" : {
+    "title" : "スタイル条件",
+    "description" : "スタイル条件"
   }
 }

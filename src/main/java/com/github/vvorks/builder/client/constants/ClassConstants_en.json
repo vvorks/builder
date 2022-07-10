@@ -38,6 +38,9 @@
   "MessageI18n" : {
     "title" : "MessageI18n"
   },
+  "Style" : {
+    "title" : "Style"
+  },
   "Locale" : {
     "title" : "Locale"
   }

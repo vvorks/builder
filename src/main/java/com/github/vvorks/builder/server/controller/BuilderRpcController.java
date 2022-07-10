@@ -53,9 +53,15 @@ import com.github.vvorks.builder.server.domain.ProjectI18nSummary;
 import com.github.vvorks.builder.server.domain.QueryContent;
 import com.github.vvorks.builder.server.domain.QuerySubject;
 import com.github.vvorks.builder.server.domain.QuerySummary;
+import com.github.vvorks.builder.server.domain.StyleContent;
+import com.github.vvorks.builder.server.domain.StyleSubject;
+import com.github.vvorks.builder.server.domain.StyleSummary;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.DataTypeSubject;
 import com.github.vvorks.builder.server.domain.DataTypeSummary;
+import com.github.vvorks.builder.server.domain.StyleCondition;
+import com.github.vvorks.builder.server.domain.StyleConditionSubject;
+import com.github.vvorks.builder.server.domain.StyleConditionSummary;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.ClassI18nMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
@@ -70,6 +76,7 @@ import com.github.vvorks.builder.server.mapper.MessageI18nMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 import com.github.vvorks.builder.server.mapper.ProjectI18nMapper;
 import com.github.vvorks.builder.server.mapper.QueryMapper;
+import com.github.vvorks.builder.server.mapper.StyleMapper;
 
 /**
  * ビルダープロジェクトの Json-Rpc (on Websocket) API
@@ -128,6 +135,10 @@ public class BuilderRpcController {
 	/** メッセージ(I18n)のMapper */
 	@Autowired
 	private MessageI18nMapper messageI18nMapper;
+
+	/** スタイルのMapper */
+	@Autowired
+	private StyleMapper styleMapper;
 
 	/** ロケールのMapper */
 	@Autowired
@@ -364,6 +375,31 @@ public class BuilderRpcController {
 		summary.setOffset(offset);
 		List<MessageContent> contents =
 				projectMapper.listMessagesContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * スタイル一覧情報を取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return スタイル一覧情報
+	 */
+	@JsonRpcMethod
+	public StyleSummary<StyleContent> listProjectStyles(
+		@JsonRpcParam("content") ProjectContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		StyleSummary<StyleContent> summary = projectMapper.listStylesSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<StyleContent> contents =
+				projectMapper.listStylesContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2463,6 +2499,230 @@ public class BuilderRpcController {
 		List<LocaleSubject> contents = messageI18nMapper.listTargetCandidateSubject(
 				content, hint,
 				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * スタイルを挿入する
+	 *
+	 * @param content 挿入するスタイル
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertStyle(StyleContent content) {
+		return styleMapper.insert(content);
+	}
+
+	/**
+	 * スタイルを更新する
+	 *
+	 * @param content 更新するスタイル
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateStyle(StyleContent content) {
+		return styleMapper.update(content);
+	}
+
+	/**
+	 * スタイルを削除する
+	 *
+	 * @param content 削除するスタイル
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteStyle(StyleContent content) {
+		return styleMapper.delete(content);
+	}
+
+	/**
+	 * スタイルを取得する
+	 *
+	 * @param styleId スタイルID
+	 * @return 取得したスタイル
+	 */
+	@JsonRpcMethod
+	public StyleContent getStyle(
+		@JsonRpcParam("styleId") int styleId
+	) {
+		return styleMapper.get(
+				styleId
+				);
+	}
+
+	/**
+	 * 全てのスタイル情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return スタイル情報
+	 */
+	@JsonRpcMethod
+	public StyleSummary<StyleContent> listStyle(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		StyleSummary<StyleContent> summary = styleMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<StyleContent> contents = styleMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 所属プロジェクトを取得する
+	 *
+	 * @param content スタイル
+	 * @return 所属プロジェクト
+	 */
+	@JsonRpcMethod
+	public ProjectContent getStyleOwner(
+		@JsonRpcParam("content") StyleContent content
+	) {
+		return styleMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属プロジェクトの候補一覧を取得する
+	 *
+	 * @param content スタイル
+	 * @return 所属プロジェクトの候補一覧
+	 */
+	@JsonRpcMethod
+	public ProjectSummary<ProjectSubject> listStyleOwnerCandidate(
+		@JsonRpcParam("content") StyleContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ProjectSummary<ProjectSubject> summary = styleMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ProjectSubject> contents = styleMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 基底スタイルを取得する
+	 *
+	 * @param content スタイル
+	 * @return 基底スタイル
+	 */
+	@JsonRpcMethod
+	public StyleContent getStyleParent(
+		@JsonRpcParam("content") StyleContent content
+	) {
+		return styleMapper.getParent(content);
+	}
+
+	/**
+	 * 基底スタイルの候補一覧を取得する
+	 *
+	 * @param content スタイル
+	 * @return 基底スタイルの候補一覧
+	 */
+	@JsonRpcMethod
+	public StyleSummary<StyleSubject> listStyleParentCandidate(
+		@JsonRpcParam("content") StyleContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		StyleSummary<StyleSubject> summary = styleMapper.listParentCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<StyleSubject> contents = styleMapper.listParentCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 適用条件の候補一覧を取得する
+	 *
+	 * @param content スタイル
+	 * @return 適用条件の候補一覧
+	 */
+	@JsonRpcMethod
+	public StyleConditionSummary<StyleConditionSubject> listStyleCondCandidate(
+		@JsonRpcParam("content") StyleContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		int count;
+		if (Strings.isEmpty(hint)) {
+			count = StyleCondition.values().length;
+		} else {
+			count = 0;
+			for (StyleCondition e : StyleCondition.values()) {
+				if (fuzzyMatch(e.get_title(), hint)) {
+					count++;
+				}
+			}
+		}
+		offset = Math.min(Math.max(0, offset), count);
+		StyleConditionSummary<StyleConditionSubject> summary = new StyleConditionSummary<>();
+		summary.setCount(count);
+		summary.setFocus(0);
+		summary.setOffset(offset);
+		if (count == 0) {
+			summary.setContents(Collections.emptyList());
+		} else {
+			List<StyleConditionSubject> contents = new ArrayList<>();
+			for (StyleCondition e : StyleCondition.values()) {
+				if (Strings.isEmpty(hint) || fuzzyMatch(e.get_title(), hint)) {
+					if (offset > 0) {
+						offset--;
+					} else if (limit > 0) {
+						contents.add(new StyleConditionSubject(e));
+						limit--;
+						if (limit == 0) {
+							break;
+						}
+					}
+				}
+			}
+			summary.setContents(contents);
+		}
+		return summary;
+	}
+
+	/**
+	 * 派生スタイル情報を取得する
+	 *
+	 * @param content スタイル
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 派生スタイル情報
+	 */
+	@JsonRpcMethod
+	public StyleSummary<StyleContent> listStyleChildren(
+		@JsonRpcParam("content") StyleContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		StyleSummary<StyleContent> summary = styleMapper.listChildrenSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<StyleContent> contents =
+				styleMapper.listChildrenContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}

@@ -1,5 +1,8 @@
 {
   "DataType" : {
     "title" : "データ型"
+  },
+  "StyleCondition" : {
+    "title" : "スタイル条件"
   }
 }

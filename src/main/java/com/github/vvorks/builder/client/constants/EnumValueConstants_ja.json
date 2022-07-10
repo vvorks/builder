@@ -33,5 +33,22 @@
     "STRING" : {
       "title" : "文字列"
     }
+  },
+  "StyleCondition" : {
+    "BASE" : {
+      "title" : "基本状態"
+    },
+    "DISABLE" : {
+      "title" : "無効状態"
+    },
+    "FOCUS" : {
+      "title" : "フォーカス状態"
+    },
+    "CLICKING" : {
+      "title" : "クリック中"
+    },
+    "NAMED" : {
+      "title" : "UIノード名限定"
+    }
   }
 }

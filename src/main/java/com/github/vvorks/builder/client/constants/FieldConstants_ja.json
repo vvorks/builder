@@ -30,6 +30,9 @@
     "messages" : {
       "title" : "メッセージ一覧"
     },
+    "styles" : {
+      "title" : "スタイル一覧"
+    },
     "locales" : {
       "title" : "ロケール一覧"
     },
@@ -162,160 +165,239 @@
       "title" : "メモ"
     },
     "i18ns" : {
-      "title" : "所属フィールド"
+      "title" : "I18n一覧"
     }
   },
   "FieldI18n" : {
     "owner" : {
-      "title" : "対象ロケール"
+      "title" : "所属フィールド"
     },
     "target" : {
-      "title" : "書式"
+      "title" : "対象ロケール"
     },
     "format" : {
-      "title" : "タイトル"
+      "title" : "書式"
     },
     "title" : {
-      "title" : "説明"
+      "title" : "タイトル"
     },
     "description" : {
-      "title" : "クエリーID"
+      "title" : "説明"
     }
   },
   "Query" : {
     "queryId" : {
-      "title" : "所属クラス"
+      "title" : "クエリーID"
     },
     "owner" : {
-      "title" : "クエリー名"
+      "title" : "所属クラス"
     },
     "queryName" : {
+      "title" : "クエリー名"
+    },
+    "filter" : {
       "title" : "抽出条件",
       "description" : "抽出条件を式形式で記載する"
     },
-    "filter" : {
+    "order" : {
       "title" : "ソート条件",
       "description" : "ソート条件を式形式で記載する"
     },
-    "order" : {
+    "title" : {
       "title" : "タイトル"
     },
-    "title" : {
+    "description" : {
       "title" : "説明"
     },
-    "description" : {
-      "title" : "メモ"
-    },
     "note" : {
-      "title" : "列挙ID"
+      "title" : "メモ"
     }
   },
   "Enum" : {
     "enumId" : {
-      "title" : "所属プロジェクト"
+      "title" : "列挙ID"
     },
     "owner" : {
-      "title" : "列挙名"
+      "title" : "所属プロジェクト"
     },
     "enumName" : {
+      "title" : "列挙名"
+    },
+    "encodeString" : {
       "title" : "文字列エンコード",
       "description" : "文字列エンコードする場合、真"
     },
-    "encodeString" : {
+    "title" : {
       "title" : "タイトル"
     },
-    "title" : {
+    "description" : {
       "title" : "説明"
     },
-    "description" : {
+    "note" : {
       "title" : "メモ"
     },
-    "note" : {
+    "values" : {
       "title" : "列挙値一覧"
     },
-    "values" : {
-      "title" : "所属列挙"
-    },
     "i18ns" : {
-      "title" : "対象ロケール"
+      "title" : "I18n一覧"
     }
   },
   "EnumI18n" : {
     "owner" : {
-      "title" : "タイトル"
-    },
-    "target" : {
-      "title" : "説明"
-    },
-    "title" : {
       "title" : "所属列挙"
     },
+    "target" : {
+      "title" : "対象ロケール"
+    },
+    "title" : {
+      "title" : "タイトル"
+    },
     "description" : {
-      "title" : "列挙名"
+      "title" : "説明"
     }
   },
   "EnumValue" : {
     "owner" : {
-      "title" : "列挙コード"
+      "title" : "所属列挙"
     },
     "valueId" : {
-      "title" : "タイトル"
+      "title" : "列挙名"
     },
     "code" : {
-      "title" : "説明"
+      "title" : "列挙コード"
     },
     "title" : {
-      "title" : "メモ"
+      "title" : "タイトル"
     },
     "description" : {
-      "title" : "所属列挙値"
+      "title" : "説明"
     },
     "note" : {
-      "title" : "対象ロケール"
+      "title" : "メモ"
     },
     "i18ns" : {
-      "title" : "タイトル"
+      "title" : "I18n一覧"
     }
   },
   "EnumValueI18n" : {
     "owner" : {
-      "title" : "説明"
+      "title" : "所属列挙値"
     },
     "target" : {
-      "title" : "メッセージID"
+      "title" : "対象ロケール"
     },
     "title" : {
-      "title" : "所属プロジェクト"
+      "title" : "タイトル"
     },
     "description" : {
-      "title" : "メッセージ名"
+      "title" : "説明"
     }
   },
   "Message" : {
     "messageId" : {
-      "title" : "メッセージ"
+      "title" : "メッセージID"
     },
     "owner" : {
-      "title" : "所属列挙値"
+      "title" : "所属プロジェクト"
     },
     "messageName" : {
-      "title" : "対象ロケール"
+      "title" : "メッセージ名"
     },
     "message" : {
       "title" : "メッセージ"
     },
     "i18ns" : {
-      "title" : "ロケールID"
+      "title" : "I18n一覧"
     }
   },
   "MessageI18n" : {
     "owner" : {
-      "title" : "所属プロジェクト"
+      "title" : "所属列挙値"
     },
     "target" : {
-      "title" : "タイトル"
+      "title" : "対象ロケール"
     },
     "message" : {
+      "title" : "メッセージ"
+    }
+  },
+  "Style" : {
+    "styleId" : {
+      "title" : "スタイルID"
+    },
+    "owner" : {
+      "title" : "所属プロジェクト"
+    },
+    "name" : {
+      "title" : "スタイル名"
+    },
+    "children" : {
+      "title" : "派生スタイル"
+    },
+    "parent" : {
+      "title" : "基底スタイル"
+    },
+    "cond" : {
+      "title" : "適用条件"
+    },
+    "condParam" : {
+      "title" : "適用条件パラメータ"
+    },
+    "textColor" : {
+      "title" : "前景色"
+    },
+    "backgroundColor" : {
+      "title" : "背景色"
+    },
+    "backgroundImage" : {
+      "title" : "背景画像URL"
+    },
+    "borderLeft" : {
+      "title" : "ボーダーサイズ(Length)（左）"
+    },
+    "borderTop" : {
+      "title" : "ボーダーサイズ(Length)（上）"
+    },
+    "borderRight" : {
+      "title" : "ボーダーサイズ(Length)（右）"
+    },
+    "borderBottom" : {
+      "title" : "ボーダーサイズ(Length)（下）"
+    },
+    "borderColor" : {
+      "title" : "ボーダー色"
+    },
+    "borderImage" : {
+      "title" : "ボーダー画像URL"
+    },
+    "fontSize" : {
+      "title" : "フォントサイズ(Length)"
+    },
+    "fontFamily" : {
+      "title" : "フォントの種類"
+    },
+    "lineHeight" : {
+      "title" : "行の高さ(Length)"
+    },
+    "textAlign" : {
+      "title" : "行の揃え位置"
+    },
+    "verticalAlign" : {
+      "title" : "縦方向の揃え位置"
+    }
+  },
+  "Locale" : {
+    "localeId" : {
+      "title" : "ロケールID"
+    },
+    "owner" : {
+      "title" : "所属プロジェクト"
+    },
+    "title" : {
+      "title" : "タイトル"
+    },
+    "description" : {
       "title" : "説明"
     }
   }

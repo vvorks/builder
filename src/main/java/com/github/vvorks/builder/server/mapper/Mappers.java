@@ -64,6 +64,10 @@ public class Mappers {
 	@Autowired
 	private MessageI18nMapper messageI18nMapper;
 
+	/** スタイルのMapper */
+	@Autowired
+	private StyleMapper styleMapper;
+
 	/** ロケールのMapper */
 	@Autowired
 	private LocaleMapper localeMapper;
@@ -86,6 +90,7 @@ public class Mappers {
 			mapperMap.put("EnumValueI18n", enumValueI18nMapper);
 			mapperMap.put("Message", messageMapper);
 			mapperMap.put("MessageI18n", messageI18nMapper);
+			mapperMap.put("Style", styleMapper);
 			mapperMap.put("Locale", localeMapper);
 		}
 		return mapperMap.get(name);
