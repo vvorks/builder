@@ -8,8 +8,8 @@ import java.util.Map;
 import com.github.vvorks.builder.client.common.ui.Colors;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Rect;
-import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.client.common.ui.UiNode;
+import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.common.lang.Strings;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
@@ -172,17 +172,17 @@ public class GwtCanvasElement extends GwtDomElement {
 
 	private static final Map<String, Integer> ALIGN_MAP = new HashMap<>();
 	static {
-		ALIGN_MAP.put("left",    GwtContext2d.ALIGN_LEFT);
-		ALIGN_MAP.put("center",  GwtContext2d.ALIGN_CENTER);
-		ALIGN_MAP.put("right",   GwtContext2d.ALIGN_RIGHT);
-		ALIGN_MAP.put("justify", GwtContext2d.ALIGN_JUSTIFY);
+		ALIGN_MAP.put(UiStyle.ALIGN_LEFT,    GwtContext2d.ALIGN_LEFT);
+		ALIGN_MAP.put(UiStyle.ALIGN_CENTER,  GwtContext2d.ALIGN_CENTER);
+		ALIGN_MAP.put(UiStyle.ALIGN_RIGHT,   GwtContext2d.ALIGN_RIGHT);
+		ALIGN_MAP.put(UiStyle.ALIGN_JUSTIFY, GwtContext2d.ALIGN_JUSTIFY);
 	}
 
 	private static final Map<String, Integer> VALIGN_MAP = new HashMap<>();
 	static {
-		VALIGN_MAP.put("top",    GwtContext2d.VALIGN_TOP);
-		VALIGN_MAP.put("middle", GwtContext2d.VALIGN_MIDDLE);
-		VALIGN_MAP.put("bottom", GwtContext2d.VALIGN_BOTTOM);
+		VALIGN_MAP.put(UiStyle.ALIGN_TOP,    GwtContext2d.VALIGN_TOP);
+		VALIGN_MAP.put(UiStyle.ALIGN_MIDDLE, GwtContext2d.VALIGN_MIDDLE);
+		VALIGN_MAP.put(UiStyle.ALIGN_BOTTOM, GwtContext2d.VALIGN_BOTTOM);
 	}
 
 	private static int get2dAlign(UiStyle style) {
