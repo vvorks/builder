@@ -35,6 +35,7 @@ import com.github.vvorks.builder.server.extender.EnumValueExtender;
 import com.github.vvorks.builder.server.extender.FieldExtender;
 import com.github.vvorks.builder.server.extender.ProjectExtender;
 import com.github.vvorks.builder.server.extender.QueryExtender;
+import com.github.vvorks.builder.server.extender.StyleExtender;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 
 @Component
@@ -67,6 +68,9 @@ public class SourceWriter {
 
 	@Autowired
 	private EnumValueExtender enumValueExtender;
+
+	@Autowired
+	private StyleExtender styleExtender;
 
 	private SqlHelper sqlHelper = SqlHelper.get();
 
@@ -108,7 +112,8 @@ public class SourceWriter {
 										fieldExtender,
 										queryExtender,
 										enumExtender,
-										enumValueExtender))
+										enumValueExtender,
+										styleExtender))
 						.build();
 				//とりあえず全部適用
 				for (String s : hbsFiles) {

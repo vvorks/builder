@@ -33,11 +33,11 @@ public class LayouterTestPage extends UiPage {
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");
 		//全体
 		b.enter(new UiGroup("group"));
-			b.style(BuilderUiApplication.NOBORDER);
+			b.style(BuilderStyles.GROUP);
 			b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
 			//レイアウタ
 			b.enter(new UiLayoutEditor("layouter"));
-				b.style(BuilderUiApplication.BASIC);
+				b.style(BuilderStyles.FIELD);
 				b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
 			b.leave();
 		b.leave();

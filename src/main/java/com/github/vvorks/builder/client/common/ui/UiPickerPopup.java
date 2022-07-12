@@ -3,7 +3,7 @@ package com.github.vvorks.builder.client.common.ui;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.github.vvorks.builder.client.ui.BuilderUiApplication;
+import com.github.vvorks.builder.client.ui.BuilderStyles;
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Iterables;
 
@@ -11,11 +11,14 @@ class UiPickerPopup extends UiPage {
 
 	private static final int DEFAULT_PER_PAGE = 1 + 10;
 
-	private static final UiAtomicStyle FRAME_STYLE = BuilderUiApplication.FOCUS;
+	//TODO いけない参照。要再定義
+	private static final UiStyle FRAME_STYLE = BuilderStyles.FIELD_FOCUS;
 
-	private static final UiAtomicStyle TRANSPARENT_STYLE = BuilderUiApplication.TRANSPARENT;
+	//TODO いけない参照。要再定義
+	private static final UiStyle TRANSPARENT_STYLE = BuilderStyles.TRANSPARENT;
 
-	private static final UiAtomicStyle NOBORDER_STYLE = BuilderUiApplication.NOBORDER;
+	//TODO いけない参照。要再定義
+	private static final UiStyle NOBORDER_STYLE = BuilderStyles.GROUP;
 
 	private final UiPickerField owner;
 

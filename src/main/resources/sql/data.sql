@@ -440,7 +440,7 @@ INSERT INTO T_ENUM (
 	F__LAST_UPDATED_AT
 ) VALUES
 	(1,1,'DataType',1,'データ型',NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(2,1,'StyleCondition',0,'スタイル条件',NULL,NULL,(strftime('%s', 'now') * 1000))
+	(2,1,'StyleCondition',1,'スタイル条件',NULL,NULL,(strftime('%s', 'now') * 1000))
 ON CONFLICT DO NOTHING;
 INSERT INTO T_ENUM_I18N (
 	F_OWNER_ENUM_ID,
@@ -461,11 +461,12 @@ INSERT INTO T_ENUM_VALUE (
 	F_NOTE,
 	F__LAST_UPDATED_AT
 ) VALUES
-	(2,'BASE',1,'基本状態',NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(2,'DISABLE',2,'無効状態',NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(2,'FOCUS',3,'フォーカス状態',NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(2,'CLICKING',4,'クリック中',NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(2,'NAMED',5,'UIノード名限定',NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(2,'DEFAULT',1,'基本状態',NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(2,'ENABLE',2,'有効状態',NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(2,'DISABLE',3,'無効状態',NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(2,'FOCUS',4,'フォーカス状態',NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(2,'CLICKING',5,'クリック中',NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(2,'NAMED',6,'UIノード名限定',NULL,NULL,(strftime('%s', 'now') * 1000)),
 	(1,'KEY',10,'（自動）キー',NULL,NULL,(strftime('%s', 'now') * 1000)),
 	(1,'REF',11,'クラス参照型',NULL,NULL,(strftime('%s', 'now') * 1000)),
 	(1,'ENUM',12,'列挙参照型',NULL,NULL,(strftime('%s', 'now') * 1000)),
@@ -486,8 +487,8 @@ INSERT INTO T_ENUM_VALUE_I18N (
 	F_DESCRIPTION,
 	F__LAST_UPDATED_AT
 ) VALUES
-	(2,'CUSTOM','ja','特殊状態',NULL,(strftime('%s', 'now') * 1000)),
-	(2,'BASE','ja','基本状態',NULL,(strftime('%s', 'now') * 1000)),
+	(2,'DEFAULT','ja','基本状態',NULL,(strftime('%s', 'now') * 1000)),
+	(2,'ENABLE','ja','有効状態',NULL,(strftime('%s', 'now') * 1000)),
 	(2,'DISABLE','ja','無効状態',NULL,(strftime('%s', 'now') * 1000)),
 	(2,'FOCUS','ja','フォーカス状態',NULL,(strftime('%s', 'now') * 1000)),
 	(2,'CLICKING','ja','クリック中',NULL,(strftime('%s', 'now') * 1000)),
@@ -548,16 +549,16 @@ INSERT INTO T_STYLE (
 	F_VERTICAL_ALIGN,
 	F__LAST_UPDATED_AT
 ) VALUES
-	(1,1,'field',0,0,'','black','transparent','','4px','4px','4px','4px','black','image/rrect-bw.png','12pt','','','left','middle',(strftime('%s', 'now') * 1000)),
-	(4,1,'fieldClicking',1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'image/rrect-yp.png',NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(2,1,'fieldDisable',1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'image/rrect-bs.png',NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(3,1,'fieldFocus',1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'image/rrect-yw.png',NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(5,1,'group',0,0,'',NULL,'#CC808080',NULL,'0px','0px','0px','0px',NULL,NULL,NULL,NULL,NULL,'','',(strftime('%s', 'now') * 1000)),
-	(6,1,'groupSplitter',5,0,'splitter',NULL,'silver',NULL,'1px','1px','1px','1px','pink',NULL,NULL,NULL,NULL,'','',(strftime('%s', 'now') * 1000)),
-	(7,1,'sb',0,0,NULL,NULL,'gray',NULL,'2px','2px','2px','2px','pink',NULL,NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(9,1,'sbFocus',8,0,NULL,NULL,'orange',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(8,1,'sbInner',7,0,'thumb',NULL,'white',NULL,'0px','0px','0px','0px',NULL,NULL,NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
-	(10,1,'transparent',0,0,NULL,'transparent','transparent',NULL,'0px','0px','0px','0px',NULL,NULL,NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000))
+	(1,1,'field',0,'DEFAULT','','black','transparent','','4px','4px','4px','4px','black','image/rrect-bw.png','12pt','','','left','middle',(strftime('%s', 'now') * 1000)),
+	(4,1,'fieldClicking',1,'CLICKING',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'image/rrect-yp.png',NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(2,1,'fieldDisable',1,'DISABLE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'image/rrect-bs.png',NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(3,1,'fieldFocus',1,'FOCUS',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'image/rrect-yw.png',NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(5,1,'group',0,'DEFAULT','',NULL,'#CC808080',NULL,'0px','0px','0px','0px',NULL,NULL,NULL,NULL,NULL,'','',(strftime('%s', 'now') * 1000)),
+	(6,1,'groupSplitter',5,'NAMED','splitter',NULL,'silver',NULL,'1px','1px','1px','1px','pink',NULL,NULL,NULL,NULL,'','',(strftime('%s', 'now') * 1000)),
+	(7,1,'sb',0,'DEFAULT',NULL,NULL,'gray',NULL,'2px','2px','2px','2px','pink',NULL,NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(9,1,'sbFocus',8,'FOCUS',NULL,NULL,'orange',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(8,1,'sbInner',7,'NAMED','thumb',NULL,'white',NULL,'0px','0px','0px','0px',NULL,NULL,NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000)),
+	(10,1,'transparent',0,'DEFAULT',NULL,'transparent','transparent',NULL,'0px','0px','0px','0px',NULL,NULL,NULL,NULL,NULL,NULL,NULL,(strftime('%s', 'now') * 1000))
 ON CONFLICT DO NOTHING;
 INSERT INTO T_LOCALE (
 	F_LOCALE_ID,

@@ -1,5 +1,6 @@
 package com.github.vvorks.builder.server.extender;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -27,6 +28,7 @@ import com.github.vvorks.builder.server.domain.MessageContent;
 import com.github.vvorks.builder.server.domain.MessageI18nContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.ProjectI18nContent;
+import com.github.vvorks.builder.server.domain.StyleContent;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueMapper;
@@ -119,6 +121,24 @@ public class ProjectExtender {
 
 	public String getBuilderName(ProjectContent prj) {
 		return ServerSettings.MODULE_NAME;
+	}
+
+	public List<StyleContent> getStyles(ProjectContent prj) {
+		List<StyleContent> list = projectMapper.listStylesContent(prj, 0, 0);
+		List<StyleContent> result = new ArrayList<>();
+		StyleContent root = new StyleContent();
+		root.setStyleId(0);
+		sortStyles(list, root, result);
+		return result;
+	}
+
+	private void sortStyles(List<StyleContent> list, StyleContent owner, List<StyleContent> into) {
+		for (StyleContent c : list) {
+			if (c.getParentStyleId() == owner.getStyleId()) {
+				into.add(c);
+				sortStyles(list, c, into);
+			}
+		}
 	}
 
 	/**

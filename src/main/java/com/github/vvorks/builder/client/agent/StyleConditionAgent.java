@@ -30,12 +30,12 @@ public class StyleConditionAgent extends DataRecordAgent {
 
 	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setInt(name, from.getInt("value"));
+		rec.setString(name, from.getString("value"));
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setInt(name, candidate.getInt("value"));
+		rec.setString(name, candidate.getString("value"));
 	}
 
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.ui.Colors;
 import com.github.vvorks.builder.client.common.ui.Length;
-import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
+import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.google.gwt.dom.client.Document;
@@ -26,17 +26,17 @@ public class ImePanel extends FocusWidget {
 
 	private static final Map<String, TextAlign> ALIGN_MAP = new HashMap<>();
 	static {
-		ALIGN_MAP.put(UiAtomicStyle.TEXT_ALIGN_LEFT, TextAlign.LEFT);
-		ALIGN_MAP.put(UiAtomicStyle.TEXT_ALIGN_RIGHT, TextAlign.RIGHT);
-		ALIGN_MAP.put(UiAtomicStyle.TEXT_ALIGN_CENTER, TextAlign.CENTER);
-		ALIGN_MAP.put(UiAtomicStyle.TEXT_ALIGN_JUSTIFY, TextAlign.JUSTIFY);
+		ALIGN_MAP.put(UiStyle.ALIGN_LEFT,    TextAlign.LEFT);
+		ALIGN_MAP.put(UiStyle.ALIGN_RIGHT,   TextAlign.RIGHT);
+		ALIGN_MAP.put(UiStyle.ALIGN_CENTER,  TextAlign.CENTER);
+		ALIGN_MAP.put(UiStyle.ALIGN_JUSTIFY, TextAlign.JUSTIFY);
 	}
 
 	private static final Map<String, VerticalAlign> VALIGN_MAP = new HashMap<>();
 	static {
-		VALIGN_MAP.put(UiAtomicStyle.VERTICAL_ALIGN_TOP, VerticalAlign.TOP);
-		VALIGN_MAP.put(UiAtomicStyle.VERTICAL_ALIGN_MIDDLE, VerticalAlign.MIDDLE);
-		VALIGN_MAP.put(UiAtomicStyle.VERTICAL_ALIGN_BOTTOM, VerticalAlign.BOTTOM);
+		VALIGN_MAP.put(UiStyle.ALIGN_TOP,    VerticalAlign.TOP);
+		VALIGN_MAP.put(UiStyle.ALIGN_MIDDLE, VerticalAlign.MIDDLE);
+		VALIGN_MAP.put(UiStyle.ALIGN_BOTTOM, VerticalAlign.BOTTOM);
 	}
 
 	private Element outer;
@@ -103,7 +103,7 @@ public class ImePanel extends FocusWidget {
 		style.setOutlineWidth(0, Unit.PX);
 	}
 
-	public void setStyle(UiAtomicStyle style) {
+	public void setStyle(UiStyle style) {
 		//GWTのStyleオブジェクト取得
 		Style outerStyle = outer.getStyle();
 		Style innerStyle = inner.getStyle();
@@ -114,7 +114,7 @@ public class ImePanel extends FocusWidget {
 		outerStyle.setTextAlign(ALIGN_MAP.getOrDefault(align, TextAlign.LEFT));
 		//innerの設定
 		innerStyle.setBackgroundColor(bgColor);
-		String fgColor = Colors.toCssColor(style.getColor());
+		String fgColor = Colors.toCssColor(style.getTextColor());
 		innerStyle.setColor(fgColor);
 		String fontFamily = style.getFontFamily();
 		Length fontSize = style.getFontSize();

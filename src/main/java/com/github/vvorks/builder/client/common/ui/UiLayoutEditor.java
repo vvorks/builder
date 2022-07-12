@@ -36,26 +36,26 @@ public class UiLayoutEditor extends UiNode {
 	public static final Class<?> THIS = UiLayoutEditor.class;
 
 	/** ハンドル片のスタイル */
-	private static final UiAtomicStyle HANDLE_STYLE = UiStyle.newAtomicBuilder(THIS, "handle", null)
-			.color(Colors.BLACK)
+	private static final UiStyle HANDLE_STYLE = UiStyle.newBuilder("handle")
+			.textColor(Colors.BLACK)
 			.backgroundColor(Colors.WHITE)
-			.font("6pt")
-			.align(UiAtomicStyle.TEXT_ALIGN_CENTER, UiAtomicStyle.VERTICAL_ALIGN_MIDDLE)
+			.fontSize("6pt")
+			.align(UiStyle.ALIGN_CENTER, UiStyle.ALIGN_MIDDLE)
 			.borderColor(Colors.BLACK)
 			.borderWidth("1px")
 			.build();
 
 	/** 作成中ハンドルのスタイル */
-	private static final UiAtomicStyle SHADE_STYLE = UiStyle.newAtomicBuilder(THIS, "shade", null)
+	private static final UiStyle SHADE_STYLE = UiStyle.newBuilder("shade")
 			.backgroundColor(0x20000000)
 			.build();
 
 	/** ボックススタイル（仮） TODO: 用が済んだら削除する事 */
-	private static final UiAtomicStyle GREEN = UiStyle.newAtomicBuilder(THIS, "green", null)
-			.color(Colors.BLACK)
+	private static final UiStyle GREEN = UiStyle.newBuilder("green")
+			.textColor(Colors.BLACK)
 			.backgroundColor(Colors.GREEN)
-			.font("12pt")
-			.align(UiAtomicStyle.TEXT_ALIGN_CENTER, UiAtomicStyle.VERTICAL_ALIGN_MIDDLE)
+			.fontSize("12pt")
+			.align("center", "middle")
 			.borderColor(Colors.BLACK)
 			.borderWidth("2px")
 			.build();

@@ -660,7 +660,7 @@ public class UiVerticalList extends UiGroup {
 				setScrollTop(scrollTop);
 			}
 			if (hasFocus) {
-				app.setFocus(app.getFirstFocus(this));
+				app.setFocus(app.getFirstFocusable(this));
 			}
 		} else {
 			int index = hasMargin ? lap(offset - VIEW_MARGIN, count) : offset;

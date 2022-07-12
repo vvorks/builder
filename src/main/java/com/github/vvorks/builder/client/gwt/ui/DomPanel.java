@@ -6,7 +6,7 @@ import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.KeyCodes;
 import com.github.vvorks.builder.client.common.ui.Rect;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
-import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
+import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.common.util.TestRunner;
@@ -297,7 +297,7 @@ public class DomPanel extends FocusWidget {
 		LOGGER.info("Test Done(%d/%d)", totalCount - errorCount, totalCount);
 	}
 
-	public void startEditing(Rect r, UiAtomicStyle style, String text, boolean fireInputEvent) {
+	public void startEditing(Rect r, UiStyle style, String text, boolean fireInputEvent) {
 		imePanel.setStyle(style);
 		imePanel.setText(text);
 		int len = text.length();

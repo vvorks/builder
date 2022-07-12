@@ -4,7 +4,7 @@ public interface DomElement {
 
 	public void setParent(DomElement newParent);
 
-	public void setDefinedStyle(UiAtomicStyle style);
+	public void setDefinedStyle(UiStyle style);
 
 	public void setLocalStyle(CssStyle style);
 

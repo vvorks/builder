@@ -70,7 +70,9 @@ public abstract class UiPage extends UiNode {
 		}
 		Iterable<UiStyle> flatList = Iterables.concat(list);
 		Map<String, CssStyle> cssMap = new LinkedHashMap<>();
-		UiStyle.toCssStyles(flatList, cssMap);
+		for (UiStyle s : flatList) {
+			s.toCssStyle(cssMap);
+		}
 		UiApplication app = getApplication();
 		DomDocument doc = app.getDocument();
 		doc.injectStyleSheet(getClass(), cssMap);

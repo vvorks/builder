@@ -1,4 +1,17 @@
 //
+// agentパッケージテンプレート
+//
+{{#java this "client/agent/package-info.java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+ {{/if}}
+package {{global.project.projectName}}.client.agent;
+{{/java}}
+//
 // クラスAgentテンプレート
 //
 {{#each this.classes}}

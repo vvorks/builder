@@ -28,7 +28,7 @@ public class UiTab extends UiButton implements Selectable.Listener {
 
 	@Override
 	public int onMouseClick(UiNode target, int x, int y, int mods, int time) {
-		return deck.select(index) ? EVENT_EATEN : EVENT_CONSUMED;
+		return deck.select(index) ? EVENT_AFFECTED : EVENT_IGNORED;
 	}
 
 	@Override

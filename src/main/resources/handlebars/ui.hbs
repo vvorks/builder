@@ -1,0 +1,87 @@
+//
+// uiパッケージテンプレート
+//
+{{#java this "client/ui/package-info.java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.client.ui;
+{{/java}}
+//
+// Stylesテンプレート
+//
+{{#java this "client/ui/" upperLastName "Styles" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.client.ui;
+
+import {{global.project.projectName}}.client.common.ui.UiStyle;
+
+public class {{upperLastName}}Styles {
+
+	{{#each this.styles}}
+	public static final UiStyle {{constName}} = UiStyle.newBuilder("{{name}}")
+				{{#if cond}}
+				.condition("{{cond}}"{{#if condParam}}, "{{condParam}}"{{/if}})
+				{{else}}
+				.condition("DEFAULT")
+				{{/if}}
+				{{#if parent}}
+				.parent({{parent.constName}})
+				{{/if}}
+				{{#if textColor}}
+				.textColor("{{textColor}}")
+				{{/if}}
+				{{#if backgroundColor}}
+				.backgroundColor("{{backgroundColor}}")
+				{{/if}}
+				{{#if backgroundImage}}
+				.backgroundImage("{{backgroundImage}}")
+				{{/if}}
+				{{#if borderLeft}}
+				.borderLeft("{{borderLeft}}")
+				{{/if}}
+				{{#if borderTop}}
+				.borderTop("{{borderTop}}")
+				{{/if}}
+				{{#if borderRight}}
+				.borderRight("{{borderRight}}")
+				{{/if}}
+				{{#if borderBottom}}
+				.borderBottom("{{borderBottom}}")
+				{{/if}}
+				{{#if borderColor}}
+				.borderColor("{{borderColor}}")
+				{{/if}}
+				{{#if borderImage}}
+				.borderImage("{{borderImage}}")
+				{{/if}}
+				{{#if fontSize}}
+				.fontSize("{{fontSize}}")
+				{{/if}}
+				{{#if fontFamily}}
+				.fontFamily("{{fontFamily}}")
+				{{/if}}
+				{{#if lineHeight}}
+				.lineHeight("{{lineHeight}}")
+				{{/if}}
+				{{#if textAlign}}
+				.textAlign("{{textAlign}}")
+				{{/if}}
+				{{#if verticalAlign}}
+				.verticalAlign("{{verticalAlign}}")
+				{{/if}}
+				.build();
+	{{/each}}
+
+}
+{{/java}}

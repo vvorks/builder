@@ -12,7 +12,7 @@ public class UiPhantom extends UiNode {
 		}
 
 		@Override
-		public void setDefinedStyle(UiAtomicStyle style) {
+		public void setDefinedStyle(UiStyle style) {
 			//NOP
 		}
 

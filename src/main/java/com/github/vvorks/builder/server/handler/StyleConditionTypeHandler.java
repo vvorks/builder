@@ -20,7 +20,7 @@ public class StyleConditionTypeHandler extends BaseTypeHandler<StyleCondition> {
 
 	@Override
 	public void setNonNullParameter(PreparedStatement ps, int index, StyleCondition parameter, JdbcType jdbcType) throws SQLException {
-		ps.setInt(index, parameter.code());
+		ps.setString(index, parameter.name());
 	}
 
 	@Override
@@ -30,12 +30,12 @@ public class StyleConditionTypeHandler extends BaseTypeHandler<StyleCondition> {
 
 	@Override
 	public StyleCondition getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-		return StyleCondition.valueOf(rs.getInt(columnIndex));
+		return StyleCondition.valueOf(rs.getString(columnIndex));
 	}
 
 	@Override
 	public StyleCondition getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-		return StyleCondition.valueOf(cs.getInt(columnIndex));
+		return StyleCondition.valueOf(cs.getString(columnIndex));
 	}
 
 }

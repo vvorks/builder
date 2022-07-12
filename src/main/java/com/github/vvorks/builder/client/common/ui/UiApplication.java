@@ -175,7 +175,9 @@ public class UiApplication implements EventHandler {
 		Map<String, CssStyle> cssMap = new LinkedHashMap<>();
 		cssMap.put("BODY", BODY_STYLE);
 		cssMap.put("BODY,DIV", RESET_STYLE);
-		UiStyle.toCssStyles(styles.values(), cssMap);
+		for (UiStyle s : styles.values()) {
+			s.toCssStyle(cssMap);
+		}
 		document.injectStyleSheet(getClass(), cssMap);
 	}
 
@@ -224,12 +226,12 @@ public class UiApplication implements EventHandler {
 		pageStack.push(p);
 		p.page.onMount();
 		if (p.focus == null) {
-			setFocus(getFirstFocus(p.page), AXIS_XY);
+			setFocus(getFirstFocusable(p.page), AXIS_XY);
 		}
 		keyDowns.clear();
 	}
 
-	public UiNode getFirstFocus(UiNode owner) {
+	public UiNode getFirstFocusable(UiNode owner) {
 		Iterable<UiNode> candidates = Iterables.filter(
 				owner.getFocusCandidates(), c -> c.getBlocker() == null);
 		return Iterables.getFirst(candidates, null);

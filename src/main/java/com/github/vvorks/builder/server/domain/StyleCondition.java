@@ -7,32 +7,37 @@ import com.github.vvorks.builder.common.lang.Encodable;
 /**
  * スタイル条件
  */
-public enum StyleCondition implements Encodable<Integer> {
+public enum StyleCondition implements Encodable<String> {
 
 	/**
 	 * 基本状態
 	 */
-	BASE(1, "BASE"),
+	DEFAULT(1, "DEFAULT"),
+
+	/**
+	 * 有効状態
+	 */
+	ENABLE(2, "ENABLE"),
 
 	/**
 	 * 無効状態
 	 */
-	DISABLE(2, "DISABLE"),
+	DISABLE(3, "DISABLE"),
 
 	/**
 	 * フォーカス状態
 	 */
-	FOCUS(3, "FOCUS"),
+	FOCUS(4, "FOCUS"),
 
 	/**
 	 * クリック中
 	 */
-	CLICKING(4, "CLICKING"),
+	CLICKING(5, "CLICKING"),
 
 	/**
 	 * UIノード名限定
 	 */
-	NAMED(5, "NAMED")
+	NAMED(6, "NAMED")
 	;
 
 	/**
@@ -63,8 +68,8 @@ public enum StyleCondition implements Encodable<Integer> {
 	}
 
 	@Override
-	public Integer encode() {
-		return code();
+	public String encode() {
+		return name();
 	}
 
 	public String get_title() {

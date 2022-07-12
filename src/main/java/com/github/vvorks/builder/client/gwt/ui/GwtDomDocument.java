@@ -13,7 +13,7 @@ import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.Rect;
-import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
+import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.lang.Asserts;
 import com.google.gwt.dom.client.Element;
@@ -252,7 +252,7 @@ public class GwtDomDocument implements DomDocument {
 	@Override
 	public void startEditing(UiNode owner, String text, boolean fireInputEvent) {
 		Rect absRect = owner.getRectangleOnRoot();
-		UiAtomicStyle style = owner.getStyle().getAtomicStyleOf(owner);
+		UiStyle style = owner.getStyle().getEffectiveStyle(owner);
 		int w = absRect.getWidth();
 		int h = absRect.getHeight();
 		absRect.resize(

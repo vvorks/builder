@@ -6,7 +6,7 @@ import com.github.vvorks.builder.client.common.ui.Colors;
 import com.github.vvorks.builder.client.common.ui.CssStyle;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
-import com.github.vvorks.builder.client.common.ui.UiAtomicStyle;
+import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.google.gwt.dom.client.Document;
@@ -40,7 +40,7 @@ public class GwtDomElement implements DomElement {
 
 	protected String imageUrl;
 
-	protected UiAtomicStyle definedStyle;
+	protected UiStyle definedStyle;
 
 	protected CssStyle localStyle;
 
@@ -96,7 +96,7 @@ public class GwtDomElement implements DomElement {
 	}
 
 	@Override
-	public void setDefinedStyle(UiAtomicStyle style) {
+	public void setDefinedStyle(UiStyle style) {
 		this.definedStyle = style;
 		if (nativeElement == null) {
 			return;
@@ -115,8 +115,8 @@ public class GwtDomElement implements DomElement {
 			align = style.getTextAlign();
 			valign = style.getVerticalAlign();
 		} else {
-			align = UiAtomicStyle.TEXT_ALIGN_LEFT;
-			valign = UiAtomicStyle.VERTICAL_ALIGN_TOP;
+			align = UiStyle.ALIGN_LEFT;
+			valign = UiStyle.ALIGN_TOP;
 		}
 		CssStyle.Builder sb = new CssStyle.Builder()
 				.property("position", "absolute")
@@ -126,10 +126,10 @@ public class GwtDomElement implements DomElement {
 				.left(Length.ZERO)
 				.width(Length.FULL)
 				.property("text-align", align);
-		if (Objects.equals(valign, UiAtomicStyle.VERTICAL_ALIGN_MIDDLE)) {
+		if (Objects.equals(valign, UiStyle.ALIGN_MIDDLE)) {
 			//上下中央ぞろえ
 			sb.top(Length.HALF).property("transform", "translateY(-50%)");
-		} else if (Objects.equals(valign, UiAtomicStyle.VERTICAL_ALIGN_BOTTOM)) {
+		} else if (Objects.equals(valign, UiStyle.ALIGN_BOTTOM)) {
 			//下ぞろえ
 			sb.bottom(Length.ZERO);
 		} else {

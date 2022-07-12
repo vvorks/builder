@@ -35,8 +35,11 @@
     }
   },
   "StyleCondition" : {
-    "BASE" : {
+    "DEFAULT" : {
       "title" : "基本状態"
+    },
+    "ENABLE" : {
+      "title" : "有効状態"
     },
     "DISABLE" : {
       "title" : "無効状態"

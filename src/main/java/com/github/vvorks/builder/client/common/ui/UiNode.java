@@ -1321,7 +1321,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public Length getBorderLeft() {
-		return (style != null) ? style.getAtomicStyleOf(this).getBorderLeft() : Length.ZERO;
+		return (style != null) ? style.getEffectiveStyle(this).getBorderLeft() : Length.ZERO;
 	}
 
 	public int getBorderLeftPx() {
@@ -1329,7 +1329,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public Length getBorderTop() {
-		return (style != null) ? style.getAtomicStyleOf(this).getBorderTop() : Length.ZERO;
+		return (style != null) ? style.getEffectiveStyle(this).getBorderTop() : Length.ZERO;
 	}
 
 	public int getBorderTopPx() {
@@ -1337,7 +1337,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public Length getBorderRight() {
-		return (style != null) ? style.getAtomicStyleOf(this).getBorderRight() : Length.ZERO;
+		return (style != null) ? style.getEffectiveStyle(this).getBorderRight() : Length.ZERO;
 	}
 
 	public int getBorderRightPx() {
@@ -1345,7 +1345,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public Length getBorderBottom() {
-		return (style != null) ? style.getAtomicStyleOf(this).getBorderBottom() : Length.ZERO;
+		return (style != null) ? style.getEffectiveStyle(this).getBorderBottom() : Length.ZERO;
 	}
 
 	public int getBorderBottomPx() {
@@ -1581,11 +1581,25 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	public boolean isFocus() {
 		UiNode focus = getApplication().getFocus(this);
+		if (focus == null) {
+			return false;
+		}
 		return this == focus;
+	}
+
+	public boolean inFocus() {
+		UiNode focus = getApplication().getFocus(this);
+		if (focus == null) {
+			return false;
+		}
+		return this == focus || focus.isAncestor(this);
 	}
 
 	public boolean hasFocus() {
 		UiNode focus = getApplication().getFocus(this);
+		if (focus == null) {
+			return false;
+		}
 		return this == focus || this.isAncestor(focus);
 	}
 
@@ -1728,7 +1742,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	protected void syncStyle() {
 		UiStyle s = getStyle();
 		if (s != null) {
-			UiAtomicStyle as = s.getAtomicStyleOf(this);
+			UiStyle as = s.getEffectiveStyle(this);
 			domElement.setDefinedStyle(as);
 		} else {
 			domElement.setDefinedStyle(null);
@@ -1904,7 +1918,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	protected int onImageLoaded(UiNode node, String url) {
 		int result = EVENT_IGNORED;
 		if (style != null) {
-			UiAtomicStyle as = style.getAtomicStyleOf(this);
+			UiStyle as = style.getEffectiveStyle(this);
 			if (url.equals(as.getBackgroundImage()) || url.equals(as.getBorderImage())) {
 				setChanged(CHANGED_DISPLAY);
 				result = EVENT_AFFECTED;
