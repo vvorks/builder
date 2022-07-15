@@ -1,0 +1,205 @@
+@startuml
+
+skinparam monochrome false
+
+class Project {
+	-projectName:STRING
+	-title:STRING
+	-description:STRING
+}
+
+class Class {
+	-className:STRING
+	-title:STRING
+	-description:STRING
+}
+
+class Struct <<Future consideration>> {
+	-structName:STRING
+	-title:STRING
+	-description:STRING
+}
+
+class Field {
+	-fieldName:STRING
+	-type:DataType
+	-width:INTEGER
+	-scale:INTEGER
+	-pk:BOOLEAN
+	-nullable:BOOLEAN
+	-needsSum:BOOLEAN
+	-needsAvg:BOOLEAN
+	-needsMax:BOOLEAN
+	-needsMin:BOOLEAN
+	-format:STRING
+	-title:STRING
+	-description:STRING
+}
+
+class Query {
+	-title:STRING
+	-description:STRING
+	-filter:STRING
+	-order:STRING
+}
+
+class Enum {
+	-enumName:STRING
+	-title:STRING
+	-description:STRING
+}
+
+class EnumValue {
+	-valueId:STRING
+	-title:STRING
+	-description:STRING
+}
+
+class Message {
+	-message:STRING
+}
+
+class Form {
+	-formName:STRING
+	-title:STRING
+	-description:STRING
+}
+
+class FormVariant {
+	-locale: Locale
+	-width: Length
+}
+
+class Layout {
+	-message: Message
+	-field: Field
+	-format: STRING
+	-left: Length
+	-top: Length
+	-right: Length
+	-bottom: Length
+	-width: Length
+	-height: Length
+}
+
+class Style {
+	-textColor:STRING
+	-backgroundColor:STRING
+	-backgroundImage:STRING
+	-borderLeft:STRING
+	-borderTop:STRING
+	-borderRight:STRING
+	-borderBottom:STRING
+	-borderColor:STRING
+	-borderImage:STRING
+	-fontSize:STRING
+	-fontFamily:STRING
+	-lineHeight:STRING
+	-textAlign:STRING
+	-verticalAlign:STRING
+}
+
+enum DataType {
+	+KEY
+	+BOOLEAN
+	+INTEGER
+	+REAL
+	+NUMERIC
+	+DATE
+	+STRING
+	+REF
+	+ENUM
+	+SET
+}
+
+enum StyleCondition {
+	+DEFAULT
+	+ENABLE
+	+DISABLE
+	+FOCUS
+	+CLICKING
+	+NAMED
+}
+
+Project *-- Class
+Project *-- Enum
+Project *-- Message
+Project *-- Form
+Project *-- Style
+Project *-- Locale
+
+Class *-- Field
+Class *-- Query
+
+Project *-- Struct
+Struct *-- Field
+Field --> Struct
+
+Enum *-- EnumValue
+
+Message *-- MessageI18n
+
+Field --> DataType
+Field --> Class
+
+Form *-- FormVariant
+FormVariant --> Locale
+FormVariant *-- Layout
+Layout *-- Layout
+Layout --> Style
+
+Style *-- Style
+Style --> StyleCondition
+
+class Locale {
+	title:STRING
+	description:STRING
+}
+
+class ProjectI18n {
+	locale:Locale
+	title:STRING
+	description:STRING
+}
+
+class ClassI18n {
+	locale:Locale
+	title:STRING
+	description:STRING
+}
+
+class FieldI18n {
+	locale:Locale
+	title:STRING
+	description:STRING
+}
+class EnumI18n {
+	locale:Locale
+	title:STRING
+	description:STRING
+}
+
+class EnumValueI18n {
+	locale:Locale
+	title:STRING
+	description:STRING
+}
+
+class MessageI18n {
+	locale:Locale
+	message:STRING
+}
+
+Project *-- ProjectI18n
+Class *-- ClassI18n
+Enum *-- EnumI18n
+EnumValue *-- EnumValueI18n
+Field *-- FieldI18n
+ProjectI18n --> Locale
+ClassI18n --> Locale
+FieldI18n --> Locale
+EnumI18n --> Locale
+EnumValueI18n --> Locale
+MessageI18n --> Locale
+
+@enduml
