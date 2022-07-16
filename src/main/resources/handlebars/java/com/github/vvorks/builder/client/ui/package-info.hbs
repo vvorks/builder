@@ -1,0 +1,13 @@
+//
+// package-info テンプレート
+//
+{{#java this "client/ui/package-info.java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.client.ui;
+{{/java}}

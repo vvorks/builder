@@ -1,17 +1,4 @@
 //
-// uiパッケージテンプレート
-//
-{{#java this "client/ui/package-info.java"}}
-{{#if global.project.copyrightLines}}
-/*
-{{#each global.project.copyrightLines}}
- * {{this}}
-{{/each}}
- */
-{{/if}}
-package {{global.project.projectName}}.client.ui;
-{{/java}}
-//
 // Stylesテンプレート
 //
 {{#java this "client/ui/" upperLastName "Styles" ".java"}}

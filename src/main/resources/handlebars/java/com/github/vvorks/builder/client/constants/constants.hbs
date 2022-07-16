@@ -1,19 +1,4 @@
 //
-// constantsパッケージテンプレート
-//
-{{#java this "client/constants/package-info.java"}}
-{{#if global.project.copyrightLines}}
-/*
-{{#each global.project.copyrightLines}}
- * {{this}}
-{{/each}}
- */
-{{/if}}
-@{{builderName}}.common.util.JsonResourcePackage
-package {{global.project.projectName}}.client.constants;
-{{/java}}
-
-//
 // class constants
 //
 {{#each projectConstants}}
