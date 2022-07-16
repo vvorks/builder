@@ -3,7 +3,9 @@ package com.github.vvorks.builder.server.common.io;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,11 +14,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class Ios {
 
@@ -48,34 +50,47 @@ public class Ios {
 		}
 	}
 
-	public static List<String> getResoureNames(Object obj, String path, Predicate<String> filter) throws IOException {
-		List<String> list = new ArrayList<>();
-		try (
-			BufferedReader dir = newReader(obj.getClass().getResourceAsStream(path))
-		) {
-			for (String res = null; (res = dir.readLine()) != null;) {
-				if (filter.test(res)) {
-					list.add(res);
-				}
-			}
-		}
-		return list;
+	public static BufferedReader newReader(String str) {
+		return new BufferedReader(new StringReader(str));
 	}
 
 	public static BufferedReader newReader(InputStream in) {
 		return new BufferedReader(new InputStreamReader(in));
 	}
 
+	public static BufferedReader newReader(InputStream in, Charset charset) {
+		return new BufferedReader(new InputStreamReader(in, charset));
+	}
+
 	public static BufferedReader newReader(File file) throws FileNotFoundException {
 		return new BufferedReader(new FileReader(file));
+	}
+
+	public static BufferedReader newReader(File file, Charset charset)
+			throws FileNotFoundException {
+		return	new BufferedReader(
+				new InputStreamReader(
+				new FileInputStream(file), charset));
 	}
 
 	public static PrintWriter newWriter(OutputStream out) {
 		return new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
 	}
 
+	public static PrintWriter newWriter(OutputStream out, Charset charset) {
+		return new PrintWriter(new BufferedWriter(new OutputStreamWriter(out, charset)));
+	}
+
 	public static PrintWriter newWriter(File file) throws IOException {
 		return new PrintWriter(new BufferedWriter(new FileWriter(file)));
+	}
+
+	public static PrintWriter newWriter(File file, Charset charset)
+			throws IOException {
+		return	new PrintWriter(
+				new BufferedWriter(
+				new OutputStreamWriter(
+				new FileOutputStream(file), charset)));
 	}
 
 	public static void deleteAll(File fileOrDir) throws IOException {

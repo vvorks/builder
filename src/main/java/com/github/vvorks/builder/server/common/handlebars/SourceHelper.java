@@ -1,12 +1,10 @@
 package com.github.vvorks.builder.server.common.handlebars;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
@@ -43,8 +41,8 @@ public class SourceHelper implements Helper<Object> {
 //		}
 		//改行正規化とファイル出力
 		try (
-			BufferedReader in = new BufferedReader(new StringReader(source));
-			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)))
+			BufferedReader in = Ios.newReader(source);
+			PrintWriter out = Ios.newWriter(file, StandardCharsets.UTF_8)
 		) {
 			String prev = "";
 			String line = "";
