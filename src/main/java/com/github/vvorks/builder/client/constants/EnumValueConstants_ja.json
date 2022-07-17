@@ -53,5 +53,22 @@
     "NAMED" : {
       "title" : "UIノード名限定"
     }
+  },
+  "LayoutType" : {
+    "GROUP" : {
+      "title" : "グループ"
+    },
+    "SHOW_LABEL" : {
+      "title" : "フィールドラベル表示"
+    },
+    "SHOW_DATA" : {
+      "title" : "フィールドデータ表示"
+    },
+    "EDIT_DATA" : {
+      "title" : "フィールドデータ編集"
+    },
+    "SHOW_MESSAGE" : {
+      "title" : "メッセージ表示"
+    }
   }
 }

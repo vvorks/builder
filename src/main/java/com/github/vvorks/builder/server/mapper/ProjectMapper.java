@@ -244,6 +244,30 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 	);
 
 	/**
+	 * formsのサマリーを取得する
+	 *
+	 * @param content プロジェクト
+	 * @return formsのサマリー
+	 */
+	public FormSummary<FormContent> listFormsSummary(
+		@Param("content") ProjectContent content
+	);
+
+	/**
+	 * formsを取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return forms
+	 */
+	public List<FormContent> listFormsContent(
+		@Param("content") ProjectContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
 	 * ロケール一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト

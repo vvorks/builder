@@ -68,6 +68,18 @@ public class Mappers {
 	@Autowired
 	private StyleMapper styleMapper;
 
+	/** フォームのMapper */
+	@Autowired
+	private FormMapper formMapper;
+
+	/** フォームバリエーションのMapper */
+	@Autowired
+	private FormVariantMapper formVariantMapper;
+
+	/** レイアウトのMapper */
+	@Autowired
+	private LayoutMapper layoutMapper;
+
 	/** ロケールのMapper */
 	@Autowired
 	private LocaleMapper localeMapper;
@@ -91,6 +103,9 @@ public class Mappers {
 			mapperMap.put("Message", messageMapper);
 			mapperMap.put("MessageI18n", messageI18nMapper);
 			mapperMap.put("Style", styleMapper);
+			mapperMap.put("Form", formMapper);
+			mapperMap.put("FormVariant", formVariantMapper);
+			mapperMap.put("Layout", layoutMapper);
 			mapperMap.put("Locale", localeMapper);
 		}
 		return mapperMap.get(name);

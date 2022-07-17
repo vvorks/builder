@@ -4,5 +4,8 @@
   },
   "StyleCondition" : {
     "title" : "スタイル条件"
+  },
+  "LayoutType" : {
+    "title" : "レイアウトタイプ"
   }
 }

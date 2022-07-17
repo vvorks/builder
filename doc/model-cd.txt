@@ -71,8 +71,10 @@ class FormVariant {
 }
 
 class Layout {
-	-message: Message
-	-field: Field
+	-name: STRING
+	-targetType: ENUM
+	-targetField: Field
+	targetMessage: Message
 	-format: STRING
 	-left: Length
 	-top: Length
@@ -121,6 +123,14 @@ enum StyleCondition {
 	+NAMED
 }
 
+enum LayoutType {
+	+GROUP
+	+SHOW_LABEL
+	+SHOW_DATA
+	+EDIT_DATA
+	+SHOW_MESSAGE
+}
+
 Project *-- Class
 Project *-- Enum
 Project *-- Message
@@ -147,6 +157,7 @@ FormVariant --> Locale
 FormVariant *-- Layout
 Layout *-- Layout
 Layout --> Style
+Layout --> LayoutType
 
 Style *-- Style
 Style --> StyleCondition

@@ -91,6 +91,8 @@ public class XlsxLoader {
 	}
 
 	private String process(Sheet sheet, Connection con) throws SQLException {
+		//シート名取得
+		String sheetName = sheet.getSheetName();
 		//行列情報取得
 		int rowFirst = sheet.getFirstRowNum();
 		if (rowFirst < 0) {
@@ -112,7 +114,7 @@ public class XlsxLoader {
 		for (int c = colFirst; c < colLast; c++) {
 			Cell cell = headerRow.getCell(c);
 			String value = Cells.getString(cell, null);
-			Asserts.requireNotEmpty(value);
+			Asserts.requireNotEmpty(value, sheetName);
 			if (!value.startsWith("#")) {
 				String[] a = value.split(":");
 				String name = a[0];
@@ -123,7 +125,7 @@ public class XlsxLoader {
 		//追加カラム
 		cols.add(new ColInfo(-1, "_lastUpdatedAt", DataType.DATE));
 		//テーブル作成
-		String tableName = SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(sheet.getSheetName());
+		String tableName = SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(sheetName);
 		StringBuilder sql = new StringBuilder();
 		int insertPos;
 		//DropTable分

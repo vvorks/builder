@@ -33,6 +33,7 @@
     "styles" : {
       "title" : "スタイル一覧"
     },
+    "forms" : { },
     "locales" : {
       "title" : "ロケール一覧"
     },
@@ -386,6 +387,42 @@
     "verticalAlign" : {
       "title" : "縦方向の揃え位置"
     }
+  },
+  "Form" : {
+    "formId" : { },
+    "owner" : { },
+    "name" : { },
+    "title" : {
+      "title" : "タイトル"
+    },
+    "description" : {
+      "title" : "説明"
+    },
+    "variants" : { }
+  },
+  "FormVariant" : {
+    "variantId" : { },
+    "owner" : { },
+    "width" : { },
+    "height" : { },
+    "layouts" : { }
+  },
+  "Layout" : {
+    "layoutId" : { },
+    "owner" : { },
+    "name" : { },
+    "children" : { },
+    "parent" : { },
+    "targetType" : { },
+    "targetField" : { },
+    "targetMessage" : { },
+    "style" : { },
+    "left" : { },
+    "top" : { },
+    "right" : { },
+    "bottom" : { },
+    "width" : { },
+    "height" : { }
   },
   "Locale" : {
     "localeId" : {

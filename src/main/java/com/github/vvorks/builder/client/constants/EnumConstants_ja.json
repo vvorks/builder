@@ -6,5 +6,9 @@
   "StyleCondition" : {
     "title" : "スタイル条件",
     "description" : "スタイル条件"
+  },
+  "LayoutType" : {
+    "title" : "レイアウトタイプ",
+    "description" : "レイアウトタイプ"
   }
 }

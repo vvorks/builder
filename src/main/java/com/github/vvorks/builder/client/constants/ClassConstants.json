@@ -41,6 +41,15 @@
   "Style" : {
     "title" : "スタイル"
   },
+  "Form" : {
+    "title" : "フォーム"
+  },
+  "FormVariant" : {
+    "title" : "フォームバリエーション"
+  },
+  "Layout" : {
+    "title" : "レイアウト"
+  },
   "Locale" : {
     "title" : "ロケール",
     "description" : "ロケールマスタ"

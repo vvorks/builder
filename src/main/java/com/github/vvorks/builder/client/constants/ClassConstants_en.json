@@ -41,6 +41,15 @@
   "Style" : {
     "title" : "Style"
   },
+  "Form" : {
+    "title" : "Form"
+  },
+  "FormVariant" : {
+    "title" : "FormVariant"
+  },
+  "Layout" : {
+    "title" : "Layout"
+  },
   "Locale" : {
     "title" : "Locale"
   }
