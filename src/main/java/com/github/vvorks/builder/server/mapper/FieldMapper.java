@@ -43,6 +43,19 @@ public interface FieldMapper extends BuilderMapper<FieldContent> {
 	public boolean delete(FieldContent content);
 
 	/**
+	 * フィールドをその従属要素も含めて削除する
+	 *
+	 * @param content 削除するフィールド
+	 * @return 処理成功の場合、真
+	 */
+	public default boolean deleteFull(FieldContent content) {
+		if (!deleteI18nsAll(content)) {
+			return false;
+		}
+		return delete(content);
+	}
+
+	/**
 	 * フィールドを取得する
 	 *
 	 * @param fieldId フィールドID
@@ -261,6 +274,15 @@ public interface FieldMapper extends BuilderMapper<FieldContent> {
 		@Param("content") FieldContent content,
 		@Param("offset") int offset,
 		@Param("limit") int limit
+	);
+
+	/**
+	 * フィールドが保持するI18n一覧を全て削除する
+	 *
+	 * @param content フィールド
+	 */
+	public boolean deleteI18nsAll(
+		@Param("content") FieldContent content
 	);
 
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- Apache License v2.0 -->
 <mapper namespace="com.github.vvorks.builder.server.mapper.ProjectMapper">
 
 	<insert id="insert" parameterType="ProjectContent">
@@ -512,6 +513,27 @@
 			OFFSET #{offset}
 		</if>
 		</if>
+	</select>
+
+	<select id="deleteStylesAll">
+		DELETE FROM
+			T_STYLE
+		WHERE
+			F_OWNER_PROJECT_ID = #{ content.projectId }
+	</select>
+
+	<select id="deleteLocalesAll">
+		DELETE FROM
+			T_LOCALE
+		WHERE
+			F_OWNER_PROJECT_ID = #{ content.projectId }
+	</select>
+
+	<select id="deleteI18nsAll">
+		DELETE FROM
+			T_PROJECT_I18N
+		WHERE
+			F_OWNER_PROJECT_ID = #{ content.projectId }
 	</select>
 
 </mapper>

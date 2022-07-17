@@ -33,7 +33,9 @@
     "styles" : {
       "title" : "スタイル一覧"
     },
-    "forms" : { },
+    "forms" : {
+      "title" : "フォーム一覧"
+    },
     "locales" : {
       "title" : "ロケール一覧"
     },
@@ -141,16 +143,24 @@
       "title" : "NULL許容"
     },
     "needsSum" : {
-      "title" : "要合計値"
+      "title" : "要合計値",
+      "description" : "数値型のみ使用"
     },
     "needsAvg" : {
-      "title" : "要平均値"
+      "title" : "要平均値",
+      "description" : "数値型のみ使用"
     },
     "needsMax" : {
-      "title" : "要最大値"
+      "title" : "要最大値",
+      "description" : "数値型のみ使用"
     },
     "needsMin" : {
-      "title" : "要最小値"
+      "title" : "要最小値",
+      "description" : "数値型のみ使用"
+    },
+    "isContainer" : {
+      "title" : "主保持SET",
+      "description" : "SET型のみ使用。このSETが保持要素の主たる保持先か否かを示す。"
     },
     "format" : {
       "title" : "書式",

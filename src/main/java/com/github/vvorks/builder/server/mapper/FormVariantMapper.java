@@ -43,6 +43,19 @@ public interface FormVariantMapper extends BuilderMapper<FormVariantContent> {
 	public boolean delete(FormVariantContent content);
 
 	/**
+	 * フォームバリエーションをその従属要素も含めて削除する
+	 *
+	 * @param content 削除するフォームバリエーション
+	 * @return 処理成功の場合、真
+	 */
+	public default boolean deleteFull(FormVariantContent content) {
+		if (!deleteLayoutsAll(content)) {
+			return false;
+		}
+		return delete(content);
+	}
+
+	/**
 	 * フォームバリエーションを取得する
 	 *
 	 * @param variantId variantId
@@ -129,6 +142,15 @@ public interface FormVariantMapper extends BuilderMapper<FormVariantContent> {
 		@Param("content") FormVariantContent content,
 		@Param("offset") int offset,
 		@Param("limit") int limit
+	);
+
+	/**
+	 * フォームバリエーションが保持するlayoutsを全て削除する
+	 *
+	 * @param content フォームバリエーション
+	 */
+	public boolean deleteLayoutsAll(
+		@Param("content") FormVariantContent content
 	);
 
 }

@@ -43,6 +43,45 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 	public boolean delete(ProjectContent content);
 
 	/**
+	 * プロジェクトをその従属要素も含めて削除する
+	 *
+	 * @param content 削除するプロジェクト
+	 * @return 処理成功の場合、真
+	 */
+	public default boolean deleteFull(ProjectContent content) {
+		for (ClassContent c : listClassesContent(content, 0, 0)) {
+			if (!Mappers.get().getClassMapper().deleteFull(c)) {
+				return false;
+			}
+		}
+		for (EnumContent c : listEnumsContent(content, 0, 0)) {
+			if (!Mappers.get().getEnumMapper().deleteFull(c)) {
+				return false;
+			}
+		}
+		for (MessageContent c : listMessagesContent(content, 0, 0)) {
+			if (!Mappers.get().getMessageMapper().deleteFull(c)) {
+				return false;
+			}
+		}
+		if (!deleteStylesAll(content)) {
+			return false;
+		}
+		for (FormContent c : listFormsContent(content, 0, 0)) {
+			if (!Mappers.get().getFormMapper().deleteFull(c)) {
+				return false;
+			}
+		}
+		if (!deleteLocalesAll(content)) {
+			return false;
+		}
+		if (!deleteI18nsAll(content)) {
+			return false;
+		}
+		return delete(content);
+	}
+
+	/**
 	 * プロジェクトを取得する
 	 *
 	 * @param projectId プロジェクトID
@@ -244,22 +283,22 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 	);
 
 	/**
-	 * formsのサマリーを取得する
+	 * フォーム一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト
-	 * @return formsのサマリー
+	 * @return フォーム一覧のサマリー
 	 */
 	public FormSummary<FormContent> listFormsSummary(
 		@Param("content") ProjectContent content
 	);
 
 	/**
-	 * formsを取得する
+	 * フォーム一覧を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return forms
+	 * @return フォーム一覧
 	 */
 	public List<FormContent> listFormsContent(
 		@Param("content") ProjectContent content,
@@ -313,6 +352,33 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 		@Param("content") ProjectContent content,
 		@Param("offset") int offset,
 		@Param("limit") int limit
+	);
+
+	/**
+	 * プロジェクトが保持するスタイル一覧を全て削除する
+	 *
+	 * @param content プロジェクト
+	 */
+	public boolean deleteStylesAll(
+		@Param("content") ProjectContent content
+	);
+
+	/**
+	 * プロジェクトが保持するロケール一覧を全て削除する
+	 *
+	 * @param content プロジェクト
+	 */
+	public boolean deleteLocalesAll(
+		@Param("content") ProjectContent content
+	);
+
+	/**
+	 * プロジェクトが保持するI18n一覧を全て削除する
+	 *
+	 * @param content プロジェクト
+	 */
+	public boolean deleteI18nsAll(
+		@Param("content") ProjectContent content
 	);
 
 }

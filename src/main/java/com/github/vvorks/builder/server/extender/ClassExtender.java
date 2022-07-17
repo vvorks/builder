@@ -299,6 +299,10 @@ public class ClassExtender {
 		return getFields(cls, fld -> fld.getType() == DataType.SET);
 	}
 
+	public List<FieldContent> getContainsSets(ClassContent cls) {
+		return getFields(cls, fld -> fld.getType() == DataType.SET && fld.isIsContainer());
+	}
+
 	public List<FieldContent> getFields(ClassContent cls, Predicate<FieldContent> filter) {
 		List<FieldContent> result = new ArrayList<>();
 		for (FieldContent field : getFields(cls)) {

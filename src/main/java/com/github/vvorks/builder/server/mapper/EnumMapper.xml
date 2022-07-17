@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- Apache License v2.0 -->
 <mapper namespace="com.github.vvorks.builder.server.mapper.EnumMapper">
 
 	<insert id="insert" parameterType="EnumContent">
@@ -271,6 +272,13 @@
 			OFFSET #{offset}
 		</if>
 		</if>
+	</select>
+
+	<select id="deleteI18nsAll">
+		DELETE FROM
+			T_ENUM_I18N
+		WHERE
+			F_OWNER_ENUM_ID = #{ content.enumId }
 	</select>
 
 </mapper>

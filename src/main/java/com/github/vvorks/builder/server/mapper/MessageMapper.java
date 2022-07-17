@@ -43,6 +43,19 @@ public interface MessageMapper extends BuilderMapper<MessageContent> {
 	public boolean delete(MessageContent content);
 
 	/**
+	 * メッセージをその従属要素も含めて削除する
+	 *
+	 * @param content 削除するメッセージ
+	 * @return 処理成功の場合、真
+	 */
+	public default boolean deleteFull(MessageContent content) {
+		if (!deleteI18nsAll(content)) {
+			return false;
+		}
+		return delete(content);
+	}
+
+	/**
 	 * メッセージを取得する
 	 *
 	 * @param messageId メッセージID
@@ -129,6 +142,15 @@ public interface MessageMapper extends BuilderMapper<MessageContent> {
 		@Param("content") MessageContent content,
 		@Param("offset") int offset,
 		@Param("limit") int limit
+	);
+
+	/**
+	 * メッセージが保持するI18n一覧を全て削除する
+	 *
+	 * @param content メッセージ
+	 */
+	public boolean deleteI18nsAll(
+		@Param("content") MessageContent content
 	);
 
 }

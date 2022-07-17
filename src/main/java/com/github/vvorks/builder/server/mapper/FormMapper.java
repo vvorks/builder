@@ -43,6 +43,21 @@ public interface FormMapper extends BuilderMapper<FormContent> {
 	public boolean delete(FormContent content);
 
 	/**
+	 * フォームをその従属要素も含めて削除する
+	 *
+	 * @param content 削除するフォーム
+	 * @return 処理成功の場合、真
+	 */
+	public default boolean deleteFull(FormContent content) {
+		for (FormVariantContent c : listVariantsContent(content, 0, 0)) {
+			if (!Mappers.get().getFormVariantMapper().deleteFull(c)) {
+				return false;
+			}
+		}
+		return delete(content);
+	}
+
+	/**
 	 * フォームを取得する
 	 *
 	 * @param formId formId

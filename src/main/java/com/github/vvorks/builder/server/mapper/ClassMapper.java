@@ -43,6 +43,27 @@ public interface ClassMapper extends BuilderMapper<ClassContent> {
 	public boolean delete(ClassContent content);
 
 	/**
+	 * クラスをその従属要素も含めて削除する
+	 *
+	 * @param content 削除するクラス
+	 * @return 処理成功の場合、真
+	 */
+	public default boolean deleteFull(ClassContent content) {
+		for (FieldContent c : listFieldsContent(content, 0, 0)) {
+			if (!Mappers.get().getFieldMapper().deleteFull(c)) {
+				return false;
+			}
+		}
+		if (!deleteQueriesAll(content)) {
+			return false;
+		}
+		if (!deleteI18nsAll(content)) {
+			return false;
+		}
+		return delete(content);
+	}
+
+	/**
 	 * クラスを取得する
 	 *
 	 * @param classId クラスID
@@ -227,6 +248,24 @@ public interface ClassMapper extends BuilderMapper<ClassContent> {
 		@Param("content") ClassContent content,
 		@Param("offset") int offset,
 		@Param("limit") int limit
+	);
+
+	/**
+	 * クラスが保持するクエリー一覧を全て削除する
+	 *
+	 * @param content クラス
+	 */
+	public boolean deleteQueriesAll(
+		@Param("content") ClassContent content
+	);
+
+	/**
+	 * クラスが保持するI18n一覧を全て削除する
+	 *
+	 * @param content クラス
+	 */
+	public boolean deleteI18nsAll(
+		@Param("content") ClassContent content
 	);
 
 }

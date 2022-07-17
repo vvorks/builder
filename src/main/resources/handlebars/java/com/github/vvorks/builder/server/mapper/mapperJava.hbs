@@ -1,0 +1,356 @@
+//
+// Mapper基底インターフェース
+//
+{{#java this "server/mapper/" upperLastName "Mapper" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.mapper;
+
+import java.util.List;
+
+/**
+ * Mapper基底インターフェース
+ */
+public interface {{upperLastName}}Mapper<T> {
+
+	/**
+	 * 全データを取得する
+	 */
+	public List<T> listAll();
+
+}
+{{/java}}
+
+//
+// Mapperユーティリティクラス
+//
+{{#java this "server/mapper/Mappers" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.mapper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import {{global.project.projectName}}.common.logging.Logger;
+
+@Component
+public class Mappers {
+
+	private static final Logger LOGGER = Logger.createLogger(Mappers.class);
+
+	private static Mappers instance;
+
+	public static Mappers get() {
+		LOGGER.info("Mappers instance ", instance != null);
+		return instance;
+	}
+
+	{{#each classes}}
+
+	/** {{titleOrName}}のMapper */
+	@Autowired
+	private {{className}}Mapper {{lowerName}}Mapper;
+	{{/each}}
+
+	private Map<String, {{upperLastName}}Mapper<?>> mapperMap;
+
+	public Mappers() {
+		instance = this;
+	}
+
+	{{#each classes}}
+
+	/** {{titleOrName}}のMapperを取得する */
+	public {{className}}Mapper get{{className}}Mapper() {
+		return {{lowerName}}Mapper;
+	}
+	{{/each}}
+
+	public {{upperLastName}}Mapper<?> getMapperOf(String name) {
+		if (mapperMap == null) {
+			mapperMap = new HashMap<>();
+			{{#each classes}}
+			mapperMap.put("{{className}}", {{lowerName}}Mapper);
+			{{/each}}
+		}
+		return mapperMap.get(name);
+	}
+
+}
+{{/java}}
+
+//
+// Mapperインターフェーステンプレート
+//
+{{#each this.classes}}
+{{#java this "server/mapper/" className "Mapper" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import {{global.project.projectName}}.server.domain.*;
+
+@Mapper
+public interface {{className}}Mapper extends {{../upperLastName}}Mapper<{{className}}Content> {
+
+	@Override
+	public default List<{{className}}Content> listAll() {
+		return listContent(0, 0);
+	}
+
+	/**
+	 * {{titleOrName}}を挿入する
+	 *
+	 * @param content 挿入する{{titleOrName}}
+	 * @return 処理成功の場合、真
+	 */
+	public boolean insert({{className}}Content content);
+
+	/**
+	 * {{titleOrName}}を更新する
+	 *
+	 * @param content 更新する{{titleOrName}}
+	 * @return 処理成功の場合、真
+	 */
+	public boolean update({{className}}Content content);
+
+	/**
+	 * {{titleOrName}}を削除する
+	 *
+	 * @param content 削除する{{titleOrName}}
+	 * @return 処理成功の場合、真
+	 */
+	public boolean delete({{className}}Content content);
+
+	/**
+	 * {{titleOrName}}をその従属要素も含めて削除する
+	 *
+	 * @param content 削除する{{titleOrName}}
+	 * @return 処理成功の場合、真
+	 */
+	public default boolean deleteFull({{className}}Content content) {
+		{{#each containsSets}}
+		{{#if fref.owner.containsSets}}
+		for ({{fref.owner.className}}Content c : list{{upperName}}Content(content, 0, 0)) {
+			if (!Mappers.get().get{{fref.owner.className}}Mapper().deleteFull(c)) {
+				return false;
+			}
+		}
+		{{else}}
+		if (!delete{{upperName}}All(content)) {
+			return false;
+		}
+		{{/if}}
+		{{/each}}
+		return delete(content);
+	}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	{{#each keys}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @return 取得した{{titleOrName}}
+	 */
+	public {{className}}Content get(
+		{{#each keys}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}}, {{/separator}}
+		{{/each}}
+	);
+
+	/**
+	 * 全ての{{titleOrName}}のサマリーを取得する
+	 *
+	 * @return {{titleOrName}}のサマリー
+	 */
+	public {{className}}Summary<{{className}}Content> listSummary();
+
+	/**
+	 * 全ての{{titleOrName}}を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{titleOrName}}のリスト
+	 */
+	public List<{{className}}Content> listContent(
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	{{#each queries}}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}のサマリーを取得する
+	 *
+	{{#each arguments}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @return {{../titleOrName}}のサマリー
+	 */
+	public {{../className}}Summary<{{../className}}Content> listSummaryIf{{upperName}}(
+		{{#each arguments}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
+	);
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
+	 *
+	{{#each arguments}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{../titleOrName}}のリスト
+	 */
+	public List<{{../className}}Content> listContentIf{{upperName}}(
+		{{#each arguments}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+	{{/each}}
+
+	{{#each refs}}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @return {{titleOrName}}
+	 */
+	public {{cref.className}}Content get{{upperName}}({{../className}}Content content);
+
+	/**
+	 * {{titleOrName}}の候補サマリーを取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @param hint ヒント情報
+	 * @return {{titleOrName}}の候補サマリー
+	 */
+	public {{cref.className}}Summary<{{cref.className}}Subject> list{{upperName}}CandidateSummary(
+		@Param("content") {{../className}}Content content,
+		@Param("hint") String hint
+	);
+
+	/**
+	 * {{titleOrName}}の候補一覧を取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{titleOrName}}の候補一覧
+	 */
+	public List<{{cref.className}}Subject> list{{upperName}}CandidateSubject(
+		@Param("content") {{../className}}Content content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+	{{/each}}
+
+	{{#each sets}}
+
+	/**
+	 * {{titleOrName}}のサマリーを取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @return {{titleOrName}}のサマリー
+	 */
+	public {{fref.owner.className}}Summary<{{fref.owner.className}}Content> list{{upperName}}Summary(
+		@Param("content") {{../className}}Content content
+	);
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @param content {{../titleOrName}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{titleOrName}}
+	 */
+	public List<{{fref.owner.className}}Content> list{{upperName}}Content(
+		@Param("content") {{../className}}Content content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	{{#each fref.owner.queries}}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}のサマリーを取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @return {{../titleOrName}}のサマリー
+	 */
+	public {{../fref.owner.className}}Summary<{{../fref.owner.className}}Content> list{{../upperName}}SummaryIf{{upperName}}(
+		@Param("content") {{../../className}}Content content,
+		{{#each arguments}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
+	);
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}を取得する
+	 *
+	 * @param content {{../../titleOrName}}
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return {{../titleOrName}}
+	 */
+	public List<{{../fref.owner.className}}Content> list{{../upperName}}ContentIf{{upperName}}(
+		@Param("content") {{../../className}}Content content,
+		{{#each arguments}}
+		@Param("{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+	{{/each}}
+
+	{{/each}}
+
+	{{#each containsSets}}
+
+	{{#if fref.owner.containsSets}}
+	{{else}}
+	/**
+	 * {{../titleOrName}}が保持する{{titleOrName}}を全て削除する
+	 *
+	 * @param content {{../titleOrName}}
+	 */
+	public boolean delete{{upperName}}All(
+		@Param("content") {{../className}}Content content
+	);
+	{{/if}}
+	{{/each}}
+
+}
+{{/java}}
+{{/each}}

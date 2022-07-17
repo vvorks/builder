@@ -43,6 +43,16 @@ public interface LocaleMapper extends BuilderMapper<LocaleContent> {
 	public boolean delete(LocaleContent content);
 
 	/**
+	 * ロケールをその従属要素も含めて削除する
+	 *
+	 * @param content 削除するロケール
+	 * @return 処理成功の場合、真
+	 */
+	public default boolean deleteFull(LocaleContent content) {
+		return delete(content);
+	}
+
+	/**
 	 * ロケールを取得する
 	 *
 	 * @param localeId ロケールID

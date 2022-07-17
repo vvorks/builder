@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.vvorks.builder.BuilderApplication;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.server.component.FormBuilder;
 import com.github.vvorks.builder.server.component.SourceWriter;
 import com.github.vvorks.builder.server.component.XlsxLoader;
 import com.github.vvorks.builder.server.domain.ProjectContent;
@@ -28,6 +29,9 @@ public class ApiController {
 
 	@Autowired
 	private SourceWriter writer;
+
+	@Autowired
+	private FormBuilder builder;
 
 	@GetMapping("/load")
 	public String load(@RequestParam(value = "name", defaultValue = "input") String name) {
@@ -51,6 +55,21 @@ public class ApiController {
 			writer.process();
 			long t2 = System.currentTimeMillis();
 			return done("write", t1, t2);
+		} catch (Exception err) {
+			LOGGER.error(err, "ERROR");
+			StringWriter w = new StringWriter();
+			err.printStackTrace(new PrintWriter(w));
+			return w.toString();
+		}
+	}
+
+	@GetMapping("/makeform")
+	public String makeForm(@RequestParam(value = "name", defaultValue = "input") String name) {
+		try {
+			long t1 = System.currentTimeMillis();
+			builder.process();
+			long t2 = System.currentTimeMillis();
+			return done("makeform", t1, t2);
 		} catch (Exception err) {
 			LOGGER.error(err, "ERROR");
 			StringWriter w = new StringWriter();

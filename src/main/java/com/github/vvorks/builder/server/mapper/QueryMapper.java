@@ -43,6 +43,16 @@ public interface QueryMapper extends BuilderMapper<QueryContent> {
 	public boolean delete(QueryContent content);
 
 	/**
+	 * クエリーをその従属要素も含めて削除する
+	 *
+	 * @param content 削除するクエリー
+	 * @return 処理成功の場合、真
+	 */
+	public default boolean deleteFull(QueryContent content) {
+		return delete(content);
+	}
+
+	/**
 	 * クエリーを取得する
 	 *
 	 * @param queryId クエリーID

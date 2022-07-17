@@ -432,12 +432,12 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * forms情報を取得する
+	 * フォーム一覧情報を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return forms情報
+	 * @return フォーム一覧情報
 	 */
 	@JsonRpcMethod
 	public FormSummary<FormContent> listProjectForms(

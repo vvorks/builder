@@ -69,23 +69,38 @@ public class FieldContent {
 
 	/**
 	 * 要合計値
+	 *
+	 * 数値型のみ使用
 	 */
 	private boolean needsSum;
 
 	/**
 	 * 要平均値
+	 *
+	 * 数値型のみ使用
 	 */
 	private boolean needsAvg;
 
 	/**
 	 * 要最大値
+	 *
+	 * 数値型のみ使用
 	 */
 	private boolean needsMax;
 
 	/**
 	 * 要最小値
+	 *
+	 * 数値型のみ使用
 	 */
 	private boolean needsMin;
+
+	/**
+	 * 主保持SET
+	 *
+	 * SET型のみ使用。このSETが保持要素の主たる保持先か否かを示す。
+	 */
+	private boolean isContainer;
 
 	/**
 	 * 書式
@@ -432,6 +447,24 @@ public class FieldContent {
 	}
 
 	/**
+	 * 主保持SETを取得する
+	 *
+	 * @return 主保持SET
+	 */
+	public boolean isIsContainer() {
+		return this.isContainer;
+	}
+
+	/**
+	 * 主保持SETを設定する
+	 *
+	 * @param isContainer 設定する主保持SET
+	 */
+	public void setIsContainer(boolean isContainer) {
+		this.isContainer = isContainer;
+	}
+
+	/**
 	 * 書式を取得する
 	 *
 	 * @return 書式
@@ -647,6 +680,7 @@ public class FieldContent {
 			needsAvg,
 			needsMax,
 			needsMin,
+			isContainer,
 			format,
 			title,
 			description,
@@ -685,6 +719,7 @@ public class FieldContent {
 			this.needsAvg == other.needsAvg && 
 			this.needsMax == other.needsMax && 
 			this.needsMin == other.needsMin && 
+			this.isContainer == other.isContainer && 
 			Objects.equals(this.format, other.format) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
@@ -712,6 +747,7 @@ public class FieldContent {
 		sb.append("needsAvg=").append(needsAvg).append(", ");
 		sb.append("needsMax=").append(needsMax).append(", ");
 		sb.append("needsMin=").append(needsMin).append(", ");
+		sb.append("isContainer=").append(isContainer).append(", ");
 		sb.append("format=").append(format).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");

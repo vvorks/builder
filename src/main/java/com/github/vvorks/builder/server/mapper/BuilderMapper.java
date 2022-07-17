@@ -6,7 +6,7 @@ package com.github.vvorks.builder.server.mapper;
 import java.util.List;
 
 /**
- * Mapper基底クラス
+ * Mapper基底インターフェース
  */
 public interface BuilderMapper<T> {
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- Apache License v2.0 -->
 <mapper namespace="com.github.vvorks.builder.server.mapper.LayoutMapper">
 
 	<insert id="insert" parameterType="LayoutContent">
@@ -327,6 +328,7 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_IS_CONTAINER AS "isContainer",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",

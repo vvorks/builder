@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- Apache License v2.0 -->
 <mapper namespace="com.github.vvorks.builder.server.mapper.FieldMapper">
 
 	<insert id="insert" parameterType="FieldContent">
@@ -20,6 +21,7 @@
 			F_NEEDS_AVG,
 			F_NEEDS_MAX,
 			F_NEEDS_MIN,
+			F_IS_CONTAINER,
 			F_FORMAT,
 			F_TITLE,
 			F_DESCRIPTION,
@@ -41,6 +43,7 @@
 			#{ needsAvg },
 			#{ needsMax },
 			#{ needsMin },
+			#{ isContainer },
 			#{ format },
 			#{ title },
 			#{ description },
@@ -65,6 +68,7 @@
 			F_NEEDS_AVG = #{ needsAvg },
 			F_NEEDS_MAX = #{ needsMax },
 			F_NEEDS_MIN = #{ needsMin },
+			F_IS_CONTAINER = #{ isContainer },
 			F_FORMAT = #{ format },
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
@@ -101,6 +105,7 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_IS_CONTAINER AS "isContainer",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -157,6 +162,7 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_IS_CONTAINER AS "isContainer",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -223,6 +229,7 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_IS_CONTAINER AS "isContainer",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -441,6 +448,7 @@
 			T1.F_NEEDS_AVG AS "needsAvg",
 			T1.F_NEEDS_MAX AS "needsMax",
 			T1.F_NEEDS_MIN AS "needsMin",
+			T1.F_IS_CONTAINER AS "isContainer",
 			T1.F_FORMAT AS "format",
 			T1.F_TITLE AS "title",
 			T1.F_DESCRIPTION AS "description",
@@ -548,6 +556,13 @@
 			OFFSET #{offset}
 		</if>
 		</if>
+	</select>
+
+	<select id="deleteI18nsAll">
+		DELETE FROM
+			T_FIELD_I18N
+		WHERE
+			F_OWNER_FIELD_ID = #{ content.fieldId }
 	</select>
 
 </mapper>

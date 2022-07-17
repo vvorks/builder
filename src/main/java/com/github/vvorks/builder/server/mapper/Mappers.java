@@ -8,9 +8,19 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.github.vvorks.builder.common.logging.Logger;
 
 @Component
 public class Mappers {
+
+	private static final Logger LOGGER = Logger.createLogger(Mappers.class);
+
+	private static Mappers instance;
+
+	public static Mappers get() {
+		LOGGER.info("Mappers instance ", instance != null);
+		return instance;
+	}
 
 	/** プロジェクトのMapper */
 	@Autowired
@@ -85,6 +95,100 @@ public class Mappers {
 	private LocaleMapper localeMapper;
 
 	private Map<String, BuilderMapper<?>> mapperMap;
+
+	public Mappers() {
+		instance = this;
+	}
+
+	/** プロジェクトのMapperを取得する */
+	public ProjectMapper getProjectMapper() {
+		return projectMapper;
+	}
+
+	/** プロジェクト(I18n)のMapperを取得する */
+	public ProjectI18nMapper getProjectI18nMapper() {
+		return projectI18nMapper;
+	}
+
+	/** クラスのMapperを取得する */
+	public ClassMapper getClassMapper() {
+		return classMapper;
+	}
+
+	/** クラス(I18n)のMapperを取得する */
+	public ClassI18nMapper getClassI18nMapper() {
+		return classI18nMapper;
+	}
+
+	/** フィールドのMapperを取得する */
+	public FieldMapper getFieldMapper() {
+		return fieldMapper;
+	}
+
+	/** フィールド(I18n)のMapperを取得する */
+	public FieldI18nMapper getFieldI18nMapper() {
+		return fieldI18nMapper;
+	}
+
+	/** クエリーのMapperを取得する */
+	public QueryMapper getQueryMapper() {
+		return queryMapper;
+	}
+
+	/** 列挙のMapperを取得する */
+	public EnumMapper getEnumMapper() {
+		return enumMapper;
+	}
+
+	/** 列挙(I18n)のMapperを取得する */
+	public EnumI18nMapper getEnumI18nMapper() {
+		return enumI18nMapper;
+	}
+
+	/** 列挙値のMapperを取得する */
+	public EnumValueMapper getEnumValueMapper() {
+		return enumValueMapper;
+	}
+
+	/** 列挙値(I18n)のMapperを取得する */
+	public EnumValueI18nMapper getEnumValueI18nMapper() {
+		return enumValueI18nMapper;
+	}
+
+	/** メッセージのMapperを取得する */
+	public MessageMapper getMessageMapper() {
+		return messageMapper;
+	}
+
+	/** メッセージ(I18n)のMapperを取得する */
+	public MessageI18nMapper getMessageI18nMapper() {
+		return messageI18nMapper;
+	}
+
+	/** スタイルのMapperを取得する */
+	public StyleMapper getStyleMapper() {
+		return styleMapper;
+	}
+
+	/** フォームのMapperを取得する */
+	public FormMapper getFormMapper() {
+		return formMapper;
+	}
+
+	/** フォームバリエーションのMapperを取得する */
+	public FormVariantMapper getFormVariantMapper() {
+		return formVariantMapper;
+	}
+
+	/** レイアウトのMapperを取得する */
+	public LayoutMapper getLayoutMapper() {
+		return layoutMapper;
+	}
+
+	/** ロケールのMapperを取得する */
+	public LocaleMapper getLocaleMapper() {
+		return localeMapper;
+	}
 
 	public BuilderMapper<?> getMapperOf(String name) {
 		if (mapperMap == null) {
