@@ -1,0 +1,22 @@
+//
+// data.sql用テンプレート(builderプロジェクト専用)
+//
+{{#if this.builderProject}}
+{{#resources this "sql/data.sql"}}
+{{global.disableForeignKey}};
+{{#each this.classes}}
+{{#if values}}
+INSERT INTO {{tableName}} (
+	{{#each properties}}
+	{{columnName}}{{#separator}},{{/separator}}
+	{{/each}}
+) VALUES
+	{{#each values}}
+	({{#each this}}{{this}}{{#separator}},{{/separator}}{{/each}}){{#separator}},{{/separator}}
+	{{/each}}
+ON CONFLICT DO NOTHING;
+{{/if}}
+{{/each}}
+{{global.enableForeignKey}};
+{{/resources}}
+{{/if}}

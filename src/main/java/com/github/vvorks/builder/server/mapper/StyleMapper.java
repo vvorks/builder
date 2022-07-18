@@ -43,16 +43,6 @@ public interface StyleMapper extends BuilderMapper<StyleContent> {
 	public boolean delete(StyleContent content);
 
 	/**
-	 * スタイルをその従属要素も含めて削除する
-	 *
-	 * @param content 削除するスタイル
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull(StyleContent content) {
-		return delete(content);
-	}
-
-	/**
 	 * スタイルを取得する
 	 *
 	 * @param styleId スタイルID

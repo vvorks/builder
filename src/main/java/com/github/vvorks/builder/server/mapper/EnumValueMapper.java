@@ -43,19 +43,6 @@ public interface EnumValueMapper extends BuilderMapper<EnumValueContent> {
 	public boolean delete(EnumValueContent content);
 
 	/**
-	 * 列挙値をその従属要素も含めて削除する
-	 *
-	 * @param content 削除する列挙値
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull(EnumValueContent content) {
-		if (!deleteI18nsAll(content)) {
-			return false;
-		}
-		return delete(content);
-	}
-
-	/**
 	 * 列挙値を取得する
 	 *
 	 * @param ownerEnumId 所属列挙の列挙ID

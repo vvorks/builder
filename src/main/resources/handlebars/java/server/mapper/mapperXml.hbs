@@ -502,22 +502,6 @@
 	{{/each}}
 	{{/each}}
 
-	{{#each containsSets}}
-
-	{{#if fref.owner.containsSets}}
-	{{else}}
-	{{sql}}
-	<select id="delete{{upperName}}All">
-		DELETE FROM
-			{{fref.owner.tableName}}
-		WHERE
-			{{#each invKeyFields}}
-			{{invKeyColumnName}} = #{ content.{{invKeyFieldName}} }{{#separator}} AND {{/separator}}
-			{{/each}}
-	</select>
-	{{/if}}
-	{{/each}}
-
 </mapper>
 {{/java}}
 {{/each}}

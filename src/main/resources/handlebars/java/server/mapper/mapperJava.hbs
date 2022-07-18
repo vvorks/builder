@@ -146,29 +146,6 @@ public interface {{className}}Mapper extends {{../upperLastName}}Mapper<{{classN
 	public boolean delete({{className}}Content content);
 
 	/**
-	 * {{titleOrName}}をその従属要素も含めて削除する
-	 *
-	 * @param content 削除する{{titleOrName}}
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull({{className}}Content content) {
-		{{#each containsSets}}
-		{{#if fref.owner.containsSets}}
-		for ({{fref.owner.className}}Content c : list{{upperName}}Content(content, 0, 0)) {
-			if (!Mappers.get().get{{fref.owner.className}}Mapper().deleteFull(c)) {
-				return false;
-			}
-		}
-		{{else}}
-		if (!delete{{upperName}}All(content)) {
-			return false;
-		}
-		{{/if}}
-		{{/each}}
-		return delete(content);
-	}
-
-	/**
 	 * {{titleOrName}}を取得する
 	 *
 	{{#each keys}}

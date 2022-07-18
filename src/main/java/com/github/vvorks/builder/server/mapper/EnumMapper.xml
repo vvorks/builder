@@ -274,11 +274,4 @@
 		</if>
 	</select>
 
-	<select id="deleteI18nsAll">
-		DELETE FROM
-			T_ENUM_I18N
-		WHERE
-			F_OWNER_ENUM_ID = #{ content.enumId }
-	</select>
-
 </mapper>

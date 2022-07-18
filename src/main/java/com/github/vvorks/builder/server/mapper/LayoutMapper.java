@@ -43,16 +43,6 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	public boolean delete(LayoutContent content);
 
 	/**
-	 * レイアウトをその従属要素も含めて削除する
-	 *
-	 * @param content 削除するレイアウト
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull(LayoutContent content) {
-		return delete(content);
-	}
-
-	/**
 	 * レイアウトを取得する
 	 *
 	 * @param layoutId layoutId

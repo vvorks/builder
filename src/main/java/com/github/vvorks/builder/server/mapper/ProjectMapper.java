@@ -43,45 +43,6 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 	public boolean delete(ProjectContent content);
 
 	/**
-	 * プロジェクトをその従属要素も含めて削除する
-	 *
-	 * @param content 削除するプロジェクト
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull(ProjectContent content) {
-		for (ClassContent c : listClassesContent(content, 0, 0)) {
-			if (!Mappers.get().getClassMapper().deleteFull(c)) {
-				return false;
-			}
-		}
-		for (EnumContent c : listEnumsContent(content, 0, 0)) {
-			if (!Mappers.get().getEnumMapper().deleteFull(c)) {
-				return false;
-			}
-		}
-		for (MessageContent c : listMessagesContent(content, 0, 0)) {
-			if (!Mappers.get().getMessageMapper().deleteFull(c)) {
-				return false;
-			}
-		}
-		if (!deleteStylesAll(content)) {
-			return false;
-		}
-		for (FormContent c : listFormsContent(content, 0, 0)) {
-			if (!Mappers.get().getFormMapper().deleteFull(c)) {
-				return false;
-			}
-		}
-		if (!deleteLocalesAll(content)) {
-			return false;
-		}
-		if (!deleteI18nsAll(content)) {
-			return false;
-		}
-		return delete(content);
-	}
-
-	/**
 	 * プロジェクトを取得する
 	 *
 	 * @param projectId プロジェクトID

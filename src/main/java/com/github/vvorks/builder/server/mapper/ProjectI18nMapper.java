@@ -43,16 +43,6 @@ public interface ProjectI18nMapper extends BuilderMapper<ProjectI18nContent> {
 	public boolean delete(ProjectI18nContent content);
 
 	/**
-	 * プロジェクト(I18n)をその従属要素も含めて削除する
-	 *
-	 * @param content 削除するプロジェクト(I18n)
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull(ProjectI18nContent content) {
-		return delete(content);
-	}
-
-	/**
 	 * プロジェクト(I18n)を取得する
 	 *
 	 * @param ownerProjectId 所属プロジェクトのプロジェクトID

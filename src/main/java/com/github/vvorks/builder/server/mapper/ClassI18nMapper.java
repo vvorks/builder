@@ -43,16 +43,6 @@ public interface ClassI18nMapper extends BuilderMapper<ClassI18nContent> {
 	public boolean delete(ClassI18nContent content);
 
 	/**
-	 * クラス(I18n)をその従属要素も含めて削除する
-	 *
-	 * @param content 削除するクラス(I18n)
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull(ClassI18nContent content) {
-		return delete(content);
-	}
-
-	/**
 	 * クラス(I18n)を取得する
 	 *
 	 * @param ownerClassId 所属クラスのクラスID

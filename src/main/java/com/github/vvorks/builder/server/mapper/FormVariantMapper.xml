@@ -206,11 +206,4 @@
 		</if>
 	</select>
 
-	<select id="deleteLayoutsAll">
-		DELETE FROM
-			T_LAYOUT
-		WHERE
-			F_OWNER_VARIANT_ID = #{ content.variantId }
-	</select>
-
 </mapper>

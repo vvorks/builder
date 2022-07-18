@@ -43,19 +43,6 @@ public interface FieldMapper extends BuilderMapper<FieldContent> {
 	public boolean delete(FieldContent content);
 
 	/**
-	 * フィールドをその従属要素も含めて削除する
-	 *
-	 * @param content 削除するフィールド
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull(FieldContent content) {
-		if (!deleteI18nsAll(content)) {
-			return false;
-		}
-		return delete(content);
-	}
-
-	/**
 	 * フィールドを取得する
 	 *
 	 * @param fieldId フィールドID

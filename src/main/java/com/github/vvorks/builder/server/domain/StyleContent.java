@@ -28,7 +28,7 @@ public class StyleContent {
 	/**
 	 * 基底スタイルのスタイルID
 	 */
-	private int parentStyleId;
+	private Integer parentStyleId;
 
 	/**
 	 * 適用条件
@@ -211,7 +211,7 @@ public class StyleContent {
 	 *
 	 * @return 基底スタイルのスタイルID
 	 */
-	public int getParentStyleId() {
+	public Integer getParentStyleId() {
 		return this.parentStyleId;
 	}
 
@@ -220,7 +220,7 @@ public class StyleContent {
 	 *
 	 * @param parentStyleId 設定する基底スタイルのスタイルID
 	 */
-	public void setParentStyleId(int parentStyleId) {
+	public void setParentStyleId(Integer parentStyleId) {
 		this.parentStyleId = parentStyleId;
 	}
 
@@ -647,7 +647,7 @@ public class StyleContent {
 			this.styleId == other.styleId && 
 			this.ownerProjectId == other.ownerProjectId && 
 			Objects.equals(this.name, other.name) && 
-			this.parentStyleId == other.parentStyleId && 
+			Objects.equals(this.parentStyleId, other.parentStyleId) && 
 			Objects.equals(this.cond, other.cond) && 
 			Objects.equals(this.condParam, other.condParam) && 
 			Objects.equals(this.textColor, other.textColor) && 

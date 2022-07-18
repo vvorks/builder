@@ -28,7 +28,7 @@ public class LayoutContent {
 	/**
 	 * parentのlayoutId
 	 */
-	private int parentLayoutId;
+	private Integer parentLayoutId;
 
 	/**
 	 * targetType
@@ -38,17 +38,17 @@ public class LayoutContent {
 	/**
 	 * targetFieldのフィールドID
 	 */
-	private int targetFieldFieldId;
+	private Integer targetFieldFieldId;
 
 	/**
 	 * targetMessageのメッセージID
 	 */
-	private int targetMessageMessageId;
+	private Integer targetMessageMessageId;
 
 	/**
 	 * styleのスタイルID
 	 */
-	private int styleStyleId;
+	private Integer styleStyleId;
 
 	/**
 	 * left
@@ -196,7 +196,7 @@ public class LayoutContent {
 	 *
 	 * @return parentのlayoutId
 	 */
-	public int getParentLayoutId() {
+	public Integer getParentLayoutId() {
 		return this.parentLayoutId;
 	}
 
@@ -205,7 +205,7 @@ public class LayoutContent {
 	 *
 	 * @param parentLayoutId 設定するparentのlayoutId
 	 */
-	public void setParentLayoutId(int parentLayoutId) {
+	public void setParentLayoutId(Integer parentLayoutId) {
 		this.parentLayoutId = parentLayoutId;
 	}
 
@@ -232,7 +232,7 @@ public class LayoutContent {
 	 *
 	 * @return targetFieldのフィールドID
 	 */
-	public int getTargetFieldFieldId() {
+	public Integer getTargetFieldFieldId() {
 		return this.targetFieldFieldId;
 	}
 
@@ -241,7 +241,7 @@ public class LayoutContent {
 	 *
 	 * @param targetFieldFieldId 設定するtargetFieldのフィールドID
 	 */
-	public void setTargetFieldFieldId(int targetFieldFieldId) {
+	public void setTargetFieldFieldId(Integer targetFieldFieldId) {
 		this.targetFieldFieldId = targetFieldFieldId;
 	}
 
@@ -250,7 +250,7 @@ public class LayoutContent {
 	 *
 	 * @return targetMessageのメッセージID
 	 */
-	public int getTargetMessageMessageId() {
+	public Integer getTargetMessageMessageId() {
 		return this.targetMessageMessageId;
 	}
 
@@ -259,7 +259,7 @@ public class LayoutContent {
 	 *
 	 * @param targetMessageMessageId 設定するtargetMessageのメッセージID
 	 */
-	public void setTargetMessageMessageId(int targetMessageMessageId) {
+	public void setTargetMessageMessageId(Integer targetMessageMessageId) {
 		this.targetMessageMessageId = targetMessageMessageId;
 	}
 
@@ -268,7 +268,7 @@ public class LayoutContent {
 	 *
 	 * @return styleのスタイルID
 	 */
-	public int getStyleStyleId() {
+	public Integer getStyleStyleId() {
 		return this.styleStyleId;
 	}
 
@@ -277,7 +277,7 @@ public class LayoutContent {
 	 *
 	 * @param styleStyleId 設定するstyleのスタイルID
 	 */
-	public void setStyleStyleId(int styleStyleId) {
+	public void setStyleStyleId(Integer styleStyleId) {
 		this.styleStyleId = styleStyleId;
 	}
 
@@ -572,11 +572,11 @@ public class LayoutContent {
 			this.layoutId == other.layoutId && 
 			this.ownerVariantId == other.ownerVariantId && 
 			Objects.equals(this.name, other.name) && 
-			this.parentLayoutId == other.parentLayoutId && 
+			Objects.equals(this.parentLayoutId, other.parentLayoutId) && 
 			Objects.equals(this.targetType, other.targetType) && 
-			this.targetFieldFieldId == other.targetFieldFieldId && 
-			this.targetMessageMessageId == other.targetMessageMessageId && 
-			this.styleStyleId == other.styleStyleId && 
+			Objects.equals(this.targetFieldFieldId, other.targetFieldFieldId) && 
+			Objects.equals(this.targetMessageMessageId, other.targetMessageMessageId) && 
+			Objects.equals(this.styleStyleId, other.styleStyleId) && 
 			Objects.equals(this.left, other.left) && 
 			Objects.equals(this.top, other.top) && 
 			Objects.equals(this.right, other.right) && 

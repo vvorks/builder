@@ -344,6 +344,7 @@ public class FieldExtender {
 				names.append(e.getFieldName());
 				titles.append(getTitleOrName(e));
 				k.setOwnerClassId(e.getOwnerClassId());
+				k.setNullable(e.isNullable());
 				while (itr.hasNext()) {
 					e = itr.next();
 					names.append(Strings.toFirstUpper(e.getFieldName()));

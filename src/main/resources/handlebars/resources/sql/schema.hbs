@@ -1,0 +1,35 @@
+//
+// schema.sql用テンプレート
+//
+{{#resources this "sql/schema.sql"}}
+{{#each this.classes}}
+CREATE TABLE IF NOT EXISTS {{tableName}} (
+	{{#each properties}}
+	{{columnName}} {{columnType}}{{#if notNull}} NOT NULL{{/if}},
+	{{/each}}
+	PRIMARY KEY (
+		{{#each keys}}
+		{{columnName}}{{#separator}},{{/separator}}
+		{{/each}}
+	)
+	{{#if refs}}
+	{{#each refs}}
+	FOREIGN KEY (
+		{{#each refKeyFields}}
+		{{columnName}}{{#separator}},{{/separator}}
+		{{/each}}
+	) REFERENCES {{cref.tableName}} (
+		{{#each cref.keys}}
+		{{columnName}}{{#separator}},{{/separator}}
+		{{/each}}
+	)	ON UPDATE CASCADE
+		{{#if nullable}}
+		ON DELETE SET NULL
+		{{else}}
+		ON DELETE CASCADE
+		{{/if}}
+	{{/each}}
+	{{/if}}
+);
+{{/each}}
+{{/resources}}

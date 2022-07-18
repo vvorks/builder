@@ -43,16 +43,6 @@ public interface MessageI18nMapper extends BuilderMapper<MessageI18nContent> {
 	public boolean delete(MessageI18nContent content);
 
 	/**
-	 * メッセージ(I18n)をその従属要素も含めて削除する
-	 *
-	 * @param content 削除するメッセージ(I18n)
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull(MessageI18nContent content) {
-		return delete(content);
-	}
-
-	/**
 	 * メッセージ(I18n)を取得する
 	 *
 	 * @param ownerMessageId 所属列挙値のメッセージID

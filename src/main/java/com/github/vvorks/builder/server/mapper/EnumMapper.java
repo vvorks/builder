@@ -43,24 +43,6 @@ public interface EnumMapper extends BuilderMapper<EnumContent> {
 	public boolean delete(EnumContent content);
 
 	/**
-	 * 列挙をその従属要素も含めて削除する
-	 *
-	 * @param content 削除する列挙
-	 * @return 処理成功の場合、真
-	 */
-	public default boolean deleteFull(EnumContent content) {
-		for (EnumValueContent c : listValuesContent(content, 0, 0)) {
-			if (!Mappers.get().getEnumValueMapper().deleteFull(c)) {
-				return false;
-			}
-		}
-		if (!deleteI18nsAll(content)) {
-			return false;
-		}
-		return delete(content);
-	}
-
-	/**
 	 * 列挙を取得する
 	 *
 	 * @param enumId 列挙ID

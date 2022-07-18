@@ -45,17 +45,17 @@ public class FieldContent {
 	/**
 	 * クラス参照先のクラスID
 	 */
-	private int crefClassId;
+	private Integer crefClassId;
 
 	/**
 	 * 列挙参照先の列挙ID
 	 */
-	private int erefEnumId;
+	private Integer erefEnumId;
 
 	/**
 	 * フィールド参照先のフィールドID
 	 */
-	private int frefFieldId;
+	private Integer frefFieldId;
 
 	/**
 	 * プライマリキー
@@ -289,7 +289,7 @@ public class FieldContent {
 	 *
 	 * @return クラス参照先のクラスID
 	 */
-	public int getCrefClassId() {
+	public Integer getCrefClassId() {
 		return this.crefClassId;
 	}
 
@@ -298,7 +298,7 @@ public class FieldContent {
 	 *
 	 * @param crefClassId 設定するクラス参照先のクラスID
 	 */
-	public void setCrefClassId(int crefClassId) {
+	public void setCrefClassId(Integer crefClassId) {
 		this.crefClassId = crefClassId;
 	}
 
@@ -307,7 +307,7 @@ public class FieldContent {
 	 *
 	 * @return 列挙参照先の列挙ID
 	 */
-	public int getErefEnumId() {
+	public Integer getErefEnumId() {
 		return this.erefEnumId;
 	}
 
@@ -316,7 +316,7 @@ public class FieldContent {
 	 *
 	 * @param erefEnumId 設定する列挙参照先の列挙ID
 	 */
-	public void setErefEnumId(int erefEnumId) {
+	public void setErefEnumId(Integer erefEnumId) {
 		this.erefEnumId = erefEnumId;
 	}
 
@@ -325,7 +325,7 @@ public class FieldContent {
 	 *
 	 * @return フィールド参照先のフィールドID
 	 */
-	public int getFrefFieldId() {
+	public Integer getFrefFieldId() {
 		return this.frefFieldId;
 	}
 
@@ -334,7 +334,7 @@ public class FieldContent {
 	 *
 	 * @param frefFieldId 設定するフィールド参照先のフィールドID
 	 */
-	public void setFrefFieldId(int frefFieldId) {
+	public void setFrefFieldId(Integer frefFieldId) {
 		this.frefFieldId = frefFieldId;
 	}
 
@@ -710,9 +710,9 @@ public class FieldContent {
 			Objects.equals(this.type, other.type) && 
 			this.width == other.width && 
 			this.scale == other.scale && 
-			this.crefClassId == other.crefClassId && 
-			this.erefEnumId == other.erefEnumId && 
-			this.frefFieldId == other.frefFieldId && 
+			Objects.equals(this.crefClassId, other.crefClassId) && 
+			Objects.equals(this.erefEnumId, other.erefEnumId) && 
+			Objects.equals(this.frefFieldId, other.frefFieldId) && 
 			this.pk == other.pk && 
 			this.nullable == other.nullable && 
 			this.needsSum == other.needsSum && 
