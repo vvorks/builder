@@ -8,34 +8,34 @@ import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.common.json.Json;
 
 /**
- * フォームバリエーションエージェント
+ * ページセットエージェント
  */
-public class FormVariantAgent extends DataRecordAgent {
+public class PageSetAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static final FormVariantAgent INSTANCE = new FormVariantAgent();
+	public static final PageSetAgent INSTANCE = new PageSetAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final FormVariantAgent get() {
+	public static final PageSetAgent get() {
 		return INSTANCE;
 	}
 
 	/** プライベートコンストラクタ */
-	private FormVariantAgent() {
+	private PageSetAgent() {
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setInt(name + "VariantId", from.getInt("variantId"));
+		rec.setInt(name + "PageSetId", from.getInt("pageSetId"));
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setInt(name + "VariantId", candidate.getInt("variantId"));
+		rec.setInt(name + "PageSetId", candidate.getInt("pageSetId"));
 	}
 
 }

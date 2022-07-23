@@ -8,34 +8,34 @@ import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.common.json.Json;
 
 /**
- * フォームエージェント
+ * ウィジェットエージェント
  */
-public class FormAgent extends DataRecordAgent {
+public class WidgetAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static final FormAgent INSTANCE = new FormAgent();
+	public static final WidgetAgent INSTANCE = new WidgetAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final FormAgent get() {
+	public static final WidgetAgent get() {
 		return INSTANCE;
 	}
 
 	/** プライベートコンストラクタ */
-	private FormAgent() {
+	private WidgetAgent() {
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setInt(name + "FormId", from.getInt("formId"));
+		rec.setInt(name + "WidgetId", from.getInt("widgetId"));
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setInt(name + "FormId", candidate.getInt("formId"));
+		rec.setInt(name + "WidgetId", candidate.getInt("widgetId"));
 	}
 
 }

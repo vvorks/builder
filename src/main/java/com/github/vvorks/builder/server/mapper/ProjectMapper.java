@@ -244,24 +244,48 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 	);
 
 	/**
-	 * フォーム一覧のサマリーを取得する
+	 * widgetsのサマリーを取得する
 	 *
 	 * @param content プロジェクト
-	 * @return フォーム一覧のサマリー
+	 * @return widgetsのサマリー
 	 */
-	public FormSummary<FormContent> listFormsSummary(
+	public WidgetSummary<WidgetContent> listWidgetsSummary(
 		@Param("content") ProjectContent content
 	);
 
 	/**
-	 * フォーム一覧を取得する
+	 * widgetsを取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return フォーム一覧
+	 * @return widgets
 	 */
-	public List<FormContent> listFormsContent(
+	public List<WidgetContent> listWidgetsContent(
+		@Param("content") ProjectContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
+	 * pageSetsのサマリーを取得する
+	 *
+	 * @param content プロジェクト
+	 * @return pageSetsのサマリー
+	 */
+	public PageSetSummary<PageSetContent> listPageSetsSummary(
+		@Param("content") ProjectContent content
+	);
+
+	/**
+	 * pageSetsを取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return pageSets
+	 */
+	public List<PageSetContent> listPageSetsContent(
 		@Param("content") ProjectContent content,
 		@Param("offset") int offset,
 		@Param("limit") int limit
@@ -321,6 +345,15 @@ public interface ProjectMapper extends BuilderMapper<ProjectContent> {
 	 * @param content プロジェクト
 	 */
 	public boolean deleteStylesAll(
+		@Param("content") ProjectContent content
+	);
+
+	/**
+	 * プロジェクトが保持するwidgetsを全て削除する
+	 *
+	 * @param content プロジェクト
+	 */
+	public boolean deleteWidgetsAll(
 		@Param("content") ProjectContent content
 	);
 

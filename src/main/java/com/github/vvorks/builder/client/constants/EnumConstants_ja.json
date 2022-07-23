@@ -1,14 +1,11 @@
 {
   "DataType" : {
-    "title" : "データ型",
-    "description" : "データ型"
+    "title" : "データ型"
   },
   "StyleCondition" : {
-    "title" : "スタイル条件",
-    "description" : "スタイル条件"
+    "title" : "スタイル条件"
   },
   "LayoutType" : {
-    "title" : "レイアウトタイプ",
-    "description" : "レイアウトタイプ"
+    "title" : "レイアウト種別"
   }
 }

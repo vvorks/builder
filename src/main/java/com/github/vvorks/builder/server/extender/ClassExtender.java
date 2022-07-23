@@ -507,6 +507,7 @@ public class ClassExtender {
 			expr.accept(e -> visitExpr(e, ctxRef, info, entry.joinMap));
 			return info;
 		} catch (ParseException err) {
+			LOGGER.error(err, "EXPR is {%s}", exprString);
 			throw new RuntimeException(err);
 		}
 	}

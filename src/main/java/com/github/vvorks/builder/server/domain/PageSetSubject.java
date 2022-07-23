@@ -6,14 +6,14 @@ package com.github.vvorks.builder.server.domain;
 import java.util.Objects;
 
 /**
- * フォームの見出し
+ * ページセットの見出し
  */
-public class FormSubject {
+public class PageSetSubject {
 
 	/**
-	 * formId
+	 * ページセットId
 	 */
-	private int formId;
+	private int pageSetId;
 
 	/**
 	 * タイトル
@@ -21,20 +21,20 @@ public class FormSubject {
 	private String _title;
 
 	/**
-	 * 空のフォームの見出しを作成する
+	 * 空のページセットの見出しを作成する
 	 */
-	public FormSubject() {
+	public PageSetSubject() {
 	}
 
 	/**
-	 * 指定のキー項目を持つフォームの見出しを作成する
+	 * 指定のキー項目を持つページセットの見出しを作成する
 	 *
-	 * @param formId formId
+	 * @param pageSetId ページセットId
 	 */
-	public FormSubject(
-		int formId
+	public PageSetSubject(
+		int pageSetId
 	) {
-		this.formId = formId;
+		this.pageSetId = pageSetId;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class FormSubject {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			formId
+			pageSetId
 			);
 	}
 
@@ -71,21 +71,21 @@ public class FormSubject {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((FormSubject) obj);
+			return equals((PageSetSubject) obj);
 		}
 	}
 
-	private boolean equals(FormSubject other) {
+	private boolean equals(PageSetSubject other) {
 		return
-			this.formId == other.formId
+			this.pageSetId == other.pageSetId
 			;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("FormSubject [");
-		sb.append("formId=").append(formId);
+		sb.append("PageSetSubject [");
+		sb.append("pageSetId=").append(pageSetId);
 		sb.append("]");
 		return sb.toString();
 	}

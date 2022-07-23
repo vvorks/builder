@@ -8,7 +8,7 @@
 		INSERT INTO T_STYLE (
 			F_STYLE_ID,
 			F_OWNER_PROJECT_ID,
-			F_NAME,
+			F_STYLE_NAME,
 			F_PARENT_STYLE_ID,
 			F_COND,
 			F_COND_PARAM,
@@ -30,7 +30,7 @@
 		) VALUES (
 			#{ styleId },
 			#{ ownerProjectId },
-			#{ name },
+			#{ styleName },
 			#{ parentStyleId },
 			#{ cond },
 			#{ condParam },
@@ -55,7 +55,7 @@
 	<update id="update" parameterType="StyleContent">
 		UPDATE T_STYLE SET
 			F_OWNER_PROJECT_ID = #{ ownerProjectId },
-			F_NAME = #{ name },
+			F_STYLE_NAME = #{ styleName },
 			F_PARENT_STYLE_ID = #{ parentStyleId },
 			F_COND = #{ cond },
 			F_COND_PARAM = #{ condParam },
@@ -92,7 +92,7 @@
 		SELECT
 			T1.F_STYLE_ID AS "styleId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
-			T1.F_NAME AS "name",
+			T1.F_STYLE_NAME AS "styleName",
 			T1.F_PARENT_STYLE_ID AS "parentStyleId",
 			T1.F_COND AS "cond",
 			T1.F_COND_PARAM AS "condParam",
@@ -111,9 +111,9 @@
 			T1.F_TEXT_ALIGN AS "textAlign",
 			T1.F_VERTICAL_ALIGN AS "verticalAlign",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_NAME AS "_title",
+			T1.F_STYLE_NAME AS "_title",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
-			T3.F_NAME AS "parent_title",
+			T3.F_STYLE_NAME AS "parent_title",
 			T4.F_VALUE_ID AS "cond_title"
 		FROM
 			T_STYLE T1
@@ -141,7 +141,7 @@
 		SELECT
 			T1.F_STYLE_ID AS "styleId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
-			T1.F_NAME AS "name",
+			T1.F_STYLE_NAME AS "styleName",
 			T1.F_PARENT_STYLE_ID AS "parentStyleId",
 			T1.F_COND AS "cond",
 			T1.F_COND_PARAM AS "condParam",
@@ -160,9 +160,9 @@
 			T1.F_TEXT_ALIGN AS "textAlign",
 			T1.F_VERTICAL_ALIGN AS "verticalAlign",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_NAME AS "_title",
+			T1.F_STYLE_NAME AS "_title",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
-			T3.F_NAME AS "parent_title",
+			T3.F_STYLE_NAME AS "parent_title",
 			T4.F_VALUE_ID AS "cond_title"
 		FROM
 			T_STYLE T1
@@ -174,7 +174,7 @@
 			T4.F_OWNER_ENUM_ID = 2 AND
 			T1.F_COND = T4.F_VALUE_ID
 		ORDER BY
-			T1.F_NAME
+			T1.F_STYLE_NAME
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -237,7 +237,7 @@
 		SELECT
 			T1.F_STYLE_ID AS "styleId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
-			T1.F_NAME AS "name",
+			T1.F_STYLE_NAME AS "styleName",
 			T1.F_PARENT_STYLE_ID AS "parentStyleId",
 			T1.F_COND AS "cond",
 			T1.F_COND_PARAM AS "condParam",
@@ -256,9 +256,9 @@
 			T1.F_TEXT_ALIGN AS "textAlign",
 			T1.F_VERTICAL_ALIGN AS "verticalAlign",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_NAME AS "_title",
+			T1.F_STYLE_NAME AS "_title",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
-			T3.F_NAME AS "parent_title",
+			T3.F_STYLE_NAME AS "parent_title",
 			T4.F_VALUE_ID AS "cond_title"
 		FROM
 			T_STYLE T1
@@ -282,7 +282,7 @@
 			T_STYLE T1
 		<where>
 			<if test="hint != null">
-				T1.F_NAME LIKE '%' || #{hint} || '%'
+				T1.F_STYLE_NAME LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
 	</select>
@@ -290,12 +290,12 @@
 	<select id="listParentCandidateSubject" resultType="StyleSubject">
 		SELECT
 			T1.F_STYLE_ID AS "styleId",
-			T1.F_NAME AS "_title"
+			T1.F_STYLE_NAME AS "_title"
 		FROM
 			T_STYLE T1
 		<where>
 			<if test="hint != null">
-				T1.F_NAME LIKE '%' || #{hint} || '%'
+				T1.F_STYLE_NAME LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
 		<if test="limit &gt; 0">
@@ -321,7 +321,7 @@
 		SELECT
 			T1.F_STYLE_ID AS "styleId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
-			T1.F_NAME AS "name",
+			T1.F_STYLE_NAME AS "styleName",
 			T1.F_PARENT_STYLE_ID AS "parentStyleId",
 			T1.F_COND AS "cond",
 			T1.F_COND_PARAM AS "condParam",
@@ -340,9 +340,9 @@
 			T1.F_TEXT_ALIGN AS "textAlign",
 			T1.F_VERTICAL_ALIGN AS "verticalAlign",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_NAME AS "_title",
+			T1.F_STYLE_NAME AS "_title",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
-			T3.F_NAME AS "parent_title",
+			T3.F_STYLE_NAME AS "parent_title",
 			T4.F_VALUE_ID AS "cond_title"
 		FROM
 			T_STYLE T1
@@ -356,7 +356,7 @@
 		WHERE
 			T1.F_PARENT_STYLE_ID = #{ content.styleId }
 		ORDER BY
-			T1.F_NAME
+			T1.F_STYLE_NAME
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

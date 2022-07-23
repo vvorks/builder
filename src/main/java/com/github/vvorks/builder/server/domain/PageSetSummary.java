@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * フォームのサマリー情報
+ * ページセットのサマリー情報
  */
-public class FormSummary<T> {
+public class PageSetSummary<T> {
 
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
@@ -133,12 +133,12 @@ public class FormSummary<T> {
 			return false;
 		} else {
 			@SuppressWarnings("unchecked")
-			FormSummary<T> other = (FormSummary<T>) obj;
+			PageSetSummary<T> other = (PageSetSummary<T>) obj;
 			return equals(other);
 		}
 	}
 
-	private boolean equals(FormSummary<T> other) {
+	private boolean equals(PageSetSummary<T> other) {
 		return
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
@@ -150,7 +150,7 @@ public class FormSummary<T> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("FormContent [");
+		sb.append("PageSetContent [");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

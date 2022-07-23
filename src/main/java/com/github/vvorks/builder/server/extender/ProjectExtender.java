@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.ServerSettings;
 import com.github.vvorks.builder.server.common.util.Patterns;
 import com.github.vvorks.builder.server.domain.ClassContent;
@@ -38,6 +39,8 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 
 @Component
 public class ProjectExtender {
+
+	private static final Logger LOGGER = Logger.createLogger(ClassExtender.class);
 
 	private static final String JSONKEY_FORMAT = "format";
 
@@ -134,7 +137,9 @@ public class ProjectExtender {
 
 	private void sortStyles(List<StyleContent> list, StyleContent owner, List<StyleContent> into) {
 		for (StyleContent c : list) {
-			if (c.getParentStyleId() == owner.getStyleId()) {
+			Integer psid = c.getParentStyleId();
+			int parentStyleId = (psid == null) ? 0 : psid;
+			if (parentStyleId == owner.getStyleId()) {
 				into.add(c);
 				sortStyles(list, c, into);
 			}

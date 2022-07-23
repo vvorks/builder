@@ -14,7 +14,7 @@ import org.apache.ibatis.type.JdbcType;
 import com.github.vvorks.builder.server.domain.LayoutType;
 
 /**
- * レイアウトタイプのタイプハンドラ
+ * レイアウト種別のタイプハンドラ
  */
 public class LayoutTypeTypeHandler extends BaseTypeHandler<LayoutType> {
 

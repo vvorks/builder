@@ -11,72 +11,79 @@ import java.util.Objects;
 public class LayoutContent {
 
 	/**
-	 * layoutId
+	 * レイアウトId
 	 */
 	private int layoutId;
 
 	/**
-	 * ownerのvariantId
+	 * 所属ページのページId
 	 */
-	private int ownerVariantId;
+	private int ownerPageId;
 
 	/**
-	 * name
-	 */
-	private String name;
-
-	/**
-	 * parentのlayoutId
+	 * 親レイアウトのレイアウトId
 	 */
 	private Integer parentLayoutId;
 
 	/**
-	 * targetType
+	 * レイアウト種別
 	 */
-	private LayoutType targetType;
+	private LayoutType layoutType;
 
 	/**
-	 * targetFieldのフィールドID
+	 * 対象フィールドのフィールドID
 	 */
-	private Integer targetFieldFieldId;
+	private Integer targetFieldId;
 
 	/**
-	 * targetMessageのメッセージID
+	 * 対象メッセージのメッセージID
 	 */
-	private Integer targetMessageMessageId;
+	private Integer constMessageId;
 
 	/**
-	 * styleのスタイルID
+	 * 使用WidgetのウィジェットId
+	 */
+	private Integer widgetWidgetId;
+
+	/**
+	 * レイアウトパラメータ
+	 *
+	 * 定義値はWidget毎に異なる
+	 */
+	private String layoutParam;
+
+	/**
+	 * 使用スタイルのスタイルID
 	 */
 	private Integer styleStyleId;
 
 	/**
-	 * left
+	 * 左位置
 	 */
 	private String left;
 
 	/**
-	 * top
+	 * 上位置
 	 */
 	private String top;
 
 	/**
-	 * right
+	 * 右位置
 	 */
 	private String right;
 
 	/**
-	 * bottom
+	 * 下位置
 	 */
 	private String bottom;
 
 	/**
-	 * width
+	 * 幅
 	 */
 	private String width;
 
 	/**
-	 * height
+	 * 高さ
 	 */
 	private String height;
 
@@ -91,34 +98,39 @@ public class LayoutContent {
 	private String _title;
 
 	/**
-	 * ownerのタイトル
+	 * 所属ページのタイトル
 	 */
 	private String owner_title;
 
 	/**
-	 * parentのタイトル
+	 * 親レイアウトのタイトル
 	 */
 	private String parent_title;
 
 	/**
-	 * targetFieldのタイトル
+	 * 対象フィールドのタイトル
 	 */
-	private String targetField_title;
+	private String target_title;
 
 	/**
-	 * targetMessageのタイトル
+	 * 対象メッセージのタイトル
 	 */
-	private String targetMessage_title;
+	private String const_title;
 
 	/**
-	 * styleのタイトル
+	 * 使用Widgetのタイトル
+	 */
+	private String widget_title;
+
+	/**
+	 * 使用スタイルのタイトル
 	 */
 	private String style_title;
 
 	/**
-	 * targetTypeのタイトル
+	 * レイアウト種別のタイトル
 	 */
-	private String targetType_title;
+	private String layoutType_title;
 
 	/**
 	 * 空のレイアウトを作成する
@@ -129,7 +141,7 @@ public class LayoutContent {
 	/**
 	 * 指定のキー項目を持つレイアウトを作成する
 	 *
-	 * @param layoutId layoutId
+	 * @param layoutId レイアウトId
 	 */
 	public LayoutContent(
 		int layoutId
@@ -138,252 +150,270 @@ public class LayoutContent {
 	}
 
 	/**
-	 * layoutIdを取得する
+	 * レイアウトIdを取得する
 	 *
-	 * @return layoutId
+	 * @return レイアウトId
 	 */
 	public int getLayoutId() {
 		return this.layoutId;
 	}
 
 	/**
-	 * layoutIdを設定する
+	 * レイアウトIdを設定する
 	 *
-	 * @param layoutId 設定するlayoutId
+	 * @param layoutId 設定するレイアウトId
 	 */
 	public void setLayoutId(int layoutId) {
 		this.layoutId = layoutId;
 	}
 
 	/**
-	 * ownerのvariantIdを取得する
+	 * 所属ページのページIdを取得する
 	 *
-	 * @return ownerのvariantId
+	 * @return 所属ページのページId
 	 */
-	public int getOwnerVariantId() {
-		return this.ownerVariantId;
+	public int getOwnerPageId() {
+		return this.ownerPageId;
 	}
 
 	/**
-	 * ownerのvariantIdを設定する
+	 * 所属ページのページIdを設定する
 	 *
-	 * @param ownerVariantId 設定するownerのvariantId
+	 * @param ownerPageId 設定する所属ページのページId
 	 */
-	public void setOwnerVariantId(int ownerVariantId) {
-		this.ownerVariantId = ownerVariantId;
+	public void setOwnerPageId(int ownerPageId) {
+		this.ownerPageId = ownerPageId;
 	}
 
 	/**
-	 * nameを取得する
+	 * 親レイアウトのレイアウトIdを取得する
 	 *
-	 * @return name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * nameを設定する
-	 *
-	 * @param name 設定するname
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * parentのlayoutIdを取得する
-	 *
-	 * @return parentのlayoutId
+	 * @return 親レイアウトのレイアウトId
 	 */
 	public Integer getParentLayoutId() {
 		return this.parentLayoutId;
 	}
 
 	/**
-	 * parentのlayoutIdを設定する
+	 * 親レイアウトのレイアウトIdを設定する
 	 *
-	 * @param parentLayoutId 設定するparentのlayoutId
+	 * @param parentLayoutId 設定する親レイアウトのレイアウトId
 	 */
 	public void setParentLayoutId(Integer parentLayoutId) {
 		this.parentLayoutId = parentLayoutId;
 	}
 
 	/**
-	 * targetTypeを取得する
+	 * レイアウト種別を取得する
 	 *
-	 * @return targetType
+	 * @return レイアウト種別
 	 */
-	public LayoutType getTargetType() {
-		return this.targetType;
+	public LayoutType getLayoutType() {
+		return this.layoutType;
 	}
 
 	/**
-	 * targetTypeを設定する
+	 * レイアウト種別を設定する
 	 *
-	 * @param targetType 設定するtargetType
+	 * @param layoutType 設定するレイアウト種別
 	 */
-	public void setTargetType(LayoutType targetType) {
-		this.targetType = targetType;
+	public void setLayoutType(LayoutType layoutType) {
+		this.layoutType = layoutType;
 	}
 
 	/**
-	 * targetFieldのフィールドIDを取得する
+	 * 対象フィールドのフィールドIDを取得する
 	 *
-	 * @return targetFieldのフィールドID
+	 * @return 対象フィールドのフィールドID
 	 */
-	public Integer getTargetFieldFieldId() {
-		return this.targetFieldFieldId;
+	public Integer getTargetFieldId() {
+		return this.targetFieldId;
 	}
 
 	/**
-	 * targetFieldのフィールドIDを設定する
+	 * 対象フィールドのフィールドIDを設定する
 	 *
-	 * @param targetFieldFieldId 設定するtargetFieldのフィールドID
+	 * @param targetFieldId 設定する対象フィールドのフィールドID
 	 */
-	public void setTargetFieldFieldId(Integer targetFieldFieldId) {
-		this.targetFieldFieldId = targetFieldFieldId;
+	public void setTargetFieldId(Integer targetFieldId) {
+		this.targetFieldId = targetFieldId;
 	}
 
 	/**
-	 * targetMessageのメッセージIDを取得する
+	 * 対象メッセージのメッセージIDを取得する
 	 *
-	 * @return targetMessageのメッセージID
+	 * @return 対象メッセージのメッセージID
 	 */
-	public Integer getTargetMessageMessageId() {
-		return this.targetMessageMessageId;
+	public Integer getConstMessageId() {
+		return this.constMessageId;
 	}
 
 	/**
-	 * targetMessageのメッセージIDを設定する
+	 * 対象メッセージのメッセージIDを設定する
 	 *
-	 * @param targetMessageMessageId 設定するtargetMessageのメッセージID
+	 * @param constMessageId 設定する対象メッセージのメッセージID
 	 */
-	public void setTargetMessageMessageId(Integer targetMessageMessageId) {
-		this.targetMessageMessageId = targetMessageMessageId;
+	public void setConstMessageId(Integer constMessageId) {
+		this.constMessageId = constMessageId;
 	}
 
 	/**
-	 * styleのスタイルIDを取得する
+	 * 使用WidgetのウィジェットIdを取得する
 	 *
-	 * @return styleのスタイルID
+	 * @return 使用WidgetのウィジェットId
+	 */
+	public Integer getWidgetWidgetId() {
+		return this.widgetWidgetId;
+	}
+
+	/**
+	 * 使用WidgetのウィジェットIdを設定する
+	 *
+	 * @param widgetWidgetId 設定する使用WidgetのウィジェットId
+	 */
+	public void setWidgetWidgetId(Integer widgetWidgetId) {
+		this.widgetWidgetId = widgetWidgetId;
+	}
+
+	/**
+	 * レイアウトパラメータを取得する
+	 *
+	 * @return レイアウトパラメータ
+	 */
+	public String getLayoutParam() {
+		return this.layoutParam;
+	}
+
+	/**
+	 * レイアウトパラメータを設定する
+	 *
+	 * @param layoutParam 設定するレイアウトパラメータ
+	 */
+	public void setLayoutParam(String layoutParam) {
+		this.layoutParam = layoutParam;
+	}
+
+	/**
+	 * 使用スタイルのスタイルIDを取得する
+	 *
+	 * @return 使用スタイルのスタイルID
 	 */
 	public Integer getStyleStyleId() {
 		return this.styleStyleId;
 	}
 
 	/**
-	 * styleのスタイルIDを設定する
+	 * 使用スタイルのスタイルIDを設定する
 	 *
-	 * @param styleStyleId 設定するstyleのスタイルID
+	 * @param styleStyleId 設定する使用スタイルのスタイルID
 	 */
 	public void setStyleStyleId(Integer styleStyleId) {
 		this.styleStyleId = styleStyleId;
 	}
 
 	/**
-	 * leftを取得する
+	 * 左位置を取得する
 	 *
-	 * @return left
+	 * @return 左位置
 	 */
 	public String getLeft() {
 		return this.left;
 	}
 
 	/**
-	 * leftを設定する
+	 * 左位置を設定する
 	 *
-	 * @param left 設定するleft
+	 * @param left 設定する左位置
 	 */
 	public void setLeft(String left) {
 		this.left = left;
 	}
 
 	/**
-	 * topを取得する
+	 * 上位置を取得する
 	 *
-	 * @return top
+	 * @return 上位置
 	 */
 	public String getTop() {
 		return this.top;
 	}
 
 	/**
-	 * topを設定する
+	 * 上位置を設定する
 	 *
-	 * @param top 設定するtop
+	 * @param top 設定する上位置
 	 */
 	public void setTop(String top) {
 		this.top = top;
 	}
 
 	/**
-	 * rightを取得する
+	 * 右位置を取得する
 	 *
-	 * @return right
+	 * @return 右位置
 	 */
 	public String getRight() {
 		return this.right;
 	}
 
 	/**
-	 * rightを設定する
+	 * 右位置を設定する
 	 *
-	 * @param right 設定するright
+	 * @param right 設定する右位置
 	 */
 	public void setRight(String right) {
 		this.right = right;
 	}
 
 	/**
-	 * bottomを取得する
+	 * 下位置を取得する
 	 *
-	 * @return bottom
+	 * @return 下位置
 	 */
 	public String getBottom() {
 		return this.bottom;
 	}
 
 	/**
-	 * bottomを設定する
+	 * 下位置を設定する
 	 *
-	 * @param bottom 設定するbottom
+	 * @param bottom 設定する下位置
 	 */
 	public void setBottom(String bottom) {
 		this.bottom = bottom;
 	}
 
 	/**
-	 * widthを取得する
+	 * 幅を取得する
 	 *
-	 * @return width
+	 * @return 幅
 	 */
 	public String getWidth() {
 		return this.width;
 	}
 
 	/**
-	 * widthを設定する
+	 * 幅を設定する
 	 *
-	 * @param width 設定するwidth
+	 * @param width 設定する幅
 	 */
 	public void setWidth(String width) {
 		this.width = width;
 	}
 
 	/**
-	 * heightを取得する
+	 * 高さを取得する
 	 *
-	 * @return height
+	 * @return 高さ
 	 */
 	public String getHeight() {
 		return this.height;
 	}
 
 	/**
-	 * heightを設定する
+	 * 高さを設定する
 	 *
-	 * @param height 設定するheight
+	 * @param height 設定する高さ
 	 */
 	public void setHeight(String height) {
 		this.height = height;
@@ -426,123 +456,142 @@ public class LayoutContent {
 	}
 
 	/**
-	 * ownerのタイトルを取得する
+	 * 所属ページのタイトルを取得する
 	 *
-	 * @return ownerのタイトル
+	 * @return 所属ページのタイトル
 	 */
 	public String getOwner_title() {
 		return this.owner_title;
 	}
 
 	/**
-	 * ownerのタイトルを設定する
+	 * 所属ページのタイトルを設定する
 	 *
-	 * @param owner_title 設定するownerのタイトル
+	 * @param owner_title 設定する所属ページのタイトル
 	 */
 	public void setOwner_title(String owner_title) {
 		this.owner_title = owner_title;
 	}
 
 	/**
-	 * parentのタイトルを取得する
+	 * 親レイアウトのタイトルを取得する
 	 *
-	 * @return parentのタイトル
+	 * @return 親レイアウトのタイトル
 	 */
 	public String getParent_title() {
 		return this.parent_title;
 	}
 
 	/**
-	 * parentのタイトルを設定する
+	 * 親レイアウトのタイトルを設定する
 	 *
-	 * @param parent_title 設定するparentのタイトル
+	 * @param parent_title 設定する親レイアウトのタイトル
 	 */
 	public void setParent_title(String parent_title) {
 		this.parent_title = parent_title;
 	}
 
 	/**
-	 * targetFieldのタイトルを取得する
+	 * 対象フィールドのタイトルを取得する
 	 *
-	 * @return targetFieldのタイトル
+	 * @return 対象フィールドのタイトル
 	 */
-	public String getTargetField_title() {
-		return this.targetField_title;
+	public String getTarget_title() {
+		return this.target_title;
 	}
 
 	/**
-	 * targetFieldのタイトルを設定する
+	 * 対象フィールドのタイトルを設定する
 	 *
-	 * @param targetField_title 設定するtargetFieldのタイトル
+	 * @param target_title 設定する対象フィールドのタイトル
 	 */
-	public void setTargetField_title(String targetField_title) {
-		this.targetField_title = targetField_title;
+	public void setTarget_title(String target_title) {
+		this.target_title = target_title;
 	}
 
 	/**
-	 * targetMessageのタイトルを取得する
+	 * 対象メッセージのタイトルを取得する
 	 *
-	 * @return targetMessageのタイトル
+	 * @return 対象メッセージのタイトル
 	 */
-	public String getTargetMessage_title() {
-		return this.targetMessage_title;
+	public String getConst_title() {
+		return this.const_title;
 	}
 
 	/**
-	 * targetMessageのタイトルを設定する
+	 * 対象メッセージのタイトルを設定する
 	 *
-	 * @param targetMessage_title 設定するtargetMessageのタイトル
+	 * @param const_title 設定する対象メッセージのタイトル
 	 */
-	public void setTargetMessage_title(String targetMessage_title) {
-		this.targetMessage_title = targetMessage_title;
+	public void setConst_title(String const_title) {
+		this.const_title = const_title;
 	}
 
 	/**
-	 * styleのタイトルを取得する
+	 * 使用Widgetのタイトルを取得する
 	 *
-	 * @return styleのタイトル
+	 * @return 使用Widgetのタイトル
+	 */
+	public String getWidget_title() {
+		return this.widget_title;
+	}
+
+	/**
+	 * 使用Widgetのタイトルを設定する
+	 *
+	 * @param widget_title 設定する使用Widgetのタイトル
+	 */
+	public void setWidget_title(String widget_title) {
+		this.widget_title = widget_title;
+	}
+
+	/**
+	 * 使用スタイルのタイトルを取得する
+	 *
+	 * @return 使用スタイルのタイトル
 	 */
 	public String getStyle_title() {
 		return this.style_title;
 	}
 
 	/**
-	 * styleのタイトルを設定する
+	 * 使用スタイルのタイトルを設定する
 	 *
-	 * @param style_title 設定するstyleのタイトル
+	 * @param style_title 設定する使用スタイルのタイトル
 	 */
 	public void setStyle_title(String style_title) {
 		this.style_title = style_title;
 	}
 
 	/**
-	 * targetTypeのタイトルを取得する
+	 * レイアウト種別のタイトルを取得する
 	 *
-	 * @return targetTypeのタイトル
+	 * @return レイアウト種別のタイトル
 	 */
-	public String getTargetType_title() {
-		return this.targetType_title;
+	public String getLayoutType_title() {
+		return this.layoutType_title;
 	}
 
 	/**
-	 * targetTypeのタイトルを設定する
+	 * レイアウト種別のタイトルを設定する
 	 *
-	 * @param targetType_title 設定するtargetTypeのタイトル
+	 * @param layoutType_title 設定するレイアウト種別のタイトル
 	 */
-	public void setTargetType_title(String targetType_title) {
-		this.targetType_title = targetType_title;
+	public void setLayoutType_title(String layoutType_title) {
+		this.layoutType_title = layoutType_title;
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(
 			layoutId,
-			ownerVariantId,
-			name,
+			ownerPageId,
 			parentLayoutId,
-			targetType,
-			targetFieldFieldId,
-			targetMessageMessageId,
+			layoutType,
+			targetFieldId,
+			constMessageId,
+			widgetWidgetId,
+			layoutParam,
 			styleStyleId,
 			left,
 			top,
@@ -570,12 +619,13 @@ public class LayoutContent {
 	private boolean equals(LayoutContent other) {
 		return
 			this.layoutId == other.layoutId && 
-			this.ownerVariantId == other.ownerVariantId && 
-			Objects.equals(this.name, other.name) && 
+			this.ownerPageId == other.ownerPageId && 
 			Objects.equals(this.parentLayoutId, other.parentLayoutId) && 
-			Objects.equals(this.targetType, other.targetType) && 
-			Objects.equals(this.targetFieldFieldId, other.targetFieldFieldId) && 
-			Objects.equals(this.targetMessageMessageId, other.targetMessageMessageId) && 
+			Objects.equals(this.layoutType, other.layoutType) && 
+			Objects.equals(this.targetFieldId, other.targetFieldId) && 
+			Objects.equals(this.constMessageId, other.constMessageId) && 
+			Objects.equals(this.widgetWidgetId, other.widgetWidgetId) && 
+			Objects.equals(this.layoutParam, other.layoutParam) && 
 			Objects.equals(this.styleStyleId, other.styleStyleId) && 
 			Objects.equals(this.left, other.left) && 
 			Objects.equals(this.top, other.top) && 
@@ -592,12 +642,13 @@ public class LayoutContent {
 		StringBuilder sb = new StringBuilder();
 		sb.append("LayoutContent [");
 		sb.append("layoutId=").append(layoutId).append(", ");
-		sb.append("ownerVariantId=").append(ownerVariantId).append(", ");
-		sb.append("name=").append(name).append(", ");
+		sb.append("ownerPageId=").append(ownerPageId).append(", ");
 		sb.append("parentLayoutId=").append(parentLayoutId).append(", ");
-		sb.append("targetType=").append(targetType).append(", ");
-		sb.append("targetFieldFieldId=").append(targetFieldFieldId).append(", ");
-		sb.append("targetMessageMessageId=").append(targetMessageMessageId).append(", ");
+		sb.append("layoutType=").append(layoutType).append(", ");
+		sb.append("targetFieldId=").append(targetFieldId).append(", ");
+		sb.append("constMessageId=").append(constMessageId).append(", ");
+		sb.append("widgetWidgetId=").append(widgetWidgetId).append(", ");
+		sb.append("layoutParam=").append(layoutParam).append(", ");
 		sb.append("styleStyleId=").append(styleStyleId).append(", ");
 		sb.append("left=").append(left).append(", ");
 		sb.append("top=").append(top).append(", ");

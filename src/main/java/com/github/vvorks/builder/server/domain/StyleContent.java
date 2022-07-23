@@ -23,7 +23,7 @@ public class StyleContent {
 	/**
 	 * スタイル名
 	 */
-	private String name;
+	private String styleName;
 
 	/**
 	 * 基底スタイルのスタイルID
@@ -193,17 +193,17 @@ public class StyleContent {
 	 *
 	 * @return スタイル名
 	 */
-	public String getName() {
-		return this.name;
+	public String getStyleName() {
+		return this.styleName;
 	}
 
 	/**
 	 * スタイル名を設定する
 	 *
-	 * @param name 設定するスタイル名
+	 * @param styleName 設定するスタイル名
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setStyleName(String styleName) {
+		this.styleName = styleName;
 	}
 
 	/**
@@ -607,7 +607,7 @@ public class StyleContent {
 		return Objects.hash(
 			styleId,
 			ownerProjectId,
-			name,
+			styleName,
 			parentStyleId,
 			cond,
 			condParam,
@@ -646,7 +646,7 @@ public class StyleContent {
 		return
 			this.styleId == other.styleId && 
 			this.ownerProjectId == other.ownerProjectId && 
-			Objects.equals(this.name, other.name) && 
+			Objects.equals(this.styleName, other.styleName) && 
 			Objects.equals(this.parentStyleId, other.parentStyleId) && 
 			Objects.equals(this.cond, other.cond) && 
 			Objects.equals(this.condParam, other.condParam) && 
@@ -674,7 +674,7 @@ public class StyleContent {
 		sb.append("StyleContent [");
 		sb.append("styleId=").append(styleId).append(", ");
 		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
-		sb.append("name=").append(name).append(", ");
+		sb.append("styleName=").append(styleName).append(", ");
 		sb.append("parentStyleId=").append(parentStyleId).append(", ");
 		sb.append("cond=").append(cond).append(", ");
 		sb.append("condParam=").append(condParam).append(", ");

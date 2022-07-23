@@ -59,13 +59,13 @@ class Message {
 	-message:STRING
 }
 
-class Form {
+class PageSet {
 	-formName:STRING
 	-title:STRING
 	-description:STRING
 }
 
-class FormVariant {
+class Page {
 	-locale: Locale
 	-width: Length
 }
@@ -82,6 +82,12 @@ class Layout {
 	-bottom: Length
 	-width: Length
 	-height: Length
+}
+
+class Widget {
+	-widgetName:STRING
+	-title:STRING
+	-description:STRING
 }
 
 class Style {
@@ -123,19 +129,12 @@ enum StyleCondition {
 	+NAMED
 }
 
-enum LayoutType {
-	+GROUP
-	+SHOW_LABEL
-	+SHOW_DATA
-	+EDIT_DATA
-	+SHOW_MESSAGE
-}
-
 Project *-- Class
 Project *-- Enum
 Project *-- Message
-Project *-- Form
+Project *-- PageSet
 Project *-- Style
+Project *-- Widget
 Project *-- Locale
 
 Class *-- Field
@@ -152,12 +151,14 @@ Message *-- MessageI18n
 Field --> DataType
 Field --> Class
 
-Form *-- FormVariant
-FormVariant --> Locale
-FormVariant *-- Layout
+PageSet *-- Page
+Page --> Locale
+Page *-- Layout
 Layout *-- Layout
 Layout --> Style
-Layout --> LayoutType
+Layout --> Widget
+Layout --> Field
+Layout --> Message
 
 Style *-- Style
 Style --> StyleCondition

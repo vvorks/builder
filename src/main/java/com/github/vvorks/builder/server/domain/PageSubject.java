@@ -6,14 +6,14 @@ package com.github.vvorks.builder.server.domain;
 import java.util.Objects;
 
 /**
- * レイアウトの見出し
+ * ページの見出し
  */
-public class LayoutSubject {
+public class PageSubject {
 
 	/**
-	 * レイアウトId
+	 * ページId
 	 */
-	private int layoutId;
+	private int pageId;
 
 	/**
 	 * タイトル
@@ -21,20 +21,20 @@ public class LayoutSubject {
 	private String _title;
 
 	/**
-	 * 空のレイアウトの見出しを作成する
+	 * 空のページの見出しを作成する
 	 */
-	public LayoutSubject() {
+	public PageSubject() {
 	}
 
 	/**
-	 * 指定のキー項目を持つレイアウトの見出しを作成する
+	 * 指定のキー項目を持つページの見出しを作成する
 	 *
-	 * @param layoutId レイアウトId
+	 * @param pageId ページId
 	 */
-	public LayoutSubject(
-		int layoutId
+	public PageSubject(
+		int pageId
 	) {
-		this.layoutId = layoutId;
+		this.pageId = pageId;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class LayoutSubject {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			layoutId
+			pageId
 			);
 	}
 
@@ -71,21 +71,21 @@ public class LayoutSubject {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((LayoutSubject) obj);
+			return equals((PageSubject) obj);
 		}
 	}
 
-	private boolean equals(LayoutSubject other) {
+	private boolean equals(PageSubject other) {
 		return
-			this.layoutId == other.layoutId
+			this.pageId == other.pageId
 			;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("LayoutSubject [");
-		sb.append("layoutId=").append(layoutId);
+		sb.append("PageSubject [");
+		sb.append("pageId=").append(pageId);
 		sb.append("]");
 		return sb.toString();
 	}

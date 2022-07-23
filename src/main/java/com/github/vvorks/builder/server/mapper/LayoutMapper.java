@@ -45,7 +45,7 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	/**
 	 * レイアウトを取得する
 	 *
-	 * @param layoutId layoutId
+	 * @param layoutId レイアウトId
 	 * @return 取得したレイアウト
 	 */
 	public LayoutContent get(
@@ -72,35 +72,35 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	);
 
 	/**
-	 * ownerを取得する
+	 * 所属ページを取得する
 	 *
 	 * @param content レイアウト
-	 * @return owner
+	 * @return 所属ページ
 	 */
-	public FormVariantContent getOwner(LayoutContent content);
+	public PageContent getOwner(LayoutContent content);
 
 	/**
-	 * ownerの候補サマリーを取得する
+	 * 所属ページの候補サマリーを取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
-	 * @return ownerの候補サマリー
+	 * @return 所属ページの候補サマリー
 	 */
-	public FormVariantSummary<FormVariantSubject> listOwnerCandidateSummary(
+	public PageSummary<PageSubject> listOwnerCandidateSummary(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint
 	);
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属ページの候補一覧を取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return ownerの候補一覧
+	 * @return 所属ページの候補一覧
 	 */
-	public List<FormVariantSubject> listOwnerCandidateSubject(
+	public List<PageSubject> listOwnerCandidateSubject(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint,
 		@Param("offset") int offset,
@@ -108,19 +108,19 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	);
 
 	/**
-	 * parentを取得する
+	 * 親レイアウトを取得する
 	 *
 	 * @param content レイアウト
-	 * @return parent
+	 * @return 親レイアウト
 	 */
 	public LayoutContent getParent(LayoutContent content);
 
 	/**
-	 * parentの候補サマリーを取得する
+	 * 親レイアウトの候補サマリーを取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
-	 * @return parentの候補サマリー
+	 * @return 親レイアウトの候補サマリー
 	 */
 	public LayoutSummary<LayoutSubject> listParentCandidateSummary(
 		@Param("content") LayoutContent content,
@@ -128,13 +128,13 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	);
 
 	/**
-	 * parentの候補一覧を取得する
+	 * 親レイアウトの候補一覧を取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return parentの候補一覧
+	 * @return 親レイアウトの候補一覧
 	 */
 	public List<LayoutSubject> listParentCandidateSubject(
 		@Param("content") LayoutContent content,
@@ -144,35 +144,35 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	);
 
 	/**
-	 * targetFieldを取得する
+	 * 対象フィールドを取得する
 	 *
 	 * @param content レイアウト
-	 * @return targetField
+	 * @return 対象フィールド
 	 */
-	public FieldContent getTargetField(LayoutContent content);
+	public FieldContent getTarget(LayoutContent content);
 
 	/**
-	 * targetFieldの候補サマリーを取得する
+	 * 対象フィールドの候補サマリーを取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
-	 * @return targetFieldの候補サマリー
+	 * @return 対象フィールドの候補サマリー
 	 */
-	public FieldSummary<FieldSubject> listTargetFieldCandidateSummary(
+	public FieldSummary<FieldSubject> listTargetCandidateSummary(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint
 	);
 
 	/**
-	 * targetFieldの候補一覧を取得する
+	 * 対象フィールドの候補一覧を取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return targetFieldの候補一覧
+	 * @return 対象フィールドの候補一覧
 	 */
-	public List<FieldSubject> listTargetFieldCandidateSubject(
+	public List<FieldSubject> listTargetCandidateSubject(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint,
 		@Param("offset") int offset,
@@ -180,35 +180,35 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	);
 
 	/**
-	 * targetMessageを取得する
+	 * 対象メッセージを取得する
 	 *
 	 * @param content レイアウト
-	 * @return targetMessage
+	 * @return 対象メッセージ
 	 */
-	public MessageContent getTargetMessage(LayoutContent content);
+	public MessageContent getConst(LayoutContent content);
 
 	/**
-	 * targetMessageの候補サマリーを取得する
+	 * 対象メッセージの候補サマリーを取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
-	 * @return targetMessageの候補サマリー
+	 * @return 対象メッセージの候補サマリー
 	 */
-	public MessageSummary<MessageSubject> listTargetMessageCandidateSummary(
+	public MessageSummary<MessageSubject> listConstCandidateSummary(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint
 	);
 
 	/**
-	 * targetMessageの候補一覧を取得する
+	 * 対象メッセージの候補一覧を取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return targetMessageの候補一覧
+	 * @return 対象メッセージの候補一覧
 	 */
-	public List<MessageSubject> listTargetMessageCandidateSubject(
+	public List<MessageSubject> listConstCandidateSubject(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint,
 		@Param("offset") int offset,
@@ -216,19 +216,55 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	);
 
 	/**
-	 * styleを取得する
+	 * 使用Widgetを取得する
 	 *
 	 * @param content レイアウト
-	 * @return style
+	 * @return 使用Widget
+	 */
+	public WidgetContent getWidget(LayoutContent content);
+
+	/**
+	 * 使用Widgetの候補サマリーを取得する
+	 *
+	 * @param content レイアウト
+	 * @param hint ヒント情報
+	 * @return 使用Widgetの候補サマリー
+	 */
+	public WidgetSummary<WidgetSubject> listWidgetCandidateSummary(
+		@Param("content") LayoutContent content,
+		@Param("hint") String hint
+	);
+
+	/**
+	 * 使用Widgetの候補一覧を取得する
+	 *
+	 * @param content レイアウト
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 使用Widgetの候補一覧
+	 */
+	public List<WidgetSubject> listWidgetCandidateSubject(
+		@Param("content") LayoutContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
+	 * 使用スタイルを取得する
+	 *
+	 * @param content レイアウト
+	 * @return 使用スタイル
 	 */
 	public StyleContent getStyle(LayoutContent content);
 
 	/**
-	 * styleの候補サマリーを取得する
+	 * 使用スタイルの候補サマリーを取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
-	 * @return styleの候補サマリー
+	 * @return 使用スタイルの候補サマリー
 	 */
 	public StyleSummary<StyleSubject> listStyleCandidateSummary(
 		@Param("content") LayoutContent content,
@@ -236,13 +272,13 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	);
 
 	/**
-	 * styleの候補一覧を取得する
+	 * 使用スタイルの候補一覧を取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return styleの候補一覧
+	 * @return 使用スタイルの候補一覧
 	 */
 	public List<StyleSubject> listStyleCandidateSubject(
 		@Param("content") LayoutContent content,
@@ -252,22 +288,22 @@ public interface LayoutMapper extends BuilderMapper<LayoutContent> {
 	);
 
 	/**
-	 * childrenのサマリーを取得する
+	 * 子レイアウトのサマリーを取得する
 	 *
 	 * @param content レイアウト
-	 * @return childrenのサマリー
+	 * @return 子レイアウトのサマリー
 	 */
 	public LayoutSummary<LayoutContent> listChildrenSummary(
 		@Param("content") LayoutContent content
 	);
 
 	/**
-	 * childrenを取得する
+	 * 子レイアウトを取得する
 	 *
 	 * @param content レイアウト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return children
+	 * @return 子レイアウト
 	 */
 	public List<LayoutContent> listChildrenContent(
 		@Param("content") LayoutContent content,

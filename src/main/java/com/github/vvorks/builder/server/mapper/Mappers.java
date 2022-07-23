@@ -78,13 +78,17 @@ public class Mappers {
 	@Autowired
 	private StyleMapper styleMapper;
 
-	/** フォームのMapper */
+	/** ウィジェットのMapper */
 	@Autowired
-	private FormMapper formMapper;
+	private WidgetMapper widgetMapper;
 
-	/** フォームバリエーションのMapper */
+	/** ページセットのMapper */
 	@Autowired
-	private FormVariantMapper formVariantMapper;
+	private PageSetMapper pageSetMapper;
+
+	/** ページのMapper */
+	@Autowired
+	private PageMapper pageMapper;
 
 	/** レイアウトのMapper */
 	@Autowired
@@ -170,14 +174,19 @@ public class Mappers {
 		return styleMapper;
 	}
 
-	/** フォームのMapperを取得する */
-	public FormMapper getFormMapper() {
-		return formMapper;
+	/** ウィジェットのMapperを取得する */
+	public WidgetMapper getWidgetMapper() {
+		return widgetMapper;
 	}
 
-	/** フォームバリエーションのMapperを取得する */
-	public FormVariantMapper getFormVariantMapper() {
-		return formVariantMapper;
+	/** ページセットのMapperを取得する */
+	public PageSetMapper getPageSetMapper() {
+		return pageSetMapper;
+	}
+
+	/** ページのMapperを取得する */
+	public PageMapper getPageMapper() {
+		return pageMapper;
 	}
 
 	/** レイアウトのMapperを取得する */
@@ -207,8 +216,9 @@ public class Mappers {
 			mapperMap.put("Message", messageMapper);
 			mapperMap.put("MessageI18n", messageI18nMapper);
 			mapperMap.put("Style", styleMapper);
-			mapperMap.put("Form", formMapper);
-			mapperMap.put("FormVariant", formVariantMapper);
+			mapperMap.put("Widget", widgetMapper);
+			mapperMap.put("PageSet", pageSetMapper);
+			mapperMap.put("Page", pageMapper);
 			mapperMap.put("Layout", layoutMapper);
 			mapperMap.put("Locale", localeMapper);
 		}

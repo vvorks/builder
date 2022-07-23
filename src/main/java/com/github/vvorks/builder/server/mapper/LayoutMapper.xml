@@ -7,12 +7,13 @@
 	<insert id="insert" parameterType="LayoutContent">
 		INSERT INTO T_LAYOUT (
 			F_LAYOUT_ID,
-			F_OWNER_VARIANT_ID,
-			F_NAME,
+			F_OWNER_PAGE_ID,
 			F_PARENT_LAYOUT_ID,
-			F_TARGET_TYPE,
-			F_TARGET_FIELD_FIELD_ID,
-			F_TARGET_MESSAGE_MESSAGE_ID,
+			F_LAYOUT_TYPE,
+			F_TARGET_FIELD_ID,
+			F_CONST_MESSAGE_ID,
+			F_WIDGET_WIDGET_ID,
+			F_LAYOUT_PARAM,
 			F_STYLE_STYLE_ID,
 			F_LEFT,
 			F_TOP,
@@ -23,12 +24,13 @@
 			F__LAST_UPDATED_AT
 		) VALUES (
 			#{ layoutId },
-			#{ ownerVariantId },
-			#{ name },
+			#{ ownerPageId },
 			#{ parentLayoutId },
-			#{ targetType },
-			#{ targetFieldFieldId },
-			#{ targetMessageMessageId },
+			#{ layoutType },
+			#{ targetFieldId },
+			#{ constMessageId },
+			#{ widgetWidgetId },
+			#{ layoutParam },
 			#{ styleStyleId },
 			#{ left },
 			#{ top },
@@ -42,12 +44,13 @@
 
 	<update id="update" parameterType="LayoutContent">
 		UPDATE T_LAYOUT SET
-			F_OWNER_VARIANT_ID = #{ ownerVariantId },
-			F_NAME = #{ name },
+			F_OWNER_PAGE_ID = #{ ownerPageId },
 			F_PARENT_LAYOUT_ID = #{ parentLayoutId },
-			F_TARGET_TYPE = #{ targetType },
-			F_TARGET_FIELD_FIELD_ID = #{ targetFieldFieldId },
-			F_TARGET_MESSAGE_MESSAGE_ID = #{ targetMessageMessageId },
+			F_LAYOUT_TYPE = #{ layoutType },
+			F_TARGET_FIELD_ID = #{ targetFieldId },
+			F_CONST_MESSAGE_ID = #{ constMessageId },
+			F_WIDGET_WIDGET_ID = #{ widgetWidgetId },
+			F_LAYOUT_PARAM = #{ layoutParam },
 			F_STYLE_STYLE_ID = #{ styleStyleId },
 			F_LEFT = #{ left },
 			F_TOP = #{ top },
@@ -73,12 +76,13 @@
 	<select id="get" resultType="LayoutContent">
 		SELECT
 			T1.F_LAYOUT_ID AS "layoutId",
-			T1.F_OWNER_VARIANT_ID AS "ownerVariantId",
-			T1.F_NAME AS "name",
+			T1.F_OWNER_PAGE_ID AS "ownerPageId",
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
-			T1.F_TARGET_TYPE AS "targetType",
-			T1.F_TARGET_FIELD_FIELD_ID AS "targetFieldFieldId",
-			T1.F_TARGET_MESSAGE_MESSAGE_ID AS "targetMessageMessageId",
+			T1.F_LAYOUT_TYPE AS "layoutType",
+			T1.F_TARGET_FIELD_ID AS "targetFieldId",
+			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_WIDGET_WIDGET_ID AS "widgetWidgetId",
+			T1.F_LAYOUT_PARAM AS "layoutParam",
 			T1.F_STYLE_STYLE_ID AS "styleStyleId",
 			T1.F_LEFT AS "left",
 			T1.F_TOP AS "top",
@@ -87,32 +91,35 @@
 			T1.F_WIDTH AS "width",
 			T1.F_HEIGHT AS "height",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_NAME AS "_title",
-			T3.F_NAME AS "owner_title",
-			T4.F_NAME AS "parent_title",
-			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "targetField_title",
-			T7.F_MESSAGE_NAME AS "targetMessage_title",
-			T8.F_NAME AS "style_title",
-			T9.F_VALUE_ID AS "targetType_title"
+			T1.F_LAYOUT_ID AS "_title",
+			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
+			T4.F_LAYOUT_ID AS "parent_title",
+			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
+			T7.F_MESSAGE_NAME AS "const_title",
+			T8.F_WIDGET_NAME AS "widget_title",
+			T9.F_STYLE_NAME AS "style_title",
+			T10.F_VALUE_ID AS "layoutType_title"
 		FROM
 			T_LAYOUT T1
-		LEFT JOIN T_FORM_VARIANT T2 ON
-			T1.F_OWNER_VARIANT_ID = T2.F_VARIANT_ID
-		LEFT JOIN T_FORM T3 ON
-			T2.F_OWNER_FORM_ID = T3.F_FORM_ID
+		LEFT JOIN T_PAGE T2 ON
+			T1.F_OWNER_PAGE_ID = T2.F_PAGE_ID
+		LEFT JOIN T_PAGE_SET T3 ON
+			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
 		LEFT JOIN T_LAYOUT T4 ON
 			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
 		LEFT JOIN T_FIELD T5 ON
-			T1.F_TARGET_FIELD_FIELD_ID = T5.F_FIELD_ID
+			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
 		LEFT JOIN T_CLASS T6 ON
 			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
 		LEFT JOIN T_MESSAGE T7 ON
-			T1.F_TARGET_MESSAGE_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_STYLE T8 ON
-			T1.F_STYLE_STYLE_ID = T8.F_STYLE_ID
-		LEFT JOIN T_ENUM_VALUE T9 ON
-			T9.F_OWNER_ENUM_ID = 3 AND
-			T1.F_TARGET_TYPE = T9.F_VALUE_ID
+			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
+		LEFT JOIN T_WIDGET T8 ON
+			T1.F_WIDGET_WIDGET_ID = T8.F_WIDGET_ID
+		LEFT JOIN T_STYLE T9 ON
+			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T10 ON
+			T10.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
 		WHERE
 			T1.F_LAYOUT_ID = #{ layoutId }
 	</select>
@@ -129,12 +136,13 @@
 	<select id="listContent" resultType="LayoutContent">
 		SELECT
 			T1.F_LAYOUT_ID AS "layoutId",
-			T1.F_OWNER_VARIANT_ID AS "ownerVariantId",
-			T1.F_NAME AS "name",
+			T1.F_OWNER_PAGE_ID AS "ownerPageId",
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
-			T1.F_TARGET_TYPE AS "targetType",
-			T1.F_TARGET_FIELD_FIELD_ID AS "targetFieldFieldId",
-			T1.F_TARGET_MESSAGE_MESSAGE_ID AS "targetMessageMessageId",
+			T1.F_LAYOUT_TYPE AS "layoutType",
+			T1.F_TARGET_FIELD_ID AS "targetFieldId",
+			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_WIDGET_WIDGET_ID AS "widgetWidgetId",
+			T1.F_LAYOUT_PARAM AS "layoutParam",
 			T1.F_STYLE_STYLE_ID AS "styleStyleId",
 			T1.F_LEFT AS "left",
 			T1.F_TOP AS "top",
@@ -143,34 +151,37 @@
 			T1.F_WIDTH AS "width",
 			T1.F_HEIGHT AS "height",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_NAME AS "_title",
-			T3.F_NAME AS "owner_title",
-			T4.F_NAME AS "parent_title",
-			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "targetField_title",
-			T7.F_MESSAGE_NAME AS "targetMessage_title",
-			T8.F_NAME AS "style_title",
-			T9.F_VALUE_ID AS "targetType_title"
+			T1.F_LAYOUT_ID AS "_title",
+			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
+			T4.F_LAYOUT_ID AS "parent_title",
+			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
+			T7.F_MESSAGE_NAME AS "const_title",
+			T8.F_WIDGET_NAME AS "widget_title",
+			T9.F_STYLE_NAME AS "style_title",
+			T10.F_VALUE_ID AS "layoutType_title"
 		FROM
 			T_LAYOUT T1
-		LEFT JOIN T_FORM_VARIANT T2 ON
-			T1.F_OWNER_VARIANT_ID = T2.F_VARIANT_ID
-		LEFT JOIN T_FORM T3 ON
-			T2.F_OWNER_FORM_ID = T3.F_FORM_ID
+		LEFT JOIN T_PAGE T2 ON
+			T1.F_OWNER_PAGE_ID = T2.F_PAGE_ID
+		LEFT JOIN T_PAGE_SET T3 ON
+			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
 		LEFT JOIN T_LAYOUT T4 ON
 			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
 		LEFT JOIN T_FIELD T5 ON
-			T1.F_TARGET_FIELD_FIELD_ID = T5.F_FIELD_ID
+			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
 		LEFT JOIN T_CLASS T6 ON
 			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
 		LEFT JOIN T_MESSAGE T7 ON
-			T1.F_TARGET_MESSAGE_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_STYLE T8 ON
-			T1.F_STYLE_STYLE_ID = T8.F_STYLE_ID
-		LEFT JOIN T_ENUM_VALUE T9 ON
-			T9.F_OWNER_ENUM_ID = 3 AND
-			T1.F_TARGET_TYPE = T9.F_VALUE_ID
+			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
+		LEFT JOIN T_WIDGET T8 ON
+			T1.F_WIDGET_WIDGET_ID = T8.F_WIDGET_ID
+		LEFT JOIN T_STYLE T9 ON
+			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T10 ON
+			T10.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
 		ORDER BY
-			T1.F_NAME
+			T1.F_LAYOUT_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">
@@ -179,48 +190,52 @@
 		</if>
 	</select>
 
-	<select id="getOwner" resultType="FormVariantContent">
+	<select id="getOwner" resultType="PageContent">
 		SELECT
-			T1.F_VARIANT_ID AS "variantId",
-			T1.F_OWNER_FORM_ID AS "ownerFormId",
+			T1.F_PAGE_ID AS "pageId",
+			T1.F_OWNER_PAGE_SET_ID AS "ownerPageSetId",
+			T1.F_CONTEXT_CLASS_ID AS "contextClassId",
 			T1.F_WIDTH AS "width",
 			T1.F_HEIGHT AS "height",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T2.F_NAME AS "_title",
-			T2.F_NAME AS "owner_title"
+			T2.F_PAGE_SET_NAME || '(' || T1.F_WIDTH || 'x' || T1.F_HEIGHT || ')' AS "_title",
+			T2.F_PAGE_SET_NAME AS "owner_title",
+			T3.F_CLASS_NAME || '(' || T3.F_TITLE || ')' AS "context_title"
 		FROM
-			T_FORM_VARIANT T1
-		LEFT JOIN T_FORM T2 ON
-			T1.F_OWNER_FORM_ID = T2.F_FORM_ID
+			T_PAGE T1
+		LEFT JOIN T_PAGE_SET T2 ON
+			T1.F_OWNER_PAGE_SET_ID = T2.F_PAGE_SET_ID
+		LEFT JOIN T_CLASS T3 ON
+			T1.F_CONTEXT_CLASS_ID = T3.F_CLASS_ID
 		WHERE
-			T1.F_VARIANT_ID = #{ ownerVariantId }
+			T1.F_PAGE_ID = #{ ownerPageId }
 	</select>
 
-	<select id="listOwnerCandidateSummary" resultType="FormVariantSummary">
+	<select id="listOwnerCandidateSummary" resultType="PageSummary">
 		SELECT
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
 		FROM
-			T_FORM_VARIANT T1
+			T_PAGE T1
 		<where>
 			<if test="hint != null">
-				T2.F_NAME LIKE '%' || #{hint} || '%'
+				T2.F_PAGE_SET_NAME || '(' || T1.F_WIDTH || 'x' || T1.F_HEIGHT || ')' LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
 	</select>
 
-	<select id="listOwnerCandidateSubject" resultType="FormVariantSubject">
+	<select id="listOwnerCandidateSubject" resultType="PageSubject">
 		SELECT
-			T1.F_VARIANT_ID AS "variantId",
-			T2.F_NAME AS "_title"
+			T1.F_PAGE_ID AS "pageId",
+			T2.F_PAGE_SET_NAME || '(' || T1.F_WIDTH || 'x' || T1.F_HEIGHT || ')' AS "_title"
 		FROM
-			T_FORM_VARIANT T1
-		LEFT JOIN T_FORM T2 ON
-			T1.F_OWNER_FORM_ID = T2.F_FORM_ID
+			T_PAGE T1
+		LEFT JOIN T_PAGE_SET T2 ON
+			T1.F_OWNER_PAGE_SET_ID = T2.F_PAGE_SET_ID
 		<where>
 			<if test="hint != null">
-				T2.F_NAME LIKE '%' || #{hint} || '%'
+				T2.F_PAGE_SET_NAME || '(' || T1.F_WIDTH || 'x' || T1.F_HEIGHT || ')' LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
 		<if test="limit &gt; 0">
@@ -234,12 +249,13 @@
 	<select id="getParent" resultType="LayoutContent">
 		SELECT
 			T1.F_LAYOUT_ID AS "layoutId",
-			T1.F_OWNER_VARIANT_ID AS "ownerVariantId",
-			T1.F_NAME AS "name",
+			T1.F_OWNER_PAGE_ID AS "ownerPageId",
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
-			T1.F_TARGET_TYPE AS "targetType",
-			T1.F_TARGET_FIELD_FIELD_ID AS "targetFieldFieldId",
-			T1.F_TARGET_MESSAGE_MESSAGE_ID AS "targetMessageMessageId",
+			T1.F_LAYOUT_TYPE AS "layoutType",
+			T1.F_TARGET_FIELD_ID AS "targetFieldId",
+			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_WIDGET_WIDGET_ID AS "widgetWidgetId",
+			T1.F_LAYOUT_PARAM AS "layoutParam",
 			T1.F_STYLE_STYLE_ID AS "styleStyleId",
 			T1.F_LEFT AS "left",
 			T1.F_TOP AS "top",
@@ -248,32 +264,35 @@
 			T1.F_WIDTH AS "width",
 			T1.F_HEIGHT AS "height",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_NAME AS "_title",
-			T3.F_NAME AS "owner_title",
-			T4.F_NAME AS "parent_title",
-			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "targetField_title",
-			T7.F_MESSAGE_NAME AS "targetMessage_title",
-			T8.F_NAME AS "style_title",
-			T9.F_VALUE_ID AS "targetType_title"
+			T1.F_LAYOUT_ID AS "_title",
+			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
+			T4.F_LAYOUT_ID AS "parent_title",
+			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
+			T7.F_MESSAGE_NAME AS "const_title",
+			T8.F_WIDGET_NAME AS "widget_title",
+			T9.F_STYLE_NAME AS "style_title",
+			T10.F_VALUE_ID AS "layoutType_title"
 		FROM
 			T_LAYOUT T1
-		LEFT JOIN T_FORM_VARIANT T2 ON
-			T1.F_OWNER_VARIANT_ID = T2.F_VARIANT_ID
-		LEFT JOIN T_FORM T3 ON
-			T2.F_OWNER_FORM_ID = T3.F_FORM_ID
+		LEFT JOIN T_PAGE T2 ON
+			T1.F_OWNER_PAGE_ID = T2.F_PAGE_ID
+		LEFT JOIN T_PAGE_SET T3 ON
+			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
 		LEFT JOIN T_LAYOUT T4 ON
 			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
 		LEFT JOIN T_FIELD T5 ON
-			T1.F_TARGET_FIELD_FIELD_ID = T5.F_FIELD_ID
+			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
 		LEFT JOIN T_CLASS T6 ON
 			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
 		LEFT JOIN T_MESSAGE T7 ON
-			T1.F_TARGET_MESSAGE_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_STYLE T8 ON
-			T1.F_STYLE_STYLE_ID = T8.F_STYLE_ID
-		LEFT JOIN T_ENUM_VALUE T9 ON
-			T9.F_OWNER_ENUM_ID = 3 AND
-			T1.F_TARGET_TYPE = T9.F_VALUE_ID
+			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
+		LEFT JOIN T_WIDGET T8 ON
+			T1.F_WIDGET_WIDGET_ID = T8.F_WIDGET_ID
+		LEFT JOIN T_STYLE T9 ON
+			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T10 ON
+			T10.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
 		WHERE
 			T1.F_LAYOUT_ID = #{ parentLayoutId }
 	</select>
@@ -287,7 +306,7 @@
 			T_LAYOUT T1
 		<where>
 			<if test="hint != null">
-				T1.F_NAME LIKE '%' || #{hint} || '%'
+				T1.F_LAYOUT_ID LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
 	</select>
@@ -295,12 +314,12 @@
 	<select id="listParentCandidateSubject" resultType="LayoutSubject">
 		SELECT
 			T1.F_LAYOUT_ID AS "layoutId",
-			T1.F_NAME AS "_title"
+			T1.F_LAYOUT_ID AS "_title"
 		FROM
 			T_LAYOUT T1
 		<where>
 			<if test="hint != null">
-				T1.F_NAME LIKE '%' || #{hint} || '%'
+				T1.F_LAYOUT_ID LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
 		<if test="limit &gt; 0">
@@ -311,7 +330,7 @@
 		</if>
 	</select>
 	
-	<select id="getTargetField" resultType="FieldContent">
+	<select id="getTarget" resultType="FieldContent">
 		SELECT
 			T1.F_FIELD_ID AS "fieldId",
 			T1.F_OWNER_CLASS_ID AS "ownerClassId",
@@ -356,10 +375,10 @@
 			T7.F_OWNER_ENUM_ID = 1 AND
 			T1.F_TYPE = T7.F_VALUE_ID
 		WHERE
-			T1.F_FIELD_ID = #{ targetFieldFieldId }
+			T1.F_FIELD_ID = #{ targetFieldId }
 	</select>
 
-	<select id="listTargetFieldCandidateSummary" resultType="FieldSummary">
+	<select id="listTargetCandidateSummary" resultType="FieldSummary">
 		SELECT
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
@@ -373,7 +392,7 @@
 		</where>
 	</select>
 
-	<select id="listTargetFieldCandidateSubject" resultType="FieldSubject">
+	<select id="listTargetCandidateSubject" resultType="FieldSubject">
 		SELECT
 			T1.F_FIELD_ID AS "fieldId",
 			T2.F_CLASS_NAME || '/' || T1.F_FIELD_NAME AS "_title"
@@ -394,7 +413,7 @@
 		</if>
 	</select>
 	
-	<select id="getTargetMessage" resultType="MessageContent">
+	<select id="getConst" resultType="MessageContent">
 		SELECT
 			T1.F_MESSAGE_ID AS "messageId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -408,10 +427,10 @@
 		LEFT JOIN T_PROJECT T2 ON
 			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
-			T1.F_MESSAGE_ID = #{ targetMessageMessageId }
+			T1.F_MESSAGE_ID = #{ constMessageId }
 	</select>
 
-	<select id="listTargetMessageCandidateSummary" resultType="MessageSummary">
+	<select id="listConstCandidateSummary" resultType="MessageSummary">
 		SELECT
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
@@ -425,7 +444,7 @@
 		</where>
 	</select>
 
-	<select id="listTargetMessageCandidateSubject" resultType="MessageSubject">
+	<select id="listConstCandidateSubject" resultType="MessageSubject">
 		SELECT
 			T1.F_MESSAGE_ID AS "messageId",
 			T1.F_MESSAGE_NAME AS "_title"
@@ -444,11 +463,62 @@
 		</if>
 	</select>
 	
+	<select id="getWidget" resultType="WidgetContent">
+		SELECT
+			T1.F_WIDGET_ID AS "widgetId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_WIDGET_NAME AS "widgetName",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_WIDGET_NAME AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_WIDGET T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_WIDGET_ID = #{ widgetWidgetId }
+	</select>
+
+	<select id="listWidgetCandidateSummary" resultType="WidgetSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_WIDGET T1
+		<where>
+			<if test="hint != null">
+				T1.F_WIDGET_NAME LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listWidgetCandidateSubject" resultType="WidgetSubject">
+		SELECT
+			T1.F_WIDGET_ID AS "widgetId",
+			T1.F_WIDGET_NAME AS "_title"
+		FROM
+			T_WIDGET T1
+		<where>
+			<if test="hint != null">
+				T1.F_WIDGET_NAME LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	
 	<select id="getStyle" resultType="StyleContent">
 		SELECT
 			T1.F_STYLE_ID AS "styleId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
-			T1.F_NAME AS "name",
+			T1.F_STYLE_NAME AS "styleName",
 			T1.F_PARENT_STYLE_ID AS "parentStyleId",
 			T1.F_COND AS "cond",
 			T1.F_COND_PARAM AS "condParam",
@@ -467,9 +537,9 @@
 			T1.F_TEXT_ALIGN AS "textAlign",
 			T1.F_VERTICAL_ALIGN AS "verticalAlign",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_NAME AS "_title",
+			T1.F_STYLE_NAME AS "_title",
 			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title",
-			T3.F_NAME AS "parent_title",
+			T3.F_STYLE_NAME AS "parent_title",
 			T4.F_VALUE_ID AS "cond_title"
 		FROM
 			T_STYLE T1
@@ -493,7 +563,7 @@
 			T_STYLE T1
 		<where>
 			<if test="hint != null">
-				T1.F_NAME LIKE '%' || #{hint} || '%'
+				T1.F_STYLE_NAME LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
 	</select>
@@ -501,12 +571,12 @@
 	<select id="listStyleCandidateSubject" resultType="StyleSubject">
 		SELECT
 			T1.F_STYLE_ID AS "styleId",
-			T1.F_NAME AS "_title"
+			T1.F_STYLE_NAME AS "_title"
 		FROM
 			T_STYLE T1
 		<where>
 			<if test="hint != null">
-				T1.F_NAME LIKE '%' || #{hint} || '%'
+				T1.F_STYLE_NAME LIKE '%' || #{hint} || '%'
 			</if>
 		</where>
 		<if test="limit &gt; 0">
@@ -531,12 +601,13 @@
 	<select id="listChildrenContent" resultType="LayoutContent">
 		SELECT
 			T1.F_LAYOUT_ID AS "layoutId",
-			T1.F_OWNER_VARIANT_ID AS "ownerVariantId",
-			T1.F_NAME AS "name",
+			T1.F_OWNER_PAGE_ID AS "ownerPageId",
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
-			T1.F_TARGET_TYPE AS "targetType",
-			T1.F_TARGET_FIELD_FIELD_ID AS "targetFieldFieldId",
-			T1.F_TARGET_MESSAGE_MESSAGE_ID AS "targetMessageMessageId",
+			T1.F_LAYOUT_TYPE AS "layoutType",
+			T1.F_TARGET_FIELD_ID AS "targetFieldId",
+			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_WIDGET_WIDGET_ID AS "widgetWidgetId",
+			T1.F_LAYOUT_PARAM AS "layoutParam",
 			T1.F_STYLE_STYLE_ID AS "styleStyleId",
 			T1.F_LEFT AS "left",
 			T1.F_TOP AS "top",
@@ -545,36 +616,39 @@
 			T1.F_WIDTH AS "width",
 			T1.F_HEIGHT AS "height",
 			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
-			T1.F_NAME AS "_title",
-			T3.F_NAME AS "owner_title",
-			T4.F_NAME AS "parent_title",
-			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "targetField_title",
-			T7.F_MESSAGE_NAME AS "targetMessage_title",
-			T8.F_NAME AS "style_title",
-			T9.F_VALUE_ID AS "targetType_title"
+			T1.F_LAYOUT_ID AS "_title",
+			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
+			T4.F_LAYOUT_ID AS "parent_title",
+			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
+			T7.F_MESSAGE_NAME AS "const_title",
+			T8.F_WIDGET_NAME AS "widget_title",
+			T9.F_STYLE_NAME AS "style_title",
+			T10.F_VALUE_ID AS "layoutType_title"
 		FROM
 			T_LAYOUT T1
-		LEFT JOIN T_FORM_VARIANT T2 ON
-			T1.F_OWNER_VARIANT_ID = T2.F_VARIANT_ID
-		LEFT JOIN T_FORM T3 ON
-			T2.F_OWNER_FORM_ID = T3.F_FORM_ID
+		LEFT JOIN T_PAGE T2 ON
+			T1.F_OWNER_PAGE_ID = T2.F_PAGE_ID
+		LEFT JOIN T_PAGE_SET T3 ON
+			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
 		LEFT JOIN T_LAYOUT T4 ON
 			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
 		LEFT JOIN T_FIELD T5 ON
-			T1.F_TARGET_FIELD_FIELD_ID = T5.F_FIELD_ID
+			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
 		LEFT JOIN T_CLASS T6 ON
 			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
 		LEFT JOIN T_MESSAGE T7 ON
-			T1.F_TARGET_MESSAGE_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_STYLE T8 ON
-			T1.F_STYLE_STYLE_ID = T8.F_STYLE_ID
-		LEFT JOIN T_ENUM_VALUE T9 ON
-			T9.F_OWNER_ENUM_ID = 3 AND
-			T1.F_TARGET_TYPE = T9.F_VALUE_ID
+			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
+		LEFT JOIN T_WIDGET T8 ON
+			T1.F_WIDGET_WIDGET_ID = T8.F_WIDGET_ID
+		LEFT JOIN T_STYLE T9 ON
+			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T10 ON
+			T10.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
 		WHERE
 			T1.F_PARENT_LAYOUT_ID = #{ content.layoutId }
 		ORDER BY
-			T1.F_NAME
+			T1.F_LAYOUT_ID
 		<if test="limit &gt; 0">
 			LIMIT #{limit}
 		<if test="offset &gt;= 0">

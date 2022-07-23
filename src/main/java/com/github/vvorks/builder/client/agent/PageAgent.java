@@ -8,34 +8,34 @@ import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.common.json.Json;
 
 /**
- * レイアウト種別エージェント
+ * ページエージェント
  */
-public class LayoutTypeAgent extends DataRecordAgent {
+public class PageAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static LayoutTypeAgent INSTANCE = new LayoutTypeAgent();
+	public static final PageAgent INSTANCE = new PageAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final LayoutTypeAgent get() {
+	public static final PageAgent get() {
 		return INSTANCE;
 	}
 
 	/** プライベートコンストラクタ */
-	private LayoutTypeAgent() {
+	private PageAgent() {
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setString(name, from.getString("value"));
+		rec.setInt(name + "PageId", from.getInt("pageId"));
 	}
 
 	@Override
 	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setString(name, candidate.getString("value"));
+		rec.setInt(name + "PageId", candidate.getInt("pageId"));
 	}
 
 }

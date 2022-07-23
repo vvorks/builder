@@ -5,34 +5,44 @@ package com.github.vvorks.builder.server.domain;
 import com.github.vvorks.builder.common.lang.Encodable;
 
 /**
- * レイアウトタイプ
+ * レイアウト種別
  */
 public enum LayoutType implements Encodable<String> {
 
 	/**
-	 * グループ
+	 * レイアウト要素
+	 *
+	 * fieldRef, messageRefは使用しない
 	 */
-	GROUP(1, "GROUP"),
+	LAYOUT(10, "LAYOUT"),
 
 	/**
-	 * フィールドラベル表示
+	 * メッセージ表示要素
+	 *
+	 * messageRefを出力する
 	 */
-	SHOW_LABEL(2, "SHOW_LABEL"),
+	MESSAGE_OUT(20, "MESSAGE_OUT"),
 
 	/**
-	 * フィールドデータ表示
+	 * (フィールド）ラベル表示要素
+	 *
+	 * fieldRefのラベルを出力する
 	 */
-	SHOW_DATA(3, "SHOW_DATA"),
+	LABEL_OUT(40, "LABEL_OUT"),
 
 	/**
-	 * フィールドデータ編集
+	 * フィールド出力要素
+	 *
+	 * fieldRefのデータを出力する
 	 */
-	EDIT_DATA(4, "EDIT_DATA"),
+	FIELD_OUT(50, "FIELD_OUT"),
 
 	/**
-	 * メッセージ表示
+	 * フィールド入出力要素
+	 *
+	 * fieldRefのデータを入出力する
 	 */
-	SHOW_MESSAGE(5, "SHOW_MESSAGE")
+	FIELD_IO(51, "FIELD_IO")
 	;
 
 	/**

@@ -6,14 +6,14 @@ package com.github.vvorks.builder.server.domain;
 import java.util.Objects;
 
 /**
- * フォームバリエーションの見出し
+ * ウィジェットの見出し
  */
-public class FormVariantSubject {
+public class WidgetSubject {
 
 	/**
-	 * variantId
+	 * ウィジェットId
 	 */
-	private int variantId;
+	private int widgetId;
 
 	/**
 	 * タイトル
@@ -21,20 +21,20 @@ public class FormVariantSubject {
 	private String _title;
 
 	/**
-	 * 空のフォームバリエーションの見出しを作成する
+	 * 空のウィジェットの見出しを作成する
 	 */
-	public FormVariantSubject() {
+	public WidgetSubject() {
 	}
 
 	/**
-	 * 指定のキー項目を持つフォームバリエーションの見出しを作成する
+	 * 指定のキー項目を持つウィジェットの見出しを作成する
 	 *
-	 * @param variantId variantId
+	 * @param widgetId ウィジェットId
 	 */
-	public FormVariantSubject(
-		int variantId
+	public WidgetSubject(
+		int widgetId
 	) {
-		this.variantId = variantId;
+		this.widgetId = widgetId;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class FormVariantSubject {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			variantId
+			widgetId
 			);
 	}
 
@@ -71,21 +71,21 @@ public class FormVariantSubject {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((FormVariantSubject) obj);
+			return equals((WidgetSubject) obj);
 		}
 	}
 
-	private boolean equals(FormVariantSubject other) {
+	private boolean equals(WidgetSubject other) {
 		return
-			this.variantId == other.variantId
+			this.widgetId == other.widgetId
 			;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("FormVariantSubject [");
-		sb.append("variantId=").append(variantId);
+		sb.append("WidgetSubject [");
+		sb.append("widgetId=").append(widgetId);
 		sb.append("]");
 		return sb.toString();
 	}

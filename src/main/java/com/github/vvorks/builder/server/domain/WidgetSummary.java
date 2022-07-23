@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * フォームバリエーションのサマリー情報
+ * ウィジェットのサマリー情報
  */
-public class FormVariantSummary<T> {
+public class WidgetSummary<T> {
 
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
@@ -133,12 +133,12 @@ public class FormVariantSummary<T> {
 			return false;
 		} else {
 			@SuppressWarnings("unchecked")
-			FormVariantSummary<T> other = (FormVariantSummary<T>) obj;
+			WidgetSummary<T> other = (WidgetSummary<T>) obj;
 			return equals(other);
 		}
 	}
 
-	private boolean equals(FormVariantSummary<T> other) {
+	private boolean equals(WidgetSummary<T> other) {
 		return
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
@@ -150,7 +150,7 @@ public class FormVariantSummary<T> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("FormVariantContent [");
+		sb.append("WidgetContent [");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

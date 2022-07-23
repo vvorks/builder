@@ -16,7 +16,7 @@ import {{global.project.projectName}}.client.common.ui.UiStyle;
 public class {{upperLastName}}Styles {
 
 	{{#each this.styles}}
-	public static final UiStyle {{constName}} = UiStyle.newBuilder("{{name}}")
+	public static final UiStyle {{constName}} = UiStyle.newBuilder("{{styleName}}")
 				{{#if cond}}
 				.condition("{{cond}}"{{#if condParam}}, "{{condParam}}"{{/if}})
 				{{else}}

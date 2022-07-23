@@ -6,14 +6,14 @@ package com.github.vvorks.builder.server.domain;
 import java.util.Objects;
 
 /**
- * レイアウトタイプの見出し
+ * レイアウト種別の見出し
  */
 public class LayoutTypeSubject {
 
 	private final LayoutType value;
 
 	/**
-	 * 指定の列挙値と見出しを持つレイアウトタイプの見出しを作成する
+	 * 指定の列挙値と見出しを持つレイアウト種別の見出しを作成する
 	 *
 	 * @param value 列挙値
 	 */

@@ -6,24 +6,24 @@ package com.github.vvorks.builder.server.domain;
 import java.util.Objects;
 
 /**
- * フォーム
+ * ページセット
  */
-public class FormContent {
+public class PageSetContent {
 
 	/**
-	 * formId
+	 * ページセットId
 	 */
-	private int formId;
+	private int pageSetId;
 
 	/**
-	 * ownerのプロジェクトID
+	 * 所属プロジェクトのプロジェクトID
 	 */
 	private int ownerProjectId;
 
 	/**
-	 * name
+	 * ページセット名
 	 */
-	private String name;
+	private String pageSetName;
 
 	/**
 	 * タイトル
@@ -46,79 +46,79 @@ public class FormContent {
 	private String _title;
 
 	/**
-	 * ownerのタイトル
+	 * 所属プロジェクトのタイトル
 	 */
 	private String owner_title;
 
 	/**
-	 * 空のフォームを作成する
+	 * 空のページセットを作成する
 	 */
-	public FormContent() {
+	public PageSetContent() {
 	}
 
 	/**
-	 * 指定のキー項目を持つフォームを作成する
+	 * 指定のキー項目を持つページセットを作成する
 	 *
-	 * @param formId formId
+	 * @param pageSetId ページセットId
 	 */
-	public FormContent(
-		int formId
+	public PageSetContent(
+		int pageSetId
 	) {
-		this.formId = formId;
+		this.pageSetId = pageSetId;
 	}
 
 	/**
-	 * formIdを取得する
+	 * ページセットIdを取得する
 	 *
-	 * @return formId
+	 * @return ページセットId
 	 */
-	public int getFormId() {
-		return this.formId;
+	public int getPageSetId() {
+		return this.pageSetId;
 	}
 
 	/**
-	 * formIdを設定する
+	 * ページセットIdを設定する
 	 *
-	 * @param formId 設定するformId
+	 * @param pageSetId 設定するページセットId
 	 */
-	public void setFormId(int formId) {
-		this.formId = formId;
+	public void setPageSetId(int pageSetId) {
+		this.pageSetId = pageSetId;
 	}
 
 	/**
-	 * ownerのプロジェクトIDを取得する
+	 * 所属プロジェクトのプロジェクトIDを取得する
 	 *
-	 * @return ownerのプロジェクトID
+	 * @return 所属プロジェクトのプロジェクトID
 	 */
 	public int getOwnerProjectId() {
 		return this.ownerProjectId;
 	}
 
 	/**
-	 * ownerのプロジェクトIDを設定する
+	 * 所属プロジェクトのプロジェクトIDを設定する
 	 *
-	 * @param ownerProjectId 設定するownerのプロジェクトID
+	 * @param ownerProjectId 設定する所属プロジェクトのプロジェクトID
 	 */
 	public void setOwnerProjectId(int ownerProjectId) {
 		this.ownerProjectId = ownerProjectId;
 	}
 
 	/**
-	 * nameを取得する
+	 * ページセット名を取得する
 	 *
-	 * @return name
+	 * @return ページセット名
 	 */
-	public String getName() {
-		return this.name;
+	public String getPageSetName() {
+		return this.pageSetName;
 	}
 
 	/**
-	 * nameを設定する
+	 * ページセット名を設定する
 	 *
-	 * @param name 設定するname
+	 * @param pageSetName 設定するページセット名
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setPageSetName(String pageSetName) {
+		this.pageSetName = pageSetName;
 	}
 
 	/**
@@ -194,18 +194,18 @@ public class FormContent {
 	}
 
 	/**
-	 * ownerのタイトルを取得する
+	 * 所属プロジェクトのタイトルを取得する
 	 *
-	 * @return ownerのタイトル
+	 * @return 所属プロジェクトのタイトル
 	 */
 	public String getOwner_title() {
 		return this.owner_title;
 	}
 
 	/**
-	 * ownerのタイトルを設定する
+	 * 所属プロジェクトのタイトルを設定する
 	 *
-	 * @param owner_title 設定するownerのタイトル
+	 * @param owner_title 設定する所属プロジェクトのタイトル
 	 */
 	public void setOwner_title(String owner_title) {
 		this.owner_title = owner_title;
@@ -214,9 +214,9 @@ public class FormContent {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-			formId,
+			pageSetId,
 			ownerProjectId,
-			name,
+			pageSetName,
 			title,
 			description,
 			_lastUpdatedAt
@@ -232,15 +232,15 @@ public class FormContent {
 		} else if (getClass() != obj.getClass()) {
 			return false;
 		} else {
-			return equals((FormContent) obj);
+			return equals((PageSetContent) obj);
 		}
 	}
 
-	private boolean equals(FormContent other) {
+	private boolean equals(PageSetContent other) {
 		return
-			this.formId == other.formId && 
+			this.pageSetId == other.pageSetId && 
 			this.ownerProjectId == other.ownerProjectId && 
-			Objects.equals(this.name, other.name) && 
+			Objects.equals(this.pageSetName, other.pageSetName) && 
 			Objects.equals(this.title, other.title) && 
 			Objects.equals(this.description, other.description) && 
 			Objects.equals(this._lastUpdatedAt, other._lastUpdatedAt)
@@ -250,10 +250,10 @@ public class FormContent {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("FormContent [");
-		sb.append("formId=").append(formId).append(", ");
+		sb.append("PageSetContent [");
+		sb.append("pageSetId=").append(pageSetId).append(", ");
 		sb.append("ownerProjectId=").append(ownerProjectId).append(", ");
-		sb.append("name=").append(name).append(", ");
+		sb.append("pageSetName=").append(pageSetName).append(", ");
 		sb.append("title=").append(title).append(", ");
 		sb.append("description=").append(description).append(", ");
 		sb.append("_lastUpdatedAt=").append(_lastUpdatedAt);

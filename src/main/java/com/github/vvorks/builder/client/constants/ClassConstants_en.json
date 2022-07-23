@@ -41,11 +41,14 @@
   "Style" : {
     "title" : "Style"
   },
-  "Form" : {
-    "title" : "Form"
+  "Widget" : {
+    "title" : "Widget"
   },
-  "FormVariant" : {
-    "title" : "FormVariant"
+  "PageSet" : {
+    "title" : "PageSet"
+  },
+  "Page" : {
+    "title" : "Page"
   },
   "Layout" : {
     "title" : "Layout"

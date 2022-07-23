@@ -33,9 +33,8 @@
     "styles" : {
       "title" : "スタイル一覧"
     },
-    "forms" : {
-      "title" : "フォーム一覧"
-    },
+    "widgets" : { },
+    "pageSets" : { },
     "locales" : {
       "title" : "ロケール一覧"
     },
@@ -340,7 +339,7 @@
     "owner" : {
       "title" : "所属プロジェクト"
     },
-    "name" : {
+    "styleName" : {
       "title" : "スタイル名"
     },
     "children" : {
@@ -398,41 +397,115 @@
       "title" : "縦方向の揃え位置"
     }
   },
-  "Form" : {
-    "formId" : { },
-    "owner" : { },
-    "name" : { },
+  "Widget" : {
+    "widgetId" : {
+      "title" : "ウィジェットId"
+    },
+    "owner" : {
+      "title" : "所属プロジェクト"
+    },
+    "widgetName" : {
+      "title" : "ウィジェット名",
+      "description" : "完全修飾名またはプロジェクト相対修飾名"
+    },
+    "title" : {
+      "title" : "タイトル"
+    },
+    "description" : {
+      "title" : "説明"
+    }
+  },
+  "PageSet" : {
+    "pageSetId" : {
+      "title" : "ページセットId"
+    },
+    "owner" : {
+      "title" : "所属プロジェクト"
+    },
+    "pageSetName" : {
+      "title" : "ページセット名"
+    },
     "title" : {
       "title" : "タイトル"
     },
     "description" : {
       "title" : "説明"
     },
-    "variants" : { }
+    "pages" : {
+      "title" : "ページ一覧"
+    }
   },
-  "FormVariant" : {
-    "variantId" : { },
-    "owner" : { },
-    "width" : { },
-    "height" : { },
-    "layouts" : { }
+  "Page" : {
+    "pageId" : {
+      "title" : "ページId"
+    },
+    "owner" : {
+      "title" : "所属ページセット"
+    },
+    "context" : {
+      "title" : "コンテキストクラス"
+    },
+    "width" : {
+      "title" : "ページ幅"
+    },
+    "height" : {
+      "title" : "ページ高さ"
+    },
+    "layouts" : {
+      "title" : "レイアウト一覧"
+    }
   },
   "Layout" : {
-    "layoutId" : { },
-    "owner" : { },
-    "name" : { },
-    "children" : { },
-    "parent" : { },
-    "targetType" : { },
-    "targetField" : { },
-    "targetMessage" : { },
-    "style" : { },
-    "left" : { },
-    "top" : { },
-    "right" : { },
-    "bottom" : { },
-    "width" : { },
-    "height" : { }
+    "layoutId" : {
+      "title" : "レイアウトId"
+    },
+    "owner" : {
+      "title" : "所属ページ"
+    },
+    "children" : {
+      "title" : "子レイアウト"
+    },
+    "parent" : {
+      "title" : "親レイアウト"
+    },
+    "layoutType" : {
+      "title" : "レイアウト種別"
+    },
+    "target" : {
+      "title" : "対象フィールド"
+    },
+    "const" : {
+      "title" : "対象メッセージ"
+    },
+    "widget" : {
+      "title" : "使用Widget",
+      "description" : "未指定の場合はレイアウトタイプおよび指定フィールドの型別の既定Widgetが割り当てられる"
+    },
+    "layoutParam" : {
+      "title" : "レイアウトパラメータ",
+      "description" : "定義値はWidget毎に異なる"
+    },
+    "style" : {
+      "title" : "使用スタイル"
+    },
+    "left" : {
+      "title" : "左位置"
+    },
+    "top" : {
+      "title" : "上位置"
+    },
+    "right" : {
+      "title" : "右位置"
+    },
+    "bottom" : {
+      "title" : "下位置"
+    },
+    "width" : {
+      "title" : "幅"
+    },
+    "height" : {
+      "title" : "高さ"
+    }
   },
   "Locale" : {
     "localeId" : {

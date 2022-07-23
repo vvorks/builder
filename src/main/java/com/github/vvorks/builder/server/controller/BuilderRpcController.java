@@ -35,12 +35,6 @@ import com.github.vvorks.builder.server.domain.FieldSummary;
 import com.github.vvorks.builder.server.domain.FieldI18nContent;
 import com.github.vvorks.builder.server.domain.FieldI18nSubject;
 import com.github.vvorks.builder.server.domain.FieldI18nSummary;
-import com.github.vvorks.builder.server.domain.FormContent;
-import com.github.vvorks.builder.server.domain.FormSubject;
-import com.github.vvorks.builder.server.domain.FormSummary;
-import com.github.vvorks.builder.server.domain.FormVariantContent;
-import com.github.vvorks.builder.server.domain.FormVariantSubject;
-import com.github.vvorks.builder.server.domain.FormVariantSummary;
 import com.github.vvorks.builder.server.domain.LayoutContent;
 import com.github.vvorks.builder.server.domain.LayoutSubject;
 import com.github.vvorks.builder.server.domain.LayoutSummary;
@@ -53,6 +47,12 @@ import com.github.vvorks.builder.server.domain.MessageSummary;
 import com.github.vvorks.builder.server.domain.MessageI18nContent;
 import com.github.vvorks.builder.server.domain.MessageI18nSubject;
 import com.github.vvorks.builder.server.domain.MessageI18nSummary;
+import com.github.vvorks.builder.server.domain.PageContent;
+import com.github.vvorks.builder.server.domain.PageSubject;
+import com.github.vvorks.builder.server.domain.PageSummary;
+import com.github.vvorks.builder.server.domain.PageSetContent;
+import com.github.vvorks.builder.server.domain.PageSetSubject;
+import com.github.vvorks.builder.server.domain.PageSetSummary;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.ProjectSubject;
 import com.github.vvorks.builder.server.domain.ProjectSummary;
@@ -65,6 +65,9 @@ import com.github.vvorks.builder.server.domain.QuerySummary;
 import com.github.vvorks.builder.server.domain.StyleContent;
 import com.github.vvorks.builder.server.domain.StyleSubject;
 import com.github.vvorks.builder.server.domain.StyleSummary;
+import com.github.vvorks.builder.server.domain.WidgetContent;
+import com.github.vvorks.builder.server.domain.WidgetSubject;
+import com.github.vvorks.builder.server.domain.WidgetSummary;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.DataTypeSubject;
 import com.github.vvorks.builder.server.domain.DataTypeSummary;
@@ -82,16 +85,17 @@ import com.github.vvorks.builder.server.mapper.EnumValueMapper;
 import com.github.vvorks.builder.server.mapper.EnumValueI18nMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
 import com.github.vvorks.builder.server.mapper.FieldI18nMapper;
-import com.github.vvorks.builder.server.mapper.FormMapper;
-import com.github.vvorks.builder.server.mapper.FormVariantMapper;
 import com.github.vvorks.builder.server.mapper.LayoutMapper;
 import com.github.vvorks.builder.server.mapper.LocaleMapper;
 import com.github.vvorks.builder.server.mapper.MessageMapper;
 import com.github.vvorks.builder.server.mapper.MessageI18nMapper;
+import com.github.vvorks.builder.server.mapper.PageMapper;
+import com.github.vvorks.builder.server.mapper.PageSetMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 import com.github.vvorks.builder.server.mapper.ProjectI18nMapper;
 import com.github.vvorks.builder.server.mapper.QueryMapper;
 import com.github.vvorks.builder.server.mapper.StyleMapper;
+import com.github.vvorks.builder.server.mapper.WidgetMapper;
 
 /**
  * ビルダープロジェクトの Json-Rpc (on Websocket) API
@@ -155,13 +159,17 @@ public class BuilderRpcController {
 	@Autowired
 	private StyleMapper styleMapper;
 
-	/** フォームのMapper */
+	/** ウィジェットのMapper */
 	@Autowired
-	private FormMapper formMapper;
+	private WidgetMapper widgetMapper;
 
-	/** フォームバリエーションのMapper */
+	/** ページセットのMapper */
 	@Autowired
-	private FormVariantMapper formVariantMapper;
+	private PageSetMapper pageSetMapper;
+
+	/** ページのMapper */
+	@Autowired
+	private PageMapper pageMapper;
 
 	/** レイアウトのMapper */
 	@Autowired
@@ -432,26 +440,51 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * フォーム一覧情報を取得する
+	 * widgets情報を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return フォーム一覧情報
+	 * @return widgets情報
 	 */
 	@JsonRpcMethod
-	public FormSummary<FormContent> listProjectForms(
+	public WidgetSummary<WidgetContent> listProjectWidgets(
 		@JsonRpcParam("content") ProjectContent content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FormSummary<FormContent> summary = projectMapper.listFormsSummary(content);
+		WidgetSummary<WidgetContent> summary = projectMapper.listWidgetsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FormContent> contents =
-				projectMapper.listFormsContent(content, offset, limit);
+		List<WidgetContent> contents =
+				projectMapper.listWidgetsContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * pageSets情報を取得する
+	 *
+	 * @param content プロジェクト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return pageSets情報
+	 */
+	@JsonRpcMethod
+	public PageSetSummary<PageSetContent> listProjectPageSets(
+		@JsonRpcParam("content") ProjectContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		PageSetSummary<PageSetContent> summary = projectMapper.listPageSetsSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<PageSetContent> contents =
+				projectMapper.listPageSetsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2780,108 +2813,108 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * フォームを挿入する
+	 * ウィジェットを挿入する
 	 *
-	 * @param content 挿入するフォーム
+	 * @param content 挿入するウィジェット
 	 * @return 処理成功の場合、真
 	 */
 	@JsonRpcMethod
-	public boolean insertForm(FormContent content) {
-		return formMapper.insert(content);
+	public boolean insertWidget(WidgetContent content) {
+		return widgetMapper.insert(content);
 	}
 
 	/**
-	 * フォームを更新する
+	 * ウィジェットを更新する
 	 *
-	 * @param content 更新するフォーム
+	 * @param content 更新するウィジェット
 	 * @return 処理成功の場合、真
 	 */
 	@JsonRpcMethod
-	public boolean updateForm(FormContent content) {
-		return formMapper.update(content);
+	public boolean updateWidget(WidgetContent content) {
+		return widgetMapper.update(content);
 	}
 
 	/**
-	 * フォームを削除する
+	 * ウィジェットを削除する
 	 *
-	 * @param content 削除するフォーム
+	 * @param content 削除するウィジェット
 	 * @return 処理成功の場合、真
 	 */
 	@JsonRpcMethod
-	public boolean deleteForm(FormContent content) {
-		return formMapper.delete(content);
+	public boolean deleteWidget(WidgetContent content) {
+		return widgetMapper.delete(content);
 	}
 
 	/**
-	 * フォームを取得する
+	 * ウィジェットを取得する
 	 *
-	 * @param formId formId
-	 * @return 取得したフォーム
+	 * @param widgetId ウィジェットId
+	 * @return 取得したウィジェット
 	 */
 	@JsonRpcMethod
-	public FormContent getForm(
-		@JsonRpcParam("formId") int formId
+	public WidgetContent getWidget(
+		@JsonRpcParam("widgetId") int widgetId
 	) {
-		return formMapper.get(
-				formId
+		return widgetMapper.get(
+				widgetId
 				);
 	}
 
 	/**
-	 * 全てのフォーム情報を取得する
+	 * 全てのウィジェット情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return フォーム情報
+	 * @return ウィジェット情報
 	 */
 	@JsonRpcMethod
-	public FormSummary<FormContent> listForm(
+	public WidgetSummary<WidgetContent> listWidget(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FormSummary<FormContent> summary = formMapper.listSummary();
+		WidgetSummary<WidgetContent> summary = widgetMapper.listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FormContent> contents = formMapper.listContent(offset, limit);
+		List<WidgetContent> contents = widgetMapper.listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
 
 	/**
-	 * ownerを取得する
+	 * 所属プロジェクトを取得する
 	 *
-	 * @param content フォーム
-	 * @return owner
+	 * @param content ウィジェット
+	 * @return 所属プロジェクト
 	 */
 	@JsonRpcMethod
-	public ProjectContent getFormOwner(
-		@JsonRpcParam("content") FormContent content
+	public ProjectContent getWidgetOwner(
+		@JsonRpcParam("content") WidgetContent content
 	) {
-		return formMapper.getOwner(content);
+		return widgetMapper.getOwner(content);
 	}
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属プロジェクトの候補一覧を取得する
 	 *
-	 * @param content フォーム
-	 * @return ownerの候補一覧
+	 * @param content ウィジェット
+	 * @return 所属プロジェクトの候補一覧
 	 */
 	@JsonRpcMethod
-	public ProjectSummary<ProjectSubject> listFormOwnerCandidate(
-		@JsonRpcParam("content") FormContent content,
+	public ProjectSummary<ProjectSubject> listWidgetOwnerCandidate(
+		@JsonRpcParam("content") WidgetContent content,
 		@JsonRpcParam("hint") String hint,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectSubject> summary = formMapper.listOwnerCandidateSummary(
+		ProjectSummary<ProjectSubject> summary = widgetMapper.listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectSubject> contents = formMapper.listOwnerCandidateSubject(
+		List<ProjectSubject> contents = widgetMapper.listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2889,133 +2922,108 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * variants情報を取得する
+	 * ページセットを挿入する
 	 *
-	 * @param content フォーム
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return variants情報
+	 * @param content 挿入するページセット
+	 * @return 処理成功の場合、真
 	 */
 	@JsonRpcMethod
-	public FormVariantSummary<FormVariantContent> listFormVariants(
-		@JsonRpcParam("content") FormContent content,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
+	public boolean insertPageSet(PageSetContent content) {
+		return pageSetMapper.insert(content);
+	}
+
+	/**
+	 * ページセットを更新する
+	 *
+	 * @param content 更新するページセット
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updatePageSet(PageSetContent content) {
+		return pageSetMapper.update(content);
+	}
+
+	/**
+	 * ページセットを削除する
+	 *
+	 * @param content 削除するページセット
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deletePageSet(PageSetContent content) {
+		return pageSetMapper.delete(content);
+	}
+
+	/**
+	 * ページセットを取得する
+	 *
+	 * @param pageSetId ページセットId
+	 * @return 取得したページセット
+	 */
+	@JsonRpcMethod
+	public PageSetContent getPageSet(
+		@JsonRpcParam("pageSetId") int pageSetId
 	) {
-		FormVariantSummary<FormVariantContent> summary = formMapper.listVariantsSummary(content);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<FormVariantContent> contents =
-				formMapper.listVariantsContent(content, offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * フォームバリエーションを挿入する
-	 *
-	 * @param content 挿入するフォームバリエーション
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean insertFormVariant(FormVariantContent content) {
-		return formVariantMapper.insert(content);
-	}
-
-	/**
-	 * フォームバリエーションを更新する
-	 *
-	 * @param content 更新するフォームバリエーション
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean updateFormVariant(FormVariantContent content) {
-		return formVariantMapper.update(content);
-	}
-
-	/**
-	 * フォームバリエーションを削除する
-	 *
-	 * @param content 削除するフォームバリエーション
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean deleteFormVariant(FormVariantContent content) {
-		return formVariantMapper.delete(content);
-	}
-
-	/**
-	 * フォームバリエーションを取得する
-	 *
-	 * @param variantId variantId
-	 * @return 取得したフォームバリエーション
-	 */
-	@JsonRpcMethod
-	public FormVariantContent getFormVariant(
-		@JsonRpcParam("variantId") int variantId
-	) {
-		return formVariantMapper.get(
-				variantId
+		return pageSetMapper.get(
+				pageSetId
 				);
 	}
 
 	/**
-	 * 全てのフォームバリエーション情報を取得する
+	 * 全てのページセット情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return フォームバリエーション情報
+	 * @return ページセット情報
 	 */
 	@JsonRpcMethod
-	public FormVariantSummary<FormVariantContent> listFormVariant(
+	public PageSetSummary<PageSetContent> listPageSet(
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FormVariantSummary<FormVariantContent> summary = formVariantMapper.listSummary();
+		PageSetSummary<PageSetContent> summary = pageSetMapper.listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FormVariantContent> contents = formVariantMapper.listContent(offset, limit);
+		List<PageSetContent> contents = pageSetMapper.listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
 
 	/**
-	 * ownerを取得する
+	 * 所属プロジェクトを取得する
 	 *
-	 * @param content フォームバリエーション
-	 * @return owner
+	 * @param content ページセット
+	 * @return 所属プロジェクト
 	 */
 	@JsonRpcMethod
-	public FormContent getFormVariantOwner(
-		@JsonRpcParam("content") FormVariantContent content
+	public ProjectContent getPageSetOwner(
+		@JsonRpcParam("content") PageSetContent content
 	) {
-		return formVariantMapper.getOwner(content);
+		return pageSetMapper.getOwner(content);
 	}
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属プロジェクトの候補一覧を取得する
 	 *
-	 * @param content フォームバリエーション
-	 * @return ownerの候補一覧
+	 * @param content ページセット
+	 * @return 所属プロジェクトの候補一覧
 	 */
 	@JsonRpcMethod
-	public FormSummary<FormSubject> listFormVariantOwnerCandidate(
-		@JsonRpcParam("content") FormVariantContent content,
+	public ProjectSummary<ProjectSubject> listPageSetOwnerCandidate(
+		@JsonRpcParam("content") PageSetContent content,
 		@JsonRpcParam("hint") String hint,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FormSummary<FormSubject> summary = formVariantMapper.listOwnerCandidateSummary(
+		ProjectSummary<ProjectSubject> summary = pageSetMapper.listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FormSubject> contents = formVariantMapper.listOwnerCandidateSubject(
+		List<ProjectSubject> contents = pageSetMapper.listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3023,26 +3031,199 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * layouts情報を取得する
+	 * ページ一覧情報を取得する
 	 *
-	 * @param content フォームバリエーション
+	 * @param content ページセット
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return layouts情報
+	 * @return ページ一覧情報
 	 */
 	@JsonRpcMethod
-	public LayoutSummary<LayoutContent> listFormVariantLayouts(
-		@JsonRpcParam("content") FormVariantContent content,
+	public PageSummary<PageContent> listPageSetPages(
+		@JsonRpcParam("content") PageSetContent content,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LayoutSummary<LayoutContent> summary = formVariantMapper.listLayoutsSummary(content);
+		PageSummary<PageContent> summary = pageSetMapper.listPagesSummary(content);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<PageContent> contents =
+				pageSetMapper.listPagesContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * ページを挿入する
+	 *
+	 * @param content 挿入するページ
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertPage(PageContent content) {
+		return pageMapper.insert(content);
+	}
+
+	/**
+	 * ページを更新する
+	 *
+	 * @param content 更新するページ
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updatePage(PageContent content) {
+		return pageMapper.update(content);
+	}
+
+	/**
+	 * ページを削除する
+	 *
+	 * @param content 削除するページ
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deletePage(PageContent content) {
+		return pageMapper.delete(content);
+	}
+
+	/**
+	 * ページを取得する
+	 *
+	 * @param pageId ページId
+	 * @return 取得したページ
+	 */
+	@JsonRpcMethod
+	public PageContent getPage(
+		@JsonRpcParam("pageId") int pageId
+	) {
+		return pageMapper.get(
+				pageId
+				);
+	}
+
+	/**
+	 * 全てのページ情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return ページ情報
+	 */
+	@JsonRpcMethod
+	public PageSummary<PageContent> listPage(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		PageSummary<PageContent> summary = pageMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<PageContent> contents = pageMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 所属ページセットを取得する
+	 *
+	 * @param content ページ
+	 * @return 所属ページセット
+	 */
+	@JsonRpcMethod
+	public PageSetContent getPageOwner(
+		@JsonRpcParam("content") PageContent content
+	) {
+		return pageMapper.getOwner(content);
+	}
+
+	/**
+	 * 所属ページセットの候補一覧を取得する
+	 *
+	 * @param content ページ
+	 * @return 所属ページセットの候補一覧
+	 */
+	@JsonRpcMethod
+	public PageSetSummary<PageSetSubject> listPageOwnerCandidate(
+		@JsonRpcParam("content") PageContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		PageSetSummary<PageSetSubject> summary = pageMapper.listOwnerCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<PageSetSubject> contents = pageMapper.listOwnerCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * コンテキストクラスを取得する
+	 *
+	 * @param content ページ
+	 * @return コンテキストクラス
+	 */
+	@JsonRpcMethod
+	public ClassContent getPageContext(
+		@JsonRpcParam("content") PageContent content
+	) {
+		return pageMapper.getContext(content);
+	}
+
+	/**
+	 * コンテキストクラスの候補一覧を取得する
+	 *
+	 * @param content ページ
+	 * @return コンテキストクラスの候補一覧
+	 */
+	@JsonRpcMethod
+	public ClassSummary<ClassSubject> listPageContextCandidate(
+		@JsonRpcParam("content") PageContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ClassSummary<ClassSubject> summary = pageMapper.listContextCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ClassSubject> contents = pageMapper.listContextCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * レイアウト一覧情報を取得する
+	 *
+	 * @param content ページ
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return レイアウト一覧情報
+	 */
+	@JsonRpcMethod
+	public LayoutSummary<LayoutContent> listPageLayouts(
+		@JsonRpcParam("content") PageContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LayoutSummary<LayoutContent> summary = pageMapper.listLayoutsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<LayoutContent> contents =
-				formVariantMapper.listLayoutsContent(content, offset, limit);
+				pageMapper.listLayoutsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -3083,7 +3264,7 @@ public class BuilderRpcController {
 	/**
 	 * レイアウトを取得する
 	 *
-	 * @param layoutId layoutId
+	 * @param layoutId レイアウトId
 	 * @return 取得したレイアウト
 	 */
 	@JsonRpcMethod
@@ -3118,38 +3299,38 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ownerを取得する
+	 * 所属ページを取得する
 	 *
 	 * @param content レイアウト
-	 * @return owner
+	 * @return 所属ページ
 	 */
 	@JsonRpcMethod
-	public FormVariantContent getLayoutOwner(
+	public PageContent getLayoutOwner(
 		@JsonRpcParam("content") LayoutContent content
 	) {
 		return layoutMapper.getOwner(content);
 	}
 
 	/**
-	 * ownerの候補一覧を取得する
+	 * 所属ページの候補一覧を取得する
 	 *
 	 * @param content レイアウト
-	 * @return ownerの候補一覧
+	 * @return 所属ページの候補一覧
 	 */
 	@JsonRpcMethod
-	public FormVariantSummary<FormVariantSubject> listLayoutOwnerCandidate(
+	public PageSummary<PageSubject> listLayoutOwnerCandidate(
 		@JsonRpcParam("content") LayoutContent content,
 		@JsonRpcParam("hint") String hint,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FormVariantSummary<FormVariantSubject> summary = layoutMapper.listOwnerCandidateSummary(
+		PageSummary<PageSubject> summary = layoutMapper.listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FormVariantSubject> contents = layoutMapper.listOwnerCandidateSubject(
+		List<PageSubject> contents = layoutMapper.listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3157,10 +3338,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * parentを取得する
+	 * 親レイアウトを取得する
 	 *
 	 * @param content レイアウト
-	 * @return parent
+	 * @return 親レイアウト
 	 */
 	@JsonRpcMethod
 	public LayoutContent getLayoutParent(
@@ -3170,10 +3351,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * parentの候補一覧を取得する
+	 * 親レイアウトの候補一覧を取得する
 	 *
 	 * @param content レイアウト
-	 * @return parentの候補一覧
+	 * @return 親レイアウトの候補一覧
 	 */
 	@JsonRpcMethod
 	public LayoutSummary<LayoutSubject> listLayoutParentCandidate(
@@ -3196,38 +3377,38 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * targetFieldを取得する
+	 * 対象フィールドを取得する
 	 *
 	 * @param content レイアウト
-	 * @return targetField
+	 * @return 対象フィールド
 	 */
 	@JsonRpcMethod
-	public FieldContent getLayoutTargetField(
+	public FieldContent getLayoutTarget(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getTargetField(content);
+		return layoutMapper.getTarget(content);
 	}
 
 	/**
-	 * targetFieldの候補一覧を取得する
+	 * 対象フィールドの候補一覧を取得する
 	 *
 	 * @param content レイアウト
-	 * @return targetFieldの候補一覧
+	 * @return 対象フィールドの候補一覧
 	 */
 	@JsonRpcMethod
-	public FieldSummary<FieldSubject> listLayoutTargetFieldCandidate(
+	public FieldSummary<FieldSubject> listLayoutTargetCandidate(
 		@JsonRpcParam("content") LayoutContent content,
 		@JsonRpcParam("hint") String hint,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldSummary<FieldSubject> summary = layoutMapper.listTargetFieldCandidateSummary(
+		FieldSummary<FieldSubject> summary = layoutMapper.listTargetCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FieldSubject> contents = layoutMapper.listTargetFieldCandidateSubject(
+		List<FieldSubject> contents = layoutMapper.listTargetCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3235,38 +3416,38 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * targetMessageを取得する
+	 * 対象メッセージを取得する
 	 *
 	 * @param content レイアウト
-	 * @return targetMessage
+	 * @return 対象メッセージ
 	 */
 	@JsonRpcMethod
-	public MessageContent getLayoutTargetMessage(
+	public MessageContent getLayoutConst(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getTargetMessage(content);
+		return layoutMapper.getConst(content);
 	}
 
 	/**
-	 * targetMessageの候補一覧を取得する
+	 * 対象メッセージの候補一覧を取得する
 	 *
 	 * @param content レイアウト
-	 * @return targetMessageの候補一覧
+	 * @return 対象メッセージの候補一覧
 	 */
 	@JsonRpcMethod
-	public MessageSummary<MessageSubject> listLayoutTargetMessageCandidate(
+	public MessageSummary<MessageSubject> listLayoutConstCandidate(
 		@JsonRpcParam("content") LayoutContent content,
 		@JsonRpcParam("hint") String hint,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		MessageSummary<MessageSubject> summary = layoutMapper.listTargetMessageCandidateSummary(
+		MessageSummary<MessageSubject> summary = layoutMapper.listConstCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<MessageSubject> contents = layoutMapper.listTargetMessageCandidateSubject(
+		List<MessageSubject> contents = layoutMapper.listConstCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3274,10 +3455,49 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * styleを取得する
+	 * 使用Widgetを取得する
 	 *
 	 * @param content レイアウト
-	 * @return style
+	 * @return 使用Widget
+	 */
+	@JsonRpcMethod
+	public WidgetContent getLayoutWidget(
+		@JsonRpcParam("content") LayoutContent content
+	) {
+		return layoutMapper.getWidget(content);
+	}
+
+	/**
+	 * 使用Widgetの候補一覧を取得する
+	 *
+	 * @param content レイアウト
+	 * @return 使用Widgetの候補一覧
+	 */
+	@JsonRpcMethod
+	public WidgetSummary<WidgetSubject> listLayoutWidgetCandidate(
+		@JsonRpcParam("content") LayoutContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		WidgetSummary<WidgetSubject> summary = layoutMapper.listWidgetCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<WidgetSubject> contents = layoutMapper.listWidgetCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 使用スタイルを取得する
+	 *
+	 * @param content レイアウト
+	 * @return 使用スタイル
 	 */
 	@JsonRpcMethod
 	public StyleContent getLayoutStyle(
@@ -3287,10 +3507,10 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * styleの候補一覧を取得する
+	 * 使用スタイルの候補一覧を取得する
 	 *
 	 * @param content レイアウト
-	 * @return styleの候補一覧
+	 * @return 使用スタイルの候補一覧
 	 */
 	@JsonRpcMethod
 	public StyleSummary<StyleSubject> listLayoutStyleCandidate(
@@ -3313,13 +3533,13 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * targetTypeの候補一覧を取得する
+	 * レイアウト種別の候補一覧を取得する
 	 *
 	 * @param content レイアウト
-	 * @return targetTypeの候補一覧
+	 * @return レイアウト種別の候補一覧
 	 */
 	@JsonRpcMethod
-	public LayoutTypeSummary<LayoutTypeSubject> listLayoutTargetTypeCandidate(
+	public LayoutTypeSummary<LayoutTypeSubject> listLayoutLayoutTypeCandidate(
 		@JsonRpcParam("content") LayoutContent content,
 		@JsonRpcParam("hint") String hint,
 		@JsonRpcParam("offset") int offset,
@@ -3364,12 +3584,12 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * children情報を取得する
+	 * 子レイアウト情報を取得する
 	 *
 	 * @param content レイアウト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return children情報
+	 * @return 子レイアウト情報
 	 */
 	@JsonRpcMethod
 	public LayoutSummary<LayoutContent> listLayoutChildren(

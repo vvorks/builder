@@ -41,11 +41,14 @@
   "Style" : {
     "title" : "スタイル"
   },
-  "Form" : {
-    "title" : "フォーム"
+  "Widget" : {
+    "title" : "ウィジェット"
   },
-  "FormVariant" : {
-    "title" : "フォームバリエーション"
+  "PageSet" : {
+    "title" : "ページセット"
+  },
+  "Page" : {
+    "title" : "ページ"
   },
   "Layout" : {
     "title" : "レイアウト"

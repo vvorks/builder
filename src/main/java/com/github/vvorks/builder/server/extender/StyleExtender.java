@@ -17,7 +17,7 @@ public class StyleExtender {
 	private StyleMapper styleMapper;
 
 	public String getConstName(StyleContent sty) {
-		return Strings.toUpperSnake(sty.getName());
+		return Strings.toUpperSnake(sty.getStyleName());
 	}
 
 	public StyleContent getParent(StyleContent sty) {

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Apache License v2.0 -->
+<mapper namespace="com.github.vvorks.builder.server.mapper.PageSetMapper">
+
+	<insert id="insert" parameterType="PageSetContent">
+		INSERT INTO T_PAGE_SET (
+			F_PAGE_SET_ID,
+			F_OWNER_PROJECT_ID,
+			F_PAGE_SET_NAME,
+			F_TITLE,
+			F_DESCRIPTION,
+			F__LAST_UPDATED_AT
+		) VALUES (
+			#{ pageSetId },
+			#{ ownerProjectId },
+			#{ pageSetName },
+			#{ title },
+			#{ description },
+			(strftime('%s', 'now') * 1000)
+		)
+	</insert>
+
+	<update id="update" parameterType="PageSetContent">
+		UPDATE T_PAGE_SET SET
+			F_OWNER_PROJECT_ID = #{ ownerProjectId },
+			F_PAGE_SET_NAME = #{ pageSetName },
+			F_TITLE = #{ title },
+			F_DESCRIPTION = #{ description },
+			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
+		WHERE
+			F_PAGE_SET_ID = #{ pageSetId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</update>
+
+	<delete id="delete" parameterType="PageSetContent">
+		DELETE FROM T_PAGE_SET
+		WHERE
+			F_PAGE_SET_ID = #{ pageSetId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</delete>
+
+	<select id="get" resultType="PageSetContent">
+		SELECT
+			T1.F_PAGE_SET_ID AS "pageSetId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_PAGE_SET_NAME AS "pageSetName",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_PAGE_SET_NAME AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_PAGE_SET T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_PAGE_SET_ID = #{ pageSetId }
+	</select>
+
+	<select id="listSummary" resultType="PageSetSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_PAGE_SET T1
+	</select>
+
+	<select id="listContent" resultType="PageSetContent">
+		SELECT
+			T1.F_PAGE_SET_ID AS "pageSetId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_PAGE_SET_NAME AS "pageSetName",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_PAGE_SET_NAME AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_PAGE_SET T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		ORDER BY
+			T1.F_PAGE_SET_NAME
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="getOwner" resultType="ProjectContent">
+		SELECT
+			T1.F_PROJECT_ID AS "projectId",
+			T1.F_PROJECT_NAME AS "projectName",
+			T1.F_GRADLE_NAME AS "gradleName",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F_COPYRIGHTS AS "copyrights",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' AS "_title"
+		FROM
+			T_PROJECT T1
+		WHERE
+			T1.F_PROJECT_ID = #{ ownerProjectId }
+	</select>
+
+	<select id="listOwnerCandidateSummary" resultType="ProjectSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_PROJECT T1
+		<where>
+			<if test="hint != null">
+				T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listOwnerCandidateSubject" resultType="ProjectSubject">
+		SELECT
+			T1.F_PROJECT_ID AS "projectId",
+			T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' AS "_title"
+		FROM
+			T_PROJECT T1
+		<where>
+			<if test="hint != null">
+				T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="listPagesSummary" resultType="PageSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_PAGE T1
+		WHERE
+			F_OWNER_PAGE_SET_ID = #{ content.pageSetId }
+	</select>
+
+	<select id="listPagesContent" resultType="PageContent">
+		SELECT
+			T1.F_PAGE_ID AS "pageId",
+			T1.F_OWNER_PAGE_SET_ID AS "ownerPageSetId",
+			T1.F_CONTEXT_CLASS_ID AS "contextClassId",
+			T1.F_WIDTH AS "width",
+			T1.F_HEIGHT AS "height",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T2.F_PAGE_SET_NAME || '(' || T1.F_WIDTH || 'x' || T1.F_HEIGHT || ')' AS "_title",
+			T2.F_PAGE_SET_NAME AS "owner_title",
+			T3.F_CLASS_NAME || '(' || T3.F_TITLE || ')' AS "context_title"
+		FROM
+			T_PAGE T1
+		LEFT JOIN T_PAGE_SET T2 ON
+			T1.F_OWNER_PAGE_SET_ID = T2.F_PAGE_SET_ID
+		LEFT JOIN T_CLASS T3 ON
+			T1.F_CONTEXT_CLASS_ID = T3.F_CLASS_ID
+		WHERE
+			T1.F_OWNER_PAGE_SET_ID = #{ content.pageSetId }
+		ORDER BY
+			T1.F_WIDTH DESC, T1.F_HEIGHT DESC
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+</mapper>

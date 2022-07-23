@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Apache License v2.0 -->
+<mapper namespace="com.github.vvorks.builder.server.mapper.PageMapper">
+
+	<insert id="insert" parameterType="PageContent">
+		INSERT INTO T_PAGE (
+			F_PAGE_ID,
+			F_OWNER_PAGE_SET_ID,
+			F_CONTEXT_CLASS_ID,
+			F_WIDTH,
+			F_HEIGHT,
+			F__LAST_UPDATED_AT
+		) VALUES (
+			#{ pageId },
+			#{ ownerPageSetId },
+			#{ contextClassId },
+			#{ width },
+			#{ height },
+			(strftime('%s', 'now') * 1000)
+		)
+	</insert>
+
+	<update id="update" parameterType="PageContent">
+		UPDATE T_PAGE SET
+			F_OWNER_PAGE_SET_ID = #{ ownerPageSetId },
+			F_CONTEXT_CLASS_ID = #{ contextClassId },
+			F_WIDTH = #{ width },
+			F_HEIGHT = #{ height },
+			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
+		WHERE
+			F_PAGE_ID = #{ pageId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</update>
+
+	<delete id="delete" parameterType="PageContent">
+		DELETE FROM T_PAGE
+		WHERE
+			F_PAGE_ID = #{ pageId }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</delete>
+
+	<select id="get" resultType="PageContent">
+		SELECT
+			T1.F_PAGE_ID AS "pageId",
+			T1.F_OWNER_PAGE_SET_ID AS "ownerPageSetId",
+			T1.F_CONTEXT_CLASS_ID AS "contextClassId",
+			T1.F_WIDTH AS "width",
+			T1.F_HEIGHT AS "height",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T2.F_PAGE_SET_NAME || '(' || T1.F_WIDTH || 'x' || T1.F_HEIGHT || ')' AS "_title",
+			T2.F_PAGE_SET_NAME AS "owner_title",
+			T3.F_CLASS_NAME || '(' || T3.F_TITLE || ')' AS "context_title"
+		FROM
+			T_PAGE T1
+		LEFT JOIN T_PAGE_SET T2 ON
+			T1.F_OWNER_PAGE_SET_ID = T2.F_PAGE_SET_ID
+		LEFT JOIN T_CLASS T3 ON
+			T1.F_CONTEXT_CLASS_ID = T3.F_CLASS_ID
+		WHERE
+			T1.F_PAGE_ID = #{ pageId }
+	</select>
+
+	<select id="listSummary" resultType="PageSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_PAGE T1
+	</select>
+
+	<select id="listContent" resultType="PageContent">
+		SELECT
+			T1.F_PAGE_ID AS "pageId",
+			T1.F_OWNER_PAGE_SET_ID AS "ownerPageSetId",
+			T1.F_CONTEXT_CLASS_ID AS "contextClassId",
+			T1.F_WIDTH AS "width",
+			T1.F_HEIGHT AS "height",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T2.F_PAGE_SET_NAME || '(' || T1.F_WIDTH || 'x' || T1.F_HEIGHT || ')' AS "_title",
+			T2.F_PAGE_SET_NAME AS "owner_title",
+			T3.F_CLASS_NAME || '(' || T3.F_TITLE || ')' AS "context_title"
+		FROM
+			T_PAGE T1
+		LEFT JOIN T_PAGE_SET T2 ON
+			T1.F_OWNER_PAGE_SET_ID = T2.F_PAGE_SET_ID
+		LEFT JOIN T_CLASS T3 ON
+			T1.F_CONTEXT_CLASS_ID = T3.F_CLASS_ID
+		ORDER BY
+			T1.F_WIDTH DESC, T1.F_HEIGHT DESC
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="getOwner" resultType="PageSetContent">
+		SELECT
+			T1.F_PAGE_SET_ID AS "pageSetId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_PAGE_SET_NAME AS "pageSetName",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_PAGE_SET_NAME AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_PAGE_SET T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_PAGE_SET_ID = #{ ownerPageSetId }
+	</select>
+
+	<select id="listOwnerCandidateSummary" resultType="PageSetSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_PAGE_SET T1
+		<where>
+			<if test="hint != null">
+				T1.F_PAGE_SET_NAME LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listOwnerCandidateSubject" resultType="PageSetSubject">
+		SELECT
+			T1.F_PAGE_SET_ID AS "pageSetId",
+			T1.F_PAGE_SET_NAME AS "_title"
+		FROM
+			T_PAGE_SET T1
+		<where>
+			<if test="hint != null">
+				T1.F_PAGE_SET_NAME LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	
+	<select id="getContext" resultType="ClassContent">
+		SELECT
+			T1.F_CLASS_ID AS "classId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_CLASS_NAME AS "className",
+			T1.F_ORDER_EXPR AS "orderExpr",
+			T1.F_TITLE_EXPR AS "titleExpr",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_CLASS T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_CLASS_ID = #{ contextClassId }
+	</select>
+
+	<select id="listContextCandidateSummary" resultType="ClassSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listContextCandidateSubject" resultType="ClassSubject">
+		SELECT
+			T1.F_CLASS_ID AS "classId",
+			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+	<select id="listLayoutsSummary" resultType="LayoutSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_LAYOUT T1
+		WHERE
+			F_OWNER_PAGE_ID = #{ content.pageId }
+	</select>
+
+	<select id="listLayoutsContent" resultType="LayoutContent">
+		SELECT
+			T1.F_LAYOUT_ID AS "layoutId",
+			T1.F_OWNER_PAGE_ID AS "ownerPageId",
+			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
+			T1.F_LAYOUT_TYPE AS "layoutType",
+			T1.F_TARGET_FIELD_ID AS "targetFieldId",
+			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_WIDGET_WIDGET_ID AS "widgetWidgetId",
+			T1.F_LAYOUT_PARAM AS "layoutParam",
+			T1.F_STYLE_STYLE_ID AS "styleStyleId",
+			T1.F_LEFT AS "left",
+			T1.F_TOP AS "top",
+			T1.F_RIGHT AS "right",
+			T1.F_BOTTOM AS "bottom",
+			T1.F_WIDTH AS "width",
+			T1.F_HEIGHT AS "height",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_LAYOUT_ID AS "_title",
+			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
+			T4.F_LAYOUT_ID AS "parent_title",
+			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
+			T7.F_MESSAGE_NAME AS "const_title",
+			T8.F_WIDGET_NAME AS "widget_title",
+			T9.F_STYLE_NAME AS "style_title",
+			T10.F_VALUE_ID AS "layoutType_title"
+		FROM
+			T_LAYOUT T1
+		LEFT JOIN T_PAGE T2 ON
+			T1.F_OWNER_PAGE_ID = T2.F_PAGE_ID
+		LEFT JOIN T_PAGE_SET T3 ON
+			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
+		LEFT JOIN T_LAYOUT T4 ON
+			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
+		LEFT JOIN T_FIELD T5 ON
+			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
+		LEFT JOIN T_CLASS T6 ON
+			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
+		LEFT JOIN T_MESSAGE T7 ON
+			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
+		LEFT JOIN T_WIDGET T8 ON
+			T1.F_WIDGET_WIDGET_ID = T8.F_WIDGET_ID
+		LEFT JOIN T_STYLE T9 ON
+			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T10 ON
+			T10.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
+		WHERE
+			T1.F_OWNER_PAGE_ID = #{ content.pageId }
+		ORDER BY
+			T1.F_LAYOUT_ID
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+</mapper>

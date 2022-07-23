@@ -55,20 +55,20 @@
     }
   },
   "LayoutType" : {
-    "GROUP" : {
-      "title" : "グループ"
+    "LAYOUT" : {
+      "title" : "レイアウト要素"
     },
-    "SHOW_LABEL" : {
-      "title" : "フィールドラベル表示"
+    "MESSAGE_OUT" : {
+      "title" : "メッセージ表示要素"
     },
-    "SHOW_DATA" : {
-      "title" : "フィールドデータ表示"
+    "LABEL_OUT" : {
+      "title" : "(フィールド）ラベル表示要素"
     },
-    "EDIT_DATA" : {
-      "title" : "フィールドデータ編集"
+    "FIELD_OUT" : {
+      "title" : "フィールド出力要素"
     },
-    "SHOW_MESSAGE" : {
-      "title" : "メッセージ表示"
+    "FIELD_IO" : {
+      "title" : "フィールド入出力要素"
     }
   }
 }
