@@ -130,6 +130,7 @@
 
 	<select id="listSummary" resultType="StyleSummary">
 		SELECT
+			MAX(T1.F_STYLE_ID) AS "maxStyleId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -202,6 +203,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="ProjectSummary">
 		SELECT
+			MAX(T1.F_PROJECT_ID) AS "maxProjectId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -275,6 +277,7 @@
 
 	<select id="listParentCandidateSummary" resultType="StyleSummary">
 		SELECT
+			MAX(T1.F_STYLE_ID) AS "maxStyleId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -308,6 +311,7 @@
 
 	<select id="listChildrenSummary" resultType="StyleSummary">
 		SELECT
+			MAX(T1.F_STYLE_ID) AS "maxStyleId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public class ClassSummary<T> {
 
+	/** クラスIDの最大値 */
+	private int maxClassId;
+
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
@@ -25,6 +28,24 @@ public class ClassSummary<T> {
 
 	/** Contentリスト情報 */
 	private List<T> contents;
+
+	/**
+	 * クラスIDの最大値を取得する
+	 *
+	 * @return クラスIDの最大値
+	 */
+	public int getMaxClassId() {
+		return maxClassId;
+	}
+
+	/**
+	 * クラスIDの最大値を設定する
+	 *
+	 * @param maxClassId クラスIDの最大値
+	 */
+	public void setMaxClassId(int maxClassId) {
+		this.maxClassId = maxClassId;
+	}
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -119,6 +140,7 @@ public class ClassSummary<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
+			maxClassId,
 			max_lastUpdatedAt,
 			count, focus, offset, contents);
 	}
@@ -140,6 +162,7 @@ public class ClassSummary<T> {
 
 	private boolean equals(ClassSummary<T> other) {
 		return
+			this.maxClassId == other.maxClassId &&
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
 			this.focus == other.focus &&
@@ -151,6 +174,7 @@ public class ClassSummary<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("ClassContent [");
+		sb.append("maxClassId=").append(maxClassId).append(", ");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

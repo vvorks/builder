@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public class StyleSummary<T> {
 
+	/** スタイルIDの最大値 */
+	private int maxStyleId;
+
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
@@ -25,6 +28,24 @@ public class StyleSummary<T> {
 
 	/** Contentリスト情報 */
 	private List<T> contents;
+
+	/**
+	 * スタイルIDの最大値を取得する
+	 *
+	 * @return スタイルIDの最大値
+	 */
+	public int getMaxStyleId() {
+		return maxStyleId;
+	}
+
+	/**
+	 * スタイルIDの最大値を設定する
+	 *
+	 * @param maxStyleId スタイルIDの最大値
+	 */
+	public void setMaxStyleId(int maxStyleId) {
+		this.maxStyleId = maxStyleId;
+	}
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -119,6 +140,7 @@ public class StyleSummary<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
+			maxStyleId,
 			max_lastUpdatedAt,
 			count, focus, offset, contents);
 	}
@@ -140,6 +162,7 @@ public class StyleSummary<T> {
 
 	private boolean equals(StyleSummary<T> other) {
 		return
+			this.maxStyleId == other.maxStyleId &&
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
 			this.focus == other.focus &&
@@ -151,6 +174,7 @@ public class StyleSummary<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("StyleContent [");
+		sb.append("maxStyleId=").append(maxStyleId).append(", ");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

@@ -66,6 +66,7 @@
 
 	<select id="listSummary" resultType="PageSummary">
 		SELECT
+			MAX(T1.F_PAGE_ID) AS "maxPageId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -120,6 +121,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="PageSetSummary">
 		SELECT
+			MAX(T1.F_PAGE_SET_ID) AS "maxPageSetId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -174,6 +176,7 @@
 
 	<select id="listContextCandidateSummary" resultType="ClassSummary">
 		SELECT
+			MAX(T1.F_CLASS_ID) AS "maxClassId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -207,6 +210,7 @@
 
 	<select id="listLayoutsSummary" resultType="LayoutSummary">
 		SELECT
+			MAX(T1.F_LAYOUT_ID) AS "maxLayoutId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

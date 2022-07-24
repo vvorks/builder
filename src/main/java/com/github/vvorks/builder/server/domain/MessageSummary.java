@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public class MessageSummary<T> {
 
+	/** メッセージIDの最大値 */
+	private int maxMessageId;
+
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
@@ -25,6 +28,24 @@ public class MessageSummary<T> {
 
 	/** Contentリスト情報 */
 	private List<T> contents;
+
+	/**
+	 * メッセージIDの最大値を取得する
+	 *
+	 * @return メッセージIDの最大値
+	 */
+	public int getMaxMessageId() {
+		return maxMessageId;
+	}
+
+	/**
+	 * メッセージIDの最大値を設定する
+	 *
+	 * @param maxMessageId メッセージIDの最大値
+	 */
+	public void setMaxMessageId(int maxMessageId) {
+		this.maxMessageId = maxMessageId;
+	}
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -119,6 +140,7 @@ public class MessageSummary<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
+			maxMessageId,
 			max_lastUpdatedAt,
 			count, focus, offset, contents);
 	}
@@ -140,6 +162,7 @@ public class MessageSummary<T> {
 
 	private boolean equals(MessageSummary<T> other) {
 		return
+			this.maxMessageId == other.maxMessageId &&
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
 			this.focus == other.focus &&
@@ -151,6 +174,7 @@ public class MessageSummary<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("MessageContent [");
+		sb.append("maxMessageId=").append(maxMessageId).append(", ");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

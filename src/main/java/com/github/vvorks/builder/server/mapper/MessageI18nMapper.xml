@@ -111,6 +111,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="MessageSummary">
 		SELECT
+			MAX(T1.F_MESSAGE_ID) AS "maxMessageId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

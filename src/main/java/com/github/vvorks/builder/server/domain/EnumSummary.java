@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public class EnumSummary<T> {
 
+	/** 列挙IDの最大値 */
+	private int maxEnumId;
+
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
@@ -25,6 +28,24 @@ public class EnumSummary<T> {
 
 	/** Contentリスト情報 */
 	private List<T> contents;
+
+	/**
+	 * 列挙IDの最大値を取得する
+	 *
+	 * @return 列挙IDの最大値
+	 */
+	public int getMaxEnumId() {
+		return maxEnumId;
+	}
+
+	/**
+	 * 列挙IDの最大値を設定する
+	 *
+	 * @param maxEnumId 列挙IDの最大値
+	 */
+	public void setMaxEnumId(int maxEnumId) {
+		this.maxEnumId = maxEnumId;
+	}
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -119,6 +140,7 @@ public class EnumSummary<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
+			maxEnumId,
 			max_lastUpdatedAt,
 			count, focus, offset, contents);
 	}
@@ -140,6 +162,7 @@ public class EnumSummary<T> {
 
 	private boolean equals(EnumSummary<T> other) {
 		return
+			this.maxEnumId == other.maxEnumId &&
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
 			this.focus == other.focus &&
@@ -151,6 +174,7 @@ public class EnumSummary<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("EnumContent [");
+		sb.append("maxEnumId=").append(maxEnumId).append(", ");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

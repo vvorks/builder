@@ -75,6 +75,7 @@
 
 	<select id="listSummary" resultType="ClassSummary">
 		SELECT
+			MAX(T1.F_CLASS_ID) AS "maxClassId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -111,6 +112,7 @@
 
 	<select id="listSummaryIfNameIs" resultType="ClassSummary">
 		SELECT
+			MAX(T1.F_CLASS_ID) AS "maxClassId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -172,6 +174,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="ProjectSummary">
 		SELECT
+			MAX(T1.F_PROJECT_ID) AS "maxProjectId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -205,6 +208,7 @@
 
 	<select id="listFieldsSummary" resultType="FieldSummary">
 		SELECT
+			MAX(T1.F_FIELD_ID) AS "maxFieldId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -272,6 +276,7 @@
 
 	<select id="listFieldsSummaryIfNameIs" resultType="FieldSummary">
 		SELECT
+			MAX(T1.F_FIELD_ID) AS "maxFieldId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -345,6 +350,7 @@
 	
 	<select id="listQueriesSummary" resultType="QuerySummary">
 		SELECT
+			MAX(T1.F_QUERY_ID) AS "maxQueryId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

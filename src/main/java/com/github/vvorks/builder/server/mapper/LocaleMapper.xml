@@ -108,6 +108,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="ProjectSummary">
 		SELECT
+			MAX(T1.F_PROJECT_ID) AS "maxProjectId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

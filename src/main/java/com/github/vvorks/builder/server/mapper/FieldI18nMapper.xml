@@ -156,6 +156,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="FieldSummary">
 		SELECT
+			MAX(T1.F_FIELD_ID) AS "maxFieldId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

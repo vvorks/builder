@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public class FieldSummary<T> {
 
+	/** フィールドIDの最大値 */
+	private int maxFieldId;
+
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
@@ -25,6 +28,24 @@ public class FieldSummary<T> {
 
 	/** Contentリスト情報 */
 	private List<T> contents;
+
+	/**
+	 * フィールドIDの最大値を取得する
+	 *
+	 * @return フィールドIDの最大値
+	 */
+	public int getMaxFieldId() {
+		return maxFieldId;
+	}
+
+	/**
+	 * フィールドIDの最大値を設定する
+	 *
+	 * @param maxFieldId フィールドIDの最大値
+	 */
+	public void setMaxFieldId(int maxFieldId) {
+		this.maxFieldId = maxFieldId;
+	}
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -119,6 +140,7 @@ public class FieldSummary<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
+			maxFieldId,
 			max_lastUpdatedAt,
 			count, focus, offset, contents);
 	}
@@ -140,6 +162,7 @@ public class FieldSummary<T> {
 
 	private boolean equals(FieldSummary<T> other) {
 		return
+			this.maxFieldId == other.maxFieldId &&
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
 			this.focus == other.focus &&
@@ -151,6 +174,7 @@ public class FieldSummary<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("FieldContent [");
+		sb.append("maxFieldId=").append(maxFieldId).append(", ");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

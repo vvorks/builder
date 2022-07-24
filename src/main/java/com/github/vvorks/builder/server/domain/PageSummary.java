@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public class PageSummary<T> {
 
+	/** ページIdの最大値 */
+	private int maxPageId;
+
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
@@ -25,6 +28,24 @@ public class PageSummary<T> {
 
 	/** Contentリスト情報 */
 	private List<T> contents;
+
+	/**
+	 * ページIdの最大値を取得する
+	 *
+	 * @return ページIdの最大値
+	 */
+	public int getMaxPageId() {
+		return maxPageId;
+	}
+
+	/**
+	 * ページIdの最大値を設定する
+	 *
+	 * @param maxPageId ページIdの最大値
+	 */
+	public void setMaxPageId(int maxPageId) {
+		this.maxPageId = maxPageId;
+	}
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -119,6 +140,7 @@ public class PageSummary<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
+			maxPageId,
 			max_lastUpdatedAt,
 			count, focus, offset, contents);
 	}
@@ -140,6 +162,7 @@ public class PageSummary<T> {
 
 	private boolean equals(PageSummary<T> other) {
 		return
+			this.maxPageId == other.maxPageId &&
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
 			this.focus == other.focus &&
@@ -151,6 +174,7 @@ public class PageSummary<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("PageContent [");
+		sb.append("maxPageId=").append(maxPageId).append(", ");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

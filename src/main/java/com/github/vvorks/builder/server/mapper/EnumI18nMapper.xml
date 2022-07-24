@@ -119,6 +119,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="EnumSummary">
 		SELECT
+			MAX(T1.F_ENUM_ID) AS "maxEnumId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

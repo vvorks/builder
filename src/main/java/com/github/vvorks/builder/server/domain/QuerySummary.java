@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public class QuerySummary<T> {
 
+	/** クエリーIDの最大値 */
+	private int maxQueryId;
+
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
@@ -25,6 +28,24 @@ public class QuerySummary<T> {
 
 	/** Contentリスト情報 */
 	private List<T> contents;
+
+	/**
+	 * クエリーIDの最大値を取得する
+	 *
+	 * @return クエリーIDの最大値
+	 */
+	public int getMaxQueryId() {
+		return maxQueryId;
+	}
+
+	/**
+	 * クエリーIDの最大値を設定する
+	 *
+	 * @param maxQueryId クエリーIDの最大値
+	 */
+	public void setMaxQueryId(int maxQueryId) {
+		this.maxQueryId = maxQueryId;
+	}
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -119,6 +140,7 @@ public class QuerySummary<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
+			maxQueryId,
 			max_lastUpdatedAt,
 			count, focus, offset, contents);
 	}
@@ -140,6 +162,7 @@ public class QuerySummary<T> {
 
 	private boolean equals(QuerySummary<T> other) {
 		return
+			this.maxQueryId == other.maxQueryId &&
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
 			this.focus == other.focus &&
@@ -151,6 +174,7 @@ public class QuerySummary<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("QueryContent [");
+		sb.append("maxQueryId=").append(maxQueryId).append(", ");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

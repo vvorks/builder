@@ -75,6 +75,7 @@
 
 	<select id="listSummary" resultType="QuerySummary">
 		SELECT
+			MAX(T1.F_QUERY_ID) AS "maxQueryId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -132,6 +133,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="ClassSummary">
 		SELECT
+			MAX(T1.F_CLASS_ID) AS "maxClassId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

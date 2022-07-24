@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public class WidgetSummary<T> {
 
+	/** ウィジェットIdの最大値 */
+	private int maxWidgetId;
+
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
@@ -25,6 +28,24 @@ public class WidgetSummary<T> {
 
 	/** Contentリスト情報 */
 	private List<T> contents;
+
+	/**
+	 * ウィジェットIdの最大値を取得する
+	 *
+	 * @return ウィジェットIdの最大値
+	 */
+	public int getMaxWidgetId() {
+		return maxWidgetId;
+	}
+
+	/**
+	 * ウィジェットIdの最大値を設定する
+	 *
+	 * @param maxWidgetId ウィジェットIdの最大値
+	 */
+	public void setMaxWidgetId(int maxWidgetId) {
+		this.maxWidgetId = maxWidgetId;
+	}
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -119,6 +140,7 @@ public class WidgetSummary<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
+			maxWidgetId,
 			max_lastUpdatedAt,
 			count, focus, offset, contents);
 	}
@@ -140,6 +162,7 @@ public class WidgetSummary<T> {
 
 	private boolean equals(WidgetSummary<T> other) {
 		return
+			this.maxWidgetId == other.maxWidgetId &&
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
 			this.focus == other.focus &&
@@ -151,6 +174,7 @@ public class WidgetSummary<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("WidgetContent [");
+		sb.append("maxWidgetId=").append(maxWidgetId).append(", ");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");

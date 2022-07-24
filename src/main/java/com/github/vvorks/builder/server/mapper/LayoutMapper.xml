@@ -126,6 +126,7 @@
 
 	<select id="listSummary" resultType="LayoutSummary">
 		SELECT
+			MAX(T1.F_LAYOUT_ID) AS "maxLayoutId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -213,6 +214,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="PageSummary">
 		SELECT
+			MAX(T1.F_PAGE_ID) AS "maxPageId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -299,6 +301,7 @@
 
 	<select id="listParentCandidateSummary" resultType="LayoutSummary">
 		SELECT
+			MAX(T1.F_LAYOUT_ID) AS "maxLayoutId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -380,6 +383,7 @@
 
 	<select id="listTargetCandidateSummary" resultType="FieldSummary">
 		SELECT
+			MAX(T1.F_FIELD_ID) AS "maxFieldId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -432,6 +436,7 @@
 
 	<select id="listConstCandidateSummary" resultType="MessageSummary">
 		SELECT
+			MAX(T1.F_MESSAGE_ID) AS "maxMessageId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -483,6 +488,7 @@
 
 	<select id="listWidgetCandidateSummary" resultType="WidgetSummary">
 		SELECT
+			MAX(T1.F_WIDGET_ID) AS "maxWidgetId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -556,6 +562,7 @@
 
 	<select id="listStyleCandidateSummary" resultType="StyleSummary">
 		SELECT
+			MAX(T1.F_STYLE_ID) AS "maxStyleId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -589,6 +596,7 @@
 
 	<select id="listChildrenSummary" resultType="LayoutSummary">
 		SELECT
+			MAX(T1.F_LAYOUT_ID) AS "maxLayoutId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

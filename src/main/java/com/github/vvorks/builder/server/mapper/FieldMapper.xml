@@ -138,6 +138,7 @@
 
 	<select id="listSummary" resultType="FieldSummary">
 		SELECT
+			MAX(T1.F_FIELD_ID) AS "maxFieldId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -201,6 +202,7 @@
 
 	<select id="listSummaryIfNameIs" resultType="FieldSummary">
 		SELECT
+			MAX(T1.F_FIELD_ID) AS "maxFieldId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -293,6 +295,7 @@
 
 	<select id="listOwnerCandidateSummary" resultType="ClassSummary">
 		SELECT
+			MAX(T1.F_CLASS_ID) AS "maxClassId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -347,6 +350,7 @@
 
 	<select id="listCrefCandidateSummary" resultType="ClassSummary">
 		SELECT
+			MAX(T1.F_CLASS_ID) AS "maxClassId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -400,6 +404,7 @@
 
 	<select id="listErefCandidateSummary" resultType="EnumSummary">
 		SELECT
+			MAX(T1.F_ENUM_ID) AS "maxEnumId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"
@@ -481,6 +486,7 @@
 
 	<select id="listFrefCandidateSummary" resultType="FieldSummary">
 		SELECT
+			MAX(T1.F_FIELD_ID) AS "maxFieldId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
 			COUNT(*) AS "count",
 			0 AS "focus"

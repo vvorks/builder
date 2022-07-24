@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public class LayoutSummary<T> {
 
+	/** レイアウトIdの最大値 */
+	private int maxLayoutId;
+
 	/** 最終更新時刻の最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
@@ -25,6 +28,24 @@ public class LayoutSummary<T> {
 
 	/** Contentリスト情報 */
 	private List<T> contents;
+
+	/**
+	 * レイアウトIdの最大値を取得する
+	 *
+	 * @return レイアウトIdの最大値
+	 */
+	public int getMaxLayoutId() {
+		return maxLayoutId;
+	}
+
+	/**
+	 * レイアウトIdの最大値を設定する
+	 *
+	 * @param maxLayoutId レイアウトIdの最大値
+	 */
+	public void setMaxLayoutId(int maxLayoutId) {
+		this.maxLayoutId = maxLayoutId;
+	}
 
 	/**
 	 * 最終更新時刻の最大値を取得する
@@ -119,6 +140,7 @@ public class LayoutSummary<T> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
+			maxLayoutId,
 			max_lastUpdatedAt,
 			count, focus, offset, contents);
 	}
@@ -140,6 +162,7 @@ public class LayoutSummary<T> {
 
 	private boolean equals(LayoutSummary<T> other) {
 		return
+			this.maxLayoutId == other.maxLayoutId &&
 			Objects.equals(this.max_lastUpdatedAt, other.max_lastUpdatedAt) &&
 			this.count == other.count &&
 			this.focus == other.focus &&
@@ -151,6 +174,7 @@ public class LayoutSummary<T> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("LayoutContent [");
+		sb.append("maxLayoutId=").append(maxLayoutId).append(", ");
 		sb.append("max_lastUpdatedAt=").append(max_lastUpdatedAt).append(", ");
 		sb.append("count=").append(count).append(", ");
 		sb.append("focus=").append(focus).append(", ");
