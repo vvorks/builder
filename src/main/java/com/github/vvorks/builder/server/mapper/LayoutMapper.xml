@@ -38,7 +38,7 @@
 			#{ bottom },
 			#{ width },
 			#{ height },
-			(strftime('%s', 'now') * 1000)
+			CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
 		)
 	</insert>
 
@@ -58,7 +58,7 @@
 			F_BOTTOM = #{ bottom },
 			F_WIDTH = #{ width },
 			F_HEIGHT = #{ height },
-			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
+			F__LAST_UPDATED_AT = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
 		WHERE
 			F_LAYOUT_ID = #{ layoutId }
 			AND

@@ -48,7 +48,7 @@
 			#{ lineHeight },
 			#{ textAlign },
 			#{ verticalAlign },
-			(strftime('%s', 'now') * 1000)
+			CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
 		)
 	</insert>
 
@@ -73,7 +73,7 @@
 			F_LINE_HEIGHT = #{ lineHeight },
 			F_TEXT_ALIGN = #{ textAlign },
 			F_VERTICAL_ALIGN = #{ verticalAlign },
-			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
+			F__LAST_UPDATED_AT = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
 		WHERE
 			F_STYLE_ID = #{ styleId }
 			AND

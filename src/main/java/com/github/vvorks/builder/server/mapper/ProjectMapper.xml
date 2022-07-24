@@ -22,7 +22,7 @@
 			#{ description },
 			#{ note },
 			#{ copyrights },
-			(strftime('%s', 'now') * 1000)
+			CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
 		)
 	</insert>
 
@@ -34,7 +34,7 @@
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
 			F_COPYRIGHTS = #{ copyrights },
-			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
+			F__LAST_UPDATED_AT = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
 		WHERE
 			F_PROJECT_ID = #{ projectId }
 			AND

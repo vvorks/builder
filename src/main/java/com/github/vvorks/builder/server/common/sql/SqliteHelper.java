@@ -15,7 +15,7 @@ public class SqliteHelper extends SqlHelper {
 
 	@Override
 	public String getNow() {
-		return "(strftime('%s', 'now') * 1000)";
+		return "CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)";
 	}
 
 	public String quote(String str) {

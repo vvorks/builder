@@ -16,7 +16,10 @@ import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.FieldContent;
+import com.github.vvorks.builder.server.domain.PageContent;
 import com.github.vvorks.builder.server.domain.PageSetContent;
+import com.github.vvorks.builder.server.domain.PageSetSummary;
+import com.github.vvorks.builder.server.domain.PageSummary;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.mapper.Mappers;
 
@@ -96,13 +99,13 @@ public class PageBuilder {
 			}
 		}
 		insertShowPageSet(m, prj);
-		insertEditPageSet(m, prj);
 	}
 
 	private void insertShowPageSet(Mappers m, ProjectContent prj) {
 		ClassRelation rel = getRelation(m, prj);
-		insertShowPage(m, prj);
-		visitRelation(rel, r -> insertShowPage(m, r.getContent()));
+		PageSetContent ps = insertPageSet(m, prj, PAGESET_SHOW);
+		insertShowPage(m, ps, prj);
+		visitRelation(rel, r -> insertShowPage(m, ps, r.getContent()));
 	}
 
 	private void visitRelation(ClassRelation rel, Consumer<ClassRelation> method) {
@@ -112,18 +115,42 @@ public class PageBuilder {
 		}
 	}
 
-	private void insertShowPage(Mappers m, ProjectContent prj) {
-		LOGGER.warn("insertShowPage(root)");
-//		//insert pageset
-//		PageSetContent ps = new PageSetContent();
-//		PageSetSummary<PageSetContent> summary = m.getPageSetMapper().listSummary();
-//		ps.setPageSetName(PAGESET_SHOW);
-//		ps.setOwnerProjectId(prj.getProjectId());
-//		m.getPageSetMapper().insert(null);
+	private PageSetContent insertPageSet(Mappers m, ProjectContent prj, String pageSetName) {
+		//insert pageset
+		PageSetContent ps = new PageSetContent();
+		PageSetSummary<PageSetContent> pss = m.getPageSetMapper().listSummary();
+		ps.setPageSetId(pss.getMaxPageSetId() + 1);
+		ps.setPageSetName(pageSetName);
+		ps.setOwnerProjectId(prj.getProjectId());
+		ps.setTitle(pageSetName + " " + prj.getProjectName());
+		m.getPageSetMapper().insert(ps); //TODO 排他制御どうするか
+		return ps;
 	}
 
-	private void insertShowPage(Mappers m, ClassContent cls) {
-		LOGGER.warn("insertShowPage(class) %s", cls.getClassName());
+	private void insertShowPage(Mappers m, PageSetContent ps, ProjectContent prj) {
+		//insert page
+		PageContent pg = new PageContent();
+		PageSummary<PageContent> pgs = m.getPageMapper().listSummary();
+		pg.setPageId(pgs.getMaxPageId() + 1);
+		pg.setOwnerPageSetId(ps.getPageSetId());
+		pg.setContextClassId(null);
+		pg.setWidth(0);
+		pg.setHeight(0);
+		m.getPageMapper().insert(pg); //TODO 排他制御どうするか
+		//TODO insert layouts
+	}
+
+	private void insertShowPage(Mappers m, PageSetContent ps, ClassContent cls) {
+		//insert page
+		PageContent pg = new PageContent();
+		PageSummary<PageContent> pgs = m.getPageMapper().listSummary();
+		pg.setPageId(pgs.getMaxPageId() + 1);
+		pg.setOwnerPageSetId(ps.getPageSetId());
+		pg.setContextClassId(cls.getClassId());
+		pg.setWidth(0);
+		pg.setHeight(0);
+		m.getPageMapper().insert(pg); //TODO 排他制御どうするか
+		//TODO insert layouts
 	}
 
 	private ClassRelation getRelation(Mappers m, ProjectContent prj) {
@@ -148,9 +175,6 @@ public class PageBuilder {
 			}
 		}
 		return root;
-	}
-
-	private void insertEditPageSet(Mappers m, ProjectContent prj) {
 	}
 
 }

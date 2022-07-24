@@ -20,7 +20,7 @@
 			#{ title },
 			#{ description },
 			#{ note },
-			(strftime('%s', 'now') * 1000)
+			CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
 		)
 	</insert>
 
@@ -30,7 +30,7 @@
 			F_TITLE = #{ title },
 			F_DESCRIPTION = #{ description },
 			F_NOTE = #{ note },
-			F__LAST_UPDATED_AT = (strftime('%s', 'now') * 1000)
+			F__LAST_UPDATED_AT = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
 		WHERE
 			F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
 			F_VALUE_ID = #{ valueId }
