@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.vvorks.builder.BuilderApplication;
 import com.github.vvorks.builder.common.logging.Logger;
-import com.github.vvorks.builder.server.component.FormBuilder;
+import com.github.vvorks.builder.server.component.PageBuilder;
 import com.github.vvorks.builder.server.component.SourceWriter;
 import com.github.vvorks.builder.server.component.XlsxLoader;
 import com.github.vvorks.builder.server.domain.ProjectContent;
@@ -31,7 +31,7 @@ public class ApiController {
 	private SourceWriter writer;
 
 	@Autowired
-	private FormBuilder builder;
+	private PageBuilder builder;
 
 	@GetMapping("/load")
 	public String load(@RequestParam(value = "name", defaultValue = "input") String name) {
@@ -49,7 +49,7 @@ public class ApiController {
 	}
 
 	@GetMapping("/write")
-	public String write(@RequestParam(value = "name", defaultValue = "input") String name) {
+	public String write() {
 		try {
 			long t1 = System.currentTimeMillis();
 			writer.process();
@@ -63,13 +63,13 @@ public class ApiController {
 		}
 	}
 
-	@GetMapping("/makeform")
-	public String makeForm(@RequestParam(value = "name", defaultValue = "input") String name) {
+	@GetMapping("/makepage")
+	public String makePage() {
 		try {
 			long t1 = System.currentTimeMillis();
 			builder.process();
 			long t2 = System.currentTimeMillis();
-			return done("makeform", t1, t2);
+			return done("makepage", t1, t2);
 		} catch (Exception err) {
 			LOGGER.error(err, "ERROR");
 			StringWriter w = new StringWriter();
