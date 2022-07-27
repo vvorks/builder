@@ -18,8 +18,6 @@ import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.PageContent;
 import com.github.vvorks.builder.server.domain.PageSetContent;
-import com.github.vvorks.builder.server.domain.PageSetSummary;
-import com.github.vvorks.builder.server.domain.PageSummary;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.mapper.Mappers;
 
@@ -118,38 +116,35 @@ public class PageBuilder {
 	private PageSetContent insertPageSet(Mappers m, ProjectContent prj, String pageSetName) {
 		//insert pageset
 		PageSetContent ps = new PageSetContent();
-		PageSetSummary<PageSetContent> pss = m.getPageSetMapper().listSummary();
-		ps.setPageSetId(pss.getMaxPageSetId() + 1);
+		ps.setPageSetId(m.newPageSetId());
 		ps.setPageSetName(pageSetName);
 		ps.setOwnerProjectId(prj.getProjectId());
 		ps.setTitle(pageSetName + " " + prj.getProjectName());
-		m.getPageSetMapper().insert(ps); //TODO 排他制御どうするか
+		m.getPageSetMapper().insert(ps);
 		return ps;
 	}
 
 	private void insertShowPage(Mappers m, PageSetContent ps, ProjectContent prj) {
 		//insert page
 		PageContent pg = new PageContent();
-		PageSummary<PageContent> pgs = m.getPageMapper().listSummary();
-		pg.setPageId(pgs.getMaxPageId() + 1);
+		pg.setPageId(m.newPageId());
 		pg.setOwnerPageSetId(ps.getPageSetId());
 		pg.setContextClassId(null);
 		pg.setWidth(0);
 		pg.setHeight(0);
-		m.getPageMapper().insert(pg); //TODO 排他制御どうするか
+		m.getPageMapper().insert(pg);
 		//TODO insert layouts
 	}
 
 	private void insertShowPage(Mappers m, PageSetContent ps, ClassContent cls) {
 		//insert page
 		PageContent pg = new PageContent();
-		PageSummary<PageContent> pgs = m.getPageMapper().listSummary();
-		pg.setPageId(pgs.getMaxPageId() + 1);
+		pg.setPageId(m.newPageId());
 		pg.setOwnerPageSetId(ps.getPageSetId());
 		pg.setContextClassId(cls.getClassId());
 		pg.setWidth(0);
 		pg.setHeight(0);
-		m.getPageMapper().insert(pg); //TODO 排他制御どうするか
+		m.getPageMapper().insert(pg);
 		//TODO insert layouts
 	}
 

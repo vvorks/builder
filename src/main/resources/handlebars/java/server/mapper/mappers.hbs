@@ -1,0 +1,91 @@
+//
+// Mapperユーティリティクラス
+//
+{{#java this "server/mapper/Mappers" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.mapper;
+
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import {{global.project.projectName}}.common.logging.Logger;
+
+@Component
+public class Mappers {
+
+	private static final Logger LOGGER = Logger.createLogger(Mappers.class);
+
+	private static Mappers instance;
+
+	public static Mappers get() {
+		LOGGER.info("Mappers instance ", instance != null);
+		return instance;
+	}
+
+	private static class Counter {
+		{{#each surrogateClasses}}
+		private int max{{className}}Id;
+		{{/each}}
+	}
+
+	{{#each classes}}
+
+	/** {{titleOrName}}のMapper */
+	@Autowired
+	private {{className}}Mapper {{lowerName}}Mapper;
+	{{/each}}
+
+	private Map<String, {{upperLastName}}Mapper<?>> mapperMap;
+
+	private Counter counter;
+
+	public Mappers() {
+		instance = this;
+	}
+
+	@PostConstruct
+	private void initCounter() {
+		Counter c = new Counter();
+		{{#each surrogateClasses}}
+		c.max{{className}}Id = {{lowerName}}Mapper.listSummary().getMax{{surrogateField.upperName}}();
+		{{/each}}
+		counter = c;
+	}
+
+	{{#each classes}}
+
+	/** {{titleOrName}}のMapperを取得する */
+	public {{className}}Mapper get{{className}}Mapper() {
+		return {{lowerName}}Mapper;
+	}
+	{{/each}}
+
+	{{#each surrogateClasses}}
+
+	/** {{titleOrName}}のIdを新規発番する */
+	public synchronized int new{{className}}Id() {
+		return ++counter.max{{className}}Id;
+	}
+	{{/each}}
+
+	public {{upperLastName}}Mapper<?> getMapperOf(String name) {
+		if (mapperMap == null) {
+			mapperMap = new HashMap<>();
+			{{#each classes}}
+			mapperMap.put("{{className}}", {{lowerName}}Mapper);
+			{{/each}}
+		}
+		return mapperMap.get(name);
+	}
+
+}
+{{/java}}

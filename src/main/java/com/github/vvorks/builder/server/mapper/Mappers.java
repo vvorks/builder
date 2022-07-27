@@ -5,6 +5,7 @@ package com.github.vvorks.builder.server.mapper;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,20 @@ public class Mappers {
 	public static Mappers get() {
 		LOGGER.info("Mappers instance ", instance != null);
 		return instance;
+	}
+
+	private static class Counter {
+		private int maxProjectId;
+		private int maxClassId;
+		private int maxFieldId;
+		private int maxQueryId;
+		private int maxEnumId;
+		private int maxMessageId;
+		private int maxStyleId;
+		private int maxWidgetId;
+		private int maxPageSetId;
+		private int maxPageId;
+		private int maxLayoutId;
 	}
 
 	/** プロジェクトのMapper */
@@ -100,8 +115,27 @@ public class Mappers {
 
 	private Map<String, BuilderMapper<?>> mapperMap;
 
+	private Counter counter;
+
 	public Mappers() {
 		instance = this;
+	}
+
+	@PostConstruct
+	private void initCounter() {
+		Counter c = new Counter();
+		c.maxProjectId = projectMapper.listSummary().getMaxProjectId();
+		c.maxClassId = classMapper.listSummary().getMaxClassId();
+		c.maxFieldId = fieldMapper.listSummary().getMaxFieldId();
+		c.maxQueryId = queryMapper.listSummary().getMaxQueryId();
+		c.maxEnumId = enumMapper.listSummary().getMaxEnumId();
+		c.maxMessageId = messageMapper.listSummary().getMaxMessageId();
+		c.maxStyleId = styleMapper.listSummary().getMaxStyleId();
+		c.maxWidgetId = widgetMapper.listSummary().getMaxWidgetId();
+		c.maxPageSetId = pageSetMapper.listSummary().getMaxPageSetId();
+		c.maxPageId = pageMapper.listSummary().getMaxPageId();
+		c.maxLayoutId = layoutMapper.listSummary().getMaxLayoutId();
+		counter = c;
 	}
 
 	/** プロジェクトのMapperを取得する */
@@ -197,6 +231,61 @@ public class Mappers {
 	/** ロケールのMapperを取得する */
 	public LocaleMapper getLocaleMapper() {
 		return localeMapper;
+	}
+
+	/** プロジェクトのIdを新規発番する */
+	public synchronized int newProjectId() {
+		return ++counter.maxProjectId;
+	}
+
+	/** クラスのIdを新規発番する */
+	public synchronized int newClassId() {
+		return ++counter.maxClassId;
+	}
+
+	/** フィールドのIdを新規発番する */
+	public synchronized int newFieldId() {
+		return ++counter.maxFieldId;
+	}
+
+	/** クエリーのIdを新規発番する */
+	public synchronized int newQueryId() {
+		return ++counter.maxQueryId;
+	}
+
+	/** 列挙のIdを新規発番する */
+	public synchronized int newEnumId() {
+		return ++counter.maxEnumId;
+	}
+
+	/** メッセージのIdを新規発番する */
+	public synchronized int newMessageId() {
+		return ++counter.maxMessageId;
+	}
+
+	/** スタイルのIdを新規発番する */
+	public synchronized int newStyleId() {
+		return ++counter.maxStyleId;
+	}
+
+	/** ウィジェットのIdを新規発番する */
+	public synchronized int newWidgetId() {
+		return ++counter.maxWidgetId;
+	}
+
+	/** ページセットのIdを新規発番する */
+	public synchronized int newPageSetId() {
+		return ++counter.maxPageSetId;
+	}
+
+	/** ページのIdを新規発番する */
+	public synchronized int newPageId() {
+		return ++counter.maxPageId;
+	}
+
+	/** レイアウトのIdを新規発番する */
+	public synchronized int newLayoutId() {
+		return ++counter.maxLayoutId;
 	}
 
 	public BuilderMapper<?> getMapperOf(String name) {

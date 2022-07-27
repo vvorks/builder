@@ -198,6 +198,22 @@ public class ClassExtender {
 		return result;
 	}
 
+	public boolean isSurrogateClass(ClassContent cls) {
+		List<FieldContent> keys = getKeys(cls);
+		if (keys.size() != 1) {
+			return false;
+		}
+		FieldContent fld = keys.get(0);
+		return fld.getType() == DataType.KEY && fld.isNeedsMax();
+	}
+
+	public FieldContent getSurrogateField(ClassContent cls) {
+		if (!isSurrogateClass(cls)) {
+			return null;
+		}
+		return getKeys(cls).get(0);
+	}
+
 	/**
 	 * 指定クラスのタイトル一覧を取得する
 	 *
@@ -515,54 +531,63 @@ public class ClassExtender {
 	private void visitExpr(Expression expr,
 			FieldContent ctxRef, ExprInfo info, Map<List<FieldContent>, Integer> joinMap) {
 		if (expr instanceof Operation) {
-			Operation op = (Operation) expr;
-			//フィールド参照Operation以外は無視
-			if (op.getCode() != Operation.Code.GET) {
-				return;
-			}
-			List<Expression> operands = op.getOperands();
-			for (Expression c : operands) {
-				if (!(c instanceof FieldRef)) {
-					return;
-				}
-			}
-			//演算結果タイプがSCALER型でない場合は無視
-			int n = operands.size();
-			FieldRef last = (FieldRef) operands.get(n - 1);
-			if (!SCALER_TYPES.contains(last.getType())) {
-				return;
-			}
-			//join番号の参照（又は存在しない場合新たに定義）
-			List<FieldContent> flds = new ArrayList<>();
-			if (ctxRef != null) {
-				flds.add(ctxRef);
-			}
-			Integer no = 1;
-			for (int i = 0; i < n; i++) {
-				FieldContent fld = ((FieldRef)operands.get(i)).getContent();
-				flds.add(fld);
-				int m = flds.size();
-				if (m > 1) {
-					List<FieldContent> subList = new ArrayList<>(flds.subList(0, m - 1));
-					int size = joinMap.size();
-					no = joinMap.computeIfAbsent(subList, s -> size + 2);
-				}
-			}
-			//opにjoin番号を設定
-			op.setJoinNo(no);
+			visitOperation(expr, ctxRef, joinMap);
 		} else if (expr instanceof Argument) {
-			//引数を疑似フィールドとして格納
-			Argument arg = (Argument) expr;
-			FieldContent fld = new FieldContent();
-			fld.setFieldName(arg.getName());
-			fld.setType(arg.getType());
-			fld.setWidth(arg.getWidth());
-			fld.setScale(arg.getScale());
-			if (fld.getType() == DataType.ENUM) {
-				fld.setErefEnumId(arg.getErefId());
-			}
-			info.getArguments().add(fld);
+			visitArgument(expr, info);
 		}
+	}
+
+	private void visitOperation(Expression expr,
+			FieldContent ctxRef, Map<List<FieldContent>, Integer> joinMap) {
+		Operation op = (Operation) expr;
+		//フィールド参照Operation以外は無視
+		if (op.getCode() != Operation.Code.GET) {
+			return;
+		}
+		List<Expression> operands = op.getOperands();
+		for (Expression c : operands) {
+			if (!(c instanceof FieldRef)) {
+				return;
+			}
+		}
+		//演算結果タイプがSCALER型でない場合は無視
+		int n = operands.size();
+		FieldRef last = (FieldRef) operands.get(n - 1);
+		if (!SCALER_TYPES.contains(last.getType())) {
+			return;
+		}
+		//join番号の参照（又は存在しない場合新たに定義）
+		List<FieldContent> flds = new ArrayList<>();
+		if (ctxRef != null) {
+			flds.add(ctxRef);
+		}
+		Integer no = 1;
+		for (int i = 0; i < n; i++) {
+			FieldContent fld = ((FieldRef)operands.get(i)).getContent();
+			flds.add(fld);
+			int m = flds.size();
+			if (m > 1) {
+				List<FieldContent> subList = new ArrayList<>(flds.subList(0, m - 1));
+				int size = joinMap.size();
+				no = joinMap.computeIfAbsent(subList, s -> size + 2);
+			}
+		}
+		//opにjoin番号を設定
+		op.setJoinNo(no);
+	}
+
+	private void visitArgument(Expression expr, ExprInfo info) {
+		//引数を疑似フィールドとして格納
+		Argument arg = (Argument) expr;
+		FieldContent fld = new FieldContent();
+		fld.setFieldName(arg.getName());
+		fld.setType(arg.getType());
+		fld.setWidth(arg.getWidth());
+		fld.setScale(arg.getScale());
+		if (fld.getType() == DataType.ENUM) {
+			fld.setErefEnumId(arg.getErefId());
+		}
+		info.getArguments().add(fld);
 	}
 
 	public List<JoinInfo> getJoins(ClassContent cls) {

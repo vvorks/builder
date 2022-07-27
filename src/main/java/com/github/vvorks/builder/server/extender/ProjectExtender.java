@@ -36,11 +36,12 @@ import com.github.vvorks.builder.server.mapper.EnumValueMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
 import com.github.vvorks.builder.server.mapper.MessageMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.google.gwt.thirdparty.guava.common.collect.Iterables;
 
 @Component
 public class ProjectExtender {
 
-	private static final Logger LOGGER = Logger.createLogger(ClassExtender.class);
+	private static final Logger LOGGER = Logger.createLogger(ProjectExtender.class);
 
 	private static final String JSONKEY_FORMAT = "format";
 
@@ -57,6 +58,9 @@ public class ProjectExtender {
 
     @Autowired
     private ClassMapper classMapper;
+
+    @Autowired
+    private ClassExtender classExtender;
 
     @Autowired
     private FieldMapper fieldMapper;
@@ -106,6 +110,11 @@ public class ProjectExtender {
 		List<ClassContent> list = projectMapper.listClassesContent(prj, 0, 0);
 		Collections.sort(list, (a, b) -> a.getClassName().compareTo(b.getClassName()));
 		return list;
+	}
+
+	public Iterable<ClassContent> getSurrogateClasses(ProjectContent prj) {
+		List<ClassContent> list = projectMapper.listClassesContent(prj, 0, 0);
+		return Iterables.filter(list, c -> classExtender.isSurrogateClass(c));
 	}
 
 	public List<EnumContent> getEnums(ProjectContent prj) {
