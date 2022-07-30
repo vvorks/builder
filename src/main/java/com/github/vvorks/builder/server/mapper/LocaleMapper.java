@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface LocaleMapper extends BuilderMapper<LocaleContent> {
+public interface LocaleMapper extends MapperInterface<LocaleContent> {
 
 	@Override
 	public default List<LocaleContent> listAll() {

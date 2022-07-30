@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface ClassI18nMapper extends BuilderMapper<ClassI18nContent> {
+public interface ClassI18nMapper extends MapperInterface<ClassI18nContent> {
 
 	@Override
 	public default List<ClassI18nContent> listAll() {

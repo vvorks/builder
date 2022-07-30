@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface EnumMapper extends BuilderMapper<EnumContent> {
+public interface EnumMapper extends MapperInterface<EnumContent> {
 
 	@Override
 	public default List<EnumContent> listAll() {

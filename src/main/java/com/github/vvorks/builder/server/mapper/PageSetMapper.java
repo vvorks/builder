@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface PageSetMapper extends BuilderMapper<PageSetContent> {
+public interface PageSetMapper extends MapperInterface<PageSetContent> {
 
 	@Override
 	public default List<PageSetContent> listAll() {

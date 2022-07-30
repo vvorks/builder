@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface StyleMapper extends BuilderMapper<StyleContent> {
+public interface StyleMapper extends MapperInterface<StyleContent> {
 
 	@Override
 	public default List<StyleContent> listAll() {

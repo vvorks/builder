@@ -36,17 +36,15 @@ import com.github.vvorks.builder.server.grammar.ExprNode;
 import com.github.vvorks.builder.server.grammar.ExprParser;
 import com.github.vvorks.builder.server.grammar.ExpressionBuilder;
 import com.github.vvorks.builder.server.grammar.ParseException;
-import com.github.vvorks.builder.server.mapper.BuilderMapper;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
+import com.github.vvorks.builder.server.mapper.MapperInterface;
 import com.github.vvorks.builder.server.mapper.Mappers;
 
 @Component
 public class ClassExtender {
 
 	private static final Logger LOGGER = Logger.createLogger(ClassExtender.class);
-
-	public static final String LAST_UPDATED_AT = "_lastUpdatedAt";
 
 	private static class ExprEntry {
 		private final Map<List<FieldContent>, Integer> joinMap;
@@ -144,6 +142,9 @@ public class ClassExtender {
 	private Mappers mappers;
 
 	@Autowired
+	private ProjectExtender projectExtender;
+
+	@Autowired
 	private ClassMapper classMapper;
 
 	@Autowired
@@ -160,6 +161,9 @@ public class ClassExtender {
 
 	@Autowired
 	private ExpressionBuilder builder;
+
+    @Autowired
+    private AdditionalInformation adder;
 
 	private SqlWriter sqlWriter = SqlWriter.get();
 
@@ -256,7 +260,7 @@ public class ClassExtender {
 	 */
 	public TitleInfo get_refTitleField(ClassContent cls, FieldContent fld) {
 		String name = fld.getFieldName() + "_title";
-		String title = fieldExtender.getTitleOrName(fld) + "のタイトル";
+		String title = fieldExtender.getTitleOrName(fld) + "のタイトル"; //TODO I18N
 		ClassContent ref = getReferClass(fld);
 		String refExpr = ref.getTitleExpr();
 		ExprInfo info;
@@ -331,14 +335,7 @@ public class ClassExtender {
 
 	public List<FieldContent> getFields(ClassContent cls) {
 		List<FieldContent> fields = classMapper.listFieldsContent(cls, 0, 0);
-		//追加フィールド挿入
-		FieldContent lastUpdated = new FieldContent();
-		lastUpdated.setFieldName(LAST_UPDATED_AT);
-		lastUpdated.setTitle("最終更新時刻");
-		lastUpdated.setType(DataType.DATE);
-		lastUpdated.setPk(false);
-		lastUpdated.setNeedsMax(true);
-		fields.add(lastUpdated);
+		fields.addAll(adder.getAdditionalFields(cls));
 		return fields;
 	}
 
@@ -359,7 +356,19 @@ public class ClassExtender {
 
 	public List<String[]> getValues(ClassContent cls) {
 		String name = cls.getClassName();
-		BuilderMapper<?> mapper = mappers.getMapperOf(name);
+		ProjectContent prj = classMapper.getOwner(cls);
+		String prjName = projectExtender.getUpperLastName(prj);
+		if (name.equals(prjName)) {
+			return adder.getAdditionalValues(cls);
+		} else {
+			return getClassValues(cls);
+		}
+	}
+
+
+	private List<String[]> getClassValues(ClassContent cls) {
+		String name = cls.getClassName();
+		MapperInterface<?> mapper = mappers.getMapperOf(name);
 		if (mapper == null) {
 			return Collections.emptyList();
 		}
@@ -374,7 +383,7 @@ public class ClassExtender {
 		for (Object rec : list) {
 			String[] flds = new String[n];
 			for (int i = 0; i < n; i++) {
-				if (joint.fields[i].getFieldName().equals(LAST_UPDATED_AT)) {
+				if (joint.fields[i].getFieldName().equals(AdditionalInformation.LAST_UPDATED_AT)) {
 					flds[i] = sqlHelper.getNow();
 				} else {
 					flds[i] = getConstant(rec, joint, i);

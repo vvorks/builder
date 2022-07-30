@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Apache License v2.0 -->
+<mapper namespace="com.github.vvorks.builder.server.mapper.BuilderMapper">
+
+	<insert id="insert" parameterType="BuilderContent">
+		INSERT INTO T_BUILDER (
+			F_CLASS_NAME,
+			F_SURROGATE_COUNT,
+			F__LAST_UPDATED_AT
+		) VALUES (
+			#{ className },
+			#{ surrogateCount },
+			CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+		)
+	</insert>
+
+	<update id="update" parameterType="BuilderContent">
+		UPDATE T_BUILDER SET
+			F_SURROGATE_COUNT = #{ surrogateCount },
+			F__LAST_UPDATED_AT = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+		WHERE
+			F_CLASS_NAME = #{ className }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</update>
+
+	<delete id="delete" parameterType="BuilderContent">
+		DELETE FROM T_BUILDER
+		WHERE
+			F_CLASS_NAME = #{ className }
+			AND
+			F__LAST_UPDATED_AT = #{ _lastUpdatedAt }
+	</delete>
+
+	<select id="get" resultType="BuilderContent">
+		SELECT
+			T1.F_CLASS_NAME AS "className",
+			T1.F_SURROGATE_COUNT AS "surrogateCount",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			'' AS "_title"
+		FROM
+			T_BUILDER T1
+		WHERE
+			T1.F_CLASS_NAME = #{ className }
+	</select>
+
+	<select id="listSummary" resultType="BuilderSummary">
+		SELECT
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_BUILDER T1
+	</select>
+
+	<select id="listContent" resultType="BuilderContent">
+		SELECT
+			T1.F_CLASS_NAME AS "className",
+			T1.F_SURROGATE_COUNT AS "surrogateCount",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			'' AS "_title"
+		FROM
+			T_BUILDER T1
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
+</mapper>

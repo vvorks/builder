@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.common.json.Json;
 import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.ServerSettings;
 import com.github.vvorks.builder.server.common.util.Patterns;
 import com.github.vvorks.builder.server.domain.ClassContent;
@@ -40,8 +39,6 @@ import com.google.gwt.thirdparty.guava.common.collect.Iterables;
 
 @Component
 public class ProjectExtender {
-
-	private static final Logger LOGGER = Logger.createLogger(ProjectExtender.class);
 
 	private static final String JSONKEY_FORMAT = "format";
 
@@ -74,6 +71,9 @@ public class ProjectExtender {
     @Autowired
     private MessageMapper messageMapper;
 
+    @Autowired
+    private AdditionalInformation adder;
+
 	public String getTitleOrName(ProjectContent prj) {
 		if (!Strings.isEmpty(prj.getTitle())) {
 			return prj.getTitle();
@@ -102,27 +102,29 @@ public class ProjectExtender {
 	}
 
 	public List<ClassContent> getClasses(ProjectContent prj) {
-		List<ClassContent> result = projectMapper.listClassesContent(prj, 0, 0);
-		return result;
+		List<ClassContent> list = projectMapper.listClassesContent(prj, 0, 0);
+		list.addAll(adder.getAdditionalClasses(prj));
+		return list;
 	}
 
 	public List<ClassContent> getClassesByName(ProjectContent prj) {
-		List<ClassContent> list = projectMapper.listClassesContent(prj, 0, 0);
+		List<ClassContent> list = getClasses(prj);
 		Collections.sort(list, (a, b) -> a.getClassName().compareTo(b.getClassName()));
 		return list;
 	}
 
 	public Iterable<ClassContent> getSurrogateClasses(ProjectContent prj) {
-		List<ClassContent> list = projectMapper.listClassesContent(prj, 0, 0);
+		List<ClassContent> list = getClasses(prj);
 		return Iterables.filter(list, c -> classExtender.isSurrogateClass(c));
 	}
 
 	public List<EnumContent> getEnums(ProjectContent prj) {
-		return projectMapper.listEnumsContent(prj, 0, 0);
+		List<EnumContent> list = projectMapper.listEnumsContent(prj, 0, 0);
+		return list;
 	}
 
 	public List<EnumContent> getEnumsByName(ProjectContent prj) {
-		List<EnumContent> list = projectMapper.listEnumsContent(prj, 0, 0);
+		List<EnumContent> list = getEnums(prj);
 		Collections.sort(list, (a, b) -> a.getEnumName().compareTo(b.getEnumName()));
 		return list;
 	}

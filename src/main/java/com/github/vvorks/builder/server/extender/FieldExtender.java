@@ -225,7 +225,7 @@ public class FieldExtender {
 	}
 
 	public String getTimestamp(FieldContent fld) {
-		if (ClassExtender.LAST_UPDATED_AT.equals(fld.getFieldName())) {
+		if (AdditionalInformation.LAST_UPDATED_AT.equals(fld.getFieldName())) {
 			return sqlHelper.getNow();
 		} else {
 			return null;

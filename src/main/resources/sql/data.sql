@@ -699,4 +699,29 @@ INSERT INTO T_LOCALE (
 	('ja',1,'japanease','',CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
 	('ja_JP',1,'japanease(japan)','',CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))
 ON CONFLICT DO NOTHING;
+INSERT INTO T_BUILDER (
+	F_CLASS_NAME,
+	F_SURROGATE_COUNT,
+	F__LAST_UPDATED_AT
+) VALUES
+	('Project',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('ProjectI18n',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Class',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('ClassI18n',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Field',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('FieldI18n',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Query',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Enum',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('EnumI18n',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('EnumValue',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('EnumValueI18n',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Message',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('MessageI18n',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Style',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Widget',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('PageSet',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Page',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Layout',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	('Locale',0,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))
+ON CONFLICT DO NOTHING;
 PRAGMA foreign_keys = true;

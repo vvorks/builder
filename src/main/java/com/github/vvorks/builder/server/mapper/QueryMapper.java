@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface QueryMapper extends BuilderMapper<QueryContent> {
+public interface QueryMapper extends MapperInterface<QueryContent> {
 
 	@Override
 	public default List<QueryContent> listAll() {

@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface LayoutMapper extends BuilderMapper<LayoutContent> {
+public interface LayoutMapper extends MapperInterface<LayoutContent> {
 
 	@Override
 	public default List<LayoutContent> listAll() {

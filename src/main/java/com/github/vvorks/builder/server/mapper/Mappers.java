@@ -5,14 +5,15 @@ package com.github.vvorks.builder.server.mapper;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.server.domain.BuilderContent;
 
 @Component
-public class Mappers {
+public class Mappers implements BeanPostProcessor {
 
 	private static final Logger LOGGER = Logger.createLogger(Mappers.class);
 
@@ -21,20 +22,6 @@ public class Mappers {
 	public static Mappers get() {
 		LOGGER.info("Mappers instance ", instance != null);
 		return instance;
-	}
-
-	private static class Counter {
-		private int maxProjectId;
-		private int maxClassId;
-		private int maxFieldId;
-		private int maxQueryId;
-		private int maxEnumId;
-		private int maxMessageId;
-		private int maxStyleId;
-		private int maxWidgetId;
-		private int maxPageSetId;
-		private int maxPageId;
-		private int maxLayoutId;
 	}
 
 	/** プロジェクトのMapper */
@@ -113,29 +100,81 @@ public class Mappers {
 	@Autowired
 	private LocaleMapper localeMapper;
 
-	private Map<String, BuilderMapper<?>> mapperMap;
+	/** BuilderのMapper */
+	@Autowired
+	private BuilderMapper builderMapper;
 
-	private Counter counter;
+	private Map<String, MapperInterface<?>> mapperMap;
 
 	public Mappers() {
 		instance = this;
 	}
 
-	@PostConstruct
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		if (beanName.equals("dataSourceScriptDatabaseInitializer")) {
+			initCounter();
+		}
+		return bean;
+	}
+
 	private void initCounter() {
-		Counter c = new Counter();
-		c.maxProjectId = projectMapper.listSummary().getMaxProjectId();
-		c.maxClassId = classMapper.listSummary().getMaxClassId();
-		c.maxFieldId = fieldMapper.listSummary().getMaxFieldId();
-		c.maxQueryId = queryMapper.listSummary().getMaxQueryId();
-		c.maxEnumId = enumMapper.listSummary().getMaxEnumId();
-		c.maxMessageId = messageMapper.listSummary().getMaxMessageId();
-		c.maxStyleId = styleMapper.listSummary().getMaxStyleId();
-		c.maxWidgetId = widgetMapper.listSummary().getMaxWidgetId();
-		c.maxPageSetId = pageSetMapper.listSummary().getMaxPageSetId();
-		c.maxPageId = pageMapper.listSummary().getMaxPageId();
-		c.maxLayoutId = layoutMapper.listSummary().getMaxLayoutId();
-		counter = c;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Project");
+			obj.setSurrogateCount(projectMapper.listSummary().getMaxProjectId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("Class");
+			obj.setSurrogateCount(classMapper.listSummary().getMaxClassId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("Field");
+			obj.setSurrogateCount(fieldMapper.listSummary().getMaxFieldId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("Query");
+			obj.setSurrogateCount(queryMapper.listSummary().getMaxQueryId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("Enum");
+			obj.setSurrogateCount(enumMapper.listSummary().getMaxEnumId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("Message");
+			obj.setSurrogateCount(messageMapper.listSummary().getMaxMessageId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("Style");
+			obj.setSurrogateCount(styleMapper.listSummary().getMaxStyleId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("Widget");
+			obj.setSurrogateCount(widgetMapper.listSummary().getMaxWidgetId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("PageSet");
+			obj.setSurrogateCount(pageSetMapper.listSummary().getMaxPageSetId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("Page");
+			obj.setSurrogateCount(pageMapper.listSummary().getMaxPageId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		do {
+			obj = builderMapper.get("Layout");
+			obj.setSurrogateCount(layoutMapper.listSummary().getMaxLayoutId());
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
 	}
 
 	/** プロジェクトのMapperを取得する */
@@ -233,62 +272,133 @@ public class Mappers {
 		return localeMapper;
 	}
 
+	/** BuilderのMapperを取得する */
+	public BuilderMapper getBuilderMapper() {
+		return builderMapper;
+	}
+
 	/** プロジェクトのIdを新規発番する */
 	public synchronized int newProjectId() {
-		return ++counter.maxProjectId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Project");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** クラスのIdを新規発番する */
 	public synchronized int newClassId() {
-		return ++counter.maxClassId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Class");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** フィールドのIdを新規発番する */
 	public synchronized int newFieldId() {
-		return ++counter.maxFieldId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Field");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** クエリーのIdを新規発番する */
 	public synchronized int newQueryId() {
-		return ++counter.maxQueryId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Query");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** 列挙のIdを新規発番する */
 	public synchronized int newEnumId() {
-		return ++counter.maxEnumId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Enum");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** メッセージのIdを新規発番する */
 	public synchronized int newMessageId() {
-		return ++counter.maxMessageId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Message");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** スタイルのIdを新規発番する */
 	public synchronized int newStyleId() {
-		return ++counter.maxStyleId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Style");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** ウィジェットのIdを新規発番する */
 	public synchronized int newWidgetId() {
-		return ++counter.maxWidgetId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Widget");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** ページセットのIdを新規発番する */
 	public synchronized int newPageSetId() {
-		return ++counter.maxPageSetId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("PageSet");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** ページのIdを新規発番する */
 	public synchronized int newPageId() {
-		return ++counter.maxPageId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Page");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
 	/** レイアウトのIdを新規発番する */
 	public synchronized int newLayoutId() {
-		return ++counter.maxLayoutId;
+		BuilderContent obj;
+		do {
+			obj = builderMapper.get("Layout");
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
 	}
 
-	public BuilderMapper<?> getMapperOf(String name) {
+	public MapperInterface<?> getMapperOf(String name) {
 		if (mapperMap == null) {
 			mapperMap = new HashMap<>();
 			mapperMap.put("Project", projectMapper);
@@ -310,6 +420,7 @@ public class Mappers {
 			mapperMap.put("Page", pageMapper);
 			mapperMap.put("Layout", layoutMapper);
 			mapperMap.put("Locale", localeMapper);
+			mapperMap.put("Builder", builderMapper);
 		}
 		return mapperMap.get(name);
 	}

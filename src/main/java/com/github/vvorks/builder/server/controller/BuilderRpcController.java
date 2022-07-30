@@ -11,6 +11,9 @@ import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
+import com.github.vvorks.builder.server.domain.BuilderContent;
+import com.github.vvorks.builder.server.domain.BuilderSubject;
+import com.github.vvorks.builder.server.domain.BuilderSummary;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.ClassSubject;
 import com.github.vvorks.builder.server.domain.ClassSummary;
@@ -77,6 +80,7 @@ import com.github.vvorks.builder.server.domain.LayoutTypeSummary;
 import com.github.vvorks.builder.server.domain.StyleCondition;
 import com.github.vvorks.builder.server.domain.StyleConditionSubject;
 import com.github.vvorks.builder.server.domain.StyleConditionSummary;
+import com.github.vvorks.builder.server.mapper.BuilderMapper;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.ClassI18nMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
@@ -178,6 +182,10 @@ public class BuilderRpcController {
 	/** ロケールのMapper */
 	@Autowired
 	private LocaleMapper localeMapper;
+
+	/** BuilderのMapper */
+	@Autowired
+	private BuilderMapper builderMapper;
 
 	/**
 	 * プロジェクトを挿入する
@@ -3713,6 +3721,76 @@ public class BuilderRpcController {
 		List<ProjectSubject> contents = localeMapper.listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * Builderを挿入する
+	 *
+	 * @param content 挿入するBuilder
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean insertBuilder(BuilderContent content) {
+		return builderMapper.insert(content);
+	}
+
+	/**
+	 * Builderを更新する
+	 *
+	 * @param content 更新するBuilder
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean updateBuilder(BuilderContent content) {
+		return builderMapper.update(content);
+	}
+
+	/**
+	 * Builderを削除する
+	 *
+	 * @param content 削除するBuilder
+	 * @return 処理成功の場合、真
+	 */
+	@JsonRpcMethod
+	public boolean deleteBuilder(BuilderContent content) {
+		return builderMapper.delete(content);
+	}
+
+	/**
+	 * Builderを取得する
+	 *
+	 * @param className className
+	 * @return 取得したBuilder
+	 */
+	@JsonRpcMethod
+	public BuilderContent getBuilder(
+		@JsonRpcParam("className") String className
+	) {
+		return builderMapper.get(
+				className
+				);
+	}
+
+	/**
+	 * 全てのBuilder情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return Builder情報
+	 */
+	@JsonRpcMethod
+	public BuilderSummary<BuilderContent> listBuilder(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		BuilderSummary<BuilderContent> summary = builderMapper.listSummary();
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<BuilderContent> contents = builderMapper.listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}

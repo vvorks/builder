@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 import com.github.vvorks.builder.server.domain.*;
 
 @Mapper
-public interface WidgetMapper extends BuilderMapper<WidgetContent> {
+public interface WidgetMapper extends MapperInterface<WidgetContent> {
 
 	@Override
 	public default List<WidgetContent> listAll() {

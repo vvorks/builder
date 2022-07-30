@@ -20,7 +20,8 @@ mybatis:
 
 logging:
   level:
-    root: WARN
+    root: INFO
     com.github.vvorks.builder.server.extender: DEBUG
     com.github.vvorks.builder.server.controller: DEBUG
+    
 
