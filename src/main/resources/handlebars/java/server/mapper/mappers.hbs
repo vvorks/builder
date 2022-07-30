@@ -13,6 +13,7 @@ package {{global.project.projectName}}.server.mapper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.IntSupplier;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -52,14 +53,14 @@ public class Mappers implements BeanPostProcessor {
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (beanName.equals("dataSourceScriptDatabaseInitializer")) {
-			initCounter();
+			resetIds();
 		}
 		return bean;
 	}
 
-	private void initCounter() {
+	private void resetIds() {
 		{{#each surrogateClasses}}
-		initializeId(NAME_{{constName}}, {{lowerName}}Mapper.listSummary().getMax{{surrogateField.upperName}}());
+		resetId(NAME_{{constName}}, () -> {{lowerName}}Mapper.listSummary().getMax{{surrogateField.upperName}}());
 		{{/each}}
 	}
 
@@ -79,13 +80,12 @@ public class Mappers implements BeanPostProcessor {
 	}
 	{{/each}}
 
-	private synchronized int initializeId(String name, int value) {
+	private synchronized int resetId(String name, IntSupplier func) {
 		{{upperLastName}}Content obj;
 		do {
 			obj = {{lastName}}Mapper.get(name);
-			obj.setSurrogateCount(value);
-			obj = {{lastName}}Mapper.update(obj) ? obj : null;
-		} while (obj == null);
+			obj.setSurrogateCount(Math.max(obj.getSurrogateCount(), func.getAsInt()));
+		} while(!{{lastName}}Mapper.update(obj));
 		return obj.getSurrogateCount();
 	}
 
@@ -94,8 +94,7 @@ public class Mappers implements BeanPostProcessor {
 		do {
 			obj = {{lastName}}Mapper.get(name);
 			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = {{lastName}}Mapper.update(obj) ? obj : null;
-		} while (obj == null);
+		} while(!{{lastName}}Mapper.update(obj));
 		return obj.getSurrogateCount();
 	}
 

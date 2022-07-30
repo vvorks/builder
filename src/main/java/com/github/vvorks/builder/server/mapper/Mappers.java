@@ -5,6 +5,7 @@ package com.github.vvorks.builder.server.mapper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.IntSupplier;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -134,23 +135,23 @@ public class Mappers implements BeanPostProcessor {
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (beanName.equals("dataSourceScriptDatabaseInitializer")) {
-			initCounter();
+			resetIds();
 		}
 		return bean;
 	}
 
-	private void initCounter() {
-		initializeId(NAME_PROJECT, projectMapper.listSummary().getMaxProjectId());
-		initializeId(NAME_CLASS, classMapper.listSummary().getMaxClassId());
-		initializeId(NAME_FIELD, fieldMapper.listSummary().getMaxFieldId());
-		initializeId(NAME_QUERY, queryMapper.listSummary().getMaxQueryId());
-		initializeId(NAME_ENUM, enumMapper.listSummary().getMaxEnumId());
-		initializeId(NAME_MESSAGE, messageMapper.listSummary().getMaxMessageId());
-		initializeId(NAME_STYLE, styleMapper.listSummary().getMaxStyleId());
-		initializeId(NAME_WIDGET, widgetMapper.listSummary().getMaxWidgetId());
-		initializeId(NAME_PAGE_SET, pageSetMapper.listSummary().getMaxPageSetId());
-		initializeId(NAME_PAGE, pageMapper.listSummary().getMaxPageId());
-		initializeId(NAME_LAYOUT, layoutMapper.listSummary().getMaxLayoutId());
+	private void resetIds() {
+		resetId(NAME_PROJECT, () -> projectMapper.listSummary().getMaxProjectId());
+		resetId(NAME_CLASS, () -> classMapper.listSummary().getMaxClassId());
+		resetId(NAME_FIELD, () -> fieldMapper.listSummary().getMaxFieldId());
+		resetId(NAME_QUERY, () -> queryMapper.listSummary().getMaxQueryId());
+		resetId(NAME_ENUM, () -> enumMapper.listSummary().getMaxEnumId());
+		resetId(NAME_MESSAGE, () -> messageMapper.listSummary().getMaxMessageId());
+		resetId(NAME_STYLE, () -> styleMapper.listSummary().getMaxStyleId());
+		resetId(NAME_WIDGET, () -> widgetMapper.listSummary().getMaxWidgetId());
+		resetId(NAME_PAGE_SET, () -> pageSetMapper.listSummary().getMaxPageSetId());
+		resetId(NAME_PAGE, () -> pageMapper.listSummary().getMaxPageId());
+		resetId(NAME_LAYOUT, () -> layoutMapper.listSummary().getMaxLayoutId());
 	}
 
 	/** プロジェクトのMapperを取得する */
@@ -308,13 +309,12 @@ public class Mappers implements BeanPostProcessor {
 		return generateId(NAME_LAYOUT);
 	}
 
-	private synchronized int initializeId(String name, int value) {
+	private synchronized int resetId(String name, IntSupplier func) {
 		BuilderContent obj;
 		do {
 			obj = builderMapper.get(name);
-			obj.setSurrogateCount(value);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
+			obj.setSurrogateCount(Math.max(obj.getSurrogateCount(), func.getAsInt()));
+		} while(!builderMapper.update(obj));
 		return obj.getSurrogateCount();
 	}
 
@@ -323,8 +323,7 @@ public class Mappers implements BeanPostProcessor {
 		do {
 			obj = builderMapper.get(name);
 			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
+		} while(!builderMapper.update(obj));
 		return obj.getSurrogateCount();
 	}
 
