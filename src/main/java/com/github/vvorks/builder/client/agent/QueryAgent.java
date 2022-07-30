@@ -20,7 +20,7 @@ public class QueryAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final QueryAgent get() {
+	public static QueryAgent get() {
 		return INSTANCE;
 	}
 

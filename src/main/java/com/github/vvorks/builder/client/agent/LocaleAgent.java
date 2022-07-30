@@ -20,7 +20,7 @@ public class LocaleAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final LocaleAgent get() {
+	public static LocaleAgent get() {
 		return INSTANCE;
 	}
 

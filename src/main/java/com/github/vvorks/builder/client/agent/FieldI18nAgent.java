@@ -20,7 +20,7 @@ public class FieldI18nAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final FieldI18nAgent get() {
+	public static FieldI18nAgent get() {
 		return INSTANCE;
 	}
 

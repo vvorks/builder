@@ -20,7 +20,7 @@ public class LayoutAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final LayoutAgent get() {
+	public static LayoutAgent get() {
 		return INSTANCE;
 	}
 

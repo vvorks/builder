@@ -23,7 +23,7 @@ public class JsonRpcs {
 	public static final int SYSTEM_ERROR		= -32400;
 	public static final int TRANSPORT_ERROR		= -32300;
 
-	private static final Map<Class<?>, Integer> ERROR_CODES = new HashMap<Class<?>, Integer>();
+	private static final Map<Class<?>, Integer> ERROR_CODES = new HashMap<>();
 	static {
 		ERROR_CODES.put(IllegalArgumentException.class, INVALID_PARAMS);
 	}

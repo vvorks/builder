@@ -20,7 +20,7 @@ public class BuilderAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final BuilderAgent get() {
+	public static BuilderAgent get() {
 		return INSTANCE;
 	}
 

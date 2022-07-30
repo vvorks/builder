@@ -45,7 +45,7 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 @Component
 public class SourceWriter {
 
-	private static Class<?> THIS = SourceWriter.class;
+	private static final Class<?> THIS = SourceWriter.class;
 
 	private static final Logger LOGGER = Logger.createLogger(SourceWriter.class);
 

@@ -71,11 +71,8 @@ public class UiStyle implements Copyable<UiStyle>, Jsonizable {
 
 	private static final Length DEFAULT_FONT_SIZE = new Length(12, Length.Unit.PT);
 
-	private static final Comparator<UiStyle> BY_CONDITION_ORDER = new Comparator<UiStyle>() {
-		public int compare(UiStyle s, UiStyle t) {
-			return s.getConditionOrder() - t.getConditionOrder();
-		}
-	};
+	private static final Comparator<UiStyle> BY_CONDITION_ORDER =
+			(s, t) -> s.getConditionOrder() - t.getConditionOrder();
 
 	/** スタイル名 */
 	private final String name;
@@ -271,11 +268,11 @@ public class UiStyle implements Copyable<UiStyle>, Jsonizable {
 	}
 
 	public String getTextAlign() {
-		return getProperty(s -> s.textAlign, "justify");
+		return getProperty(s -> s.textAlign, ALIGN_JUSTIFY);
 	}
 
 	public String getVerticalAlign() {
-		return getProperty(s -> s.verticalAlign, "top");
+		return getProperty(s -> s.verticalAlign, ALIGN_TOP);
 	}
 
 	private <R> R getProperty(Function<UiStyle, R> func, R defaultValue) {

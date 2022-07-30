@@ -127,7 +127,6 @@ public class GwtDateFormatter extends DateFormatter {
 		}
 	}
 
-	@SuppressWarnings({"squid:S3776"})
 	private void addDateOption(Pattern p, List<Option<?>> options) {
 		String locale = Metrics.get().getLocale();
 		int positiveCount = p.getPositiveCount();
@@ -187,7 +186,6 @@ public class GwtDateFormatter extends DateFormatter {
 		}
 	}
 
-	@SuppressWarnings({"squid:S3776"})
 	private void addTimeOption(Pattern p, List<Option<?>> options) {
 		int positiveCount = p.getPositiveCount();
 		switch (p.getCommand()) {
@@ -253,7 +251,6 @@ public class GwtDateFormatter extends DateFormatter {
 	}
 
 	@Override
-	@SuppressWarnings({"squid:S3776"})
 	public String format(Object value) {
 		Date date = asDate(value);
 		List<FormatPart> parts = format.formatToParts(date);

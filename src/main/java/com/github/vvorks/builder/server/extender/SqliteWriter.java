@@ -252,10 +252,14 @@ public class SqliteWriter extends SqlWriter {
 
 	@Override
 	public String visit(BooleanLiteral exp, Object option) {
-		if (exp.getValue() == null) {
+		Boolean value = exp.getValue();
+		if (value == null) {
 			return CONST_NULL;
+		} else if (value.equals(Boolean.TRUE)) {
+			return CONST_TRUE;
+		} else {
+			return CONST_FALSE;
 		}
-		return exp.getValue() ? CONST_TRUE : CONST_FALSE;
 	}
 
 	@Override

@@ -13,14 +13,14 @@ import com.github.vvorks.builder.common.json.Json;
 public class StyleConditionAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static StyleConditionAgent INSTANCE = new StyleConditionAgent();
+	public static final StyleConditionAgent INSTANCE = new StyleConditionAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final StyleConditionAgent get() {
+	public static StyleConditionAgent get() {
 		return INSTANCE;
 	}
 

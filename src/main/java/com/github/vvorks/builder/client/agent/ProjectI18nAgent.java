@@ -20,7 +20,7 @@ public class ProjectI18nAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final ProjectI18nAgent get() {
+	public static ProjectI18nAgent get() {
 		return INSTANCE;
 	}
 

@@ -20,7 +20,7 @@ public class PageAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final PageAgent get() {
+	public static PageAgent get() {
 		return INSTANCE;
 	}
 

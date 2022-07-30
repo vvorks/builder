@@ -8,7 +8,7 @@ import com.github.vvorks.builder.server.domain.DataType;
 
 public class Operation extends Expression {
 
-	public static enum Code {
+	public enum Code {
 		OR,
 		AND,
 		XOR,

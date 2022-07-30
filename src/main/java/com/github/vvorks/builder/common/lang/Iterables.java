@@ -1,6 +1,8 @@
 package com.github.vvorks.builder.common.lang;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -139,6 +141,14 @@ public class Iterables {
 			return index < list.size() ? list.get(index++).iterator() : null;
 		}
 
+	}
+
+	public static <T> Iterable<T> from(T[] array) {
+		return array == null ? Collections.emptyList() : Arrays.asList(array);
+	}
+
+	public static <T> Iterable<T> from(Collection<T> collection) {
+		return collection == null ? Collections.emptyList() : collection;
 	}
 
 }

@@ -13,14 +13,14 @@ import com.github.vvorks.builder.common.json.Json;
 public class DataTypeAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static DataTypeAgent INSTANCE = new DataTypeAgent();
+	public static final DataTypeAgent INSTANCE = new DataTypeAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final DataTypeAgent get() {
+	public static DataTypeAgent get() {
 		return INSTANCE;
 	}
 

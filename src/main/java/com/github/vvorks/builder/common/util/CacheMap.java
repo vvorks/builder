@@ -2,6 +2,7 @@ package com.github.vvorks.builder.common.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CacheMap<K, V> extends LinkedHashMap<K, V> {
 
@@ -22,8 +23,26 @@ public class CacheMap<K, V> extends LinkedHashMap<K, V> {
 	}
 
 	@Override
-	public boolean equals(Object other) {
-		return super.equals(other);
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(limit);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!super.equals(obj)) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			@SuppressWarnings("unchecked")
+			CacheMap<K, V> other = (CacheMap<K, V>) obj;
+			return limit == other.limit;
+		}
 	}
 
 }

@@ -20,7 +20,7 @@ public class MessageI18nAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final MessageI18nAgent get() {
+	public static MessageI18nAgent get() {
 		return INSTANCE;
 	}
 

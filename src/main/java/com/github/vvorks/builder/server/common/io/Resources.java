@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import com.github.vvorks.builder.common.lang.Iterables;
 import com.github.vvorks.builder.common.logging.Logger;
 
 public class Resources {
@@ -33,8 +34,7 @@ public class Resources {
 
 	private static void iterateFileSystem(File dir, String prefix,
 			Predicate<String> filter, Set<String> into) throws IOException {
-		File[] files = dir.listFiles();
-		for (File file : files) {
+		for (File file : Iterables.from(dir.listFiles())) {
 			if (file.isDirectory()) {
 				iterateFileSystem(file, prefix, filter, into);
 			} else if (file.isFile()) {

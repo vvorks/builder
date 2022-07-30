@@ -108,7 +108,7 @@ class UiPickerPopup extends UiPage {
 					b.enter(new UiButtonField("_title"));
 						b.style(owner.getStyle());
 						b.locate(0, 0, NA, NA, width, unitHeight);
-						b.action((n) -> pickAndEat(n));
+						b.action(n -> pickAndEat(n));
 					b.leave();
 				b.leave();
 			b.leave();

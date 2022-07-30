@@ -13,14 +13,14 @@ import com.github.vvorks.builder.common.json.Json;
 public class LayoutTypeAgent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static LayoutTypeAgent INSTANCE = new LayoutTypeAgent();
+	public static final LayoutTypeAgent INSTANCE = new LayoutTypeAgent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final LayoutTypeAgent get() {
+	public static LayoutTypeAgent get() {
 		return INSTANCE;
 	}
 

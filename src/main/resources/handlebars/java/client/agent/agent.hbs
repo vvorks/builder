@@ -29,7 +29,7 @@ public class {{className}}Agent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final {{className}}Agent get() {
+	public static {{className}}Agent get() {
 		return INSTANCE;
 	}
 
@@ -79,14 +79,14 @@ import {{global.project.projectName}}.common.json.Json;
 public class {{enumName}}Agent extends DataRecordAgent {
 
 	/** このクラスのシングルトンインスタンス */
-	public static {{enumName}}Agent INSTANCE = new {{enumName}}Agent();
+	public static final {{enumName}}Agent INSTANCE = new {{enumName}}Agent();
 
 	/**
 	 * このクラスのシングルトンインスタンスを取得する
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final {{enumName}}Agent get() {
+	public static {{enumName}}Agent get() {
 		return INSTANCE;
 	}
 

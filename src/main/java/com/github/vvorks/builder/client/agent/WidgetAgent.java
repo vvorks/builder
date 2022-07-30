@@ -20,7 +20,7 @@ public class WidgetAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final WidgetAgent get() {
+	public static WidgetAgent get() {
 		return INSTANCE;
 	}
 

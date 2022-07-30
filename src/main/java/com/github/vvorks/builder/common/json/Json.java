@@ -60,29 +60,29 @@ public abstract class Json {
 	}
 
 	/** null値 */
-	public static final Json NULL = createJson(null);
+	protected static final Json NULL = createJson(null);
 
 	/** true値 */
-	public static final Json TRUE = createJson(true);
+	protected static final Json TRUE = createJson(true);
 
 	/** false値 */
-	public static final Json FALSE = createJson(false);
+	protected static final Json FALSE = createJson(false);
 
-	public static final boolean DEFAULT_BOOLEAN = false;
+	protected static final boolean DEFAULT_BOOLEAN = false;
 
-	public static final int DEFAULT_INT = 0;
+	protected static final int DEFAULT_INT = 0;
 
-	public static final long DEFAULT_LONG = 0L;
+	protected static final long DEFAULT_LONG = 0L;
 
-	public static final float DEFAULT_FLOAT = 0.0f;
+	protected static final float DEFAULT_FLOAT = 0.0f;
 
-	public static final double DEFAULT_DOUBLE = 0.0d;
+	protected static final double DEFAULT_DOUBLE = 0.0d;
 
-	public static final BigDecimal DEFAULT_DECIMAL = BigDecimal.ZERO;
+	protected static final BigDecimal DEFAULT_DECIMAL = BigDecimal.ZERO;
 
-	public static final Date DEFAULT_DATE = new Date(0);
+	protected static final Date DEFAULT_DATE = new Date(0);
 
-	public static final String DEFAULT_STRING = "";
+	protected static final String DEFAULT_STRING = "";
 
 	/** Date型を文字列化する時のパターン文字列(SimpleDateFormat仕様) */
 	public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSSZ";

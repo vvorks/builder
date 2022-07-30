@@ -30,7 +30,7 @@ public class UiSplitGroup extends UiGroup {
 		}
 
 		public boolean isSameType(Param p) {
-			return cursorType.equals(((Param)p).cursorType);
+			return cursorType.equals(p.cursorType);
 		}
 
 		public boolean isForward() {

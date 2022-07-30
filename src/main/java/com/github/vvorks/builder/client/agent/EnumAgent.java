@@ -20,7 +20,7 @@ public class EnumAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final EnumAgent get() {
+	public static EnumAgent get() {
 		return INSTANCE;
 	}
 

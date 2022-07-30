@@ -20,7 +20,7 @@ public class StyleAgent extends DataRecordAgent {
 	 *
 	 * @return このクラスのシングルトンインスタンス
 	 */
-	public static final StyleAgent get() {
+	public static StyleAgent get() {
 		return INSTANCE;
 	}
 

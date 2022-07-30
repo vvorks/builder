@@ -68,9 +68,8 @@ public class ClientSettings {
 			.bindIn(Metrics.class, args -> new Metrics())
 			.bindIn(JsonResourceBundle.class, args -> GWT.create(GwtResourceBundle.class))
 			.bindIn(TestRunner.class, args -> GWT.create(GwtTestRunner.class))
-			.bindIn(CalendarSelecter.class, args -> new CalendarSelecterJa());
+			.bindIn(CalendarSelecter.class, args -> new CalendarSelecterJa())
 			;
-
 	}
 
 }

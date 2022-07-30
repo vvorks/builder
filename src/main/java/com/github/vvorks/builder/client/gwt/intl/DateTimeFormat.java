@@ -28,12 +28,12 @@ public class DateTimeFormat extends JavaScriptObject {
 	}
 
 	public final String format(Date date) {
-		double dt = (double) date.getTime();
+		double dt = date.getTime();
 		return format0(dt);
 	}
 
 	public final String format(long t) {
-		double dt = (double) t;
+		double dt = t;
 		return format0(dt);
 	}
 

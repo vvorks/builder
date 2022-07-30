@@ -48,7 +48,7 @@ public class ProjectExtender {
 
 	private static final String JSONKEY_MESSAGE = "message";
 
-	private static Function<String, Json> MAKE_NODE = k -> Json.createObject();
+	private static final Function<String, Json> MAKE_NODE = k -> Json.createObject();
 
 	@Autowired
     private ProjectMapper projectMapper;

@@ -44,7 +44,7 @@ public class UiDeckGroup extends UiGroup implements Selectable {
 			return false;
 		}
 		UiNode target = getChild(index);
-		getChildren().forEach((node) -> node.setVisible(false));
+		getChildren().forEach(node -> node.setVisible(false));
 		target.setVisible(true);
 		setSelected(index);
 		return true;
