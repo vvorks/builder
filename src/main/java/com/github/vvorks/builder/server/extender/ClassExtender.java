@@ -188,8 +188,12 @@ public class ClassExtender {
 		return Strings.toFirstLower(cls.getClassName());
 	}
 
+	public String getConstName(ClassContent cls) {
+		return Strings.toUpperSnake(cls.getClassName());
+	}
+
 	public String getTableName(ClassContent cls) {
-		return SqlWriter.TABLE_PREFIX + Strings.toUpperSnake(cls.getClassName());
+		return SqlWriter.TABLE_PREFIX + getConstName(cls);
 	}
 
 	public String getSqlOrder(ClassContent cls) {

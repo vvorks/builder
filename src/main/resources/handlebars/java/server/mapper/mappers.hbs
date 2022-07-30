@@ -33,6 +33,10 @@ public class Mappers implements BeanPostProcessor {
 	}
 
 	{{#each classes}}
+	private static final String NAME_{{constName}} = "{{className}}";
+	{{/each}}
+
+	{{#each classes}}
 
 	/** {{titleOrName}}のMapper */
 	@Autowired
@@ -54,13 +58,8 @@ public class Mappers implements BeanPostProcessor {
 	}
 
 	private void initCounter() {
-		{{upperLastName}}Content obj;
 		{{#each surrogateClasses}}
-		do {
-			obj = {{../lastName}}Mapper.get("{{className}}");
-			obj.setSurrogateCount({{lowerName}}Mapper.listSummary().getMax{{surrogateField.upperName}}());
-			obj = {{../lastName}}Mapper.update(obj) ? obj : null;
-		} while (obj == null);
+		initializeId(NAME_{{constName}}, {{lowerName}}Mapper.listSummary().getMax{{surrogateField.upperName}}());
 		{{/each}}
 	}
 
@@ -75,22 +74,36 @@ public class Mappers implements BeanPostProcessor {
 	{{#each surrogateClasses}}
 
 	/** {{titleOrName}}のIdを新規発番する */
-	public synchronized int new{{className}}Id() {
+	public int new{{className}}Id() {
+		return generateId(NAME_{{constName}});
+	}
+	{{/each}}
+
+	private synchronized int initializeId(String name, int value) {
 		{{upperLastName}}Content obj;
 		do {
-			obj = {{../lastName}}Mapper.get("{{className}}");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = {{../lastName}}Mapper.update(obj) ? obj : null;
+			obj = {{lastName}}Mapper.get(name);
+			obj.setSurrogateCount(value);
+			obj = {{lastName}}Mapper.update(obj) ? obj : null;
 		} while (obj == null);
 		return obj.getSurrogateCount();
 	}
-	{{/each}}
+
+	private synchronized int generateId(String name) {
+		{{upperLastName}}Content obj;
+		do {
+			obj = {{lastName}}Mapper.get(name);
+			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = {{lastName}}Mapper.update(obj) ? obj : null;
+		} while (obj == null);
+		return obj.getSurrogateCount();
+	}
 
 	public MapperInterface<?> getMapperOf(String name) {
 		if (mapperMap == null) {
 			mapperMap = new HashMap<>();
 			{{#each classes}}
-			mapperMap.put("{{className}}", {{lowerName}}Mapper);
+			mapperMap.put(NAME_{{constName}}, {{lowerName}}Mapper);
 			{{/each}}
 		}
 		return mapperMap.get(name);

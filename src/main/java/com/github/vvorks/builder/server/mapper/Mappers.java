@@ -24,6 +24,27 @@ public class Mappers implements BeanPostProcessor {
 		return instance;
 	}
 
+	private static final String NAME_PROJECT = "Project";
+	private static final String NAME_PROJECT_I18N = "ProjectI18n";
+	private static final String NAME_CLASS = "Class";
+	private static final String NAME_CLASS_I18N = "ClassI18n";
+	private static final String NAME_FIELD = "Field";
+	private static final String NAME_FIELD_I18N = "FieldI18n";
+	private static final String NAME_QUERY = "Query";
+	private static final String NAME_ENUM = "Enum";
+	private static final String NAME_ENUM_I18N = "EnumI18n";
+	private static final String NAME_ENUM_VALUE = "EnumValue";
+	private static final String NAME_ENUM_VALUE_I18N = "EnumValueI18n";
+	private static final String NAME_MESSAGE = "Message";
+	private static final String NAME_MESSAGE_I18N = "MessageI18n";
+	private static final String NAME_STYLE = "Style";
+	private static final String NAME_WIDGET = "Widget";
+	private static final String NAME_PAGE_SET = "PageSet";
+	private static final String NAME_PAGE = "Page";
+	private static final String NAME_LAYOUT = "Layout";
+	private static final String NAME_LOCALE = "Locale";
+	private static final String NAME_BUILDER = "Builder";
+
 	/** プロジェクトのMapper */
 	@Autowired
 	private ProjectMapper projectMapper;
@@ -119,62 +140,17 @@ public class Mappers implements BeanPostProcessor {
 	}
 
 	private void initCounter() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("Project");
-			obj.setSurrogateCount(projectMapper.listSummary().getMaxProjectId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("Class");
-			obj.setSurrogateCount(classMapper.listSummary().getMaxClassId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("Field");
-			obj.setSurrogateCount(fieldMapper.listSummary().getMaxFieldId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("Query");
-			obj.setSurrogateCount(queryMapper.listSummary().getMaxQueryId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("Enum");
-			obj.setSurrogateCount(enumMapper.listSummary().getMaxEnumId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("Message");
-			obj.setSurrogateCount(messageMapper.listSummary().getMaxMessageId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("Style");
-			obj.setSurrogateCount(styleMapper.listSummary().getMaxStyleId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("Widget");
-			obj.setSurrogateCount(widgetMapper.listSummary().getMaxWidgetId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("PageSet");
-			obj.setSurrogateCount(pageSetMapper.listSummary().getMaxPageSetId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("Page");
-			obj.setSurrogateCount(pageMapper.listSummary().getMaxPageId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		do {
-			obj = builderMapper.get("Layout");
-			obj.setSurrogateCount(layoutMapper.listSummary().getMaxLayoutId());
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
+		initializeId(NAME_PROJECT, projectMapper.listSummary().getMaxProjectId());
+		initializeId(NAME_CLASS, classMapper.listSummary().getMaxClassId());
+		initializeId(NAME_FIELD, fieldMapper.listSummary().getMaxFieldId());
+		initializeId(NAME_QUERY, queryMapper.listSummary().getMaxQueryId());
+		initializeId(NAME_ENUM, enumMapper.listSummary().getMaxEnumId());
+		initializeId(NAME_MESSAGE, messageMapper.listSummary().getMaxMessageId());
+		initializeId(NAME_STYLE, styleMapper.listSummary().getMaxStyleId());
+		initializeId(NAME_WIDGET, widgetMapper.listSummary().getMaxWidgetId());
+		initializeId(NAME_PAGE_SET, pageSetMapper.listSummary().getMaxPageSetId());
+		initializeId(NAME_PAGE, pageMapper.listSummary().getMaxPageId());
+		initializeId(NAME_LAYOUT, layoutMapper.listSummary().getMaxLayoutId());
 	}
 
 	/** プロジェクトのMapperを取得する */
@@ -278,120 +254,74 @@ public class Mappers implements BeanPostProcessor {
 	}
 
 	/** プロジェクトのIdを新規発番する */
-	public synchronized int newProjectId() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("Project");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		return obj.getSurrogateCount();
+	public int newProjectId() {
+		return generateId(NAME_PROJECT);
 	}
 
 	/** クラスのIdを新規発番する */
-	public synchronized int newClassId() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("Class");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		return obj.getSurrogateCount();
+	public int newClassId() {
+		return generateId(NAME_CLASS);
 	}
 
 	/** フィールドのIdを新規発番する */
-	public synchronized int newFieldId() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("Field");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		return obj.getSurrogateCount();
+	public int newFieldId() {
+		return generateId(NAME_FIELD);
 	}
 
 	/** クエリーのIdを新規発番する */
-	public synchronized int newQueryId() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("Query");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		return obj.getSurrogateCount();
+	public int newQueryId() {
+		return generateId(NAME_QUERY);
 	}
 
 	/** 列挙のIdを新規発番する */
-	public synchronized int newEnumId() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("Enum");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		return obj.getSurrogateCount();
+	public int newEnumId() {
+		return generateId(NAME_ENUM);
 	}
 
 	/** メッセージのIdを新規発番する */
-	public synchronized int newMessageId() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("Message");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		return obj.getSurrogateCount();
+	public int newMessageId() {
+		return generateId(NAME_MESSAGE);
 	}
 
 	/** スタイルのIdを新規発番する */
-	public synchronized int newStyleId() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("Style");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		return obj.getSurrogateCount();
+	public int newStyleId() {
+		return generateId(NAME_STYLE);
 	}
 
 	/** ウィジェットのIdを新規発番する */
-	public synchronized int newWidgetId() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("Widget");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		return obj.getSurrogateCount();
+	public int newWidgetId() {
+		return generateId(NAME_WIDGET);
 	}
 
 	/** ページセットのIdを新規発番する */
-	public synchronized int newPageSetId() {
-		BuilderContent obj;
-		do {
-			obj = builderMapper.get("PageSet");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
-			obj = builderMapper.update(obj) ? obj : null;
-		} while (obj == null);
-		return obj.getSurrogateCount();
+	public int newPageSetId() {
+		return generateId(NAME_PAGE_SET);
 	}
 
 	/** ページのIdを新規発番する */
-	public synchronized int newPageId() {
+	public int newPageId() {
+		return generateId(NAME_PAGE);
+	}
+
+	/** レイアウトのIdを新規発番する */
+	public int newLayoutId() {
+		return generateId(NAME_LAYOUT);
+	}
+
+	private synchronized int initializeId(String name, int value) {
 		BuilderContent obj;
 		do {
-			obj = builderMapper.get("Page");
-			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
+			obj = builderMapper.get(name);
+			obj.setSurrogateCount(value);
 			obj = builderMapper.update(obj) ? obj : null;
 		} while (obj == null);
 		return obj.getSurrogateCount();
 	}
 
-	/** レイアウトのIdを新規発番する */
-	public synchronized int newLayoutId() {
+	private synchronized int generateId(String name) {
 		BuilderContent obj;
 		do {
-			obj = builderMapper.get("Layout");
+			obj = builderMapper.get(name);
 			obj.setSurrogateCount(obj.getSurrogateCount() + 1);
 			obj = builderMapper.update(obj) ? obj : null;
 		} while (obj == null);
@@ -401,26 +331,26 @@ public class Mappers implements BeanPostProcessor {
 	public MapperInterface<?> getMapperOf(String name) {
 		if (mapperMap == null) {
 			mapperMap = new HashMap<>();
-			mapperMap.put("Project", projectMapper);
-			mapperMap.put("ProjectI18n", projectI18nMapper);
-			mapperMap.put("Class", classMapper);
-			mapperMap.put("ClassI18n", classI18nMapper);
-			mapperMap.put("Field", fieldMapper);
-			mapperMap.put("FieldI18n", fieldI18nMapper);
-			mapperMap.put("Query", queryMapper);
-			mapperMap.put("Enum", enumMapper);
-			mapperMap.put("EnumI18n", enumI18nMapper);
-			mapperMap.put("EnumValue", enumValueMapper);
-			mapperMap.put("EnumValueI18n", enumValueI18nMapper);
-			mapperMap.put("Message", messageMapper);
-			mapperMap.put("MessageI18n", messageI18nMapper);
-			mapperMap.put("Style", styleMapper);
-			mapperMap.put("Widget", widgetMapper);
-			mapperMap.put("PageSet", pageSetMapper);
-			mapperMap.put("Page", pageMapper);
-			mapperMap.put("Layout", layoutMapper);
-			mapperMap.put("Locale", localeMapper);
-			mapperMap.put("Builder", builderMapper);
+			mapperMap.put(NAME_PROJECT, projectMapper);
+			mapperMap.put(NAME_PROJECT_I18N, projectI18nMapper);
+			mapperMap.put(NAME_CLASS, classMapper);
+			mapperMap.put(NAME_CLASS_I18N, classI18nMapper);
+			mapperMap.put(NAME_FIELD, fieldMapper);
+			mapperMap.put(NAME_FIELD_I18N, fieldI18nMapper);
+			mapperMap.put(NAME_QUERY, queryMapper);
+			mapperMap.put(NAME_ENUM, enumMapper);
+			mapperMap.put(NAME_ENUM_I18N, enumI18nMapper);
+			mapperMap.put(NAME_ENUM_VALUE, enumValueMapper);
+			mapperMap.put(NAME_ENUM_VALUE_I18N, enumValueI18nMapper);
+			mapperMap.put(NAME_MESSAGE, messageMapper);
+			mapperMap.put(NAME_MESSAGE_I18N, messageI18nMapper);
+			mapperMap.put(NAME_STYLE, styleMapper);
+			mapperMap.put(NAME_WIDGET, widgetMapper);
+			mapperMap.put(NAME_PAGE_SET, pageSetMapper);
+			mapperMap.put(NAME_PAGE, pageMapper);
+			mapperMap.put(NAME_LAYOUT, layoutMapper);
+			mapperMap.put(NAME_LOCALE, localeMapper);
+			mapperMap.put(NAME_BUILDER, builderMapper);
 		}
 		return mapperMap.get(name);
 	}
