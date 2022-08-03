@@ -68,9 +68,6 @@ import com.github.vvorks.builder.server.domain.QuerySummary;
 import com.github.vvorks.builder.server.domain.StyleContent;
 import com.github.vvorks.builder.server.domain.StyleSubject;
 import com.github.vvorks.builder.server.domain.StyleSummary;
-import com.github.vvorks.builder.server.domain.WidgetContent;
-import com.github.vvorks.builder.server.domain.WidgetSubject;
-import com.github.vvorks.builder.server.domain.WidgetSummary;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.DataTypeSubject;
 import com.github.vvorks.builder.server.domain.DataTypeSummary;
@@ -99,7 +96,6 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 import com.github.vvorks.builder.server.mapper.ProjectI18nMapper;
 import com.github.vvorks.builder.server.mapper.QueryMapper;
 import com.github.vvorks.builder.server.mapper.StyleMapper;
-import com.github.vvorks.builder.server.mapper.WidgetMapper;
 
 /**
  * ビルダープロジェクトの Json-Rpc (on Websocket) API
@@ -162,10 +158,6 @@ public class BuilderRpcController {
 	/** スタイルのMapper */
 	@Autowired
 	private StyleMapper styleMapper;
-
-	/** ウィジェットのMapper */
-	@Autowired
-	private WidgetMapper widgetMapper;
 
 	/** ページセットのMapper */
 	@Autowired
@@ -448,37 +440,12 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * widgets情報を取得する
+	 * ページセット一覧情報を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return widgets情報
-	 */
-	@JsonRpcMethod
-	public WidgetSummary<WidgetContent> listProjectWidgets(
-		@JsonRpcParam("content") ProjectContent content,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		WidgetSummary<WidgetContent> summary = projectMapper.listWidgetsSummary(content);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<WidgetContent> contents =
-				projectMapper.listWidgetsContent(content, offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * pageSets情報を取得する
-	 *
-	 * @param content プロジェクト
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return pageSets情報
+	 * @return ページセット一覧情報
 	 */
 	@JsonRpcMethod
 	public PageSetSummary<PageSetContent> listProjectPageSets(
@@ -2821,115 +2788,6 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * ウィジェットを挿入する
-	 *
-	 * @param content 挿入するウィジェット
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean insertWidget(WidgetContent content) {
-		return widgetMapper.insert(content);
-	}
-
-	/**
-	 * ウィジェットを更新する
-	 *
-	 * @param content 更新するウィジェット
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean updateWidget(WidgetContent content) {
-		return widgetMapper.update(content);
-	}
-
-	/**
-	 * ウィジェットを削除する
-	 *
-	 * @param content 削除するウィジェット
-	 * @return 処理成功の場合、真
-	 */
-	@JsonRpcMethod
-	public boolean deleteWidget(WidgetContent content) {
-		return widgetMapper.delete(content);
-	}
-
-	/**
-	 * ウィジェットを取得する
-	 *
-	 * @param widgetId ウィジェットId
-	 * @return 取得したウィジェット
-	 */
-	@JsonRpcMethod
-	public WidgetContent getWidget(
-		@JsonRpcParam("widgetId") int widgetId
-	) {
-		return widgetMapper.get(
-				widgetId
-				);
-	}
-
-	/**
-	 * 全てのウィジェット情報を取得する
-	 *
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return ウィジェット情報
-	 */
-	@JsonRpcMethod
-	public WidgetSummary<WidgetContent> listWidget(
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		WidgetSummary<WidgetContent> summary = widgetMapper.listSummary();
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<WidgetContent> contents = widgetMapper.listContent(offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
-	 * 所属プロジェクトを取得する
-	 *
-	 * @param content ウィジェット
-	 * @return 所属プロジェクト
-	 */
-	@JsonRpcMethod
-	public ProjectContent getWidgetOwner(
-		@JsonRpcParam("content") WidgetContent content
-	) {
-		return widgetMapper.getOwner(content);
-	}
-
-	/**
-	 * 所属プロジェクトの候補一覧を取得する
-	 *
-	 * @param content ウィジェット
-	 * @return 所属プロジェクトの候補一覧
-	 */
-	@JsonRpcMethod
-	public ProjectSummary<ProjectSubject> listWidgetOwnerCandidate(
-		@JsonRpcParam("content") WidgetContent content,
-		@JsonRpcParam("hint") String hint,
-		@JsonRpcParam("offset") int offset,
-		@JsonRpcParam("limit") int limit
-	) {
-		ProjectSummary<ProjectSubject> summary = widgetMapper.listOwnerCandidateSummary(
-				content, hint);
-		if (offset < 0) {
-			offset = summary.getFocus();
-		}
-		summary.setOffset(offset);
-		List<ProjectSubject> contents = widgetMapper.listOwnerCandidateSubject(
-				content, hint,
-				offset, limit);
-		summary.setContents(contents);
-		return summary;
-	}
-
-	/**
 	 * ページセットを挿入する
 	 *
 	 * @param content 挿入するページセット
@@ -3463,38 +3321,38 @@ public class BuilderRpcController {
 	}
 
 	/**
-	 * 使用Widgetを取得する
+	 * 関連レイアウトを取得する
 	 *
 	 * @param content レイアウト
-	 * @return 使用Widget
+	 * @return 関連レイアウト
 	 */
 	@JsonRpcMethod
-	public WidgetContent getLayoutWidget(
+	public LayoutContent getLayoutRelated(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getWidget(content);
+		return layoutMapper.getRelated(content);
 	}
 
 	/**
-	 * 使用Widgetの候補一覧を取得する
+	 * 関連レイアウトの候補一覧を取得する
 	 *
 	 * @param content レイアウト
-	 * @return 使用Widgetの候補一覧
+	 * @return 関連レイアウトの候補一覧
 	 */
 	@JsonRpcMethod
-	public WidgetSummary<WidgetSubject> listLayoutWidgetCandidate(
+	public LayoutSummary<LayoutSubject> listLayoutRelatedCandidate(
 		@JsonRpcParam("content") LayoutContent content,
 		@JsonRpcParam("hint") String hint,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		WidgetSummary<WidgetSubject> summary = layoutMapper.listWidgetCandidateSummary(
+		LayoutSummary<LayoutSubject> summary = layoutMapper.listRelatedCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<WidgetSubject> contents = layoutMapper.listWidgetCandidateSubject(
+		List<LayoutSubject> contents = layoutMapper.listRelatedCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);

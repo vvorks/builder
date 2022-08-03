@@ -39,7 +39,6 @@ public class Mappers implements BeanPostProcessor {
 	private static final String NAME_MESSAGE = "Message";
 	private static final String NAME_MESSAGE_I18N = "MessageI18n";
 	private static final String NAME_STYLE = "Style";
-	private static final String NAME_WIDGET = "Widget";
 	private static final String NAME_PAGE_SET = "PageSet";
 	private static final String NAME_PAGE = "Page";
 	private static final String NAME_LAYOUT = "Layout";
@@ -102,10 +101,6 @@ public class Mappers implements BeanPostProcessor {
 	@Autowired
 	private StyleMapper styleMapper;
 
-	/** ウィジェットのMapper */
-	@Autowired
-	private WidgetMapper widgetMapper;
-
 	/** ページセットのMapper */
 	@Autowired
 	private PageSetMapper pageSetMapper;
@@ -148,7 +143,6 @@ public class Mappers implements BeanPostProcessor {
 		resetId(NAME_ENUM, () -> enumMapper.listSummary().getMaxEnumId());
 		resetId(NAME_MESSAGE, () -> messageMapper.listSummary().getMaxMessageId());
 		resetId(NAME_STYLE, () -> styleMapper.listSummary().getMaxStyleId());
-		resetId(NAME_WIDGET, () -> widgetMapper.listSummary().getMaxWidgetId());
 		resetId(NAME_PAGE_SET, () -> pageSetMapper.listSummary().getMaxPageSetId());
 		resetId(NAME_PAGE, () -> pageMapper.listSummary().getMaxPageId());
 		resetId(NAME_LAYOUT, () -> layoutMapper.listSummary().getMaxLayoutId());
@@ -224,11 +218,6 @@ public class Mappers implements BeanPostProcessor {
 		return styleMapper;
 	}
 
-	/** ウィジェットのMapperを取得する */
-	public WidgetMapper getWidgetMapper() {
-		return widgetMapper;
-	}
-
 	/** ページセットのMapperを取得する */
 	public PageSetMapper getPageSetMapper() {
 		return pageSetMapper;
@@ -289,11 +278,6 @@ public class Mappers implements BeanPostProcessor {
 		return generateId(NAME_STYLE);
 	}
 
-	/** ウィジェットのIdを新規発番する */
-	public int newWidgetId() {
-		return generateId(NAME_WIDGET);
-	}
-
 	/** ページセットのIdを新規発番する */
 	public int newPageSetId() {
 		return generateId(NAME_PAGE_SET);
@@ -344,7 +328,6 @@ public class Mappers implements BeanPostProcessor {
 			mapperMap.put(NAME_MESSAGE, messageMapper);
 			mapperMap.put(NAME_MESSAGE_I18N, messageI18nMapper);
 			mapperMap.put(NAME_STYLE, styleMapper);
-			mapperMap.put(NAME_WIDGET, widgetMapper);
 			mapperMap.put(NAME_PAGE_SET, pageSetMapper);
 			mapperMap.put(NAME_PAGE, pageMapper);
 			mapperMap.put(NAME_LAYOUT, layoutMapper);

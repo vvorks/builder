@@ -225,10 +225,12 @@
 			T1.F_LAYOUT_ID AS "layoutId",
 			T1.F_OWNER_PAGE_ID AS "ownerPageId",
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
+			T1.F_LAYOUT_NAME AS "layoutName",
 			T1.F_LAYOUT_TYPE AS "layoutType",
 			T1.F_TARGET_FIELD_ID AS "targetFieldId",
 			T1.F_CONST_MESSAGE_ID AS "constMessageId",
-			T1.F_WIDGET_WIDGET_ID AS "widgetWidgetId",
+			T1.F_RELATED_LAYOUT_ID AS "relatedLayoutId",
+			T1.F_PARAM AS "param",
 			T1.F_LAYOUT_PARAM AS "layoutParam",
 			T1.F_STYLE_STYLE_ID AS "styleStyleId",
 			T1.F_LEFT AS "left",
@@ -243,7 +245,7 @@
 			T4.F_LAYOUT_ID AS "parent_title",
 			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
 			T7.F_MESSAGE_NAME AS "const_title",
-			T8.F_WIDGET_NAME AS "widget_title",
+			T8.F_LAYOUT_ID AS "related_title",
 			T9.F_STYLE_NAME AS "style_title",
 			T10.F_VALUE_ID AS "layoutType_title"
 		FROM
@@ -260,8 +262,8 @@
 			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
 		LEFT JOIN T_MESSAGE T7 ON
 			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_WIDGET T8 ON
-			T1.F_WIDGET_WIDGET_ID = T8.F_WIDGET_ID
+		LEFT JOIN T_LAYOUT T8 ON
+			T1.F_RELATED_LAYOUT_ID = T8.F_LAYOUT_ID
 		LEFT JOIN T_STYLE T9 ON
 			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
 		LEFT JOIN T_ENUM_VALUE T10 ON

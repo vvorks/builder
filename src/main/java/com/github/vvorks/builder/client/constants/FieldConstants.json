@@ -33,8 +33,9 @@
     "styles" : {
       "title" : "スタイル一覧"
     },
-    "widgets" : { },
-    "pageSets" : { },
+    "pageSets" : {
+      "title" : "ページセット一覧"
+    },
     "locales" : {
       "title" : "ロケール一覧"
     },
@@ -397,24 +398,6 @@
       "title" : "縦方向の揃え位置"
     }
   },
-  "Widget" : {
-    "widgetId" : {
-      "title" : "ウィジェットId"
-    },
-    "owner" : {
-      "title" : "所属プロジェクト"
-    },
-    "widgetName" : {
-      "title" : "ウィジェット名",
-      "description" : "完全修飾名またはプロジェクト相対修飾名"
-    },
-    "title" : {
-      "title" : "タイトル"
-    },
-    "description" : {
-      "title" : "説明"
-    }
-  },
   "PageSet" : {
     "pageSetId" : {
       "title" : "ページセットId"
@@ -468,6 +451,9 @@
     "parent" : {
       "title" : "親レイアウト"
     },
+    "layoutName" : {
+      "title" : "レイアウト名"
+    },
     "layoutType" : {
       "title" : "レイアウト種別"
     },
@@ -477,9 +463,12 @@
     "const" : {
       "title" : "対象メッセージ"
     },
-    "widget" : {
-      "title" : "使用Widget",
-      "description" : "未指定の場合はレイアウトタイプおよび指定フィールドの型別の既定Widgetが割り当てられる"
+    "related" : {
+      "title" : "関連レイアウト"
+    },
+    "param" : {
+      "title" : "Widgetパラメータ",
+      "description" : "定義値はWidget毎に異なる"
     },
     "layoutParam" : {
       "title" : "レイアウトパラメータ",

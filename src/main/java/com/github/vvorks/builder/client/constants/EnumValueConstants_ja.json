@@ -55,20 +55,35 @@
     }
   },
   "LayoutType" : {
-    "LAYOUT" : {
-      "title" : "レイアウト要素"
+    "BASIC_LAYOUT" : {
+      "title" : "基本レイアウト"
     },
-    "MESSAGE_OUT" : {
+    "TAB" : {
+      "title" : "タブ"
+    },
+    "V_LIST" : {
+      "title" : "垂直リスト"
+    },
+    "H_LIST" : {
+      "title" : "水平リスト"
+    },
+    "V_SCROLLBAR" : {
+      "title" : "垂直スクロールバー"
+    },
+    "H_SCROLLBAR" : {
+      "title" : "水平スクロールバー"
+    },
+    "MESSAGE" : {
       "title" : "メッセージ表示要素"
     },
-    "LABEL_OUT" : {
-      "title" : "(フィールド）ラベル表示要素"
+    "LABEL" : {
+      "title" : "ラベル表示要素"
     },
-    "FIELD_OUT" : {
+    "FIELD" : {
       "title" : "フィールド出力要素"
     },
-    "FIELD_IO" : {
-      "title" : "フィールド入出力要素"
+    "INPUT" : {
+      "title" : "フィールド入力要素"
     }
   }
 }

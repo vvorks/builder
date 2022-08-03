@@ -216,35 +216,35 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	);
 
 	/**
-	 * 使用Widgetを取得する
+	 * 関連レイアウトを取得する
 	 *
 	 * @param content レイアウト
-	 * @return 使用Widget
+	 * @return 関連レイアウト
 	 */
-	public WidgetContent getWidget(LayoutContent content);
+	public LayoutContent getRelated(LayoutContent content);
 
 	/**
-	 * 使用Widgetの候補サマリーを取得する
+	 * 関連レイアウトの候補サマリーを取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
-	 * @return 使用Widgetの候補サマリー
+	 * @return 関連レイアウトの候補サマリー
 	 */
-	public WidgetSummary<WidgetSubject> listWidgetCandidateSummary(
+	public LayoutSummary<LayoutSubject> listRelatedCandidateSummary(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint
 	);
 
 	/**
-	 * 使用Widgetの候補一覧を取得する
+	 * 関連レイアウトの候補一覧を取得する
 	 *
 	 * @param content レイアウト
 	 * @param hint ヒント情報
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return 使用Widgetの候補一覧
+	 * @return 関連レイアウトの候補一覧
 	 */
-	public List<WidgetSubject> listWidgetCandidateSubject(
+	public List<LayoutSubject> listRelatedCandidateSubject(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint,
 		@Param("offset") int offset,

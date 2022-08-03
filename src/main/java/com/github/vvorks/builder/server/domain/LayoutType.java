@@ -10,39 +10,88 @@ import com.github.vvorks.builder.common.lang.Encodable;
 public enum LayoutType implements Encodable<String> {
 
 	/**
-	 * レイアウト要素
+	 * 基本レイアウト
 	 *
-	 * fieldRef, messageRefは使用しない
+	 * 複数レイアウトを位置指定でまとめる●スクロールの仕組みがある
 	 */
-	LAYOUT(10, "LAYOUT"),
+	BASIC_LAYOUT(10, "BASIC_LAYOUT"),
+
+	/**
+	 * 分割レイアウト
+	 *
+	 * 複数レイアウトを上下左右に配置する●グループ間にサイズ調整用のスプリッタがある
+	 */
+	SPLIT_LAYOUT(11, "SPLIT_LAYOUT"),
+
+	/**
+	 * 重ねレイアウト
+	 *
+	 * 複数レイアウトを重ねて配置するレイアウト
+	 */
+	PILED_LAYOUT(12, "PILED_LAYOUT"),
+
+	/**
+	 * タブ
+	 *
+	 * 重ねレイアウトの表示切替用。文言はmessageRefを使用
+	 */
+	TAB(13, "TAB"),
+
+	/**
+	 * 垂直リスト
+	 *
+	 * SETデータをリスト表示する。内部にSET先の項目を定義する。
+	 */
+	V_LIST(20, "V_LIST"),
+
+	/**
+	 * 水平リスト
+	 *
+	 * SETデータをリスト表示する。内部にSET先の項目を定義する。
+	 */
+	H_LIST(21, "H_LIST"),
+
+	/**
+	 * 垂直スクロールバー
+	 *
+	 * BASIC_LAYOUT又は(V/H)LISTの垂直スクロールバー
+	 */
+	V_SCROLLBAR(22, "V_SCROLLBAR"),
+
+	/**
+	 * 水平スクロールバー
+	 *
+	 * BASIC_LAYOUT又は(V/H)LISTの水平スクロールバー
+	 */
+	H_SCROLLBAR(23, "H_SCROLLBAR"),
 
 	/**
 	 * メッセージ表示要素
 	 *
 	 * messageRefを出力する
 	 */
-	MESSAGE_OUT(20, "MESSAGE_OUT"),
+	MESSAGE(30, "MESSAGE"),
 
 	/**
-	 * (フィールド）ラベル表示要素
+	 * ラベル表示要素
 	 *
-	 * fieldRefのラベルを出力する
+	 * fieldRefのラベル部を出力する
 	 */
-	LABEL_OUT(40, "LABEL_OUT"),
+	LABEL(31, "LABEL"),
 
 	/**
 	 * フィールド出力要素
 	 *
 	 * fieldRefのデータを出力する
 	 */
-	FIELD_OUT(50, "FIELD_OUT"),
+	FIELD(32, "FIELD"),
 
 	/**
-	 * フィールド入出力要素
+	 * フィールド入力要素
 	 *
 	 * fieldRefのデータを入出力する
 	 */
-	FIELD_IO(51, "FIELD_IO")
+	INPUT(33, "INPUT")
 	;
 
 	/**

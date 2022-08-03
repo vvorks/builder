@@ -244,46 +244,22 @@ public interface ProjectMapper extends MapperInterface<ProjectContent> {
 	);
 
 	/**
-	 * widgetsのサマリーを取得する
+	 * ページセット一覧のサマリーを取得する
 	 *
 	 * @param content プロジェクト
-	 * @return widgetsのサマリー
-	 */
-	public WidgetSummary<WidgetContent> listWidgetsSummary(
-		@Param("content") ProjectContent content
-	);
-
-	/**
-	 * widgetsを取得する
-	 *
-	 * @param content プロジェクト
-	 * @param offset 取得開始位置（全件取得の場合は無効）
-	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return widgets
-	 */
-	public List<WidgetContent> listWidgetsContent(
-		@Param("content") ProjectContent content,
-		@Param("offset") int offset,
-		@Param("limit") int limit
-	);
-
-	/**
-	 * pageSetsのサマリーを取得する
-	 *
-	 * @param content プロジェクト
-	 * @return pageSetsのサマリー
+	 * @return ページセット一覧のサマリー
 	 */
 	public PageSetSummary<PageSetContent> listPageSetsSummary(
 		@Param("content") ProjectContent content
 	);
 
 	/**
-	 * pageSetsを取得する
+	 * ページセット一覧を取得する
 	 *
 	 * @param content プロジェクト
 	 * @param offset 取得開始位置（全件取得の場合は無効）
 	 * @param limit 件数（０または負値を指定した場合には全件）
-	 * @return pageSets
+	 * @return ページセット一覧
 	 */
 	public List<PageSetContent> listPageSetsContent(
 		@Param("content") ProjectContent content,
@@ -345,15 +321,6 @@ public interface ProjectMapper extends MapperInterface<ProjectContent> {
 	 * @param content プロジェクト
 	 */
 	public boolean deleteStylesAll(
-		@Param("content") ProjectContent content
-	);
-
-	/**
-	 * プロジェクトが保持するwidgetsを全て削除する
-	 *
-	 * @param content プロジェクト
-	 */
-	public boolean deleteWidgetsAll(
 		@Param("content") ProjectContent content
 	);
 

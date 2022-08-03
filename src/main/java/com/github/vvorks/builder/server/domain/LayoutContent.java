@@ -26,6 +26,11 @@ public class LayoutContent {
 	private Integer parentLayoutId;
 
 	/**
+	 * レイアウト名
+	 */
+	private String layoutName;
+
+	/**
 	 * レイアウト種別
 	 */
 	private LayoutType layoutType;
@@ -41,14 +46,25 @@ public class LayoutContent {
 	private Integer constMessageId;
 
 	/**
-	 * 使用WidgetのウィジェットId
+	 * 関連レイアウトのレイアウトId
 	 */
-	private Integer widgetWidgetId;
+	private Integer relatedLayoutId;
+
+	/**
+	 * Widgetパラメータ
+	 *
+	 * 定義値はWidget毎に異なる
+	 *
+	 * Json形式にする？
+	 */
+	private String param;
 
 	/**
 	 * レイアウトパラメータ
 	 *
 	 * 定義値はWidget毎に異なる
+	 *
+	 * Json形式にする？
 	 */
 	private String layoutParam;
 
@@ -118,9 +134,9 @@ public class LayoutContent {
 	private String const_title;
 
 	/**
-	 * 使用Widgetのタイトル
+	 * 関連レイアウトのタイトル
 	 */
-	private String widget_title;
+	private String related_title;
 
 	/**
 	 * 使用スタイルのタイトル
@@ -204,6 +220,24 @@ public class LayoutContent {
 	}
 
 	/**
+	 * レイアウト名を取得する
+	 *
+	 * @return レイアウト名
+	 */
+	public String getLayoutName() {
+		return this.layoutName;
+	}
+
+	/**
+	 * レイアウト名を設定する
+	 *
+	 * @param layoutName 設定するレイアウト名
+	 */
+	public void setLayoutName(String layoutName) {
+		this.layoutName = layoutName;
+	}
+
+	/**
 	 * レイアウト種別を取得する
 	 *
 	 * @return レイアウト種別
@@ -258,21 +292,39 @@ public class LayoutContent {
 	}
 
 	/**
-	 * 使用WidgetのウィジェットIdを取得する
+	 * 関連レイアウトのレイアウトIdを取得する
 	 *
-	 * @return 使用WidgetのウィジェットId
+	 * @return 関連レイアウトのレイアウトId
 	 */
-	public Integer getWidgetWidgetId() {
-		return this.widgetWidgetId;
+	public Integer getRelatedLayoutId() {
+		return this.relatedLayoutId;
 	}
 
 	/**
-	 * 使用WidgetのウィジェットIdを設定する
+	 * 関連レイアウトのレイアウトIdを設定する
 	 *
-	 * @param widgetWidgetId 設定する使用WidgetのウィジェットId
+	 * @param relatedLayoutId 設定する関連レイアウトのレイアウトId
 	 */
-	public void setWidgetWidgetId(Integer widgetWidgetId) {
-		this.widgetWidgetId = widgetWidgetId;
+	public void setRelatedLayoutId(Integer relatedLayoutId) {
+		this.relatedLayoutId = relatedLayoutId;
+	}
+
+	/**
+	 * Widgetパラメータを取得する
+	 *
+	 * @return Widgetパラメータ
+	 */
+	public String getParam() {
+		return this.param;
+	}
+
+	/**
+	 * Widgetパラメータを設定する
+	 *
+	 * @param param 設定するWidgetパラメータ
+	 */
+	public void setParam(String param) {
+		this.param = param;
 	}
 
 	/**
@@ -528,21 +580,21 @@ public class LayoutContent {
 	}
 
 	/**
-	 * 使用Widgetのタイトルを取得する
+	 * 関連レイアウトのタイトルを取得する
 	 *
-	 * @return 使用Widgetのタイトル
+	 * @return 関連レイアウトのタイトル
 	 */
-	public String getWidget_title() {
-		return this.widget_title;
+	public String getRelated_title() {
+		return this.related_title;
 	}
 
 	/**
-	 * 使用Widgetのタイトルを設定する
+	 * 関連レイアウトのタイトルを設定する
 	 *
-	 * @param widget_title 設定する使用Widgetのタイトル
+	 * @param related_title 設定する関連レイアウトのタイトル
 	 */
-	public void setWidget_title(String widget_title) {
-		this.widget_title = widget_title;
+	public void setRelated_title(String related_title) {
+		this.related_title = related_title;
 	}
 
 	/**
@@ -587,10 +639,12 @@ public class LayoutContent {
 			layoutId,
 			ownerPageId,
 			parentLayoutId,
+			layoutName,
 			layoutType,
 			targetFieldId,
 			constMessageId,
-			widgetWidgetId,
+			relatedLayoutId,
+			param,
 			layoutParam,
 			styleStyleId,
 			left,
@@ -621,10 +675,12 @@ public class LayoutContent {
 			this.layoutId == other.layoutId && 
 			this.ownerPageId == other.ownerPageId && 
 			Objects.equals(this.parentLayoutId, other.parentLayoutId) && 
+			Objects.equals(this.layoutName, other.layoutName) && 
 			Objects.equals(this.layoutType, other.layoutType) && 
 			Objects.equals(this.targetFieldId, other.targetFieldId) && 
 			Objects.equals(this.constMessageId, other.constMessageId) && 
-			Objects.equals(this.widgetWidgetId, other.widgetWidgetId) && 
+			Objects.equals(this.relatedLayoutId, other.relatedLayoutId) && 
+			Objects.equals(this.param, other.param) && 
 			Objects.equals(this.layoutParam, other.layoutParam) && 
 			Objects.equals(this.styleStyleId, other.styleStyleId) && 
 			Objects.equals(this.left, other.left) && 
@@ -644,10 +700,12 @@ public class LayoutContent {
 		sb.append("layoutId=").append(layoutId).append(", ");
 		sb.append("ownerPageId=").append(ownerPageId).append(", ");
 		sb.append("parentLayoutId=").append(parentLayoutId).append(", ");
+		sb.append("layoutName=").append(layoutName).append(", ");
 		sb.append("layoutType=").append(layoutType).append(", ");
 		sb.append("targetFieldId=").append(targetFieldId).append(", ");
 		sb.append("constMessageId=").append(constMessageId).append(", ");
-		sb.append("widgetWidgetId=").append(widgetWidgetId).append(", ");
+		sb.append("relatedLayoutId=").append(relatedLayoutId).append(", ");
+		sb.append("param=").append(param).append(", ");
 		sb.append("layoutParam=").append(layoutParam).append(", ");
 		sb.append("styleStyleId=").append(styleStyleId).append(", ");
 		sb.append("left=").append(left).append(", ");
