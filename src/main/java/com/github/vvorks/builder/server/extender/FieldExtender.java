@@ -14,8 +14,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
@@ -24,6 +22,8 @@ import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 @Component
 public class FieldExtender {

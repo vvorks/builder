@@ -8,11 +8,11 @@ import java.util.Set;
 
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.ui.DataSource;
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Callback;
-import com.github.vvorks.builder.common.logging.Logger;
-import com.github.vvorks.builder.common.util.CacheMap;
-import com.github.vvorks.builder.common.util.IntRange;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Callback;
+import com.github.vvorks.builder.shared.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.util.CacheMap;
+import com.github.vvorks.builder.shared.common.util.IntRange;
 
 public class BuilderRpcDataSource extends DataSource {
 

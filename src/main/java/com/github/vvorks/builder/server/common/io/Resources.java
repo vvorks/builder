@@ -14,8 +14,8 @@ import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import com.github.vvorks.builder.common.lang.Iterables;
-import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 public class Resources {
 

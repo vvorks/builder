@@ -2,9 +2,9 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.util.Objects;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.json.Jsonizable;
-import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.json.Jsonizable;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 public class Point implements Jsonizable {
 

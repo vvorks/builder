@@ -3,7 +3,7 @@ package com.github.vvorks.builder.client.common.ui;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 /**
  * 色情報操作用クラス

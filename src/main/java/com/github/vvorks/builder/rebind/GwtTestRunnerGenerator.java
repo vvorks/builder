@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.jknack.handlebars.Template;
-import com.github.vvorks.builder.common.util.Test;
-import com.github.vvorks.builder.common.util.TestCase;
+import com.github.vvorks.builder.shared.common.util.Test;
+import com.github.vvorks.builder.shared.common.util.TestCase;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;

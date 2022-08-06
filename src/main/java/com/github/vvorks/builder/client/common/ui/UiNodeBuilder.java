@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.Function;
 
-import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
 
 public class UiNodeBuilder {
 

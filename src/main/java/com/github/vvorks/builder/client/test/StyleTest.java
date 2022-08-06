@@ -3,9 +3,9 @@ package com.github.vvorks.builder.client.test;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.client.ui.BuilderStyles;
-import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.util.Test;
-import com.github.vvorks.builder.common.util.TestCase;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.util.Test;
+import com.github.vvorks.builder.shared.common.util.TestCase;
 
 public class StyleTest implements TestCase {
 

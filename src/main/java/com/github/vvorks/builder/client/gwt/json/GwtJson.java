@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.util.SimpleEntry;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.util.SimpleEntry;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;

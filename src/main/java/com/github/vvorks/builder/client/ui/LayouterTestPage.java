@@ -7,7 +7,7 @@ import com.github.vvorks.builder.client.common.ui.UiGroup;
 import com.github.vvorks.builder.client.common.ui.UiLayoutEditor;
 import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
-import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 public class LayouterTestPage extends UiPage {
 

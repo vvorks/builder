@@ -3,9 +3,9 @@ package com.github.vvorks.builder.client.common.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.json.Jsonizable;
-import com.github.vvorks.builder.common.lang.Factory;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.json.Jsonizable;
+import com.github.vvorks.builder.shared.common.lang.Factory;
 
 public class Metrics implements Jsonizable {
 

@@ -5,8 +5,6 @@ import java.util.Deque;
 import java.util.EnumMap;
 import java.util.List;
 
-import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
@@ -28,6 +26,8 @@ import com.github.vvorks.builder.server.expression.NumericLiteral;
 import com.github.vvorks.builder.server.expression.Operation;
 import com.github.vvorks.builder.server.expression.OrderByExpression;
 import com.github.vvorks.builder.server.expression.StringLiteral;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 public class SqliteWriter extends SqlWriter {
 

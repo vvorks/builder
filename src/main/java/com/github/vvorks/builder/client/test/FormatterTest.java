@@ -3,10 +3,10 @@ package com.github.vvorks.builder.client.test;
 import java.util.Date;
 
 import com.github.vvorks.builder.client.common.ui.Metrics;
-import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.text.Formatter;
-import com.github.vvorks.builder.common.util.Test;
-import com.github.vvorks.builder.common.util.TestCase;
+import com.github.vvorks.builder.shared.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.text.Formatter;
+import com.github.vvorks.builder.shared.common.util.Test;
+import com.github.vvorks.builder.shared.common.util.TestCase;
 
 public class FormatterTest implements TestCase {
 

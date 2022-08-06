@@ -17,9 +17,9 @@ import com.github.vvorks.builder.client.gwt.intl.Option;
 import com.github.vvorks.builder.client.gwt.intl.SignDisplay;
 import com.github.vvorks.builder.client.gwt.intl.Style;
 import com.github.vvorks.builder.client.gwt.intl.UseGrouping;
-import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.text.NumberFormatter;
-import com.github.vvorks.builder.common.text.Pattern;
+import com.github.vvorks.builder.shared.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.text.NumberFormatter;
+import com.github.vvorks.builder.shared.common.text.Pattern;
 import com.google.gwt.i18n.client.LocaleInfo;
 
 public class GwtNumberFormatter extends NumberFormatter {

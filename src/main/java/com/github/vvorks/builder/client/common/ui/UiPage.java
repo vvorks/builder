@@ -5,8 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.Iterables;
 
 public abstract class UiPage extends UiNode {
 

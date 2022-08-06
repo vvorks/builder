@@ -19,14 +19,14 @@ import java.util.function.Predicate;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.net.WebSocket;
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Creator;
-import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.lang.Iterables;
-import com.github.vvorks.builder.common.logging.Logger;
-import com.github.vvorks.builder.common.util.DelayedExecuter;
-import com.github.vvorks.builder.common.util.JsonResourceBundle;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.Creator;
+import com.github.vvorks.builder.shared.common.lang.Factory;
+import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
+import com.github.vvorks.builder.shared.common.util.JsonResourceBundle;
 
 public class UiApplication implements EventHandler {
 

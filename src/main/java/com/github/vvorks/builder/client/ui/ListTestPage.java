@@ -15,7 +15,7 @@ import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiVerticalList;
 import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
-import com.github.vvorks.builder.common.json.Json;
+import com.github.vvorks.builder.shared.common.json.Json;
 
 public class ListTestPage extends UiPage {
 

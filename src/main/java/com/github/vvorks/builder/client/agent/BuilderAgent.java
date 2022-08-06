@@ -5,7 +5,7 @@ package com.github.vvorks.builder.client.agent;
 
 import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
-import com.github.vvorks.builder.common.json.Json;
+import com.github.vvorks.builder.shared.common.json.Json;
 
 /**
  * Builderエージェント

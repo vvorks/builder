@@ -7,11 +7,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.mapper.ClassMapper;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 @Component
 public class EnumValueExtender {

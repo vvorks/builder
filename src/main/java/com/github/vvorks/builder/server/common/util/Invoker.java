@@ -6,7 +6,7 @@ import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
 
-import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
 
 public class Invoker {
 

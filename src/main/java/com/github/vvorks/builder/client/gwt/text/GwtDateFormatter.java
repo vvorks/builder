@@ -27,10 +27,10 @@ import com.github.vvorks.builder.client.gwt.intl.TimeStyle;
 import com.github.vvorks.builder.client.gwt.intl.TimeZoneName;
 import com.github.vvorks.builder.client.gwt.intl.Weekday;
 import com.github.vvorks.builder.client.gwt.intl.Year;
-import com.github.vvorks.builder.common.lang.Iterables;
-import com.github.vvorks.builder.common.text.CalendarSelecter;
-import com.github.vvorks.builder.common.text.DateFormatter;
-import com.github.vvorks.builder.common.text.Pattern;
+import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.text.CalendarSelecter;
+import com.github.vvorks.builder.shared.common.text.DateFormatter;
+import com.github.vvorks.builder.shared.common.text.Pattern;
 
 public class GwtDateFormatter extends DateFormatter {
 

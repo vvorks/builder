@@ -1,7 +1,7 @@
 package com.github.vvorks.builder.server.extender;
 
-import com.github.vvorks.builder.common.lang.Factory;
 import com.github.vvorks.builder.server.expression.Expression;
+import com.github.vvorks.builder.shared.common.lang.Factory;
 
 public abstract class SqlWriter implements Expression.Visitor<Object, String> {
 

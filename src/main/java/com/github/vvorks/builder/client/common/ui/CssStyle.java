@@ -5,8 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.json.Jsonizable;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.json.Jsonizable;
 
 public class CssStyle implements Jsonizable {
 

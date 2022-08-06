@@ -10,8 +10,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
-import com.github.vvorks.builder.common.logging.Logger;
+
 import com.github.vvorks.builder.server.domain.BuilderContent;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 @Component
 public class Mappers implements BeanPostProcessor {

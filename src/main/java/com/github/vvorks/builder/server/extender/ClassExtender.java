@@ -17,10 +17,6 @@ import java.util.function.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.vvorks.builder.common.lang.Encodable;
-import com.github.vvorks.builder.common.lang.Iterables;
-import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
@@ -40,6 +36,10 @@ import com.github.vvorks.builder.server.mapper.ClassMapper;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.MapperInterface;
 import com.github.vvorks.builder.server.mapper.Mappers;
+import com.github.vvorks.builder.shared.common.lang.Encodable;
+import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 @Component
 public class ClassExtender {

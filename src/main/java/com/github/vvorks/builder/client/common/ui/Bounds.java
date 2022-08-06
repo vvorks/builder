@@ -1,7 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.json.Jsonizable;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.json.Jsonizable;
 
 public class Bounds implements Jsonizable {
 

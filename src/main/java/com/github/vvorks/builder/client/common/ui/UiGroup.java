@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
 
 public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 

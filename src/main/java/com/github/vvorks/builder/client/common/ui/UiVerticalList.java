@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.Objects;
 
 import com.github.vvorks.builder.client.ClientSettings;
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
 
 public class UiVerticalList extends UiGroup {
 

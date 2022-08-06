@@ -31,9 +31,9 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.util.SimpleEntry;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.util.SimpleEntry;
 
 public class JacksonJson extends Json {
 

@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
 import com.github.vvorks.builder.server.mapper.EnumMapper;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 @Component
 public class EnumExtender {

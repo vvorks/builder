@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.json.Jsonizable;
-import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Value;
-import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.json.Jsonizable;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.Value;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 /**
  * 単位付き値

@@ -2,14 +2,16 @@ package com.github.vvorks.builder.rebind;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.github.jknack.handlebars.Template;
-import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.util.JsonResourcePackage;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.util.JsonResourcePackage;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPackage;
@@ -22,13 +24,20 @@ public class GwtResourceBundleGenerator extends AbstractGenerator {
 
 	public static class Param {
 
+		private final List<String> imports;
+
 		private final String locale;
 
 		private final Map<String, Map<String, List<String>>> contents;
 
-		public Param(String locale, Map<String, Map<String, List<String>>> contents) {
+		public Param(List<String> imports, String locale, Map<String, Map<String, List<String>>> contents) {
+			this.imports = imports;
 			this.locale = locale;
 			this.contents = contents;
+		}
+
+		public List<String> getImports() {
+			return imports;
 		}
 
 		public String getLocale() {
@@ -56,10 +65,13 @@ public class GwtResourceBundleGenerator extends AbstractGenerator {
 			return fullName;
 		}
 		info("gennerate " + fullName);
+		//使用importの準備
+		List<String> imports = new ArrayList<>();
+		imports.add(Json.class.getName());
 		//resource package取得
 		List<Resource> jsonResources = findResources();
 		//contents取得
-		Param param = new Param(locale, getContents(jsonResources, locale));
+		Param param = new Param(imports, locale, getContents(jsonResources, locale));
 		//handlebars templateを適用
 		try {
 			Template template = getTemplate("GwtResourceBundleImpl.hbs");

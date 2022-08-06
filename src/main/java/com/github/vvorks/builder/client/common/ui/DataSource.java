@@ -3,7 +3,7 @@ package com.github.vvorks.builder.client.common.ui;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.github.vvorks.builder.common.json.Json;
+import com.github.vvorks.builder.shared.common.json.Json;
 
 public abstract class DataSource {
 

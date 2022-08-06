@@ -2,7 +2,7 @@
  * Apache License v2.0
  */
 package com.github.vvorks.builder.server.domain;
-import com.github.vvorks.builder.common.lang.Encodable;
+import com.github.vvorks.builder.shared.common.lang.Encodable;
 
 /**
  * データ型

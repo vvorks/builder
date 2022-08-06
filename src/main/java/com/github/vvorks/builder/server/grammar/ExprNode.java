@@ -3,7 +3,7 @@ package com.github.vvorks.builder.server.grammar;
 import java.util.Collections;
 import java.util.stream.Stream;
 
-import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 public class ExprNode extends SimpleNode {
 

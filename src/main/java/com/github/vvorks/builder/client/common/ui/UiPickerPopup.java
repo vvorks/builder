@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.github.vvorks.builder.client.ui.BuilderStyles;
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Iterables;
 
 class UiPickerPopup extends UiPage {
 

@@ -22,7 +22,6 @@ import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.handlebars.ExtenderResolver;
 import com.github.vvorks.builder.server.common.handlebars.GlobalResolver;
 import com.github.vvorks.builder.server.common.handlebars.ReverseHelper;
@@ -41,6 +40,7 @@ import com.github.vvorks.builder.server.extender.ProjectExtender;
 import com.github.vvorks.builder.server.extender.QueryExtender;
 import com.github.vvorks.builder.server.extender.StyleExtender;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 @Component
 public class SourceWriter {

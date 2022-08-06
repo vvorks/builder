@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.github.jknack.handlebars.ValueResolver;
-import com.github.vvorks.builder.common.util.SimpleEntry;
+import com.github.vvorks.builder.shared.common.util.SimpleEntry;
 
 public class GlobalResolver implements ValueResolver {
 

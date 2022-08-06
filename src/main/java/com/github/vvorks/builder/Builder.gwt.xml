@@ -52,7 +52,7 @@
 	<!-- path settings.                           -->
 	<!-- **************************************** -->
 	<source path='client' />
-	<source path='common' />
+	<source path='shared' />
 
 	<!-- **************************************** -->
 	<!-- entry point settings.                    -->

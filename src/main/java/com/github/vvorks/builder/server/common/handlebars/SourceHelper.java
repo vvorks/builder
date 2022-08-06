@@ -8,9 +8,9 @@ import java.nio.charset.StandardCharsets;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-import com.github.vvorks.builder.common.lang.Strings;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.io.Ios;
+import com.github.vvorks.builder.shared.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 public class SourceHelper implements Helper<Object> {
 

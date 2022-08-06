@@ -10,10 +10,10 @@ import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.json.Jsonizable;
-import com.github.vvorks.builder.common.lang.Copyable;
-import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.json.Jsonizable;
+import com.github.vvorks.builder.shared.common.lang.Copyable;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 public class UiStyle implements Copyable<UiStyle>, Jsonizable {
 

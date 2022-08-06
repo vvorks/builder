@@ -19,16 +19,16 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.github.vvorks.builder.common.io.Closeables;
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.logging.Logger;
-import com.github.vvorks.builder.common.net.JsonRpcConstants;
-import com.github.vvorks.builder.common.net.JsonRpcs;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
 import com.github.vvorks.builder.server.common.util.Invoker;
+import com.github.vvorks.builder.shared.common.io.Closeables;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.net.JsonRpcConstants;
+import com.github.vvorks.builder.shared.common.net.JsonRpcs;
 
 public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConstants {
 

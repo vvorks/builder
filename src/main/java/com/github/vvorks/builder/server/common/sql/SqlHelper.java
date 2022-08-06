@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.github.vvorks.builder.common.lang.Factory;
+import com.github.vvorks.builder.shared.common.lang.Factory;
 
 public abstract class SqlHelper {
 

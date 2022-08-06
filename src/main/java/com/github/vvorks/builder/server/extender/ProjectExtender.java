@@ -12,8 +12,6 @@ import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.ServerSettings;
 import com.github.vvorks.builder.server.common.util.Patterns;
 import com.github.vvorks.builder.server.domain.ClassContent;
@@ -35,6 +33,8 @@ import com.github.vvorks.builder.server.mapper.EnumValueMapper;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
 import com.github.vvorks.builder.server.mapper.MessageMapper;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 import com.google.gwt.thirdparty.guava.common.collect.Iterables;
 
 @Component

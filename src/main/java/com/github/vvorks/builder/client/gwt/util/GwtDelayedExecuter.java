@@ -1,7 +1,7 @@
 package com.github.vvorks.builder.client.gwt.util;
 
-import com.github.vvorks.builder.common.logging.Logger;
-import com.github.vvorks.builder.common.util.DelayedExecuter;
+import com.github.vvorks.builder.shared.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
 import com.google.gwt.core.client.Scheduler;
 
 public class GwtDelayedExecuter implements DelayedExecuter {

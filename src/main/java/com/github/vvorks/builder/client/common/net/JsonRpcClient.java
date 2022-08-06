@@ -7,12 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Callback;
-import com.github.vvorks.builder.common.logging.Logger;
-import com.github.vvorks.builder.common.net.JsonRpcs;
-import com.github.vvorks.builder.common.util.DelayedExecuter;
-import com.github.vvorks.builder.common.util.TimeoutException;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Callback;
+import com.github.vvorks.builder.shared.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.net.JsonRpcs;
+import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
+import com.github.vvorks.builder.shared.common.util.TimeoutException;
 
 /**
  * WebSocket上でJsonRpc通信を行うサービスクラス

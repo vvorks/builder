@@ -6,13 +6,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.logging.Slf4jLogger;
 import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.common.sql.SqliteHelper;
 import com.github.vvorks.builder.server.extender.SqlWriter;
 import com.github.vvorks.builder.server.extender.SqliteWriter;
+import com.github.vvorks.builder.shared.common.lang.Factory;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 @SpringBootTest
 class BuilderApplicationTests {

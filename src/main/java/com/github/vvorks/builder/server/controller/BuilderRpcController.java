@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.github.vvorks.builder.common.lang.Strings;
+
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
@@ -96,6 +96,7 @@ import com.github.vvorks.builder.server.mapper.ProjectMapper;
 import com.github.vvorks.builder.server.mapper.ProjectI18nMapper;
 import com.github.vvorks.builder.server.mapper.QueryMapper;
 import com.github.vvorks.builder.server.mapper.StyleMapper;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 /**
  * ビルダープロジェクトの Json-Rpc (on Websocket) API

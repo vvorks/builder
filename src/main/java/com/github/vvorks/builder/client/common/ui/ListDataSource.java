@@ -2,8 +2,8 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.util.List;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
 
 public class ListDataSource extends DataSource {
 

@@ -14,7 +14,7 @@ import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiTab;
 import com.github.vvorks.builder.client.common.ui.UiVerticalGroup;
 import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
-import com.github.vvorks.builder.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 public class GroupTestPage extends UiPage {
 

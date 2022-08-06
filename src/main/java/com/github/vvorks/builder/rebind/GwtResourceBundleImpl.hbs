@@ -2,7 +2,9 @@ package com.github.vvorks.builder.client.gwt.util;
 
 import java.util.Map;
 import java.util.HashMap;
-import com.github.vvorks.builder.common.json.Json;
+{{#each imports}}
+import {{this}};
+{{/each}}
 
 public class GwtResourceBundle_{{locale}} implements GwtResourceBundle {
 	{{#each contents}}

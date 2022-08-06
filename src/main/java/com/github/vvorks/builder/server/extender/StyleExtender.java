@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.vvorks.builder.common.lang.Strings;
 import com.github.vvorks.builder.server.domain.StyleContent;
 import com.github.vvorks.builder.server.mapper.StyleMapper;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 @Component
 public class StyleExtender {

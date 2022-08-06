@@ -7,8 +7,8 @@ import com.github.vvorks.builder.client.common.ui.CssStyle;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.UiStyle;
+import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
 import com.github.vvorks.builder.client.common.ui.UiNode;
-import com.github.vvorks.builder.common.util.DelayedExecuter;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 

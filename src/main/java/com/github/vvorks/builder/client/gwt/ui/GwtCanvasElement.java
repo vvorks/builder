@@ -10,7 +10,7 @@ import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Rect;
 import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiStyle;
-import com.github.vvorks.builder.common.lang.Strings;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Image;

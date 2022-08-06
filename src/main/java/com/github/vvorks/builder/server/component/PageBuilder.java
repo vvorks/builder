@@ -10,9 +10,6 @@ import java.util.function.Consumer;
 
 import org.springframework.stereotype.Component;
 
-import com.github.vvorks.builder.common.lang.Asserts;
-import com.github.vvorks.builder.common.lang.Iterables;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.FieldContent;
@@ -20,6 +17,9 @@ import com.github.vvorks.builder.server.domain.PageContent;
 import com.github.vvorks.builder.server.domain.PageSetContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.mapper.Mappers;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 @Component
 public class PageBuilder {

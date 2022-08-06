@@ -16,7 +16,7 @@ import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.URLTemplateSource;
-import com.github.vvorks.builder.common.io.Readers;
+import com.github.vvorks.builder.shared.common.io.Readers;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.PropertyOracle;

@@ -1,14 +1,14 @@
 package com.github.vvorks.builder.server;
 
-import com.github.vvorks.builder.common.json.Json;
-import com.github.vvorks.builder.common.lang.Factory;
-import com.github.vvorks.builder.common.logging.Logger;
 import com.github.vvorks.builder.server.common.json.JacksonJson;
 import com.github.vvorks.builder.server.common.logging.Slf4jLogger;
 import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.common.sql.SqliteHelper;
 import com.github.vvorks.builder.server.extender.SqlWriter;
 import com.github.vvorks.builder.server.extender.SqliteWriter;
+import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Factory;
+import com.github.vvorks.builder.shared.common.logging.Logger;
 
 public class ServerSettings {
 
