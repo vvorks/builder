@@ -26,6 +26,9 @@ public class AdditionalInformation {
 	@Autowired
 	private ProjectExtender projectExtender;
 
+	@Autowired
+	private Mappers mappers;
+
 	private SqlHelper sqlHelper = SqlHelper.get();
 
 	public List<ClassContent> getAdditionalClasses(ProjectContent prj) {
@@ -38,8 +41,7 @@ public class AdditionalInformation {
 	}
 
 	public List<FieldContent> getAdditionalFields(ClassContent cls) {
-		Mappers m = Mappers.get();
-		ProjectContent prj = m.getClassMapper().getOwner(cls);
+		ProjectContent prj = mappers.getClassMapper().getOwner(cls);
 		String prjName = projectExtender.getUpperLastName(prj);
 		List<FieldContent> list = new ArrayList<>();
 		//追加フィールド挿入
@@ -69,12 +71,11 @@ public class AdditionalInformation {
 	}
 
 	public List<String[]> getAdditionalValues(ClassContent cls) {
-		Mappers m = Mappers.get();
-		ProjectContent prj = m.getClassMapper().getOwner(cls);
+		ProjectContent prj = mappers.getClassMapper().getOwner(cls);
 		String prjName = projectExtender.getUpperLastName(prj);
 		//追加フィールドの初期値作成
 		if (cls.getClassName().equals(prjName)) {
-			List<ClassContent> classes = m.getProjectMapper().listClassesContent(prj, 0, 0);
+			List<ClassContent> classes = mappers.getProjectMapper().listClassesContent(prj, 0, 0);
 			List<String[]> list = new ArrayList<>();
 			for (ClassContent c : classes) {
 				String[] fld = new String[3];

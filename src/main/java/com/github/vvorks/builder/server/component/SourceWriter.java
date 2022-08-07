@@ -86,7 +86,7 @@ public class SourceWriter {
 		File srcDir = new File(outDir, "src");
 		List<ProjectContent> projects = projectMapper.listContent(0, 0);
 		try (
-			Writer writer = new LoggerWriter(LOGGER)
+			Writer writer = new LoggerWriter(s -> LOGGER.debug(s))
 		) {
 			TemplateLoader loader = new ClassPathTemplateLoader(HBS_RES);
 			//HBSリソースの取得

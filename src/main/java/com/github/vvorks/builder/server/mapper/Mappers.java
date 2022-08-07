@@ -6,25 +6,15 @@ package com.github.vvorks.builder.server.mapper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntSupplier;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
-
 import com.github.vvorks.builder.server.domain.BuilderContent;
-import com.github.vvorks.builder.shared.common.logging.Logger;
 
 @Component
 public class Mappers implements BeanPostProcessor {
-
-	private static final Logger LOGGER = Logger.createLogger(Mappers.class);
-
-	private static Mappers instance;
-
-	public static Mappers get() {
-		LOGGER.info("Mappers instance ", instance != null);
-		return instance;
-	}
 
 	private static final String NAME_PROJECT = "Project";
 	private static final String NAME_PROJECT_I18N = "ProjectI18n";
@@ -123,10 +113,6 @@ public class Mappers implements BeanPostProcessor {
 	private BuilderMapper builderMapper;
 
 	private Map<String, MapperInterface<?>> mapperMap;
-
-	public Mappers() {
-		instance = this;
-	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {

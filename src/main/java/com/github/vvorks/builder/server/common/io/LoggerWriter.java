@@ -2,19 +2,19 @@ package com.github.vvorks.builder.server.common.io;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.function.Consumer;
 
 import com.github.vvorks.builder.server.common.util.Patterns;
 import com.github.vvorks.builder.shared.common.lang.Asserts;
-import com.github.vvorks.builder.shared.common.logging.Logger;
 
 public class LoggerWriter extends Writer {
 
-	private final Logger logger;
+	private final Consumer<String> out;
 
 	private StringBuilder lineBuffer;
 
-	public LoggerWriter(Logger logger) {
-		this.logger = logger;
+	public LoggerWriter(Consumer<String> out) {
+		this.out = out;
 		this.lineBuffer = new StringBuilder();
 	}
 
@@ -57,7 +57,7 @@ public class LoggerWriter extends Writer {
 			lineBuffer.append(array[0]);
 			flush();
 			for (int i = 1; i < array.length - 1; i++) {
-				logger.info(array[i]);
+				out.accept(array[i]);
 			}
 			lineBuffer.append(array[array.length - 1]);
 		}
@@ -65,7 +65,7 @@ public class LoggerWriter extends Writer {
 
 	@Override
 	public void flush() throws IOException {
-		logger.info(lineBuffer.toString());
+		out.accept(lineBuffer.toString());
 		lineBuffer.setLength(0);
 	}
 

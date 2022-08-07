@@ -8,23 +8,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.FieldContent;
+import com.github.vvorks.builder.server.domain.LayoutType;
 import com.github.vvorks.builder.server.domain.PageContent;
 import com.github.vvorks.builder.server.domain.PageSetContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.lang.Asserts;
 import com.github.vvorks.builder.shared.common.lang.Iterables;
-import com.github.vvorks.builder.shared.common.logging.Logger;
 
 @Component
 public class PageBuilder {
-
-	private static final Logger LOGGER = Logger.createLogger(SourceWriter.class);
 
 	private static final String PAGESET_SHOW = "show";
 
@@ -44,10 +43,6 @@ public class PageBuilder {
 
 		public ClassRelation(ClassContent cls) {
 			clazz = cls;
-		}
-
-		public boolean isRoot() {
-			return clazz == null && owner == null;
 		}
 
 		public ClassContent getContent() {
@@ -79,31 +74,33 @@ public class PageBuilder {
 
 	}
 
+	@Autowired
+	private Mappers mappers;
+
 	public void process() throws IOException {
-		Mappers m = Mappers.get();
-		List<ProjectContent> list = m.getProjectMapper().listAll();
+		List<ProjectContent> list = mappers.getProjectMapper().listAll();
 		for (ProjectContent c : list) {
-			processProject(m, c);
+			processProject(c);
 		}
 	}
 
-	private void processProject(Mappers m, ProjectContent prj) {
-		List<PageSetContent> sets = m.getProjectMapper().listPageSetsContent(prj, 0, 0);
+	private void processProject(ProjectContent prj) {
+		List<PageSetContent> sets = mappers.getProjectMapper().listPageSetsContent(prj, 0, 0);
 		//delete previous outputs
 		for (PageSetContent s : sets) {
 			String setName = s.getPageSetName();
 			if (PAGESET_SHOW.equals(setName) || PAGESET_EDIT.equals(setName)) {
-				m.getPageSetMapper().delete(s);
+				mappers.getPageSetMapper().delete(s);
 			}
 		}
-		insertShowPageSet(m, prj);
+		insertShowPageSet(prj);
 	}
 
-	private void insertShowPageSet(Mappers m, ProjectContent prj) {
-		ClassRelation rel = getRelation(m, prj);
-		PageSetContent ps = insertPageSet(m, prj, PAGESET_SHOW);
-		insertShowPage(m, ps, prj);
-		visitRelation(rel, r -> insertShowPage(m, ps, r.getContent()));
+	private void insertShowPageSet(ProjectContent prj) {
+		ClassRelation rel = getRelation(prj);
+		PageSetContent ps = insertPageSet(prj, PAGESET_SHOW);
+		insertShowPage(ps, prj, rel);
+		visitRelation(rel, r -> insertShowPage(ps, r.getContent(), rel));
 	}
 
 	private void visitRelation(ClassRelation rel, Consumer<ClassRelation> method) {
@@ -113,51 +110,110 @@ public class PageBuilder {
 		}
 	}
 
-	private PageSetContent insertPageSet(Mappers m, ProjectContent prj, String pageSetName) {
+	private PageSetContent insertPageSet(ProjectContent prj, String pageSetName) {
 		//insert pageset
 		PageSetContent ps = new PageSetContent();
-		ps.setPageSetId(m.newPageSetId());
+		ps.setPageSetId(mappers.newPageSetId());
 		ps.setPageSetName(pageSetName);
 		ps.setOwnerProjectId(prj.getProjectId());
 		ps.setTitle(pageSetName + " " + prj.getProjectName());
-		m.getPageSetMapper().insert(ps);
+		mappers.getPageSetMapper().insert(ps);
 		return ps;
 	}
 
-	private void insertShowPage(Mappers m, PageSetContent ps, ProjectContent prj) {
+	private double NA = LayoutBuilder.NA;
+
+	private void insertShowPage(PageSetContent ps, ProjectContent prj, ClassRelation rel) {
 		//insert page
 		PageContent pg = new PageContent();
-		pg.setPageId(m.newPageId());
+		pg.setPageId(mappers.newPageId());
 		pg.setOwnerPageSetId(ps.getPageSetId());
 		pg.setContextClassId(null);
 		pg.setWidth(0);
 		pg.setHeight(0);
-		m.getPageMapper().insert(pg);
-		//TODO insert layouts
+		mappers.getPageMapper().insert(pg);
+		//build layout
+		LayoutBuilder b = new LayoutBuilder(pg, "em", mappers);
+		//insert root layouts
+		b.enter(LayoutType.BASIC_LAYOUT, "frame");
+			insertOwnsLists(b, rel);
+		b.leave();
+		b.finish();
 	}
 
-	private void insertShowPage(Mappers m, PageSetContent ps, ClassContent cls) {
+	private void insertOwnsLists(LayoutBuilder b, ClassRelation rel) {
+		int left;
+		int width;
+		Iterable<ClassContent> classes = Iterables.from(rel.getOwns(), (r) -> r.getContent());
+		b.enter(LayoutType.BASIC_LAYOUT, "head");
+			b.locate(0, 0, 0, NA, NA, 2);
+			left = 0;
+			width = 10;
+			for (ClassContent cls : classes) {
+				b.enter(LayoutType.TAB, cls.getClassName());
+					b.locate(left, 0, NA, 0, width, NA);
+					b.related("../body/" + cls.getClassName());
+				b.leave();
+				left += width;
+			}
+		b.leave();
+		b.enter(LayoutType.PILED_LAYOUT, "body");
+			b.locate(0, 2, 0, 0, NA, NA);
+			for (ClassContent cls : classes) {
+				List<FieldContent> fields = mappers.getClassMapper().listFieldsContent(cls, 0, 0);
+				b.enter(LayoutType.BASIC_LAYOUT, cls.getClassName());
+					b.enter(LayoutType.BASIC_LAYOUT, "head");
+						b.locate(0, 0, 0, NA, NA, 2);
+						b.related("body");
+						left = 0;
+						for (FieldContent fld : fields) {
+							width = 10; //TODO 仮。本当はField書式から設定
+							b.enter(LayoutType.LABEL, fld.getFieldName());
+								b.locate(left, 0, NA, 0, width, NA);
+								b.field(fld);
+							b.leave();
+							left += width;
+						}
+					b.leave();
+					b.enter(LayoutType.BASIC_LAYOUT, "body");
+						b.locate(0, 2, 0, 0, NA, NA);
+						left = 0;
+						for (FieldContent fld : fields) {
+							width = 10; //TODO 仮。本当はField書式から設定
+							b.enter(LayoutType.FIELD, fld.getFieldName());
+								b.locate(left, 0, NA, 0, width, NA);
+								b.field(fld);
+							b.leave();
+							left += width;
+						}
+					b.leave();
+				b.leave();
+			}
+		b.leave();
+	}
+
+	private void insertShowPage(PageSetContent ps, ClassContent cls, ClassRelation rel) {
 		//insert page
 		PageContent pg = new PageContent();
-		pg.setPageId(m.newPageId());
+		pg.setPageId(mappers.newPageId());
 		pg.setOwnerPageSetId(ps.getPageSetId());
 		pg.setContextClassId(cls.getClassId());
 		pg.setWidth(0);
 		pg.setHeight(0);
-		m.getPageMapper().insert(pg);
+		mappers.getPageMapper().insert(pg);
 		//TODO insert layouts
 	}
 
-	private ClassRelation getRelation(Mappers m, ProjectContent prj) {
+	private ClassRelation getRelation(ProjectContent prj) {
 		Map<Integer, ClassRelation> relations = new LinkedHashMap<>();
-		for (ClassContent cls : m.getProjectMapper().listClassesContent(prj, 0, 0)) {
+		for (ClassContent cls : mappers.getProjectMapper().listClassesContent(prj, 0, 0)) {
 			relations.put(cls.getClassId(), new ClassRelation(cls));
 		}
 		for (ClassRelation owner : relations.values()) {
 			ClassContent cls = owner.clazz;
-			for (FieldContent fld : m.getClassMapper().listFieldsContent(cls, 0, 0)) {
+			for (FieldContent fld : mappers.getClassMapper().listFieldsContent(cls, 0, 0)) {
 				if (fld.getType() == DataType.SET) {
-					FieldContent fref = m.getFieldMapper().getFref(fld);
+					FieldContent fref = mappers.getFieldMapper().getFref(fld);
 					ClassRelation set = relations.get(fref.getOwnerClassId());
 					owner.addSet(set, fld.isIsContainer());
 				}

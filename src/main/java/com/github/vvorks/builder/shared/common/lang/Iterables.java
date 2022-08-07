@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Iterables {
@@ -57,6 +58,18 @@ public class Iterables {
 
 	public static <T> Iterable<T> concat(List<Iterable<T>> list) {
 		return () -> new ConcatIterator<T>(list);
+	}
+
+	public static <T> Iterable<T> from(T[] array) {
+		return array == null ? Collections.emptyList() : Arrays.asList(array);
+	}
+
+	public static <T> Iterable<T> from(Collection<T> collection) {
+		return collection == null ? Collections.emptyList() : collection;
+	}
+
+	public static <T, R> Iterable<R> from(Iterable<T> xs, Function<T, R> func) {
+		return () -> new ConvertIterator<T, R>(xs.iterator(), func);
 	}
 
 	private static class FilterIterator<T> implements Iterator<T> {
@@ -143,12 +156,27 @@ public class Iterables {
 
 	}
 
-	public static <T> Iterable<T> from(T[] array) {
-		return array == null ? Collections.emptyList() : Arrays.asList(array);
-	}
+	private static class ConvertIterator<T, R> implements Iterator<R> {
 
-	public static <T> Iterable<T> from(Collection<T> collection) {
-		return collection == null ? Collections.emptyList() : collection;
+		private final Iterator<T> source;
+
+		private final Function<T, R> func;
+
+		public ConvertIterator(Iterator<T> source, Function<T, R> func) {
+			this.source = source;
+			this.func = func;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return source.hasNext();
+		}
+
+		@Override
+		public R next() {
+			return func.apply(source.next());
+		}
+
 	}
 
 }
