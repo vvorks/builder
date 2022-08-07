@@ -10,30 +10,30 @@ import com.github.vvorks.builder.shared.common.lang.Encodable;
 public enum LayoutType implements Encodable<String> {
 
 	/**
-	 * 基本レイアウト
+	 * 基本領域
 	 *
-	 * 複数レイアウトを位置指定でまとめる●スクロールの仕組みがある
+	 * 複数レイアウトを位置指定通り配置（スクロール可）
 	 */
-	BASIC_LAYOUT(10, "BASIC_LAYOUT"),
+	SIMPLE_PANE(10, "SIMPLE_PANE"),
 
 	/**
-	 * 分割レイアウト
+	 * 分割領域
 	 *
-	 * 複数レイアウトを上下左右に配置する●グループ間にサイズ調整用のスプリッタがある
+	 * 複数レイアウトを上下左右に分割配置
 	 */
-	SPLIT_LAYOUT(11, "SPLIT_LAYOUT"),
+	PARTED_PANE(11, "PARTED_PANE"),
 
 	/**
-	 * 重ねレイアウト
+	 * タブ領域
 	 *
-	 * 複数レイアウトを重ねて配置するレイアウト
+	 * 複数レイアウトをタブ切り替え可能に配置
 	 */
-	PILED_LAYOUT(12, "PILED_LAYOUT"),
+	TABBED_PANE(12, "TABBED_PANE"),
 
 	/**
 	 * タブ
 	 *
-	 * 重ねレイアウトの表示切替用。文言はmessageRefを使用
+	 * タブ領域切り替え用のタブ
 	 */
 	TAB(13, "TAB"),
 
@@ -54,42 +54,35 @@ public enum LayoutType implements Encodable<String> {
 	/**
 	 * 垂直スクロールバー
 	 *
-	 * BASIC_LAYOUT又は(V/H)LISTの垂直スクロールバー
+	 * SIMPLE_LAYOUT又は(V/H)LISTの垂直スクロールバー
 	 */
 	V_SCROLLBAR(22, "V_SCROLLBAR"),
 
 	/**
 	 * 水平スクロールバー
 	 *
-	 * BASIC_LAYOUT又は(V/H)LISTの水平スクロールバー
+	 * SIMPLE_LAYOUT又は(V/H)LISTの水平スクロールバー
 	 */
 	H_SCROLLBAR(23, "H_SCROLLBAR"),
 
 	/**
-	 * メッセージ表示要素
-	 *
-	 * messageRefを出力する
-	 */
-	MESSAGE(30, "MESSAGE"),
-
-	/**
 	 * ラベル表示要素
 	 *
-	 * fieldRefのラベル部を出力する
+	 * cre/eref/frefのラベル部又はmrefを出力する
 	 */
 	LABEL(31, "LABEL"),
 
 	/**
 	 * フィールド出力要素
 	 *
-	 * fieldRefのデータを出力する
+	 * frefのデータを出力する
 	 */
 	FIELD(32, "FIELD"),
 
 	/**
 	 * フィールド入力要素
 	 *
-	 * fieldRefのデータを入出力する
+	 * frefのデータを入出力する
 	 */
 	INPUT(33, "INPUT")
 	;

@@ -36,14 +36,24 @@ public class LayoutContent {
 	private LayoutType layoutType;
 
 	/**
+	 * 対象クラスのクラスID
+	 */
+	private Integer crefClassId;
+
+	/**
+	 * 対象列挙の列挙ID
+	 */
+	private Integer erefEnumId;
+
+	/**
 	 * 対象フィールドのフィールドID
 	 */
-	private Integer targetFieldId;
+	private Integer frefFieldId;
 
 	/**
 	 * 対象メッセージのメッセージID
 	 */
-	private Integer constMessageId;
+	private Integer mrefMessageId;
 
 	/**
 	 * 関連レイアウトのレイアウトId
@@ -124,14 +134,24 @@ public class LayoutContent {
 	private String parent_title;
 
 	/**
+	 * 対象クラスのタイトル
+	 */
+	private String cref_title;
+
+	/**
+	 * 対象列挙のタイトル
+	 */
+	private String eref_title;
+
+	/**
 	 * 対象フィールドのタイトル
 	 */
-	private String target_title;
+	private String fref_title;
 
 	/**
 	 * 対象メッセージのタイトル
 	 */
-	private String const_title;
+	private String mref_title;
 
 	/**
 	 * 関連レイアウトのタイトル
@@ -256,21 +276,57 @@ public class LayoutContent {
 	}
 
 	/**
+	 * 対象クラスのクラスIDを取得する
+	 *
+	 * @return 対象クラスのクラスID
+	 */
+	public Integer getCrefClassId() {
+		return this.crefClassId;
+	}
+
+	/**
+	 * 対象クラスのクラスIDを設定する
+	 *
+	 * @param crefClassId 設定する対象クラスのクラスID
+	 */
+	public void setCrefClassId(Integer crefClassId) {
+		this.crefClassId = crefClassId;
+	}
+
+	/**
+	 * 対象列挙の列挙IDを取得する
+	 *
+	 * @return 対象列挙の列挙ID
+	 */
+	public Integer getErefEnumId() {
+		return this.erefEnumId;
+	}
+
+	/**
+	 * 対象列挙の列挙IDを設定する
+	 *
+	 * @param erefEnumId 設定する対象列挙の列挙ID
+	 */
+	public void setErefEnumId(Integer erefEnumId) {
+		this.erefEnumId = erefEnumId;
+	}
+
+	/**
 	 * 対象フィールドのフィールドIDを取得する
 	 *
 	 * @return 対象フィールドのフィールドID
 	 */
-	public Integer getTargetFieldId() {
-		return this.targetFieldId;
+	public Integer getFrefFieldId() {
+		return this.frefFieldId;
 	}
 
 	/**
 	 * 対象フィールドのフィールドIDを設定する
 	 *
-	 * @param targetFieldId 設定する対象フィールドのフィールドID
+	 * @param frefFieldId 設定する対象フィールドのフィールドID
 	 */
-	public void setTargetFieldId(Integer targetFieldId) {
-		this.targetFieldId = targetFieldId;
+	public void setFrefFieldId(Integer frefFieldId) {
+		this.frefFieldId = frefFieldId;
 	}
 
 	/**
@@ -278,17 +334,17 @@ public class LayoutContent {
 	 *
 	 * @return 対象メッセージのメッセージID
 	 */
-	public Integer getConstMessageId() {
-		return this.constMessageId;
+	public Integer getMrefMessageId() {
+		return this.mrefMessageId;
 	}
 
 	/**
 	 * 対象メッセージのメッセージIDを設定する
 	 *
-	 * @param constMessageId 設定する対象メッセージのメッセージID
+	 * @param mrefMessageId 設定する対象メッセージのメッセージID
 	 */
-	public void setConstMessageId(Integer constMessageId) {
-		this.constMessageId = constMessageId;
+	public void setMrefMessageId(Integer mrefMessageId) {
+		this.mrefMessageId = mrefMessageId;
 	}
 
 	/**
@@ -544,21 +600,57 @@ public class LayoutContent {
 	}
 
 	/**
+	 * 対象クラスのタイトルを取得する
+	 *
+	 * @return 対象クラスのタイトル
+	 */
+	public String getCref_title() {
+		return this.cref_title;
+	}
+
+	/**
+	 * 対象クラスのタイトルを設定する
+	 *
+	 * @param cref_title 設定する対象クラスのタイトル
+	 */
+	public void setCref_title(String cref_title) {
+		this.cref_title = cref_title;
+	}
+
+	/**
+	 * 対象列挙のタイトルを取得する
+	 *
+	 * @return 対象列挙のタイトル
+	 */
+	public String getEref_title() {
+		return this.eref_title;
+	}
+
+	/**
+	 * 対象列挙のタイトルを設定する
+	 *
+	 * @param eref_title 設定する対象列挙のタイトル
+	 */
+	public void setEref_title(String eref_title) {
+		this.eref_title = eref_title;
+	}
+
+	/**
 	 * 対象フィールドのタイトルを取得する
 	 *
 	 * @return 対象フィールドのタイトル
 	 */
-	public String getTarget_title() {
-		return this.target_title;
+	public String getFref_title() {
+		return this.fref_title;
 	}
 
 	/**
 	 * 対象フィールドのタイトルを設定する
 	 *
-	 * @param target_title 設定する対象フィールドのタイトル
+	 * @param fref_title 設定する対象フィールドのタイトル
 	 */
-	public void setTarget_title(String target_title) {
-		this.target_title = target_title;
+	public void setFref_title(String fref_title) {
+		this.fref_title = fref_title;
 	}
 
 	/**
@@ -566,17 +658,17 @@ public class LayoutContent {
 	 *
 	 * @return 対象メッセージのタイトル
 	 */
-	public String getConst_title() {
-		return this.const_title;
+	public String getMref_title() {
+		return this.mref_title;
 	}
 
 	/**
 	 * 対象メッセージのタイトルを設定する
 	 *
-	 * @param const_title 設定する対象メッセージのタイトル
+	 * @param mref_title 設定する対象メッセージのタイトル
 	 */
-	public void setConst_title(String const_title) {
-		this.const_title = const_title;
+	public void setMref_title(String mref_title) {
+		this.mref_title = mref_title;
 	}
 
 	/**
@@ -641,8 +733,10 @@ public class LayoutContent {
 			parentLayoutId,
 			layoutName,
 			layoutType,
-			targetFieldId,
-			constMessageId,
+			crefClassId,
+			erefEnumId,
+			frefFieldId,
+			mrefMessageId,
 			relatedLayoutId,
 			param,
 			layoutParam,
@@ -677,8 +771,10 @@ public class LayoutContent {
 			Objects.equals(this.parentLayoutId, other.parentLayoutId) && 
 			Objects.equals(this.layoutName, other.layoutName) && 
 			Objects.equals(this.layoutType, other.layoutType) && 
-			Objects.equals(this.targetFieldId, other.targetFieldId) && 
-			Objects.equals(this.constMessageId, other.constMessageId) && 
+			Objects.equals(this.crefClassId, other.crefClassId) && 
+			Objects.equals(this.erefEnumId, other.erefEnumId) && 
+			Objects.equals(this.frefFieldId, other.frefFieldId) && 
+			Objects.equals(this.mrefMessageId, other.mrefMessageId) && 
 			Objects.equals(this.relatedLayoutId, other.relatedLayoutId) && 
 			Objects.equals(this.param, other.param) && 
 			Objects.equals(this.layoutParam, other.layoutParam) && 
@@ -702,8 +798,10 @@ public class LayoutContent {
 		sb.append("parentLayoutId=").append(parentLayoutId).append(", ");
 		sb.append("layoutName=").append(layoutName).append(", ");
 		sb.append("layoutType=").append(layoutType).append(", ");
-		sb.append("targetFieldId=").append(targetFieldId).append(", ");
-		sb.append("constMessageId=").append(constMessageId).append(", ");
+		sb.append("crefClassId=").append(crefClassId).append(", ");
+		sb.append("erefEnumId=").append(erefEnumId).append(", ");
+		sb.append("frefFieldId=").append(frefFieldId).append(", ");
+		sb.append("mrefMessageId=").append(mrefMessageId).append(", ");
 		sb.append("relatedLayoutId=").append(relatedLayoutId).append(", ");
 		sb.append("param=").append(param).append(", ");
 		sb.append("layoutParam=").append(layoutParam).append(", ");

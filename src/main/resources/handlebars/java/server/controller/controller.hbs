@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import {{global.project.projectName}}.common.lang.Strings;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcController;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcMethod;
 import {{global.project.projectName}}.server.common.net.annotation.JsonRpcParam;
@@ -32,6 +31,7 @@ import {{global.project.projectName}}.server.domain.{{enumName}}Summary;
 {{#each classesByName}}
 import {{global.project.projectName}}.server.mapper.{{className}}Mapper;
 {{/each}}
+import {{global.project.projectName}}.shared.common.lang.Strings;
 
 /**
  * {{titleOrName}}の Json-Rpc (on Websocket) API

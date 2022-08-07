@@ -55,8 +55,14 @@
     }
   },
   "LayoutType" : {
-    "BASIC_LAYOUT" : {
-      "title" : "基本レイアウト"
+    "SIMPLE_PANE" : {
+      "title" : "基本領域"
+    },
+    "PARTED_PANE" : {
+      "title" : "分割領域"
+    },
+    "TABBED_PANE" : {
+      "title" : "タブ領域"
     },
     "TAB" : {
       "title" : "タブ"
@@ -72,9 +78,6 @@
     },
     "H_SCROLLBAR" : {
       "title" : "水平スクロールバー"
-    },
-    "MESSAGE" : {
-      "title" : "メッセージ表示要素"
     },
     "LABEL" : {
       "title" : "ラベル表示要素"

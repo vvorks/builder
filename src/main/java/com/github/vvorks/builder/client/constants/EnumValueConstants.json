@@ -55,21 +55,21 @@
     }
   },
   "LayoutType" : {
-    "BASIC_LAYOUT" : {
-      "title" : "基本レイアウト",
-      "description" : "複数レイアウトを位置指定でまとめる●スクロールの仕組みがある"
+    "SIMPLE_PANE" : {
+      "title" : "基本領域",
+      "description" : "複数レイアウトを位置指定通り配置（スクロール可）"
     },
-    "SPLIT_LAYOUT" : {
-      "title" : "分割レイアウト",
-      "description" : "複数レイアウトを上下左右に配置する●グループ間にサイズ調整用のスプリッタがある"
+    "PARTED_PANE" : {
+      "title" : "分割領域",
+      "description" : "複数レイアウトを上下左右に分割配置"
     },
-    "PILED_LAYOUT" : {
-      "title" : "重ねレイアウト",
-      "description" : "複数レイアウトを重ねて配置するレイアウト"
+    "TABBED_PANE" : {
+      "title" : "タブ領域",
+      "description" : "複数レイアウトをタブ切り替え可能に配置"
     },
     "TAB" : {
       "title" : "タブ",
-      "description" : "重ねレイアウトの表示切替用。文言はmessageRefを使用"
+      "description" : "タブ領域切り替え用のタブ"
     },
     "V_LIST" : {
       "title" : "垂直リスト",
@@ -81,27 +81,23 @@
     },
     "V_SCROLLBAR" : {
       "title" : "垂直スクロールバー",
-      "description" : "BASIC_LAYOUT又は(V/H)LISTの垂直スクロールバー"
+      "description" : "SIMPLE_LAYOUT又は(V/H)LISTの垂直スクロールバー"
     },
     "H_SCROLLBAR" : {
       "title" : "水平スクロールバー",
-      "description" : "BASIC_LAYOUT又は(V/H)LISTの水平スクロールバー"
-    },
-    "MESSAGE" : {
-      "title" : "メッセージ表示要素",
-      "description" : "messageRefを出力する"
+      "description" : "SIMPLE_LAYOUT又は(V/H)LISTの水平スクロールバー"
     },
     "LABEL" : {
       "title" : "ラベル表示要素",
-      "description" : "fieldRefのラベル部を出力する"
+      "description" : "cre/eref/frefのラベル部又はmrefを出力する"
     },
     "FIELD" : {
       "title" : "フィールド出力要素",
-      "description" : "fieldRefのデータを出力する"
+      "description" : "frefのデータを出力する"
     },
     "INPUT" : {
       "title" : "フィールド入力要素",
-      "description" : "fieldRefのデータを入出力する"
+      "description" : "frefのデータを入出力する"
     }
   }
 }

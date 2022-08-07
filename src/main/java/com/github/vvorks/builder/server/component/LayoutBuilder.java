@@ -5,6 +5,8 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.github.vvorks.builder.server.domain.ClassContent;
+import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.LayoutContent;
 import com.github.vvorks.builder.server.domain.LayoutType;
@@ -102,15 +104,27 @@ public class LayoutBuilder {
 		return this;
 	}
 
-	public LayoutBuilder field(FieldContent field) {
+	public LayoutBuilder refClass(ClassContent cls) {
 		LayoutContent content = stack.peek().content;
-		content.setTargetFieldId(field.getFieldId());
+		content.setCrefClassId(cls.getClassId());
 		return this;
 	}
 
-	public LayoutBuilder message(MessageContent message) {
+	public LayoutBuilder refEnum(EnumContent enm) {
 		LayoutContent content = stack.peek().content;
-		content.setConstMessageId(message.getMessageId());
+		content.setCrefClassId(enm.getEnumId());
+		return this;
+	}
+
+	public LayoutBuilder refField(FieldContent field) {
+		LayoutContent content = stack.peek().content;
+		content.setFrefFieldId(field.getFieldId());
+		return this;
+	}
+
+	public LayoutBuilder refMessage(MessageContent message) {
+		LayoutContent content = stack.peek().content;
+		content.setMrefMessageId(message.getMessageId());
 		return this;
 	}
 

@@ -11,8 +11,10 @@
 			F_PARENT_LAYOUT_ID,
 			F_LAYOUT_NAME,
 			F_LAYOUT_TYPE,
-			F_TARGET_FIELD_ID,
-			F_CONST_MESSAGE_ID,
+			F_CREF_CLASS_ID,
+			F_EREF_ENUM_ID,
+			F_FREF_FIELD_ID,
+			F_MREF_MESSAGE_ID,
 			F_RELATED_LAYOUT_ID,
 			F_PARAM,
 			F_LAYOUT_PARAM,
@@ -30,8 +32,10 @@
 			#{ parentLayoutId },
 			#{ layoutName },
 			#{ layoutType },
-			#{ targetFieldId },
-			#{ constMessageId },
+			#{ crefClassId },
+			#{ erefEnumId },
+			#{ frefFieldId },
+			#{ mrefMessageId },
 			#{ relatedLayoutId },
 			#{ param },
 			#{ layoutParam },
@@ -52,8 +56,10 @@
 			F_PARENT_LAYOUT_ID = #{ parentLayoutId },
 			F_LAYOUT_NAME = #{ layoutName },
 			F_LAYOUT_TYPE = #{ layoutType },
-			F_TARGET_FIELD_ID = #{ targetFieldId },
-			F_CONST_MESSAGE_ID = #{ constMessageId },
+			F_CREF_CLASS_ID = #{ crefClassId },
+			F_EREF_ENUM_ID = #{ erefEnumId },
+			F_FREF_FIELD_ID = #{ frefFieldId },
+			F_MREF_MESSAGE_ID = #{ mrefMessageId },
 			F_RELATED_LAYOUT_ID = #{ relatedLayoutId },
 			F_PARAM = #{ param },
 			F_LAYOUT_PARAM = #{ layoutParam },
@@ -86,8 +92,10 @@
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
 			T1.F_LAYOUT_NAME AS "layoutName",
 			T1.F_LAYOUT_TYPE AS "layoutType",
-			T1.F_TARGET_FIELD_ID AS "targetFieldId",
-			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_MREF_MESSAGE_ID AS "mrefMessageId",
 			T1.F_RELATED_LAYOUT_ID AS "relatedLayoutId",
 			T1.F_PARAM AS "param",
 			T1.F_LAYOUT_PARAM AS "layoutParam",
@@ -102,11 +110,13 @@
 			T1.F_LAYOUT_ID AS "_title",
 			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
 			T4.F_LAYOUT_ID AS "parent_title",
-			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
-			T7.F_MESSAGE_NAME AS "const_title",
-			T8.F_LAYOUT_ID AS "related_title",
-			T9.F_STYLE_NAME AS "style_title",
-			T10.F_VALUE_ID AS "layoutType_title"
+			T5.F_CLASS_NAME || '(' || T5.F_TITLE || ')' AS "cref_title",
+			T6.F_ENUM_NAME || '(' || T6.F_TITLE || ')' AS "eref_title",
+			T8.F_CLASS_NAME || '/' || T7.F_FIELD_NAME AS "fref_title",
+			T9.F_MESSAGE_NAME AS "mref_title",
+			T10.F_LAYOUT_ID AS "related_title",
+			T11.F_STYLE_NAME AS "style_title",
+			T12.F_VALUE_ID AS "layoutType_title"
 		FROM
 			T_LAYOUT T1
 		LEFT JOIN T_PAGE T2 ON
@@ -115,19 +125,23 @@
 			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
 		LEFT JOIN T_LAYOUT T4 ON
 			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
-		LEFT JOIN T_FIELD T5 ON
-			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
-		LEFT JOIN T_CLASS T6 ON
-			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
-		LEFT JOIN T_MESSAGE T7 ON
-			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_LAYOUT T8 ON
-			T1.F_RELATED_LAYOUT_ID = T8.F_LAYOUT_ID
-		LEFT JOIN T_STYLE T9 ON
-			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
-		LEFT JOIN T_ENUM_VALUE T10 ON
-			T10.F_OWNER_ENUM_ID = 3 AND
-			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
+		LEFT JOIN T_CLASS T5 ON
+			T1.F_CREF_CLASS_ID = T5.F_CLASS_ID
+		LEFT JOIN T_ENUM T6 ON
+			T1.F_EREF_ENUM_ID = T6.F_ENUM_ID
+		LEFT JOIN T_FIELD T7 ON
+			T1.F_FREF_FIELD_ID = T7.F_FIELD_ID
+		LEFT JOIN T_CLASS T8 ON
+			T7.F_OWNER_CLASS_ID = T8.F_CLASS_ID
+		LEFT JOIN T_MESSAGE T9 ON
+			T1.F_MREF_MESSAGE_ID = T9.F_MESSAGE_ID
+		LEFT JOIN T_LAYOUT T10 ON
+			T1.F_RELATED_LAYOUT_ID = T10.F_LAYOUT_ID
+		LEFT JOIN T_STYLE T11 ON
+			T1.F_STYLE_STYLE_ID = T11.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T12 ON
+			T12.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T12.F_VALUE_ID
 		WHERE
 			T1.F_LAYOUT_ID = #{ layoutId }
 	</select>
@@ -149,8 +163,10 @@
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
 			T1.F_LAYOUT_NAME AS "layoutName",
 			T1.F_LAYOUT_TYPE AS "layoutType",
-			T1.F_TARGET_FIELD_ID AS "targetFieldId",
-			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_MREF_MESSAGE_ID AS "mrefMessageId",
 			T1.F_RELATED_LAYOUT_ID AS "relatedLayoutId",
 			T1.F_PARAM AS "param",
 			T1.F_LAYOUT_PARAM AS "layoutParam",
@@ -165,11 +181,13 @@
 			T1.F_LAYOUT_ID AS "_title",
 			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
 			T4.F_LAYOUT_ID AS "parent_title",
-			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
-			T7.F_MESSAGE_NAME AS "const_title",
-			T8.F_LAYOUT_ID AS "related_title",
-			T9.F_STYLE_NAME AS "style_title",
-			T10.F_VALUE_ID AS "layoutType_title"
+			T5.F_CLASS_NAME || '(' || T5.F_TITLE || ')' AS "cref_title",
+			T6.F_ENUM_NAME || '(' || T6.F_TITLE || ')' AS "eref_title",
+			T8.F_CLASS_NAME || '/' || T7.F_FIELD_NAME AS "fref_title",
+			T9.F_MESSAGE_NAME AS "mref_title",
+			T10.F_LAYOUT_ID AS "related_title",
+			T11.F_STYLE_NAME AS "style_title",
+			T12.F_VALUE_ID AS "layoutType_title"
 		FROM
 			T_LAYOUT T1
 		LEFT JOIN T_PAGE T2 ON
@@ -178,19 +196,23 @@
 			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
 		LEFT JOIN T_LAYOUT T4 ON
 			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
-		LEFT JOIN T_FIELD T5 ON
-			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
-		LEFT JOIN T_CLASS T6 ON
-			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
-		LEFT JOIN T_MESSAGE T7 ON
-			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_LAYOUT T8 ON
-			T1.F_RELATED_LAYOUT_ID = T8.F_LAYOUT_ID
-		LEFT JOIN T_STYLE T9 ON
-			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
-		LEFT JOIN T_ENUM_VALUE T10 ON
-			T10.F_OWNER_ENUM_ID = 3 AND
-			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
+		LEFT JOIN T_CLASS T5 ON
+			T1.F_CREF_CLASS_ID = T5.F_CLASS_ID
+		LEFT JOIN T_ENUM T6 ON
+			T1.F_EREF_ENUM_ID = T6.F_ENUM_ID
+		LEFT JOIN T_FIELD T7 ON
+			T1.F_FREF_FIELD_ID = T7.F_FIELD_ID
+		LEFT JOIN T_CLASS T8 ON
+			T7.F_OWNER_CLASS_ID = T8.F_CLASS_ID
+		LEFT JOIN T_MESSAGE T9 ON
+			T1.F_MREF_MESSAGE_ID = T9.F_MESSAGE_ID
+		LEFT JOIN T_LAYOUT T10 ON
+			T1.F_RELATED_LAYOUT_ID = T10.F_LAYOUT_ID
+		LEFT JOIN T_STYLE T11 ON
+			T1.F_STYLE_STYLE_ID = T11.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T12 ON
+			T12.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T12.F_VALUE_ID
 		ORDER BY
 			T1.F_LAYOUT_ID
 		<if test="limit &gt; 0">
@@ -265,8 +287,10 @@
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
 			T1.F_LAYOUT_NAME AS "layoutName",
 			T1.F_LAYOUT_TYPE AS "layoutType",
-			T1.F_TARGET_FIELD_ID AS "targetFieldId",
-			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_MREF_MESSAGE_ID AS "mrefMessageId",
 			T1.F_RELATED_LAYOUT_ID AS "relatedLayoutId",
 			T1.F_PARAM AS "param",
 			T1.F_LAYOUT_PARAM AS "layoutParam",
@@ -281,11 +305,13 @@
 			T1.F_LAYOUT_ID AS "_title",
 			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
 			T4.F_LAYOUT_ID AS "parent_title",
-			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
-			T7.F_MESSAGE_NAME AS "const_title",
-			T8.F_LAYOUT_ID AS "related_title",
-			T9.F_STYLE_NAME AS "style_title",
-			T10.F_VALUE_ID AS "layoutType_title"
+			T5.F_CLASS_NAME || '(' || T5.F_TITLE || ')' AS "cref_title",
+			T6.F_ENUM_NAME || '(' || T6.F_TITLE || ')' AS "eref_title",
+			T8.F_CLASS_NAME || '/' || T7.F_FIELD_NAME AS "fref_title",
+			T9.F_MESSAGE_NAME AS "mref_title",
+			T10.F_LAYOUT_ID AS "related_title",
+			T11.F_STYLE_NAME AS "style_title",
+			T12.F_VALUE_ID AS "layoutType_title"
 		FROM
 			T_LAYOUT T1
 		LEFT JOIN T_PAGE T2 ON
@@ -294,19 +320,23 @@
 			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
 		LEFT JOIN T_LAYOUT T4 ON
 			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
-		LEFT JOIN T_FIELD T5 ON
-			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
-		LEFT JOIN T_CLASS T6 ON
-			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
-		LEFT JOIN T_MESSAGE T7 ON
-			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_LAYOUT T8 ON
-			T1.F_RELATED_LAYOUT_ID = T8.F_LAYOUT_ID
-		LEFT JOIN T_STYLE T9 ON
-			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
-		LEFT JOIN T_ENUM_VALUE T10 ON
-			T10.F_OWNER_ENUM_ID = 3 AND
-			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
+		LEFT JOIN T_CLASS T5 ON
+			T1.F_CREF_CLASS_ID = T5.F_CLASS_ID
+		LEFT JOIN T_ENUM T6 ON
+			T1.F_EREF_ENUM_ID = T6.F_ENUM_ID
+		LEFT JOIN T_FIELD T7 ON
+			T1.F_FREF_FIELD_ID = T7.F_FIELD_ID
+		LEFT JOIN T_CLASS T8 ON
+			T7.F_OWNER_CLASS_ID = T8.F_CLASS_ID
+		LEFT JOIN T_MESSAGE T9 ON
+			T1.F_MREF_MESSAGE_ID = T9.F_MESSAGE_ID
+		LEFT JOIN T_LAYOUT T10 ON
+			T1.F_RELATED_LAYOUT_ID = T10.F_LAYOUT_ID
+		LEFT JOIN T_STYLE T11 ON
+			T1.F_STYLE_STYLE_ID = T11.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T12 ON
+			T12.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T12.F_VALUE_ID
 		WHERE
 			T1.F_LAYOUT_ID = #{ parentLayoutId }
 	</select>
@@ -345,7 +375,116 @@
 		</if>
 	</select>
 	
-	<select id="getTarget" resultType="FieldContent">
+	<select id="getCref" resultType="ClassContent">
+		SELECT
+			T1.F_CLASS_ID AS "classId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_CLASS_NAME AS "className",
+			T1.F_ORDER_EXPR AS "orderExpr",
+			T1.F_TITLE_EXPR AS "titleExpr",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_CLASS T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_CLASS_ID = #{ crefClassId }
+	</select>
+
+	<select id="listCrefCandidateSummary" resultType="ClassSummary">
+		SELECT
+			MAX(T1.F_CLASS_ID) AS "maxClassId",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listCrefCandidateSubject" resultType="ClassSubject">
+		SELECT
+			T1.F_CLASS_ID AS "classId",
+			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "_title"
+		FROM
+			T_CLASS T1
+		<where>
+			<if test="hint != null">
+				T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	
+	<select id="getEref" resultType="EnumContent">
+		SELECT
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
+			T1.F_ENUM_NAME AS "enumName",
+			T1.F_ENCODE_STRING AS "encodeString",
+			T1.F_TITLE AS "title",
+			T1.F_DESCRIPTION AS "description",
+			T1.F_NOTE AS "note",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' AS "_title",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "owner_title"
+		FROM
+			T_ENUM T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_ENUM_ID = #{ erefEnumId }
+	</select>
+
+	<select id="listErefCandidateSummary" resultType="EnumSummary">
+		SELECT
+			MAX(T1.F_ENUM_ID) AS "maxEnumId",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_ENUM T1
+		<where>
+			<if test="hint != null">
+				T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+	</select>
+
+	<select id="listErefCandidateSubject" resultType="EnumSubject">
+		SELECT
+			T1.F_ENUM_ID AS "enumId",
+			T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' AS "_title"
+		FROM
+			T_ENUM T1
+		<where>
+			<if test="hint != null">
+				T1.F_ENUM_NAME || '(' || T1.F_TITLE || ')' LIKE '%' || #{hint} || '%'
+			</if>
+		</where>
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+	
+	<select id="getFref" resultType="FieldContent">
 		SELECT
 			T1.F_FIELD_ID AS "fieldId",
 			T1.F_OWNER_CLASS_ID AS "ownerClassId",
@@ -390,10 +529,10 @@
 			T7.F_OWNER_ENUM_ID = 1 AND
 			T1.F_TYPE = T7.F_VALUE_ID
 		WHERE
-			T1.F_FIELD_ID = #{ targetFieldId }
+			T1.F_FIELD_ID = #{ frefFieldId }
 	</select>
 
-	<select id="listTargetCandidateSummary" resultType="FieldSummary">
+	<select id="listFrefCandidateSummary" resultType="FieldSummary">
 		SELECT
 			MAX(T1.F_FIELD_ID) AS "maxFieldId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
@@ -408,7 +547,7 @@
 		</where>
 	</select>
 
-	<select id="listTargetCandidateSubject" resultType="FieldSubject">
+	<select id="listFrefCandidateSubject" resultType="FieldSubject">
 		SELECT
 			T1.F_FIELD_ID AS "fieldId",
 			T2.F_CLASS_NAME || '/' || T1.F_FIELD_NAME AS "_title"
@@ -429,7 +568,7 @@
 		</if>
 	</select>
 	
-	<select id="getConst" resultType="MessageContent">
+	<select id="getMref" resultType="MessageContent">
 		SELECT
 			T1.F_MESSAGE_ID AS "messageId",
 			T1.F_OWNER_PROJECT_ID AS "ownerProjectId",
@@ -443,10 +582,10 @@
 		LEFT JOIN T_PROJECT T2 ON
 			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
 		WHERE
-			T1.F_MESSAGE_ID = #{ constMessageId }
+			T1.F_MESSAGE_ID = #{ mrefMessageId }
 	</select>
 
-	<select id="listConstCandidateSummary" resultType="MessageSummary">
+	<select id="listMrefCandidateSummary" resultType="MessageSummary">
 		SELECT
 			MAX(T1.F_MESSAGE_ID) AS "maxMessageId",
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
@@ -461,7 +600,7 @@
 		</where>
 	</select>
 
-	<select id="listConstCandidateSubject" resultType="MessageSubject">
+	<select id="listMrefCandidateSubject" resultType="MessageSubject">
 		SELECT
 			T1.F_MESSAGE_ID AS "messageId",
 			T1.F_MESSAGE_NAME AS "_title"
@@ -487,8 +626,10 @@
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
 			T1.F_LAYOUT_NAME AS "layoutName",
 			T1.F_LAYOUT_TYPE AS "layoutType",
-			T1.F_TARGET_FIELD_ID AS "targetFieldId",
-			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_MREF_MESSAGE_ID AS "mrefMessageId",
 			T1.F_RELATED_LAYOUT_ID AS "relatedLayoutId",
 			T1.F_PARAM AS "param",
 			T1.F_LAYOUT_PARAM AS "layoutParam",
@@ -503,11 +644,13 @@
 			T1.F_LAYOUT_ID AS "_title",
 			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
 			T4.F_LAYOUT_ID AS "parent_title",
-			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
-			T7.F_MESSAGE_NAME AS "const_title",
-			T8.F_LAYOUT_ID AS "related_title",
-			T9.F_STYLE_NAME AS "style_title",
-			T10.F_VALUE_ID AS "layoutType_title"
+			T5.F_CLASS_NAME || '(' || T5.F_TITLE || ')' AS "cref_title",
+			T6.F_ENUM_NAME || '(' || T6.F_TITLE || ')' AS "eref_title",
+			T8.F_CLASS_NAME || '/' || T7.F_FIELD_NAME AS "fref_title",
+			T9.F_MESSAGE_NAME AS "mref_title",
+			T10.F_LAYOUT_ID AS "related_title",
+			T11.F_STYLE_NAME AS "style_title",
+			T12.F_VALUE_ID AS "layoutType_title"
 		FROM
 			T_LAYOUT T1
 		LEFT JOIN T_PAGE T2 ON
@@ -516,19 +659,23 @@
 			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
 		LEFT JOIN T_LAYOUT T4 ON
 			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
-		LEFT JOIN T_FIELD T5 ON
-			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
-		LEFT JOIN T_CLASS T6 ON
-			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
-		LEFT JOIN T_MESSAGE T7 ON
-			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_LAYOUT T8 ON
-			T1.F_RELATED_LAYOUT_ID = T8.F_LAYOUT_ID
-		LEFT JOIN T_STYLE T9 ON
-			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
-		LEFT JOIN T_ENUM_VALUE T10 ON
-			T10.F_OWNER_ENUM_ID = 3 AND
-			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
+		LEFT JOIN T_CLASS T5 ON
+			T1.F_CREF_CLASS_ID = T5.F_CLASS_ID
+		LEFT JOIN T_ENUM T6 ON
+			T1.F_EREF_ENUM_ID = T6.F_ENUM_ID
+		LEFT JOIN T_FIELD T7 ON
+			T1.F_FREF_FIELD_ID = T7.F_FIELD_ID
+		LEFT JOIN T_CLASS T8 ON
+			T7.F_OWNER_CLASS_ID = T8.F_CLASS_ID
+		LEFT JOIN T_MESSAGE T9 ON
+			T1.F_MREF_MESSAGE_ID = T9.F_MESSAGE_ID
+		LEFT JOIN T_LAYOUT T10 ON
+			T1.F_RELATED_LAYOUT_ID = T10.F_LAYOUT_ID
+		LEFT JOIN T_STYLE T11 ON
+			T1.F_STYLE_STYLE_ID = T11.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T12 ON
+			T12.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T12.F_VALUE_ID
 		WHERE
 			T1.F_LAYOUT_ID = #{ relatedLayoutId }
 	</select>
@@ -660,8 +807,10 @@
 			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
 			T1.F_LAYOUT_NAME AS "layoutName",
 			T1.F_LAYOUT_TYPE AS "layoutType",
-			T1.F_TARGET_FIELD_ID AS "targetFieldId",
-			T1.F_CONST_MESSAGE_ID AS "constMessageId",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_MREF_MESSAGE_ID AS "mrefMessageId",
 			T1.F_RELATED_LAYOUT_ID AS "relatedLayoutId",
 			T1.F_PARAM AS "param",
 			T1.F_LAYOUT_PARAM AS "layoutParam",
@@ -676,11 +825,13 @@
 			T1.F_LAYOUT_ID AS "_title",
 			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
 			T4.F_LAYOUT_ID AS "parent_title",
-			T6.F_CLASS_NAME || '/' || T5.F_FIELD_NAME AS "target_title",
-			T7.F_MESSAGE_NAME AS "const_title",
-			T8.F_LAYOUT_ID AS "related_title",
-			T9.F_STYLE_NAME AS "style_title",
-			T10.F_VALUE_ID AS "layoutType_title"
+			T5.F_CLASS_NAME || '(' || T5.F_TITLE || ')' AS "cref_title",
+			T6.F_ENUM_NAME || '(' || T6.F_TITLE || ')' AS "eref_title",
+			T8.F_CLASS_NAME || '/' || T7.F_FIELD_NAME AS "fref_title",
+			T9.F_MESSAGE_NAME AS "mref_title",
+			T10.F_LAYOUT_ID AS "related_title",
+			T11.F_STYLE_NAME AS "style_title",
+			T12.F_VALUE_ID AS "layoutType_title"
 		FROM
 			T_LAYOUT T1
 		LEFT JOIN T_PAGE T2 ON
@@ -689,19 +840,23 @@
 			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
 		LEFT JOIN T_LAYOUT T4 ON
 			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
-		LEFT JOIN T_FIELD T5 ON
-			T1.F_TARGET_FIELD_ID = T5.F_FIELD_ID
-		LEFT JOIN T_CLASS T6 ON
-			T5.F_OWNER_CLASS_ID = T6.F_CLASS_ID
-		LEFT JOIN T_MESSAGE T7 ON
-			T1.F_CONST_MESSAGE_ID = T7.F_MESSAGE_ID
-		LEFT JOIN T_LAYOUT T8 ON
-			T1.F_RELATED_LAYOUT_ID = T8.F_LAYOUT_ID
-		LEFT JOIN T_STYLE T9 ON
-			T1.F_STYLE_STYLE_ID = T9.F_STYLE_ID
-		LEFT JOIN T_ENUM_VALUE T10 ON
-			T10.F_OWNER_ENUM_ID = 3 AND
-			T1.F_LAYOUT_TYPE = T10.F_VALUE_ID
+		LEFT JOIN T_CLASS T5 ON
+			T1.F_CREF_CLASS_ID = T5.F_CLASS_ID
+		LEFT JOIN T_ENUM T6 ON
+			T1.F_EREF_ENUM_ID = T6.F_ENUM_ID
+		LEFT JOIN T_FIELD T7 ON
+			T1.F_FREF_FIELD_ID = T7.F_FIELD_ID
+		LEFT JOIN T_CLASS T8 ON
+			T7.F_OWNER_CLASS_ID = T8.F_CLASS_ID
+		LEFT JOIN T_MESSAGE T9 ON
+			T1.F_MREF_MESSAGE_ID = T9.F_MESSAGE_ID
+		LEFT JOIN T_LAYOUT T10 ON
+			T1.F_RELATED_LAYOUT_ID = T10.F_LAYOUT_ID
+		LEFT JOIN T_STYLE T11 ON
+			T1.F_STYLE_STYLE_ID = T11.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T12 ON
+			T12.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T12.F_VALUE_ID
 		WHERE
 			T1.F_PARENT_LAYOUT_ID = #{ content.layoutId }
 		ORDER BY

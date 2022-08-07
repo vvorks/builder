@@ -457,10 +457,16 @@
     "layoutType" : {
       "title" : "レイアウト種別"
     },
-    "target" : {
+    "cref" : {
+      "title" : "対象クラス"
+    },
+    "eref" : {
+      "title" : "対象列挙"
+    },
+    "fref" : {
       "title" : "対象フィールド"
     },
-    "const" : {
+    "mref" : {
       "title" : "対象メッセージ"
     },
     "related" : {

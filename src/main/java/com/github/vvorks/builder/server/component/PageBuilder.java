@@ -135,7 +135,7 @@ public class PageBuilder {
 		//build layout
 		LayoutBuilder b = new LayoutBuilder(pg, "em", mappers);
 		//insert root layouts
-		b.enter(LayoutType.BASIC_LAYOUT, "frame");
+		b.enter(LayoutType.SIMPLE_PANE, "frame");
 			insertOwnsLists(b, rel);
 		b.leave();
 		b.finish();
@@ -145,24 +145,25 @@ public class PageBuilder {
 		int left;
 		int width;
 		Iterable<ClassContent> classes = Iterables.from(rel.getOwns(), (r) -> r.getContent());
-		b.enter(LayoutType.BASIC_LAYOUT, "head");
+		b.enter(LayoutType.SIMPLE_PANE, "head");
 			b.locate(0, 0, 0, NA, NA, 2);
 			left = 0;
 			width = 10;
 			for (ClassContent cls : classes) {
 				b.enter(LayoutType.TAB, cls.getClassName());
 					b.locate(left, 0, NA, 0, width, NA);
+					b.refClass(cls);
 					b.related("../body/" + cls.getClassName());
 				b.leave();
 				left += width;
 			}
 		b.leave();
-		b.enter(LayoutType.PILED_LAYOUT, "body");
+		b.enter(LayoutType.TABBED_PANE, "body");
 			b.locate(0, 2, 0, 0, NA, NA);
 			for (ClassContent cls : classes) {
 				List<FieldContent> fields = mappers.getClassMapper().listFieldsContent(cls, 0, 0);
-				b.enter(LayoutType.BASIC_LAYOUT, cls.getClassName());
-					b.enter(LayoutType.BASIC_LAYOUT, "head");
+				b.enter(LayoutType.SIMPLE_PANE, cls.getClassName());
+					b.enter(LayoutType.SIMPLE_PANE, "head");
 						b.locate(0, 0, 0, NA, NA, 2);
 						b.related("body");
 						left = 0;
@@ -170,19 +171,19 @@ public class PageBuilder {
 							width = 10; //TODO 仮。本当はField書式から設定
 							b.enter(LayoutType.LABEL, fld.getFieldName());
 								b.locate(left, 0, NA, 0, width, NA);
-								b.field(fld);
+								b.refField(fld);
 							b.leave();
 							left += width;
 						}
 					b.leave();
-					b.enter(LayoutType.BASIC_LAYOUT, "body");
+					b.enter(LayoutType.SIMPLE_PANE, "body");
 						b.locate(0, 2, 0, 0, NA, NA);
 						left = 0;
 						for (FieldContent fld : fields) {
 							width = 10; //TODO 仮。本当はField書式から設定
 							b.enter(LayoutType.FIELD, fld.getFieldName());
 								b.locate(left, 0, NA, 0, width, NA);
-								b.field(fld);
+								b.refField(fld);
 							b.leave();
 							left += width;
 						}

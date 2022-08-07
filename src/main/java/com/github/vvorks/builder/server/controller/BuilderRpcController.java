@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcController;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcMethod;
 import com.github.vvorks.builder.server.common.net.annotation.JsonRpcParam;
@@ -3244,16 +3243,94 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 対象クラスを取得する
+	 *
+	 * @param content レイアウト
+	 * @return 対象クラス
+	 */
+	@JsonRpcMethod
+	public ClassContent getLayoutCref(
+		@JsonRpcParam("content") LayoutContent content
+	) {
+		return layoutMapper.getCref(content);
+	}
+
+	/**
+	 * 対象クラスの候補一覧を取得する
+	 *
+	 * @param content レイアウト
+	 * @return 対象クラスの候補一覧
+	 */
+	@JsonRpcMethod
+	public ClassSummary<ClassSubject> listLayoutCrefCandidate(
+		@JsonRpcParam("content") LayoutContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		ClassSummary<ClassSubject> summary = layoutMapper.listCrefCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<ClassSubject> contents = layoutMapper.listCrefCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * 対象列挙を取得する
+	 *
+	 * @param content レイアウト
+	 * @return 対象列挙
+	 */
+	@JsonRpcMethod
+	public EnumContent getLayoutEref(
+		@JsonRpcParam("content") LayoutContent content
+	) {
+		return layoutMapper.getEref(content);
+	}
+
+	/**
+	 * 対象列挙の候補一覧を取得する
+	 *
+	 * @param content レイアウト
+	 * @return 対象列挙の候補一覧
+	 */
+	@JsonRpcMethod
+	public EnumSummary<EnumSubject> listLayoutErefCandidate(
+		@JsonRpcParam("content") LayoutContent content,
+		@JsonRpcParam("hint") String hint,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		EnumSummary<EnumSubject> summary = layoutMapper.listErefCandidateSummary(
+				content, hint);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<EnumSubject> contents = layoutMapper.listErefCandidateSubject(
+				content, hint,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * 対象フィールドを取得する
 	 *
 	 * @param content レイアウト
 	 * @return 対象フィールド
 	 */
 	@JsonRpcMethod
-	public FieldContent getLayoutTarget(
+	public FieldContent getLayoutFref(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getTarget(content);
+		return layoutMapper.getFref(content);
 	}
 
 	/**
@@ -3263,19 +3340,19 @@ public class BuilderRpcController {
 	 * @return 対象フィールドの候補一覧
 	 */
 	@JsonRpcMethod
-	public FieldSummary<FieldSubject> listLayoutTargetCandidate(
+	public FieldSummary<FieldSubject> listLayoutFrefCandidate(
 		@JsonRpcParam("content") LayoutContent content,
 		@JsonRpcParam("hint") String hint,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldSummary<FieldSubject> summary = layoutMapper.listTargetCandidateSummary(
+		FieldSummary<FieldSubject> summary = layoutMapper.listFrefCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FieldSubject> contents = layoutMapper.listTargetCandidateSubject(
+		List<FieldSubject> contents = layoutMapper.listFrefCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3289,10 +3366,10 @@ public class BuilderRpcController {
 	 * @return 対象メッセージ
 	 */
 	@JsonRpcMethod
-	public MessageContent getLayoutConst(
+	public MessageContent getLayoutMref(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getConst(content);
+		return layoutMapper.getMref(content);
 	}
 
 	/**
@@ -3302,19 +3379,19 @@ public class BuilderRpcController {
 	 * @return 対象メッセージの候補一覧
 	 */
 	@JsonRpcMethod
-	public MessageSummary<MessageSubject> listLayoutConstCandidate(
+	public MessageSummary<MessageSubject> listLayoutMrefCandidate(
 		@JsonRpcParam("content") LayoutContent content,
 		@JsonRpcParam("hint") String hint,
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		MessageSummary<MessageSubject> summary = layoutMapper.listConstCandidateSummary(
+		MessageSummary<MessageSubject> summary = layoutMapper.listMrefCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<MessageSubject> contents = layoutMapper.listConstCandidateSubject(
+		List<MessageSubject> contents = layoutMapper.listMrefCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);

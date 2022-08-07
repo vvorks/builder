@@ -144,12 +144,84 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	);
 
 	/**
+	 * 対象クラスを取得する
+	 *
+	 * @param content レイアウト
+	 * @return 対象クラス
+	 */
+	public ClassContent getCref(LayoutContent content);
+
+	/**
+	 * 対象クラスの候補サマリーを取得する
+	 *
+	 * @param content レイアウト
+	 * @param hint ヒント情報
+	 * @return 対象クラスの候補サマリー
+	 */
+	public ClassSummary<ClassSubject> listCrefCandidateSummary(
+		@Param("content") LayoutContent content,
+		@Param("hint") String hint
+	);
+
+	/**
+	 * 対象クラスの候補一覧を取得する
+	 *
+	 * @param content レイアウト
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 対象クラスの候補一覧
+	 */
+	public List<ClassSubject> listCrefCandidateSubject(
+		@Param("content") LayoutContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
+	 * 対象列挙を取得する
+	 *
+	 * @param content レイアウト
+	 * @return 対象列挙
+	 */
+	public EnumContent getEref(LayoutContent content);
+
+	/**
+	 * 対象列挙の候補サマリーを取得する
+	 *
+	 * @param content レイアウト
+	 * @param hint ヒント情報
+	 * @return 対象列挙の候補サマリー
+	 */
+	public EnumSummary<EnumSubject> listErefCandidateSummary(
+		@Param("content") LayoutContent content,
+		@Param("hint") String hint
+	);
+
+	/**
+	 * 対象列挙の候補一覧を取得する
+	 *
+	 * @param content レイアウト
+	 * @param hint ヒント情報
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 対象列挙の候補一覧
+	 */
+	public List<EnumSubject> listErefCandidateSubject(
+		@Param("content") LayoutContent content,
+		@Param("hint") String hint,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
 	 * 対象フィールドを取得する
 	 *
 	 * @param content レイアウト
 	 * @return 対象フィールド
 	 */
-	public FieldContent getTarget(LayoutContent content);
+	public FieldContent getFref(LayoutContent content);
 
 	/**
 	 * 対象フィールドの候補サマリーを取得する
@@ -158,7 +230,7 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	 * @param hint ヒント情報
 	 * @return 対象フィールドの候補サマリー
 	 */
-	public FieldSummary<FieldSubject> listTargetCandidateSummary(
+	public FieldSummary<FieldSubject> listFrefCandidateSummary(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint
 	);
@@ -172,7 +244,7 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 対象フィールドの候補一覧
 	 */
-	public List<FieldSubject> listTargetCandidateSubject(
+	public List<FieldSubject> listFrefCandidateSubject(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint,
 		@Param("offset") int offset,
@@ -185,7 +257,7 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	 * @param content レイアウト
 	 * @return 対象メッセージ
 	 */
-	public MessageContent getConst(LayoutContent content);
+	public MessageContent getMref(LayoutContent content);
 
 	/**
 	 * 対象メッセージの候補サマリーを取得する
@@ -194,7 +266,7 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	 * @param hint ヒント情報
 	 * @return 対象メッセージの候補サマリー
 	 */
-	public MessageSummary<MessageSubject> listConstCandidateSummary(
+	public MessageSummary<MessageSubject> listMrefCandidateSummary(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint
 	);
@@ -208,7 +280,7 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	 * @param limit 件数（０または負値を指定した場合には全件）
 	 * @return 対象メッセージの候補一覧
 	 */
-	public List<MessageSubject> listConstCandidateSubject(
+	public List<MessageSubject> listMrefCandidateSubject(
 		@Param("content") LayoutContent content,
 		@Param("hint") String hint,
 		@Param("offset") int offset,
