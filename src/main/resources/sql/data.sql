@@ -535,7 +535,8 @@ INSERT INTO T_QUERY (
 	(3,5,'nameIs','fieldName == $name','','名前',NULL,NULL,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
 	(4,8,'nameIs','enumName == $name','','名前',NULL,NULL,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
 	(5,19,'startsFoo','owner.strValue =% ''Foo%'' && owner.owner.strValue =% ''%Bar''','','条件：父がFooで始まり祖父がBarで終わる',NULL,NULL,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
-	(6,24,'containSazae','owner.name =% ''%サザエ%'' && owner.owner.name =~ ''^[0-9]*$''','','条件：父がサザエを含み祖父が数字',NULL,NULL,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))
+	(6,24,'containSazae','owner.name =% ''%サザエ%'' && owner.owner.name =~ ''^[0-9]*$''','','条件：父がサザエを含み祖父が数字',NULL,NULL,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)),
+	(7,17,'root','parent == null','','',NULL,NULL,CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))
 ON CONFLICT DO NOTHING;
 INSERT INTO T_ENUM (
 	F_ENUM_ID,

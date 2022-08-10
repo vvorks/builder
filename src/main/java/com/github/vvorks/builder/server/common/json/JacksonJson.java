@@ -732,32 +732,44 @@ public class JacksonJson extends Json {
 
 	@Override
 	public void setNull(int index) {
-		asArray(nativeValue).set(index, null);
+		set0(index, null);
+	}
+
+	private void set0(int index, JsonNode node) {
+		ArrayNode array = asArray(nativeValue);
+		int n = array.size();
+		if (0 <= index && index < n) {
+			array.set(index, node);
+		} else if (index == n) {
+			array.add(node);
+		} else {
+			throw new IndexOutOfBoundsException();
+		}
 	}
 
 	@Override
 	public void setBoolean(int index, boolean value) {
-		asArray(nativeValue).set(index, toNativeValue(value));
+		set0(index, toNativeValue(value));
 	}
 
 	@Override
 	public void setInt(int index, int value) {
-		asArray(nativeValue).set(index, toNativeValue(value));
+		set0(index, toNativeValue(value));
 	}
 
 	@Override
 	public void setLong(int index, long value) {
-		asArray(nativeValue).set(index, toNativeValue(value));
+		set0(index, toNativeValue(value));
 	}
 
 	@Override
 	public void setFloat(int index, float value) {
-		asArray(nativeValue).set(index, toNativeValue(value));
+		set0(index, toNativeValue(value));
 	}
 
 	@Override
 	public void setDouble(int index, double value) {
-		asArray(nativeValue).set(index, toNativeValue(value));
+		set0(index, toNativeValue(value));
 	}
 
 	@Override
@@ -765,7 +777,7 @@ public class JacksonJson extends Json {
 		if (value == null) {
 			setNull(index);
 		} else {
-			asArray(nativeValue).set(index, toNativeValue(value));
+			set0(index, toNativeValue(value));
 		}
 	}
 
@@ -774,7 +786,7 @@ public class JacksonJson extends Json {
 		if (value == null) {
 			setNull(index);
 		} else {
-			asArray(nativeValue).set(index, toNativeValue(value));
+			set0(index, toNativeValue(value));
 		}
 	}
 
@@ -783,7 +795,7 @@ public class JacksonJson extends Json {
 		if (value == null) {
 			setNull(index);
 		} else {
-			asArray(nativeValue).set(index, toNativeValue(value));
+			set0(index, toNativeValue(value));
 		}
 	}
 
@@ -792,21 +804,21 @@ public class JacksonJson extends Json {
 		if (value == null) {
 			setNull(index);
 		} else {
-			asArray(nativeValue).set(index, toNativeValue(value));
+			set0(index, toNativeValue(value));
 		}
 	}
 
 	@Override
 	public Json setNewObject(int index) {
 		JsonNode value = MAPPER.createObjectNode();
-		asArray(nativeValue).set(index, value);
+		set0(index, value);
 		return wrap(value);
 	}
 
 	@Override
 	public Json setNewArray(int index) {
 		JsonNode value = MAPPER.createArrayNode();
-		asArray(nativeValue).set(index, value);
+		set0(index, value);
 		return wrap(value);
 	}
 

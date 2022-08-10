@@ -1,0 +1,500 @@
+{
+  "name" : "frame",
+  "type" : "PARTED_PANE",
+  "left" : "0",
+  "top" : "0",
+  "right" : "0",
+  "bottom" : "0",
+  "children" : [ {
+    "name" : "top",
+    "type" : "SIMPLE_PANE",
+    "height" : "50%",
+    "children" : [ {
+      "name" : "detail",
+      "type" : "SIMPLE_PANE",
+      "left" : "0",
+      "top" : "0",
+      "right" : "1em",
+      "bottom" : "0",
+      "children" : [ {
+        "name" : "pageIdLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "0",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "Page#pageId"
+      }, {
+        "name" : "pageIdField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "0",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "Page#pageId"
+      }, {
+        "name" : "ownerLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "2em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "Page#owner"
+      }, {
+        "name" : "ownerField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "2em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "Page#owner"
+      }, {
+        "name" : "contextLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "4em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "Page#context"
+      }, {
+        "name" : "contextField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "4em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "Page#context"
+      }, {
+        "name" : "widthLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "6em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "Page#width"
+      }, {
+        "name" : "widthField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "6em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "Page#width"
+      }, {
+        "name" : "heightLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "8em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "Page#height"
+      }, {
+        "name" : "heightField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "8em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "Page#height"
+      }, {
+        "name" : "layoutsLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "10em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "Page#layouts"
+      }, {
+        "name" : "layoutsField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "10em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "Page#layouts"
+      } ]
+    }, {
+      "name" : "sb",
+      "type" : "V_SCROLLBAR",
+      "top" : "0",
+      "right" : "0",
+      "bottom" : "0",
+      "width" : "1em",
+      "related" : "/frame/top/detail"
+    } ]
+  }, {
+    "name" : "center",
+    "type" : "SIMPLE_PANE",
+    "children" : [ {
+      "name" : "head",
+      "type" : "SIMPLE_PANE",
+      "left" : "0",
+      "top" : "0",
+      "right" : "0",
+      "height" : "2em",
+      "children" : [ {
+        "name" : "Layout",
+        "type" : "TAB",
+        "left" : "0",
+        "top" : "0",
+        "bottom" : "0",
+        "width" : "10em",
+        "cref" : "Layout",
+        "related" : "/frame/center/body/Layout"
+      } ]
+    }, {
+      "name" : "body",
+      "type" : "TABBED_PANE",
+      "left" : "0",
+      "top" : "2em",
+      "right" : "0",
+      "bottom" : "0",
+      "children" : [ {
+        "name" : "Layout",
+        "type" : "SIMPLE_PANE",
+        "left" : "0",
+        "top" : "0",
+        "right" : "0",
+        "bottom" : "0",
+        "children" : [ {
+          "name" : "head",
+          "type" : "SIMPLE_PANE",
+          "left" : "0",
+          "top" : "0",
+          "right" : "0",
+          "height" : "2em",
+          "children" : [ {
+            "name" : "layoutIdLabel",
+            "type" : "LABEL",
+            "left" : "0",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#layoutId"
+          }, {
+            "name" : "ownerLabel",
+            "type" : "LABEL",
+            "left" : "10em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#owner"
+          }, {
+            "name" : "childrenLabel",
+            "type" : "LABEL",
+            "left" : "20em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#children"
+          }, {
+            "name" : "parentLabel",
+            "type" : "LABEL",
+            "left" : "30em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#parent"
+          }, {
+            "name" : "layoutNameLabel",
+            "type" : "LABEL",
+            "left" : "40em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#layoutName"
+          }, {
+            "name" : "layoutTypeLabel",
+            "type" : "LABEL",
+            "left" : "50em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#layoutType"
+          }, {
+            "name" : "crefLabel",
+            "type" : "LABEL",
+            "left" : "60em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#cref"
+          }, {
+            "name" : "erefLabel",
+            "type" : "LABEL",
+            "left" : "70em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#eref"
+          }, {
+            "name" : "frefLabel",
+            "type" : "LABEL",
+            "left" : "80em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#fref"
+          }, {
+            "name" : "mrefLabel",
+            "type" : "LABEL",
+            "left" : "90em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#mref"
+          }, {
+            "name" : "relatedLabel",
+            "type" : "LABEL",
+            "left" : "100em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#related"
+          }, {
+            "name" : "paramLabel",
+            "type" : "LABEL",
+            "left" : "110em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#param"
+          }, {
+            "name" : "layoutParamLabel",
+            "type" : "LABEL",
+            "left" : "120em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#layoutParam"
+          }, {
+            "name" : "styleLabel",
+            "type" : "LABEL",
+            "left" : "130em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#style"
+          }, {
+            "name" : "leftLabel",
+            "type" : "LABEL",
+            "left" : "140em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#left"
+          }, {
+            "name" : "topLabel",
+            "type" : "LABEL",
+            "left" : "150em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#top"
+          }, {
+            "name" : "rightLabel",
+            "type" : "LABEL",
+            "left" : "160em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#right"
+          }, {
+            "name" : "bottomLabel",
+            "type" : "LABEL",
+            "left" : "170em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#bottom"
+          }, {
+            "name" : "widthLabel",
+            "type" : "LABEL",
+            "left" : "180em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#width"
+          }, {
+            "name" : "heightLabel",
+            "type" : "LABEL",
+            "left" : "190em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#height"
+          } ],
+          "related" : "/frame/center/body/Layout/body"
+        }, {
+          "name" : "body",
+          "type" : "SIMPLE_PANE",
+          "left" : "0",
+          "top" : "2em",
+          "right" : "0",
+          "bottom" : "0",
+          "children" : [ {
+            "name" : "layoutIdField",
+            "type" : "FIELD",
+            "left" : "0",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#layoutId"
+          }, {
+            "name" : "ownerField",
+            "type" : "FIELD",
+            "left" : "10em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#owner"
+          }, {
+            "name" : "childrenField",
+            "type" : "FIELD",
+            "left" : "20em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#children"
+          }, {
+            "name" : "parentField",
+            "type" : "FIELD",
+            "left" : "30em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#parent"
+          }, {
+            "name" : "layoutNameField",
+            "type" : "FIELD",
+            "left" : "40em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#layoutName"
+          }, {
+            "name" : "layoutTypeField",
+            "type" : "FIELD",
+            "left" : "50em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#layoutType"
+          }, {
+            "name" : "crefField",
+            "type" : "FIELD",
+            "left" : "60em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#cref"
+          }, {
+            "name" : "erefField",
+            "type" : "FIELD",
+            "left" : "70em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#eref"
+          }, {
+            "name" : "frefField",
+            "type" : "FIELD",
+            "left" : "80em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#fref"
+          }, {
+            "name" : "mrefField",
+            "type" : "FIELD",
+            "left" : "90em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#mref"
+          }, {
+            "name" : "relatedField",
+            "type" : "FIELD",
+            "left" : "100em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#related"
+          }, {
+            "name" : "paramField",
+            "type" : "FIELD",
+            "left" : "110em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#param"
+          }, {
+            "name" : "layoutParamField",
+            "type" : "FIELD",
+            "left" : "120em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#layoutParam"
+          }, {
+            "name" : "styleField",
+            "type" : "FIELD",
+            "left" : "130em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#style"
+          }, {
+            "name" : "leftField",
+            "type" : "FIELD",
+            "left" : "140em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#left"
+          }, {
+            "name" : "topField",
+            "type" : "FIELD",
+            "left" : "150em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#top"
+          }, {
+            "name" : "rightField",
+            "type" : "FIELD",
+            "left" : "160em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#right"
+          }, {
+            "name" : "bottomField",
+            "type" : "FIELD",
+            "left" : "170em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#bottom"
+          }, {
+            "name" : "widthField",
+            "type" : "FIELD",
+            "left" : "180em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#width"
+          }, {
+            "name" : "heightField",
+            "type" : "FIELD",
+            "left" : "190em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Layout#height"
+          } ]
+        } ]
+      } ]
+    } ]
+  } ]
+}

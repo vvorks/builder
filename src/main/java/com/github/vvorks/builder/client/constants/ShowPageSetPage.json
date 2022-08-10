@@ -1,0 +1,276 @@
+{
+  "name" : "frame",
+  "type" : "PARTED_PANE",
+  "left" : "0",
+  "top" : "0",
+  "right" : "0",
+  "bottom" : "0",
+  "children" : [ {
+    "name" : "top",
+    "type" : "SIMPLE_PANE",
+    "height" : "50%",
+    "children" : [ {
+      "name" : "detail",
+      "type" : "SIMPLE_PANE",
+      "left" : "0",
+      "top" : "0",
+      "right" : "1em",
+      "bottom" : "0",
+      "children" : [ {
+        "name" : "pageSetIdLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "0",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "PageSet#pageSetId"
+      }, {
+        "name" : "pageSetIdField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "0",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "PageSet#pageSetId"
+      }, {
+        "name" : "ownerLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "2em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "PageSet#owner"
+      }, {
+        "name" : "ownerField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "2em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "PageSet#owner"
+      }, {
+        "name" : "pageSetNameLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "4em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "PageSet#pageSetName"
+      }, {
+        "name" : "pageSetNameField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "4em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "PageSet#pageSetName"
+      }, {
+        "name" : "titleLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "6em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "PageSet#title"
+      }, {
+        "name" : "titleField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "6em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "PageSet#title"
+      }, {
+        "name" : "descriptionLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "8em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "PageSet#description"
+      }, {
+        "name" : "descriptionField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "8em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "PageSet#description"
+      }, {
+        "name" : "pagesLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "10em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "PageSet#pages"
+      }, {
+        "name" : "pagesField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "10em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "PageSet#pages"
+      } ]
+    }, {
+      "name" : "sb",
+      "type" : "V_SCROLLBAR",
+      "top" : "0",
+      "right" : "0",
+      "bottom" : "0",
+      "width" : "1em",
+      "related" : "/frame/top/detail"
+    } ]
+  }, {
+    "name" : "center",
+    "type" : "SIMPLE_PANE",
+    "children" : [ {
+      "name" : "head",
+      "type" : "SIMPLE_PANE",
+      "left" : "0",
+      "top" : "0",
+      "right" : "0",
+      "height" : "2em",
+      "children" : [ {
+        "name" : "Page",
+        "type" : "TAB",
+        "left" : "0",
+        "top" : "0",
+        "bottom" : "0",
+        "width" : "10em",
+        "cref" : "Page",
+        "related" : "/frame/center/body/Page"
+      } ]
+    }, {
+      "name" : "body",
+      "type" : "TABBED_PANE",
+      "left" : "0",
+      "top" : "2em",
+      "right" : "0",
+      "bottom" : "0",
+      "children" : [ {
+        "name" : "Page",
+        "type" : "SIMPLE_PANE",
+        "left" : "0",
+        "top" : "0",
+        "right" : "0",
+        "bottom" : "0",
+        "children" : [ {
+          "name" : "head",
+          "type" : "SIMPLE_PANE",
+          "left" : "0",
+          "top" : "0",
+          "right" : "0",
+          "height" : "2em",
+          "children" : [ {
+            "name" : "pageIdLabel",
+            "type" : "LABEL",
+            "left" : "0",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#pageId"
+          }, {
+            "name" : "ownerLabel",
+            "type" : "LABEL",
+            "left" : "10em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#owner"
+          }, {
+            "name" : "contextLabel",
+            "type" : "LABEL",
+            "left" : "20em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#context"
+          }, {
+            "name" : "widthLabel",
+            "type" : "LABEL",
+            "left" : "30em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#width"
+          }, {
+            "name" : "heightLabel",
+            "type" : "LABEL",
+            "left" : "40em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#height"
+          }, {
+            "name" : "layoutsLabel",
+            "type" : "LABEL",
+            "left" : "50em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#layouts"
+          } ],
+          "related" : "/frame/center/body/Page/body"
+        }, {
+          "name" : "body",
+          "type" : "SIMPLE_PANE",
+          "left" : "0",
+          "top" : "2em",
+          "right" : "0",
+          "bottom" : "0",
+          "children" : [ {
+            "name" : "pageIdField",
+            "type" : "FIELD",
+            "left" : "0",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#pageId"
+          }, {
+            "name" : "ownerField",
+            "type" : "FIELD",
+            "left" : "10em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#owner"
+          }, {
+            "name" : "contextField",
+            "type" : "FIELD",
+            "left" : "20em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#context"
+          }, {
+            "name" : "widthField",
+            "type" : "FIELD",
+            "left" : "30em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#width"
+          }, {
+            "name" : "heightField",
+            "type" : "FIELD",
+            "left" : "40em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#height"
+          }, {
+            "name" : "layoutsField",
+            "type" : "FIELD",
+            "left" : "50em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "Page#layouts"
+          } ]
+        } ]
+      } ]
+    } ]
+  } ]
+}

@@ -1,0 +1,283 @@
+{
+  "name" : "frame",
+  "type" : "SIMPLE_PANE",
+  "left" : "0",
+  "top" : "0",
+  "right" : "0",
+  "bottom" : "0",
+  "children" : [ {
+    "name" : "head",
+    "type" : "SIMPLE_PANE",
+    "left" : "0",
+    "top" : "0",
+    "right" : "0",
+    "height" : "2em",
+    "children" : [ {
+      "name" : "Project",
+      "type" : "TAB",
+      "left" : "0",
+      "top" : "0",
+      "bottom" : "0",
+      "width" : "10em",
+      "cref" : "Project",
+      "related" : "/frame/body/Project"
+    } ]
+  }, {
+    "name" : "body",
+    "type" : "TABBED_PANE",
+    "left" : "0",
+    "top" : "2em",
+    "right" : "0",
+    "bottom" : "0",
+    "children" : [ {
+      "name" : "Project",
+      "type" : "SIMPLE_PANE",
+      "left" : "0",
+      "top" : "0",
+      "right" : "0",
+      "bottom" : "0",
+      "children" : [ {
+        "name" : "head",
+        "type" : "SIMPLE_PANE",
+        "left" : "0",
+        "top" : "0",
+        "right" : "0",
+        "height" : "2em",
+        "children" : [ {
+          "name" : "projectIdLabel",
+          "type" : "LABEL",
+          "left" : "0",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#projectId"
+        }, {
+          "name" : "projectNameLabel",
+          "type" : "LABEL",
+          "left" : "10em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#projectName"
+        }, {
+          "name" : "gradleNameLabel",
+          "type" : "LABEL",
+          "left" : "20em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#gradleName"
+        }, {
+          "name" : "titleLabel",
+          "type" : "LABEL",
+          "left" : "30em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#title"
+        }, {
+          "name" : "descriptionLabel",
+          "type" : "LABEL",
+          "left" : "40em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#description"
+        }, {
+          "name" : "noteLabel",
+          "type" : "LABEL",
+          "left" : "50em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#note"
+        }, {
+          "name" : "copyrightsLabel",
+          "type" : "LABEL",
+          "left" : "60em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#copyrights"
+        }, {
+          "name" : "classesLabel",
+          "type" : "LABEL",
+          "left" : "70em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#classes"
+        }, {
+          "name" : "enumsLabel",
+          "type" : "LABEL",
+          "left" : "80em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#enums"
+        }, {
+          "name" : "messagesLabel",
+          "type" : "LABEL",
+          "left" : "90em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#messages"
+        }, {
+          "name" : "stylesLabel",
+          "type" : "LABEL",
+          "left" : "100em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#styles"
+        }, {
+          "name" : "pageSetsLabel",
+          "type" : "LABEL",
+          "left" : "110em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#pageSets"
+        }, {
+          "name" : "localesLabel",
+          "type" : "LABEL",
+          "left" : "120em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#locales"
+        }, {
+          "name" : "i18nsLabel",
+          "type" : "LABEL",
+          "left" : "130em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#i18ns"
+        } ],
+        "related" : "/frame/body/Project/body"
+      }, {
+        "name" : "body",
+        "type" : "SIMPLE_PANE",
+        "left" : "0",
+        "top" : "2em",
+        "right" : "0",
+        "bottom" : "0",
+        "children" : [ {
+          "name" : "projectIdField",
+          "type" : "FIELD",
+          "left" : "0",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#projectId"
+        }, {
+          "name" : "projectNameField",
+          "type" : "FIELD",
+          "left" : "10em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#projectName"
+        }, {
+          "name" : "gradleNameField",
+          "type" : "FIELD",
+          "left" : "20em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#gradleName"
+        }, {
+          "name" : "titleField",
+          "type" : "FIELD",
+          "left" : "30em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#title"
+        }, {
+          "name" : "descriptionField",
+          "type" : "FIELD",
+          "left" : "40em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#description"
+        }, {
+          "name" : "noteField",
+          "type" : "FIELD",
+          "left" : "50em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#note"
+        }, {
+          "name" : "copyrightsField",
+          "type" : "FIELD",
+          "left" : "60em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#copyrights"
+        }, {
+          "name" : "classesField",
+          "type" : "FIELD",
+          "left" : "70em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#classes"
+        }, {
+          "name" : "enumsField",
+          "type" : "FIELD",
+          "left" : "80em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#enums"
+        }, {
+          "name" : "messagesField",
+          "type" : "FIELD",
+          "left" : "90em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#messages"
+        }, {
+          "name" : "stylesField",
+          "type" : "FIELD",
+          "left" : "100em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#styles"
+        }, {
+          "name" : "pageSetsField",
+          "type" : "FIELD",
+          "left" : "110em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#pageSets"
+        }, {
+          "name" : "localesField",
+          "type" : "FIELD",
+          "left" : "120em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#locales"
+        }, {
+          "name" : "i18nsField",
+          "type" : "FIELD",
+          "left" : "130em",
+          "top" : "0",
+          "bottom" : "0",
+          "width" : "10em",
+          "fref" : "Project#i18ns"
+        } ]
+      } ]
+    } ]
+  } ]
+}

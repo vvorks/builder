@@ -3,6 +3,7 @@ package com.github.vvorks.builder.server.extender;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.FieldI18nContent;
 import com.github.vvorks.builder.server.domain.MessageContent;
 import com.github.vvorks.builder.server.domain.MessageI18nContent;
+import com.github.vvorks.builder.server.domain.PageSetContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.ProjectI18nContent;
 import com.github.vvorks.builder.server.domain.StyleContent;
@@ -49,6 +51,9 @@ public class ProjectExtender {
 	private static final String JSONKEY_MESSAGE = "message";
 
 	private static final Function<String, Json> MAKE_NODE = k -> Json.createObject();
+
+	private static final Set<String> LAYOUT_STAFF = new HashSet<>(Arrays.asList(
+			"PageSet", "Page", "Layout"));
 
 	@Autowired
     private ProjectMapper projectMapper;
@@ -118,6 +123,11 @@ public class ProjectExtender {
 		return Iterables.filter(list, c -> classExtender.isSurrogateClass(c));
 	}
 
+	public Iterable<ClassContent> getBuilderClasses(ProjectContent prj) {
+		List<ClassContent> list = getClasses(prj);
+		return Iterables.filter(list, c -> !LAYOUT_STAFF.contains(c.getClassName()));
+	}
+
 	public List<EnumContent> getEnums(ProjectContent prj) {
 		List<EnumContent> list = projectMapper.listEnumsContent(prj, 0, 0);
 		return list;
@@ -155,6 +165,11 @@ public class ProjectExtender {
 				sortStyles(list, c, into);
 			}
 		}
+	}
+
+	public List<PageSetContent> getPageSets(ProjectContent prj) {
+		List<PageSetContent> list = projectMapper.listPageSetsContent(prj, 0, 0);
+		return list;
 	}
 
 	/**

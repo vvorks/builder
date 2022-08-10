@@ -1,0 +1,260 @@
+{
+  "name" : "frame",
+  "type" : "PARTED_PANE",
+  "left" : "0",
+  "top" : "0",
+  "right" : "0",
+  "bottom" : "0",
+  "children" : [ {
+    "name" : "top",
+    "type" : "SIMPLE_PANE",
+    "height" : "50%",
+    "children" : [ {
+      "name" : "detail",
+      "type" : "SIMPLE_PANE",
+      "left" : "0",
+      "top" : "0",
+      "right" : "1em",
+      "bottom" : "0",
+      "children" : [ {
+        "name" : "ownerLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "0",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "EnumValue#owner"
+      }, {
+        "name" : "ownerField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "0",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "EnumValue#owner"
+      }, {
+        "name" : "valueIdLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "2em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "EnumValue#valueId"
+      }, {
+        "name" : "valueIdField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "2em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "EnumValue#valueId"
+      }, {
+        "name" : "codeLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "4em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "EnumValue#code"
+      }, {
+        "name" : "codeField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "4em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "EnumValue#code"
+      }, {
+        "name" : "titleLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "6em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "EnumValue#title"
+      }, {
+        "name" : "titleField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "6em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "EnumValue#title"
+      }, {
+        "name" : "descriptionLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "8em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "EnumValue#description"
+      }, {
+        "name" : "descriptionField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "8em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "EnumValue#description"
+      }, {
+        "name" : "noteLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "10em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "EnumValue#note"
+      }, {
+        "name" : "noteField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "10em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "EnumValue#note"
+      }, {
+        "name" : "i18nsLabel",
+        "type" : "LABEL",
+        "left" : "0",
+        "top" : "12em",
+        "width" : "10em",
+        "height" : "2em",
+        "fref" : "EnumValue#i18ns"
+      }, {
+        "name" : "i18nsField",
+        "type" : "FIELD",
+        "left" : "10em",
+        "top" : "12em",
+        "right" : "0",
+        "height" : "2em",
+        "fref" : "EnumValue#i18ns"
+      } ]
+    }, {
+      "name" : "sb",
+      "type" : "V_SCROLLBAR",
+      "top" : "0",
+      "right" : "0",
+      "bottom" : "0",
+      "width" : "1em",
+      "related" : "/frame/top/detail"
+    } ]
+  }, {
+    "name" : "center",
+    "type" : "SIMPLE_PANE",
+    "children" : [ {
+      "name" : "head",
+      "type" : "SIMPLE_PANE",
+      "left" : "0",
+      "top" : "0",
+      "right" : "0",
+      "height" : "2em",
+      "children" : [ {
+        "name" : "EnumValueI18n",
+        "type" : "TAB",
+        "left" : "0",
+        "top" : "0",
+        "bottom" : "0",
+        "width" : "10em",
+        "cref" : "EnumValueI18n",
+        "related" : "/frame/center/body/EnumValueI18n"
+      } ]
+    }, {
+      "name" : "body",
+      "type" : "TABBED_PANE",
+      "left" : "0",
+      "top" : "2em",
+      "right" : "0",
+      "bottom" : "0",
+      "children" : [ {
+        "name" : "EnumValueI18n",
+        "type" : "SIMPLE_PANE",
+        "left" : "0",
+        "top" : "0",
+        "right" : "0",
+        "bottom" : "0",
+        "children" : [ {
+          "name" : "head",
+          "type" : "SIMPLE_PANE",
+          "left" : "0",
+          "top" : "0",
+          "right" : "0",
+          "height" : "2em",
+          "children" : [ {
+            "name" : "ownerLabel",
+            "type" : "LABEL",
+            "left" : "0",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "EnumValueI18n#owner"
+          }, {
+            "name" : "targetLabel",
+            "type" : "LABEL",
+            "left" : "10em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "EnumValueI18n#target"
+          }, {
+            "name" : "titleLabel",
+            "type" : "LABEL",
+            "left" : "20em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "EnumValueI18n#title"
+          }, {
+            "name" : "descriptionLabel",
+            "type" : "LABEL",
+            "left" : "30em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "EnumValueI18n#description"
+          } ],
+          "related" : "/frame/center/body/EnumValueI18n/body"
+        }, {
+          "name" : "body",
+          "type" : "SIMPLE_PANE",
+          "left" : "0",
+          "top" : "2em",
+          "right" : "0",
+          "bottom" : "0",
+          "children" : [ {
+            "name" : "ownerField",
+            "type" : "FIELD",
+            "left" : "0",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "EnumValueI18n#owner"
+          }, {
+            "name" : "targetField",
+            "type" : "FIELD",
+            "left" : "10em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "EnumValueI18n#target"
+          }, {
+            "name" : "titleField",
+            "type" : "FIELD",
+            "left" : "20em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "EnumValueI18n#title"
+          }, {
+            "name" : "descriptionField",
+            "type" : "FIELD",
+            "left" : "30em",
+            "top" : "0",
+            "bottom" : "0",
+            "width" : "10em",
+            "fref" : "EnumValueI18n#description"
+          } ]
+        } ]
+      } ]
+    } ]
+  } ]
+}

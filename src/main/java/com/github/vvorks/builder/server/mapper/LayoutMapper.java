@@ -72,6 +72,26 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	);
 
 	/**
+	 * rootに合致するレイアウトのサマリーを取得する
+	 *
+	 * @return レイアウトのサマリー
+	 */
+	public LayoutSummary<LayoutContent> listSummaryIfRoot(
+	);
+
+	/**
+	 * rootに合致するレイアウトを取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return レイアウトのリスト
+	 */
+	public List<LayoutContent> listContentIfRoot(
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
 	 * 所属ページを取得する
 	 *
 	 * @param content レイアウト
@@ -378,6 +398,30 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	 * @return 子レイアウト
 	 */
 	public List<LayoutContent> listChildrenContent(
+		@Param("content") LayoutContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
+	 * rootに合致する子レイアウトのサマリーを取得する
+	 *
+	 * @param content レイアウト
+	 * @return 子レイアウトのサマリー
+	 */
+	public LayoutSummary<LayoutContent> listChildrenSummaryIfRoot(
+		@Param("content") LayoutContent content
+	);
+
+	/**
+	 * rootに合致する子レイアウトを取得する
+	 *
+	 * @param content レイアウト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 子レイアウト
+	 */
+	public List<LayoutContent> listChildrenContentIfRoot(
 		@Param("content") LayoutContent content,
 		@Param("offset") int offset,
 		@Param("limit") int limit

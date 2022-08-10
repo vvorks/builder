@@ -29,6 +29,8 @@ public class PageBuilder {
 
 	private static final String PAGESET_EDIT = "edit";
 
+	private double NA = LayoutBuilder.NA;
+
 	public static class ClassRelation {
 
 		private final ClassContent clazz;
@@ -72,6 +74,10 @@ public class PageBuilder {
 			return Iterables.filter(sets, c -> c.getOwner() == me);
 		}
 
+		public boolean isContained() {
+			return owner != null;
+		}
+
 	}
 
 	@Autowired
@@ -99,8 +105,35 @@ public class PageBuilder {
 	private void insertShowPageSet(ProjectContent prj) {
 		ClassRelation rel = getRelation(prj);
 		PageSetContent ps = insertPageSet(prj, PAGESET_SHOW);
-		insertShowPage(ps, prj, rel);
-		visitRelation(rel, r -> insertShowPage(ps, r.getContent(), rel));
+		insertShowPage(ps, rel);
+		visitRelation(rel, r -> insertShowPage(ps, r));
+	}
+
+	private ClassRelation getRelation(ProjectContent prj) {
+		Map<Integer, ClassRelation> relations = new LinkedHashMap<>();
+		//クラス一覧からリレーションのリストを作成
+		for (ClassContent cls : mappers.getProjectMapper().listClassesContent(prj, 0, 0)) {
+			relations.put(cls.getClassId(), new ClassRelation(cls));
+		}
+		//各クラス中のSETフィールドを元に関連付け
+		for (ClassRelation owner : relations.values()) {
+			ClassContent cls = owner.clazz;
+			for (FieldContent fld : mappers.getClassMapper().listFieldsContent(cls, 0, 0)) {
+				if (fld.getType() == DataType.SET) {
+					FieldContent fref = mappers.getFieldMapper().getFref(fld);
+					ClassRelation set = relations.get(fref.getOwnerClassId());
+					owner.addSet(set, fld.isIsContainer());
+				}
+			}
+		}
+		//誰からも保有されていないクラスをトップレベルクラスとし、rootに追加
+		ClassRelation root = new ClassRelation();
+		for (ClassRelation r : relations.values()) {
+			if (!r.isContained()) {
+				root.addSet(r, true);
+			}
+		}
+		return root;
 	}
 
 	private void visitRelation(ClassRelation rel, Consumer<ClassRelation> method) {
@@ -121,24 +154,79 @@ public class PageBuilder {
 		return ps;
 	}
 
-	private double NA = LayoutBuilder.NA;
-
-	private void insertShowPage(PageSetContent ps, ProjectContent prj, ClassRelation rel) {
+	private void insertShowPage(PageSetContent ps, ClassRelation rel) {
+		ClassContent cls = rel.getContent();
+		Integer classId;
+		List<FieldContent> fields;
+		if (cls == null) {
+			classId = null;
+			fields = Collections.emptyList();
+		} else {
+			classId = cls.getClassId();
+			fields = mappers.getClassMapper().listFieldsContent(cls, 0, 0);
+		}
 		//insert page
 		PageContent pg = new PageContent();
 		pg.setPageId(mappers.newPageId());
 		pg.setOwnerPageSetId(ps.getPageSetId());
-		pg.setContextClassId(null);
+		pg.setContextClassId(classId);
 		pg.setWidth(0);
 		pg.setHeight(0);
 		mappers.getPageMapper().insert(pg);
-		//build layout
+		//insert layouts
 		LayoutBuilder b = new LayoutBuilder(pg, "em", mappers);
-		//insert root layouts
-		b.enter(LayoutType.SIMPLE_PANE, "frame");
-			insertOwnsLists(b, rel);
-		b.leave();
+		boolean hasFields = !fields.isEmpty();
+		boolean hasOwns = !Iterables.isEmpty(rel.getOwns());
+		if (hasFields && hasOwns) {
+			b.enter(LayoutType.PARTED_PANE, "frame");
+				b.enter(LayoutType.SIMPLE_PANE, "top", "", "top");
+					b.locate(null, "50%");
+					insertDetail(b, rel);
+				b.leave();
+				b.enter(LayoutType.SIMPLE_PANE, "center", "", "center");
+					b.locate(null, null);
+					insertOwnsLists(b, rel);
+				b.leave();
+			b.leave();
+		} else if (hasFields) {
+			b.enter(LayoutType.SIMPLE_PANE, "frame");
+				insertDetail(b, rel);
+			b.leave();
+		} else if (hasOwns) {
+			b.enter(LayoutType.SIMPLE_PANE, "frame");
+				insertOwnsLists(b, rel);
+			b.leave();
+		}
 		b.finish();
+	}
+
+	private void insertDetail(LayoutBuilder b, ClassRelation rel) {
+		int top;
+		int height;
+		int labelWidth;
+		ClassContent cls = rel.getContent();
+		b.enter(LayoutType.SIMPLE_PANE, "detail");
+			b.locate(0, 0, 1, 0);
+			List<FieldContent> fields = mappers.getClassMapper().listFieldsContent(cls, 0, 0);
+			top = 0;
+			labelWidth = 10;
+			for (FieldContent fld : fields) {
+				height = 2; //TODO 仮。本当はField書式から設定
+				b.enter(LayoutType.LABEL, fld.getFieldName() + "Label");
+					b.locate(0, top, NA, NA, labelWidth, height);
+					b.refField(fld);
+				b.leave();
+				b.enter(LayoutType.FIELD, fld.getFieldName() + "Field");
+					b.locate(labelWidth, top, 0, NA, NA, height);
+					b.refField(fld);
+				b.leave();
+				top += height;
+			}
+		b.leave();
+		b.enter(LayoutType.V_SCROLLBAR, "sb");
+			b.locate(NA, 0, 0, 0, 1, NA);
+			b.related("detail");
+		b.leave();
 	}
 
 	private void insertOwnsLists(LayoutBuilder b, ClassRelation rel) {
@@ -169,7 +257,7 @@ public class PageBuilder {
 						left = 0;
 						for (FieldContent fld : fields) {
 							width = 10; //TODO 仮。本当はField書式から設定
-							b.enter(LayoutType.LABEL, fld.getFieldName());
+							b.enter(LayoutType.LABEL, fld.getFieldName() + "Label");
 								b.locate(left, 0, NA, 0, width, NA);
 								b.refField(fld);
 							b.leave();
@@ -177,11 +265,11 @@ public class PageBuilder {
 						}
 					b.leave();
 					b.enter(LayoutType.SIMPLE_PANE, "body");
-						b.locate(0, 2, 0, 0, NA, NA);
+						b.locate(0, 2, 0, 0);
 						left = 0;
 						for (FieldContent fld : fields) {
 							width = 10; //TODO 仮。本当はField書式から設定
-							b.enter(LayoutType.FIELD, fld.getFieldName());
+							b.enter(LayoutType.FIELD, fld.getFieldName() + "Field");
 								b.locate(left, 0, NA, 0, width, NA);
 								b.refField(fld);
 							b.leave();
@@ -191,42 +279,6 @@ public class PageBuilder {
 				b.leave();
 			}
 		b.leave();
-	}
-
-	private void insertShowPage(PageSetContent ps, ClassContent cls, ClassRelation rel) {
-		//insert page
-		PageContent pg = new PageContent();
-		pg.setPageId(mappers.newPageId());
-		pg.setOwnerPageSetId(ps.getPageSetId());
-		pg.setContextClassId(cls.getClassId());
-		pg.setWidth(0);
-		pg.setHeight(0);
-		mappers.getPageMapper().insert(pg);
-		//TODO insert layouts
-	}
-
-	private ClassRelation getRelation(ProjectContent prj) {
-		Map<Integer, ClassRelation> relations = new LinkedHashMap<>();
-		for (ClassContent cls : mappers.getProjectMapper().listClassesContent(prj, 0, 0)) {
-			relations.put(cls.getClassId(), new ClassRelation(cls));
-		}
-		for (ClassRelation owner : relations.values()) {
-			ClassContent cls = owner.clazz;
-			for (FieldContent fld : mappers.getClassMapper().listFieldsContent(cls, 0, 0)) {
-				if (fld.getType() == DataType.SET) {
-					FieldContent fref = mappers.getFieldMapper().getFref(fld);
-					ClassRelation set = relations.get(fref.getOwnerClassId());
-					owner.addSet(set, fld.isIsContainer());
-				}
-			}
-		}
-		ClassRelation root = new ClassRelation();
-		for (ClassRelation r : relations.values()) {
-			if (r.owner == null) {
-				root.addSet(r, true);
-			}
-		}
-		return root;
 	}
 
 }

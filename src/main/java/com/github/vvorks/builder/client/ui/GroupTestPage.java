@@ -14,7 +14,9 @@ import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiTab;
 import com.github.vvorks.builder.client.common.ui.UiVerticalGroup;
 import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
+import com.github.vvorks.builder.shared.common.json.Json;
 import com.github.vvorks.builder.shared.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.util.JsonResourceBundle;
 
 public class GroupTestPage extends UiPage {
 
@@ -35,6 +37,9 @@ public class GroupTestPage extends UiPage {
 
 	@Override
 	protected void initialize() {
+		Json res = JsonResourceBundle.getBundle().getResource("ShowPage");
+		LOGGER.debug("json is [[%s]]", res.getContent());
+
 		LOGGER.trace("%s.initialize()", getFullName());
 		final double NA = UiNodeBuilder.NA;
 		UiNodeBuilder b = new UiNodeBuilder(this, "em");

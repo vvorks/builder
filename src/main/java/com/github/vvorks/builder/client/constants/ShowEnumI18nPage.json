@@ -1,0 +1,89 @@
+{
+  "name" : "frame",
+  "type" : "SIMPLE_PANE",
+  "left" : "0",
+  "top" : "0",
+  "right" : "0",
+  "bottom" : "0",
+  "children" : [ {
+    "name" : "detail",
+    "type" : "SIMPLE_PANE",
+    "left" : "0",
+    "top" : "0",
+    "right" : "1em",
+    "bottom" : "0",
+    "children" : [ {
+      "name" : "ownerLabel",
+      "type" : "LABEL",
+      "left" : "0",
+      "top" : "0",
+      "width" : "10em",
+      "height" : "2em",
+      "fref" : "EnumI18n#owner"
+    }, {
+      "name" : "ownerField",
+      "type" : "FIELD",
+      "left" : "10em",
+      "top" : "0",
+      "right" : "0",
+      "height" : "2em",
+      "fref" : "EnumI18n#owner"
+    }, {
+      "name" : "targetLabel",
+      "type" : "LABEL",
+      "left" : "0",
+      "top" : "2em",
+      "width" : "10em",
+      "height" : "2em",
+      "fref" : "EnumI18n#target"
+    }, {
+      "name" : "targetField",
+      "type" : "FIELD",
+      "left" : "10em",
+      "top" : "2em",
+      "right" : "0",
+      "height" : "2em",
+      "fref" : "EnumI18n#target"
+    }, {
+      "name" : "titleLabel",
+      "type" : "LABEL",
+      "left" : "0",
+      "top" : "4em",
+      "width" : "10em",
+      "height" : "2em",
+      "fref" : "EnumI18n#title"
+    }, {
+      "name" : "titleField",
+      "type" : "FIELD",
+      "left" : "10em",
+      "top" : "4em",
+      "right" : "0",
+      "height" : "2em",
+      "fref" : "EnumI18n#title"
+    }, {
+      "name" : "descriptionLabel",
+      "type" : "LABEL",
+      "left" : "0",
+      "top" : "6em",
+      "width" : "10em",
+      "height" : "2em",
+      "fref" : "EnumI18n#description"
+    }, {
+      "name" : "descriptionField",
+      "type" : "FIELD",
+      "left" : "10em",
+      "top" : "6em",
+      "right" : "0",
+      "height" : "2em",
+      "fref" : "EnumI18n#description"
+    } ]
+  }, {
+    "name" : "sb",
+    "type" : "V_SCROLLBAR",
+    "top" : "0",
+    "right" : "0",
+    "bottom" : "0",
+    "width" : "1em",
+    "related" : "/frame/detail"
+  } ]
+}

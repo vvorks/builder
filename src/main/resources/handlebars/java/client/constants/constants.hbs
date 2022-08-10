@@ -1,5 +1,5 @@
 //
-// class constants
+// project constants
 //
 {{#each projectConstants}}
 {{#java this "client/constants/ProjectConstants" key ".json"}}
@@ -50,5 +50,16 @@
 {{#java this "client/constants/Message" key ".json"}}
 {{value.content}}
 {{/java}}
+{{/each}}
+
+//
+//layout
+//
+{{#each pageSets}}
+{{#each pages}}
+{{#java this "client/constants/" ../upperName contextName "Page" ".json"}}
+{{layoutTree.content}}
+{{/java}}
+{{/each}}
 {{/each}}
 

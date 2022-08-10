@@ -3,7 +3,7 @@ package com.github.vvorks.builder.server.extender;
 import com.github.vvorks.builder.server.expression.Expression;
 import com.github.vvorks.builder.shared.common.lang.Factory;
 
-public abstract class SqlWriter implements Expression.Visitor<Object, String> {
+public abstract class SqlWriter implements Expression.Visitor<Extenders, String> {
 
 	public static SqlWriter get() {
 		return Factory.getInstance(SqlWriter.class);

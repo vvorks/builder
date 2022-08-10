@@ -221,7 +221,7 @@ public interface {{className}}Mapper extends MapperInterface<{{className}}Conten
 	 * @return {{../titleOrName}}のサマリー
 	 */
 	public {{../fref.owner.className}}Summary<{{../fref.owner.className}}Content> list{{../upperName}}SummaryIf{{upperName}}(
-		@Param("content") {{../../className}}Content content,
+		@Param("content") {{../../className}}Content content{{#if arguments}},{{/if}}
 		{{#each arguments}}
 		@Param("{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}},{{/separator}}
 		{{/each}}

@@ -40,7 +40,10 @@ public class Mappers implements BeanPostProcessor {
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (beanName.equals("dataSourceScriptDatabaseInitializer")) {
-			resetIds();
+			try {
+				resetIds();
+			} catch (Exception err) {
+			}
 		}
 		return bean;
 	}

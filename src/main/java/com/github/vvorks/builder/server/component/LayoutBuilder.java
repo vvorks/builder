@@ -140,6 +140,50 @@ public class LayoutBuilder {
 		return this;
 	}
 
+	public LayoutBuilder locate(String left, String top, String right, String bottom) {
+		LayoutContent content = stack.peek().content;
+		content.setLeft(left);
+		content.setTop(top);
+		content.setRight(right);
+		content.setBottom(bottom);
+		content.setWidth(null);
+		content.setHeight(null);
+		return this;
+	}
+
+	public LayoutBuilder locate(double left, double top, double right, double bottom) {
+		LayoutContent content = stack.peek().content;
+		content.setLeft(encode(left));
+		content.setTop(encode(top));
+		content.setRight(encode(right));
+		content.setBottom(encode(bottom));
+		content.setWidth(null);
+		content.setHeight(null);
+		return this;
+	}
+
+	public LayoutBuilder locate(String width, String height) {
+		LayoutContent content = stack.peek().content;
+		content.setLeft(null);
+		content.setTop(null);
+		content.setRight(null);
+		content.setBottom(null);
+		content.setWidth(width);
+		content.setHeight(height);
+		return this;
+	}
+
+	public LayoutBuilder locate(double width, double height) {
+		LayoutContent content = stack.peek().content;
+		content.setLeft(null);
+		content.setTop(null);
+		content.setRight(null);
+		content.setBottom(null);
+		content.setWidth(encode(width));
+		content.setHeight(encode(height));
+		return this;
+	}
+
 	public LayoutBuilder locate(String left, String top, String right, String bottom, String width, String height) {
 		LayoutContent content = stack.peek().content;
 		content.setLeft(left);
@@ -182,6 +226,8 @@ public class LayoutBuilder {
 		for (Node node : root.children.values()) {
 			solveRelation(node);
 		}
+		this.stack.clear();
+		this.stack.push(new Node(null));
 	}
 
 	private Node getRoot() {

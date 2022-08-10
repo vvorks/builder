@@ -34,8 +34,12 @@
 	<!-- **************************************** -->
 	<!-- I18N settings.                           -->
 	<!-- **************************************** -->
+	<!--
 	<extend-property name="locale" values="en,fr,de,it,es,pt,ja" />
 	<set-property name="locale" value="en,fr,de,it,es,pt,ja" />
+	-->
+	<extend-property name="locale" values="en,ja" />
+	<set-property name="locale" value="en,ja" />
 	<set-property-fallback name="locale" value="ja" />
 
 	<!-- **************************************** -->

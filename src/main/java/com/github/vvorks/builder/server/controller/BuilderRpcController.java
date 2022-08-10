@@ -3095,6 +3095,34 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * rootに合致するレイアウト一覧情報を取得する
+	 *
+	 * @param content ページ
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return レイアウト一覧情報
+	 */
+	@JsonRpcMethod
+	public LayoutSummary<LayoutContent> listPageLayoutsIfRoot(
+		@JsonRpcParam("content") PageContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LayoutSummary<LayoutContent> summary = pageMapper.listLayoutsSummaryIfRoot(
+				content
+				);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LayoutContent> contents = pageMapper.listLayoutsContentIfRoot(
+				content,
+				offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
 	 * レイアウトを挿入する
 	 *
 	 * @param content 挿入するレイアウト
@@ -3160,6 +3188,30 @@ public class BuilderRpcController {
 		}
 		summary.setOffset(offset);
 		List<LayoutContent> contents = layoutMapper.listContent(offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * rootに合致するレイアウト情報を取得する
+	 *
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return レイアウト情報
+	 */
+	@JsonRpcMethod
+	public LayoutSummary<LayoutContent> listLayoutIfRoot(
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LayoutSummary<LayoutContent> summary = layoutMapper.listSummaryIfRoot(
+				);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LayoutContent> contents = layoutMapper.listContentIfRoot(
+				offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -3548,6 +3600,34 @@ public class BuilderRpcController {
 		summary.setOffset(offset);
 		List<LayoutContent> contents =
 				layoutMapper.listChildrenContent(content, offset, limit);
+		summary.setContents(contents);
+		return summary;
+	}
+
+	/**
+	 * rootに合致する子レイアウト情報を取得する
+	 *
+	 * @param content レイアウト
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return 子レイアウト情報
+	 */
+	@JsonRpcMethod
+	public LayoutSummary<LayoutContent> listLayoutChildrenIfRoot(
+		@JsonRpcParam("content") LayoutContent content,
+		@JsonRpcParam("offset") int offset,
+		@JsonRpcParam("limit") int limit
+	) {
+		LayoutSummary<LayoutContent> summary = layoutMapper.listChildrenSummaryIfRoot(
+				content
+				);
+		if (offset < 0) {
+			offset = summary.getFocus();
+		}
+		summary.setOffset(offset);
+		List<LayoutContent> contents = layoutMapper.listChildrenContentIfRoot(
+				content,
+				offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}

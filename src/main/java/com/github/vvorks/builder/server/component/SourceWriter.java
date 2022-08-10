@@ -24,6 +24,7 @@ import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.vvorks.builder.server.common.handlebars.ExtenderResolver;
 import com.github.vvorks.builder.server.common.handlebars.GlobalResolver;
+import com.github.vvorks.builder.server.common.handlebars.IndentHelper;
 import com.github.vvorks.builder.server.common.handlebars.ReverseHelper;
 import com.github.vvorks.builder.server.common.handlebars.SeparatorHelper;
 import com.github.vvorks.builder.server.common.handlebars.SourceHelper;
@@ -32,13 +33,7 @@ import com.github.vvorks.builder.server.common.io.LoggerWriter;
 import com.github.vvorks.builder.server.common.io.Resources;
 import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.domain.ProjectContent;
-import com.github.vvorks.builder.server.extender.ClassExtender;
-import com.github.vvorks.builder.server.extender.EnumExtender;
-import com.github.vvorks.builder.server.extender.EnumValueExtender;
-import com.github.vvorks.builder.server.extender.FieldExtender;
-import com.github.vvorks.builder.server.extender.ProjectExtender;
-import com.github.vvorks.builder.server.extender.QueryExtender;
-import com.github.vvorks.builder.server.extender.StyleExtender;
+import com.github.vvorks.builder.server.extender.Extenders;
 import com.github.vvorks.builder.server.mapper.ProjectMapper;
 import com.github.vvorks.builder.shared.common.logging.Logger;
 
@@ -58,25 +53,7 @@ public class SourceWriter {
 	private ProjectMapper projectMapper;
 
 	@Autowired
-	private ProjectExtender projectExtender;
-
-	@Autowired
-	private ClassExtender classExtender;
-
-	@Autowired
-	private FieldExtender fieldExtender;
-
-	@Autowired
-	private QueryExtender queryExtender;
-
-	@Autowired
-	private EnumExtender enumExtender;
-
-	@Autowired
-	private EnumValueExtender enumValueExtender;
-
-	@Autowired
-	private StyleExtender styleExtender;
+	private Extenders extenders;
 
 	private SqlHelper sqlHelper = SqlHelper.get();
 
@@ -108,7 +85,9 @@ public class SourceWriter {
 						.registerHelper("separator", new SeparatorHelper())
 						.registerHelper("reverse", new ReverseHelper())
 						.registerHelper("java", new SourceHelper(javaCodeDir))
-						.registerHelper("resources", new SourceHelper(resRootDir));
+						.registerHelper("resources", new SourceHelper(resRootDir))
+						.registerHelper("indent", new IndentHelper("\t"))
+						;
 				Map<String, Object> globalMap = new HashMap<>();
 				globalMap.put("project", prj);
 				globalMap.put("disableForeignKey", sqlHelper.disableForeignKey());
@@ -118,14 +97,7 @@ public class SourceWriter {
 								new GlobalResolver("global", globalMap),
 								MapValueResolver.INSTANCE,
 								JavaBeanValueResolver.INSTANCE,
-								new ExtenderResolver(
-										projectExtender,
-										classExtender,
-										fieldExtender,
-										queryExtender,
-										enumExtender,
-										enumValueExtender,
-										styleExtender))
+								new ExtenderResolver(extenders.getExtenders()))
 						.build();
 				//テンプレートの適用
 				for (String s : hbsFiles) {

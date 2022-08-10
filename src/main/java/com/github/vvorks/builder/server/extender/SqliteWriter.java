@@ -59,62 +59,62 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
-	public String visit(OrderByExpression exp, Object option) {
+	public String visit(OrderByExpression exp, Extenders extenders) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(exp.getExpr().accept(this, option));
+		sb.append(exp.getExpr().accept(this, extenders));
 		sb.append(" ");
 		sb.append(exp.isAsc() ? "ASC" : "DESC");
 		return sb.toString();
 	}
 
 	@Override
-	public String visit(Operation exp, Object option) {
+	public String visit(Operation exp, Extenders extenders) {
 		Operation.Code code = exp.getCode();
 		String result;
 		switch (code) {
 		case PAREN:
-			result = visitParenOperation(exp, option);
+			result = visitParenOperation(exp, extenders);
 			break;
 		case GET:
-			result = visitGetOperation(exp, option);
+			result = visitGetOperation(exp, extenders);
 			break;
 		case CONST:
-			result = visitConstOperation(exp, option);
+			result = visitConstOperation(exp, extenders);
 			break;
 		case PLUS:
 		case MINUS:
 		case NOT:
-			result = visitUnaryOperation(exp, option);
+			result = visitUnaryOperation(exp, extenders);
 			break;
 		case XOR:
-			result = visitXorOperation(exp, option);
+			result = visitXorOperation(exp, extenders);
 			break;
 		case LIKE:
-			result = visitLikeOperation(exp, option);
+			result = visitLikeOperation(exp, extenders);
 			break;
 		case MATCH:
-			result = visitMatchOperation(exp, option);
+			result = visitMatchOperation(exp, extenders);
 			break;
 		case COMMA:
-			result = visitCommaOperation(exp, option);
+			result = visitCommaOperation(exp, extenders);
 			break;
 		default:
-			result = visitBinaryOperation(exp, option);
+			result = visitBinaryOperation(exp, extenders);
 			break;
 		}
 		return result;
 	}
 
-	private String visitParenOperation(Operation exp, Object option) {
+	private String visitParenOperation(Operation exp, Extenders extenders) {
 		StringBuilder sb = new StringBuilder();
 		List<Expression> operands = exp.getOperands();
 		sb.append("(");
-		sb.append(operands.get(0).accept(this, option));
+		sb.append(operands.get(0).accept(this, extenders));
 		sb.append(")");
 		return sb.toString();
 	}
 
-	private String visitGetOperation(Operation exp, Object option) {
+	private String visitGetOperation(Operation exp, Extenders extenders) {
 		List<Expression> operands = exp.getOperands();
 		int n = operands.size();
 		Asserts.check(operands.get(n - 1) instanceof FieldRef);
@@ -135,7 +135,7 @@ public class SqliteWriter extends SqlWriter {
 		return sb.toString();
 	}
 
-	private String visitConstOperation(Operation exp, Object option) {
+	private String visitConstOperation(Operation exp, Extenders extenders) {
 		List<Expression> operands = exp.getOperands();
 		Asserts.check(operands.size() == 2);
 		Asserts.check(operands.get(0) instanceof EnumRef);
@@ -149,22 +149,22 @@ public class SqliteWriter extends SqlWriter {
 		}
 	}
 
-	private String visitUnaryOperation(Operation exp, Object option) {
+	private String visitUnaryOperation(Operation exp, Extenders extenders) {
 		StringBuilder sb = new StringBuilder();
 		Operation.Code code = exp.getCode();
 		List<Expression> operands = exp.getOperands();
 		String symbol = SYMBOL_MAP.get(code);
 		sb.append(symbol);
-		sb.append(operands.get(0).accept(this, option));
+		sb.append(operands.get(0).accept(this, extenders));
 		return sb.toString();
 	}
 
-	private String visitXorOperation(Operation exp, Object option) {
+	private String visitXorOperation(Operation exp, Extenders extenders) {
 		List<Expression> operands = exp.getOperands();
 		//一旦結果を逆順でスタックに積む
 		Deque<String> stack = new ArrayDeque<>();
 		for (int i = operands.size() - 1; i >= 0; i--) {
-			stack.push(operands.get(i).accept(this, option));
+			stack.push(operands.get(i).accept(this, extenders));
 		}
 		//スタックトップから順に組み立て
 		StringBuilder wb = new StringBuilder();
@@ -182,76 +182,115 @@ public class SqliteWriter extends SqlWriter {
 		return stack.pop();
 	}
 
-	private String visitLikeOperation(Operation exp, Object option) {
+	private String visitLikeOperation(Operation exp, Extenders extenders) {
 		StringBuilder sb = new StringBuilder();
 		List<Expression> operands = exp.getOperands();
-		String lValue = operands.get(0).accept(this, option);
-		String rValue = operands.get(1).accept(this, option);
+		String lValue = operands.get(0).accept(this, extenders);
+		String rValue = operands.get(1).accept(this, extenders);
 		sb.append(lValue).append(" LIKE ").append(rValue);
 		return sb.toString();
 	}
 
-	private String visitMatchOperation(Operation exp, Object option) {
+	private String visitMatchOperation(Operation exp, Extenders extenders) {
 		StringBuilder sb = new StringBuilder();
 		List<Expression> operands = exp.getOperands();
-		String lValue = operands.get(0).accept(this, option);
-		String rValue = operands.get(1).accept(this, option);
+		String lValue = operands.get(0).accept(this, extenders);
+		String rValue = operands.get(1).accept(this, extenders);
 		sb.append(lValue).append(" REGEXP ").append(rValue);
 		return sb.toString();
 	}
 
-	private String visitCommaOperation(Operation exp, Object option) {
+	private String visitCommaOperation(Operation exp, Extenders extenders) {
 		StringBuilder sb = new StringBuilder();
 		List<Expression> operands = exp.getOperands();
-		sb.append(operands.get(0).accept(this, option));
+		sb.append(operands.get(0).accept(this, extenders));
 		for (int i = 1; i < operands.size(); i++) {
 			sb.append(", ");
-			sb.append(operands.get(i).accept(this, option));
+			sb.append(operands.get(i).accept(this, extenders));
 		}
 		return sb.toString();
 	}
 
-	private String visitBinaryOperation(Operation exp, Object option) {
+	private String visitBinaryOperation(Operation exp, Extenders extenders) {
 		StringBuilder sb = new StringBuilder();
 		Operation.Code code = exp.getCode();
 		List<Expression> operands = exp.getOperands();
-		String symbol = SYMBOL_MAP.get(code);
-		sb.append(operands.get(0).accept(this, option));
-		for (int i = 1; i < operands.size(); i++) {
-			sb.append(" ");
-			sb.append(symbol);
-			sb.append(" ");
-			sb.append(operands.get(i).accept(this, option));
+		Expression lv = operands.get(0);
+		if (lv.getType() == DataType.REF) {
+			sb.append(visitRefOperation(exp, extenders));
+		} else {
+			String symbol = SYMBOL_MAP.get(code);
+			sb.append(lv.accept(this, extenders));
+			for (int i = 1; i < operands.size(); i++) {
+				sb.append(" ").append(symbol).append(" ");
+				sb.append(operands.get(i).accept(this, extenders));
+			}
+		}
+		return sb.toString();
+	}
+
+	private String visitRefOperation(Operation exp, Extenders extenders) {
+		FieldExtender fe = extenders.getFieldExtender();
+		Operation lv = (Operation) exp.getOperands().get(0);
+		Operation.Code code = exp.getCode();
+		Expression rv = exp.getOperands().get(1);
+		Class<?> rType = rv.getClass();
+		Asserts.check(rType == NullLiteral.class || rType == Argument.class);
+		List<Expression> operands = lv.getOperands();
+		int n = operands.size();
+		FieldContent lastField = ((FieldRef) operands.get(n - 1)).getContent();
+		StringBuilder sb = new StringBuilder();
+		int joinNo = lv.getJoinNo();
+		String sep = "";
+		for (FieldContent fld : fe.getRefKeyFields(lastField)) {
+			sb.append(sep);
+			if (joinNo > 0) {
+				sb.append(TABLE_ALIAS_PREFIX).append(joinNo).append(".");
+			}
+			sb.append(COLUMN_PREFIX);
+			sb.append(Strings.toUpperSnake(fld.getFieldName()));
+			if (rType == NullLiteral.class) {
+				sb.append(" IS ");
+				sb.append(code == Operation.Code.EQ ? "NULL" : "NOT NULL");
+			} else if (rType == Argument.class) {
+				//TODO 未確認
+				sb.append("#{ ");
+				sb.append(((Argument)rv).getName());
+				sb.append(".");
+				sb.append(fld.getFieldName());
+				sb.append(" }");
+			}
+			sep = " AND ";
 		}
 		return sb.toString();
 	}
 
 	@Override
-	public String visit(ClassRef exp, Object option) {
+	public String visit(ClassRef exp, Extenders extenders) {
 		Asserts.check(false);
 		return null;
 	}
 
 	@Override
-	public String visit(FieldRef exp, Object option) {
+	public String visit(FieldRef exp, Extenders extenders) {
 		Asserts.check(false);
 		return null;
 	}
 
 	@Override
-	public String visit(EnumRef exp, Object option) {
+	public String visit(EnumRef exp, Extenders extenders) {
 		Asserts.check(false);
 		return null;
 	}
 
 	@Override
-	public String visit(EnumValueRef exp, Object option) {
+	public String visit(EnumValueRef exp, Extenders extenders) {
 		Asserts.check(false);
 		return null;
 	}
 
 	@Override
-	public String visit(BooleanLiteral exp, Object option) {
+	public String visit(BooleanLiteral exp, Extenders extenders) {
 		Boolean value = exp.getValue();
 		if (value == null) {
 			return CONST_NULL;
@@ -263,7 +302,7 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
-	public String visit(IntLiteral exp, Object option) {
+	public String visit(IntLiteral exp, Extenders extenders) {
 		if (exp.getValue() == null) {
 			return CONST_NULL;
 		}
@@ -279,7 +318,7 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
-	public String visit(LongLiteral exp, Object option) {
+	public String visit(LongLiteral exp, Extenders extenders) {
 		if (exp.getValue() == null) {
 			return CONST_NULL;
 		}
@@ -295,7 +334,7 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
-	public String visit(FloatLiteral exp, Object option) {
+	public String visit(FloatLiteral exp, Extenders extenders) {
 		if (exp.getValue() == null) {
 			return CONST_NULL;
 		}
@@ -312,7 +351,7 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
-	public String visit(DoubleLiteral exp, Object option) {
+	public String visit(DoubleLiteral exp, Extenders extenders) {
 		if (exp.getValue() == null) {
 			return CONST_NULL;
 		}
@@ -329,7 +368,7 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
-	public String visit(NumericLiteral exp, Object option) {
+	public String visit(NumericLiteral exp, Extenders extenders) {
 		if (exp.getValue() == null) {
 			return CONST_NULL;
 		}
@@ -337,7 +376,7 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
-	public String visit(DateLiteral exp, Object option) {
+	public String visit(DateLiteral exp, Extenders extenders) {
 		if (exp.getValue() == null) {
 			return CONST_NULL;
 		}
@@ -346,7 +385,7 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
-	public String visit(StringLiteral exp, Object option) {
+	public String visit(StringLiteral exp, Extenders extenders) {
 		if (exp.getValue() == null) {
 			return CONST_NULL;
 		}
@@ -354,12 +393,12 @@ public class SqliteWriter extends SqlWriter {
 	}
 
 	@Override
-	public String visit(NullLiteral exp, Object option) {
+	public String visit(NullLiteral exp, Extenders extenders) {
 		return CONST_NULL;
 	}
 
 	@Override
-	public String visit(Argument exp, Object option) {
+	public String visit(Argument exp, Extenders extenders) {
 		return "#{" + exp.getName() + "}";
 	}
 

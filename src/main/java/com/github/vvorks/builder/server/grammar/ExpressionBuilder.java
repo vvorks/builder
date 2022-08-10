@@ -205,7 +205,17 @@ public class ExpressionBuilder implements ExprParserVisitor {
 			break;
 		case EQ: case NE:
 			adjustArgumentType(lValue, rValue, DataType.INTEGER, 32, 0);
-			if (!(isBothNumber(lValue, rValue) || isSameType(lValue, rValue) || isEnumComparation(lValue, rValue))) {
+			if (isBothNumber(lValue, rValue) || isSameType(lValue, rValue)) {
+				//OK
+			} else if (isEnumComparation(lValue, rValue)) {
+				//OK
+			} else if (isRefAndNull(lValue, rValue)) {
+				if (lValue.getType() == null) {
+					Expression t = lValue;
+					lValue = rValue;
+					rValue = t;
+				}
+			} else {
 				throw new SemanticException(TYPE_UNMATCH, node);
 			}
 			result = newBooleanOperation(lValue, operator, rValue);
@@ -289,6 +299,11 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	private boolean isEnumComparation(Expression lValue, Expression rValue) {
 		return	(lValue.getType() == DataType.ENUM && rValue.getType() == DataType.ENUM_VALUE) ||
 				(rValue.getType() == DataType.ENUM && lValue.getType() == DataType.ENUM_VALUE)  ;
+	}
+
+	private boolean isRefAndNull(Expression lValue, Expression rValue) {
+		return	(lValue.getType() == DataType.REF && rValue.getType() == null) ||
+				(rValue.getType() == DataType.REF && lValue.getType() == null)  ;
 	}
 
 	private Operation newStringOperation(Expression lValue, Operation.Code code, Expression rValue) {

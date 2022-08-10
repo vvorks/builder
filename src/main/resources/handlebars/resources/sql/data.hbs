@@ -4,7 +4,7 @@
 {{#if this.builderProject}}
 {{#resources this "sql/data.sql"}}
 {{global.disableForeignKey}};
-{{#each this.classes}}
+{{#each this.builderClasses}}
 {{#if values}}
 INSERT INTO {{tableName}} (
 	{{#each properties}}

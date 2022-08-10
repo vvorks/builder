@@ -306,7 +306,7 @@ public class {{upperLastName}}RpcController {
 		@JsonRpcParam("limit") int limit
 	) {
 		{{../fref.owner.className}}Summary<{{fref.owner.className}}Content> summary = {{../../lowerName}}Mapper.list{{../upperName}}SummaryIf{{upperName}}(
-				content,
+				content{{#if arguments}},{{/if}}
 				{{#each arguments}}
 				{{fieldName}}{{#separator}},{{/separator}}
 				{{/each}}

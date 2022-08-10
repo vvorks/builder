@@ -168,6 +168,30 @@ public interface PageMapper extends MapperInterface<PageContent> {
 	);
 
 	/**
+	 * rootに合致するレイアウト一覧のサマリーを取得する
+	 *
+	 * @param content ページ
+	 * @return レイアウト一覧のサマリー
+	 */
+	public LayoutSummary<LayoutContent> listLayoutsSummaryIfRoot(
+		@Param("content") PageContent content
+	);
+
+	/**
+	 * rootに合致するレイアウト一覧を取得する
+	 *
+	 * @param content ページ
+	 * @param offset 取得開始位置（全件取得の場合は無効）
+	 * @param limit 件数（０または負値を指定した場合には全件）
+	 * @return レイアウト一覧
+	 */
+	public List<LayoutContent> listLayoutsContentIfRoot(
+		@Param("content") PageContent content,
+		@Param("offset") int offset,
+		@Param("limit") int limit
+	);
+
+	/**
 	 * ページが保持するレイアウト一覧を全て削除する
 	 *
 	 * @param content ページ

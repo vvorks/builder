@@ -289,4 +289,91 @@
 		</if>
 	</select>
 
+	<select id="listLayoutsSummaryIfRoot" resultType="LayoutSummary">
+		SELECT
+			MAX(T1.F_LAYOUT_ID) AS "maxLayoutId",
+			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",
+			COUNT(*) AS "count",
+			0 AS "focus"
+		FROM
+			T_LAYOUT T1
+		WHERE
+			T1.F_OWNER_PAGE_ID = #{ content.pageId }
+			<![CDATA[
+			AND T1.F_PARENT_LAYOUT_ID IS NULL
+			]]>
+	</select>
+
+	<select id="listLayoutsContentIfRoot" resultType="LayoutContent">
+		SELECT
+			T1.F_LAYOUT_ID AS "layoutId",
+			T1.F_OWNER_PAGE_ID AS "ownerPageId",
+			T1.F_PARENT_LAYOUT_ID AS "parentLayoutId",
+			T1.F_LAYOUT_NAME AS "layoutName",
+			T1.F_LAYOUT_TYPE AS "layoutType",
+			T1.F_CREF_CLASS_ID AS "crefClassId",
+			T1.F_EREF_ENUM_ID AS "erefEnumId",
+			T1.F_FREF_FIELD_ID AS "frefFieldId",
+			T1.F_MREF_MESSAGE_ID AS "mrefMessageId",
+			T1.F_RELATED_LAYOUT_ID AS "relatedLayoutId",
+			T1.F_PARAM AS "param",
+			T1.F_LAYOUT_PARAM AS "layoutParam",
+			T1.F_STYLE_STYLE_ID AS "styleStyleId",
+			T1.F_LEFT AS "left",
+			T1.F_TOP AS "top",
+			T1.F_RIGHT AS "right",
+			T1.F_BOTTOM AS "bottom",
+			T1.F_WIDTH AS "width",
+			T1.F_HEIGHT AS "height",
+			T1.F__LAST_UPDATED_AT AS "_lastUpdatedAt",
+			T1.F_LAYOUT_ID AS "_title",
+			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "owner_title",
+			T4.F_LAYOUT_ID AS "parent_title",
+			T5.F_CLASS_NAME || '(' || T5.F_TITLE || ')' AS "cref_title",
+			T6.F_ENUM_NAME || '(' || T6.F_TITLE || ')' AS "eref_title",
+			T8.F_CLASS_NAME || '/' || T7.F_FIELD_NAME AS "fref_title",
+			T9.F_MESSAGE_NAME AS "mref_title",
+			T10.F_LAYOUT_ID AS "related_title",
+			T11.F_STYLE_NAME AS "style_title",
+			T12.F_VALUE_ID AS "layoutType_title"
+		FROM
+			T_LAYOUT T1
+		LEFT JOIN T_PAGE T2 ON
+			T1.F_OWNER_PAGE_ID = T2.F_PAGE_ID
+		LEFT JOIN T_PAGE_SET T3 ON
+			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
+		LEFT JOIN T_LAYOUT T4 ON
+			T1.F_PARENT_LAYOUT_ID = T4.F_LAYOUT_ID
+		LEFT JOIN T_CLASS T5 ON
+			T1.F_CREF_CLASS_ID = T5.F_CLASS_ID
+		LEFT JOIN T_ENUM T6 ON
+			T1.F_EREF_ENUM_ID = T6.F_ENUM_ID
+		LEFT JOIN T_FIELD T7 ON
+			T1.F_FREF_FIELD_ID = T7.F_FIELD_ID
+		LEFT JOIN T_CLASS T8 ON
+			T7.F_OWNER_CLASS_ID = T8.F_CLASS_ID
+		LEFT JOIN T_MESSAGE T9 ON
+			T1.F_MREF_MESSAGE_ID = T9.F_MESSAGE_ID
+		LEFT JOIN T_LAYOUT T10 ON
+			T1.F_RELATED_LAYOUT_ID = T10.F_LAYOUT_ID
+		LEFT JOIN T_STYLE T11 ON
+			T1.F_STYLE_STYLE_ID = T11.F_STYLE_ID
+		LEFT JOIN T_ENUM_VALUE T12 ON
+			T12.F_OWNER_ENUM_ID = 3 AND
+			T1.F_LAYOUT_TYPE = T12.F_VALUE_ID
+		WHERE
+			T1.F_OWNER_PAGE_ID = #{ content.pageId }
+			<![CDATA[
+			AND T1.F_PARENT_LAYOUT_ID IS NULL
+			]]>
+		ORDER BY
+			T1.F_LAYOUT_ID
+		<if test="limit &gt; 0">
+			LIMIT #{limit}
+		<if test="offset &gt;= 0">
+			OFFSET #{offset}
+		</if>
+		</if>
+	</select>
+
 </mapper>

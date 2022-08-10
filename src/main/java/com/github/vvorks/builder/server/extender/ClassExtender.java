@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -121,22 +120,12 @@ public class ClassExtender {
 		}
 		public String getTitleExpr() {
 			if (info != null) {
-				return info.getExpr().accept(sqlWriter, null);
+				return info.getExpr().accept(sqlWriter, extenders);
 			} else {
 				return "''";
 			}
 		}
 	}
-
-	private static final EnumSet<DataType> SCALER_TYPES = EnumSet.of(
-			DataType.KEY,
-			DataType.ENUM,
-			DataType.BOOLEAN,
-			DataType.INTEGER,
-			DataType.REAL,
-			DataType.NUMERIC,
-			DataType.DATE,
-			DataType.STRING);
 
 	@Autowired
 	private Mappers mappers;
@@ -155,6 +144,9 @@ public class ClassExtender {
 
 	@Autowired
 	private EnumValueExtender enumValueExtender;
+
+	@Autowired
+	private Extenders extenders;
 
 	@Autowired
 	private ExprParser parser;
@@ -202,7 +194,7 @@ public class ClassExtender {
 			return null;
 		}
 		ExprInfo info = referExpr(cls, orderExpr, ExprParser.CODE_TYPE_ORDER);
-		String result = info.getExpr().accept(sqlWriter, null);
+		String result = info.getExpr().accept(sqlWriter, extenders);
 		return result;
 	}
 
@@ -563,13 +555,9 @@ public class ClassExtender {
 				return;
 			}
 		}
-		//演算結果タイプがSCALER型でない場合は無視
+		//join番号の参照（又は存在しない場合新たに定義）
 		int n = operands.size();
 		FieldRef last = (FieldRef) operands.get(n - 1);
-		if (!SCALER_TYPES.contains(last.getType())) {
-			return;
-		}
-		//join番号の参照（又は存在しない場合新たに定義）
 		List<FieldContent> flds = new ArrayList<>();
 		if (ctxRef != null) {
 			flds.add(ctxRef);

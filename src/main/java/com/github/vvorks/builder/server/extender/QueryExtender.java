@@ -23,6 +23,9 @@ public class QueryExtender {
 	@Autowired
 	private ClassExtender classExtender;
 
+	@Autowired
+	private Extenders extenders;
+
 	public String getTitleOrName(QueryContent q) {
 		if (!Strings.isEmpty(q.getTitle())) {
 			return q.getTitle();
@@ -42,7 +45,7 @@ public class QueryExtender {
 	public String getSqlExpr(QueryContent q) {
 		ClassContent cls = queryMapper.getOwner(q);
 		ClassExtender.ExprInfo info = classExtender.referExpr(cls, q.getFilter(), ExprParser.CODE_TYPE_WHERE);
-		return info.getExpr().accept(sqlWriter, null);
+		return info.getExpr().accept(sqlWriter, extenders);
 	}
 
 	public List<FieldContent> getArguments(QueryContent q) {
