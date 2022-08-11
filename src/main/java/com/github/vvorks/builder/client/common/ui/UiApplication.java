@@ -11,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -19,14 +18,12 @@ import java.util.function.Predicate;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.net.WebSocket;
-import com.github.vvorks.builder.shared.common.json.Json;
 import com.github.vvorks.builder.shared.common.lang.Asserts;
 import com.github.vvorks.builder.shared.common.lang.Creator;
 import com.github.vvorks.builder.shared.common.lang.Factory;
 import com.github.vvorks.builder.shared.common.lang.Iterables;
 import com.github.vvorks.builder.shared.common.logging.Logger;
 import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
-import com.github.vvorks.builder.shared.common.util.JsonResourceBundle;
 
 public class UiApplication implements EventHandler {
 
@@ -107,9 +104,6 @@ public class UiApplication implements EventHandler {
 	/** スタイルマップ */
 	private Map<String, UiStyle> styles;
 
-	/** Uiリソース名 */
-	private String uiResourceName;
-
 	/** Webソケット */
 	private final WebSocket socket;
 
@@ -135,7 +129,6 @@ public class UiApplication implements EventHandler {
 		this.pages = new LinkedHashMap<>();
 		this.pageStack = new ArrayDeque<>();
 		this.styles = new LinkedHashMap<>();
-		this.uiResourceName = null;
 		this.socket = Factory.newInstance(WebSocket.class);
 		this.rpcClient = new JsonRpcClient(this.socket);
 		this.dataSourceMap = new HashMap<>();
@@ -187,21 +180,6 @@ public class UiApplication implements EventHandler {
 
 	public void setLocale(String newLocale) {
 		document.setLocale(newLocale);
-	}
-
-	public String getUiResourceName() {
-		return uiResourceName;
-	}
-
-	public void setUiResourceName(String uiResourceName) {
-		if (!Objects.equals(this.uiResourceName, uiResourceName)) {
-			this.uiResourceName = uiResourceName;
-			processResourceChanged();
-		}
-	}
-
-	public Json getUiResource() {
-		return JsonResourceBundle.getBundle().getResource(uiResourceName);
 	}
 
 	protected void addPage(String tag, Creator<UiPage> creator) {

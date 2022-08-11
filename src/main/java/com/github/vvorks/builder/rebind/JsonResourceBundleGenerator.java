@@ -10,48 +10,64 @@ import java.util.Map;
 
 import com.github.jknack.handlebars.Template;
 import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Iterables;
 import com.github.vvorks.builder.shared.common.lang.Strings;
-import com.github.vvorks.builder.shared.common.util.JsonResourcePackage;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.dev.resource.Resource;
 import com.google.gwt.i18n.shared.GwtLocale;
 
-public class GwtResourceBundleGenerator extends AbstractGenerator {
+public class JsonResourceBundleGenerator extends AbstractGenerator {
 
-	private static final String SUFFIX = ".json";
+	private static final String JSON_SUFFIX = ".json";
 
-	public static class Param {
-
-		private final List<String> imports;
-
-		private final String locale;
-
-		private final Map<String, Map<String, List<String>>> contents;
-
-		public Param(List<String> imports, String locale, Map<String, Map<String, List<String>>> contents) {
-			this.imports = imports;
-			this.locale = locale;
-			this.contents = contents;
+	public static class Args {
+		private String packageName;
+		private String typeName;
+		private String className;
+		private String locale;
+		private List<Class<?>> imports = new ArrayList<>();
+		private Map<String, Map<String, List<String>>> contents;
+		public String getPackageName() {
+			return packageName;
 		}
-
-		public List<String> getImports() {
-			return imports;
+		public void setPackageName(String packageName) {
+			this.packageName = packageName;
 		}
-
+		public String getTypeName() {
+			return typeName;
+		}
+		public void setTypeName(String typeName) {
+			this.typeName = typeName;
+		}
+		public String getClassName() {
+			return className;
+		}
+		public void setClassName(String className) {
+			this.className = className;
+		}
 		public String getLocale() {
 			return locale;
 		}
-
+		public void setLocale(String locale) {
+			this.locale = locale;
+		}
+		public void addImports(Class<?> cls) {
+			imports.add(cls);
+		}
+		public Iterable<String> getImportNames() {
+			return Iterables.from(imports, c -> c.getName());
+		}
 		public Map<String, Map<String, List<String>>> getContents() {
 			return contents;
 		}
-
+		public void setContents(Map<String, Map<String, List<String>>> contents) {
+			this.contents = contents;
+		}
 	}
 
 	@Override
-	public String doGenerate(JClassType type) throws UnableToCompleteException {
+	protected String doGenerate(JClassType type) throws UnableToCompleteException {
 		//ロケール取得
 		GwtLocale gwtLocale = getCompileLocale();
 		String locale = gwtLocale.toString();
@@ -65,17 +81,19 @@ public class GwtResourceBundleGenerator extends AbstractGenerator {
 			return fullName;
 		}
 		info("gennerate " + fullName);
-		//使用importの準備
-		List<String> imports = new ArrayList<>();
-		imports.add(Json.class.getName());
-		//resource package取得
-		List<Resource> jsonResources = findResources();
-		//contents取得
-		Param param = new Param(imports, locale, getContents(jsonResources, locale));
+		//Argsの準備
+		Args args = new Args();
+		args.setPackageName(packageName);
+		args.setTypeName(typeName);
+		args.setClassName(className);
+		args.setLocale(locale);
+		args.addImports(Json.class);
+		List<Resource> resources = findResources(packageName);
+		args.setContents(getContents(resources, locale));
 		//handlebars templateを適用
 		try {
-			Template template = getTemplate("GwtResourceBundleImpl.hbs");
-			pw.print(template.apply(param));
+			Template template = getTemplate("JsonResourceBundleImpl.hbs");
+			pw.print(template.apply(args));
 			pw.close();
 			commit(pw);
 		} catch (IOException err) {
@@ -84,19 +102,11 @@ public class GwtResourceBundleGenerator extends AbstractGenerator {
 		return fullName;
 	}
 
-	private List<Resource> findResources() {
-		List<JPackage> pkgs = getPackages(p -> p.getAnnotation(JsonResourcePackage.class) != null);
+	private List<Resource> findResources(String packageName) {
+		String packagePath = packageName.replace('.', '/');
 		return getResources(r -> {
 			String path = r.getPath();
-			if (path.endsWith(SUFFIX)) {
-				for (JPackage p : pkgs) {
-					String name = p.getName().replace('.', '/');
-					if (path.startsWith(name)) {
-						return true;
-					}
-				}
-			}
-			return false;
+			return path.startsWith(packagePath) && path.endsWith(JSON_SUFFIX);
 		});
 	}
 
@@ -114,7 +124,7 @@ public class GwtResourceBundleGenerator extends AbstractGenerator {
 		prefix = prefix.substring(0, prefix.lastIndexOf('/') + 1);
 		for (Resource r : jsonResources) {
 			String path = r.getPath();
-			String name = path.substring(prefix.length(), path.length() - SUFFIX.length());
+			String name = path.substring(prefix.length(), path.length() - JSON_SUFFIX.length());
 			name = name.replace('/', '.');
 			int sep = name.indexOf('_');
 			String key = (sep == -1) ? name : name.substring(0, sep);

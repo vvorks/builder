@@ -22,7 +22,6 @@ public class BuilderUiApplication extends UiApplication {
 		registerStyle(BuilderStyles.GROUP);
 		registerStyle(BuilderStyles.SB);
 		registerStyle(BuilderStyles.TRANSPARENT);
-		setUiResourceName("Form");
 	}
 
 }

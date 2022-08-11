@@ -45,8 +45,8 @@
 	<!-- **************************************** -->
 	<!-- rebind settings.                         -->
 	<!-- **************************************** -->
-	<generate-with class="com.github.vvorks.builder.rebind.GwtResourceBundleGenerator">
-		<when-type-assignable class="com.github.vvorks.builder.client.gwt.util.GwtResourceBundle" />
+	<generate-with class="com.github.vvorks.builder.rebind.JsonResourceBundleGenerator">
+		<when-type-assignable class="com.github.vvorks.builder.shared.common.util.JsonResourceBundle" />
 	</generate-with>
 	<generate-with class="com.github.vvorks.builder.rebind.GwtTestRunnerGenerator">
 		<when-type-assignable class="com.github.vvorks.builder.client.gwt.util.GwtTestRunner" />

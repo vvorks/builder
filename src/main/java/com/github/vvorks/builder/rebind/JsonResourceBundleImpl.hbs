@@ -1,16 +1,17 @@
-package com.github.vvorks.builder.client.gwt.util;
+package {{packageName}};
 
 import java.util.Map;
 import java.util.HashMap;
-{{#each imports}}
+import java.util.function.Function;
+{{#each importNames}}
 import {{this}};
 {{/each}}
 
-public class GwtResourceBundle_{{locale}} implements GwtResourceBundle {
+public class {{className}} implements {{typeName}} {
 	{{#each contents}}
 	{{#each this}}
 
-	private static final String[] {{../@key}}_{{@key}} = {
+	private static final String[] R{{../@index}}_{{@index}} = {
 		{{#each this}}
 		"{{this}}",
 		{{/each}}
@@ -18,11 +19,13 @@ public class GwtResourceBundle_{{locale}} implements GwtResourceBundle {
 	{{/each}}
 	{{/each}}
 
+	private static final Function<String, Map<String, String[]>> MAKE_MAP = k -> new HashMap<>();
+
 	private static final Map<String, Map<String, String[]>> RESOURCES = new HashMap<>();
 	static {
 		{{#each contents}}
 		{{#each this}}
-		RESOURCES.computeIfAbsent("{{../@key}}", k -> new HashMap<>()).put("{{@key}}", {{../@key}}_{{@key}});
+		RESOURCES.computeIfAbsent("{{../@key}}", MAKE_MAP).put("{{@key}}", R{{../@index}}_{{@index}});
 		{{/each}}
 		{{/each}}
 	}

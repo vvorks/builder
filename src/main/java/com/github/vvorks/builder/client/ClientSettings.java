@@ -6,6 +6,7 @@ import com.github.vvorks.builder.client.common.net.WebSocket;
 import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.Metrics;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
+import com.github.vvorks.builder.client.constants.ConstantsBundle;
 import com.github.vvorks.builder.client.gwt.json.GwtJson;
 import com.github.vvorks.builder.client.gwt.logging.AltConsoleHandler;
 import com.github.vvorks.builder.client.gwt.net.GwtWebSocket;
@@ -25,7 +26,6 @@ import com.github.vvorks.builder.shared.common.text.DateFormatter;
 import com.github.vvorks.builder.shared.common.text.NumberFormatter;
 import com.github.vvorks.builder.shared.common.text.Pattern;
 import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
-import com.github.vvorks.builder.shared.common.util.JsonResourceBundle;
 import com.github.vvorks.builder.shared.common.util.TestRunner;
 import com.google.gwt.core.client.GWT;
 
@@ -66,7 +66,7 @@ public class ClientSettings {
 			//singleton settings
 			.bindIn(DelayedExecuter.class, args -> new GwtDelayedExecuter())
 			.bindIn(Metrics.class, args -> new Metrics())
-			.bindIn(JsonResourceBundle.class, args -> GWT.create(GwtResourceBundle.class))
+			.bindIn(ConstantsBundle.class, args -> GWT.create(ConstantsBundle.class))
 			.bindIn(TestRunner.class, args -> GWT.create(GwtTestRunner.class))
 			.bindIn(CalendarSelecter.class, args -> new CalendarSelecterJa())
 			;

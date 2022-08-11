@@ -1,0 +1,28 @@
+//
+// package-info テンプレート
+//
+{{#java this "client/constants/ConstantsBundle.java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.client.constants;
+
+import {{global.project.projectName}}.shared.common.lang.Factory;
+import {{global.project.projectName}}.shared.common.util.JsonResourceBundle;
+
+/**
+ * このパッケージ内に格納された.jsonリソースを取得するためのインターフェース
+ */
+public interface ConstantsBundle extends JsonResourceBundle {
+
+	public static ConstantsBundle get() {
+		return Factory.getInstance(ConstantsBundle.class);
+	}
+
+}
+{{/java}}
+

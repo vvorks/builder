@@ -2,8 +2,6 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.util.Objects;
 
-import com.github.vvorks.builder.shared.common.json.Json;
-
 public class UiText extends UiNode {
 
 	/** ラベルテキスト */
@@ -36,13 +34,7 @@ public class UiText extends UiNode {
 		if (text != null) {
 			result = text;
 		} else {
-			Json res = getApplication().getUiResource();
-			Json value = res.get(getQualifiedNames());
-			if (value != null) {
-				result = value.getStringValue();
-			} else {
-				result = getName();
-			}
+			result = getName();
 		}
 		return result;
 	}
