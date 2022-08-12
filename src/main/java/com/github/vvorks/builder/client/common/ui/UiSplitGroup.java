@@ -148,6 +148,12 @@ public class UiSplitGroup extends UiGroup {
 		return newChild;
 	}
 
+	@Override
+	public LayoutParam parseLayoutParam(String paramStr) {
+		LOGGER.debug("parseLayoutParam %s", paramStr);
+		return Param.valueOf(paramStr.toUpperCase());
+	}
+
 	private UiNode findPaneBy(Param dir) {
 		for (UiNode pane = getFirstChild(); pane != null; pane = pane.getNextSibling()) {
 			if (!(pane instanceof UiSplitter) && pane.getLayoutParam() == dir) {
@@ -303,7 +309,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private List<UiNode> collectYoungerTop(UiSplitter splitter) {
-		int height = this.getHeightPx();
+		int height = this.getInnerHeightPx();
 		int nextEdge = height - splitter.getBottomPx();
 		int left = splitter.getLeftPx();
 		int right = splitter.getRightPx();
@@ -323,7 +329,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private List<UiNode> collectYoungerBottom(UiSplitter splitter) {
-		int height = this.getHeightPx();
+		int height = this.getInnerHeightPx();
 		int nextEdge = splitter.getTopPx();
 		int left = splitter.getLeftPx();
 		int right = splitter.getRightPx();
@@ -343,7 +349,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private List<UiNode> collectYoungerLeft(UiSplitter splitter) {
-		int width = this.getWidthPx();
+		int width = this.getInnerWidthPx();
 		int nextEdge = width - splitter.getRightPx();
 		int top = splitter.getTopPx();
 		int bottom = splitter.getBottomPx();
@@ -363,7 +369,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private List<UiNode> collectYoungerRight(UiSplitter splitter) {
-		int width = this.getWidthPx();
+		int width = this.getInnerWidthPx();
 		int nextEdge = splitter.getLeftPx();
 		int top = splitter.getTopPx();
 		int bottom = splitter.getBottomPx();
@@ -428,7 +434,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private int resizeTop(UiSplitter splitter, int elderSize, boolean updateSize) {
-		int totalHeight = this.getHeightPx();
+		int totalHeight = this.getInnerHeightPx();
 		UiNode elder = splitter.getElderPane();
 		int spacing = getSpacingHeightPx();
 		int minPos = elder.getTopPx();
@@ -451,7 +457,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private int resizeBottom(UiSplitter splitter, int elderSize, boolean updateSize) {
-		int totalHeight = this.getHeightPx();
+		int totalHeight = this.getInnerHeightPx();
 		UiNode elder = splitter.getElderPane();
 		int spacing = getSpacingHeightPx();
 		int maxPos = totalHeight - elder.getBottomPx();
@@ -474,7 +480,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private void setHorizontal(UiNode node, int sy, int ey) {
-		int totalHeight = this.getHeightPx();
+		int totalHeight = this.getInnerHeightPx();
 		if (node.getTop() != null) {
 			node.setTop(sy);
 		}
@@ -487,7 +493,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private int resizeLeft(UiSplitter splitter, int elderSize, boolean updateSize) {
-		int totalWidth = this.getWidthPx();
+		int totalWidth = this.getInnerWidthPx();
 		UiNode elder = splitter.getElderPane();
 		int spacing = getSpacingWidthPx();
 		int minPos = elder.getLeftPx();
@@ -510,7 +516,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private int resizeRight(UiSplitter splitter, int elderSize, boolean updateSize) {
-		int totalWidth = this.getWidthPx();
+		int totalWidth = this.getInnerWidthPx();
 		UiNode elder = splitter.getElderPane();
 		int spacing = getSpacingWidthPx();
 		int maxPos = totalWidth - elder.getRightPx();
@@ -533,7 +539,7 @@ public class UiSplitGroup extends UiGroup {
 	}
 
 	private void setVertical(UiNode node, int sx, int ex) {
-		int totalWidth = this.getWidthPx();
+		int totalWidth = this.getInnerWidthPx();
 		if (node.getLeft() != null) {
 			node.setLeft(sx);
 		}

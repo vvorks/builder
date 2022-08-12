@@ -41,7 +41,7 @@
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
-        "right" : "0",
+        "right" : "1em",
         "height" : "2em",
         "children" : [ {
           "name" : "projectIdLabel",
@@ -99,184 +99,95 @@
           "bottom" : "0",
           "width" : "10em",
           "fref" : "Project#copyrights"
-        }, {
-          "name" : "classesLabel",
-          "type" : "LABEL",
-          "left" : "70em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#classes"
-        }, {
-          "name" : "enumsLabel",
-          "type" : "LABEL",
-          "left" : "80em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#enums"
-        }, {
-          "name" : "messagesLabel",
-          "type" : "LABEL",
-          "left" : "90em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#messages"
-        }, {
-          "name" : "stylesLabel",
-          "type" : "LABEL",
-          "left" : "100em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#styles"
-        }, {
-          "name" : "pageSetsLabel",
-          "type" : "LABEL",
-          "left" : "110em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#pageSets"
-        }, {
-          "name" : "localesLabel",
-          "type" : "LABEL",
-          "left" : "120em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#locales"
-        }, {
-          "name" : "i18nsLabel",
-          "type" : "LABEL",
-          "left" : "130em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#i18ns"
         } ],
-        "related" : "/frame/body/Project/body"
+        "related" : "/frame/body/Project/list"
       }, {
-        "name" : "body",
-        "type" : "SIMPLE_PANE",
+        "name" : "list",
+        "type" : "V_LIST",
         "left" : "0",
         "top" : "2em",
-        "right" : "0",
-        "bottom" : "0",
+        "right" : "1em",
+        "bottom" : "1em",
         "children" : [ {
           "name" : "projectIdField",
           "type" : "FIELD",
+          "datatype" : "KEY",
           "left" : "0",
           "top" : "0",
-          "bottom" : "0",
           "width" : "10em",
+          "height" : "2em",
           "fref" : "Project#projectId"
         }, {
           "name" : "projectNameField",
           "type" : "FIELD",
+          "datatype" : "STRING",
           "left" : "10em",
           "top" : "0",
-          "bottom" : "0",
           "width" : "10em",
+          "height" : "2em",
           "fref" : "Project#projectName"
         }, {
           "name" : "gradleNameField",
           "type" : "FIELD",
+          "datatype" : "STRING",
           "left" : "20em",
           "top" : "0",
-          "bottom" : "0",
           "width" : "10em",
+          "height" : "2em",
           "fref" : "Project#gradleName"
         }, {
           "name" : "titleField",
           "type" : "FIELD",
+          "datatype" : "STRING",
           "left" : "30em",
           "top" : "0",
-          "bottom" : "0",
           "width" : "10em",
+          "height" : "2em",
           "fref" : "Project#title"
         }, {
           "name" : "descriptionField",
           "type" : "FIELD",
+          "datatype" : "STRING",
           "left" : "40em",
           "top" : "0",
-          "bottom" : "0",
           "width" : "10em",
+          "height" : "2em",
           "fref" : "Project#description"
         }, {
           "name" : "noteField",
           "type" : "FIELD",
+          "datatype" : "STRING",
           "left" : "50em",
           "top" : "0",
-          "bottom" : "0",
           "width" : "10em",
+          "height" : "2em",
           "fref" : "Project#note"
         }, {
           "name" : "copyrightsField",
           "type" : "FIELD",
+          "datatype" : "STRING",
           "left" : "60em",
           "top" : "0",
-          "bottom" : "0",
           "width" : "10em",
+          "height" : "2em",
           "fref" : "Project#copyrights"
-        }, {
-          "name" : "classesField",
-          "type" : "FIELD",
-          "left" : "70em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#classes"
-        }, {
-          "name" : "enumsField",
-          "type" : "FIELD",
-          "left" : "80em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#enums"
-        }, {
-          "name" : "messagesField",
-          "type" : "FIELD",
-          "left" : "90em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#messages"
-        }, {
-          "name" : "stylesField",
-          "type" : "FIELD",
-          "left" : "100em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#styles"
-        }, {
-          "name" : "pageSetsField",
-          "type" : "FIELD",
-          "left" : "110em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#pageSets"
-        }, {
-          "name" : "localesField",
-          "type" : "FIELD",
-          "left" : "120em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#locales"
-        }, {
-          "name" : "i18nsField",
-          "type" : "FIELD",
-          "left" : "130em",
-          "top" : "0",
-          "bottom" : "0",
-          "width" : "10em",
-          "fref" : "Project#i18ns"
         } ]
+      }, {
+        "name" : "vsb",
+        "type" : "V_SCROLLBAR",
+        "top" : "2em",
+        "right" : "0",
+        "bottom" : "1em",
+        "width" : "1em",
+        "related" : "/frame/body/Project/list"
+      }, {
+        "name" : "hsb",
+        "type" : "H_SCROLLBAR",
+        "left" : "0",
+        "right" : "1em",
+        "bottom" : "0",
+        "height" : "1em",
+        "related" : "/frame/body/Project/list"
       } ]
     } ]
   } ]

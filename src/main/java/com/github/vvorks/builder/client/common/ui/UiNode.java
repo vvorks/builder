@@ -578,6 +578,22 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	/**
+	 * 子ノードの位置を取得する
+	 *
+	 * @param child 子ノード
+	 * @return 子ノードの位置。子ノードでない場合は-1
+	 */
+	public int indexOf(UiNode child) {
+		int index = 0;
+		for (UiNode c = firstChild; c != null; c = c.nextSibling, index++) {
+			if (c == child) {
+				return index;
+			}
+		}
+		return -1;
+	}
+
+	/**
 	 * 末尾の子ノードを取得する
 	 *
 	 * @return 末尾の子ノード。子ノードが存在しない場合、null
@@ -831,6 +847,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	/**
+	 * このノードに関連するノードを設定する
+	 *
+	 * @param related 関連ノード
+	 */
+	public void setRelated(UiNode related) {
+	}
+
+	/**
 	 * 指定ノードを先頭子ノードとして挿入する
 	 *
 	 * @param newChild 挿入対象ノード
@@ -1029,6 +1053,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	protected void setLayoutParam(LayoutParam param) {
 		this.layoutParam = param;
+	}
+
+	public LayoutParam parseLayoutParam(String paramStr) {
+		return null;
 	}
 
 	/**
@@ -1350,6 +1378,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	public int getBorderBottomPx() {
 		return getBorderBottom().px(() -> getParentHeightPx());
+	}
+
+	public int getInnerWidthPx() {
+		return getWidthPx() - getBorderLeftPx() - getBorderRightPx();
+	}
+
+	public int getInnerHeightPx() {
+		return getHeightPx() - getBorderTopPx() - getBorderBottomPx();
 	}
 
 	public Length getScrollLeft() {

@@ -233,12 +233,14 @@ public class FieldListPage extends UiPage {
 				b.locate(150.0, 0.0, NA, NA, 30.0, 2.0);
 			b.leave();
 		b.leave();
-		b.enter(new UiVerticalScrollBar("vsb", list));
+		b.enter(new UiVerticalScrollBar("vsb"));
+			b.related(list);
 			b.style(BuilderStyles.SB);
 			b.focusable(false);
 			b.locate(NA, 3.5, 1.0, 2.0, 1.0, NA);
 		b.leave();
-		b.enter(new UiHorizontalScrollBar("hsb", list));
+		b.enter(new UiHorizontalScrollBar("hsb"));
+			b.related(list);
 			b.style(BuilderStyles.SB);
 			b.focusable(false);
 			b.locate(1.0, NA, 2.0, 1.0, NA, 1.0);

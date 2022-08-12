@@ -9,6 +9,7 @@ import com.github.vvorks.builder.client.common.ui.UiDeckGroup;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalGroup;
 import com.github.vvorks.builder.client.common.ui.UiHorizontalScrollBar;
+import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiNodeBuilder;
 import com.github.vvorks.builder.client.common.ui.UiPage;
 import com.github.vvorks.builder.client.common.ui.UiTab;
@@ -61,7 +62,8 @@ public class GroupTestPage extends UiPage {
 				}
 			b.leave();
 			//スクロールバー
-			b.enter(new UiVerticalScrollBar("sb1", g1));
+			b.enter(new UiVerticalScrollBar("sb1"));
+				b.related(g1);
 				b.style(BuilderStyles.SB);
 				b.focusable(true);
 				b.locate(12.0, 1.0, NA, 1.0, 1.0, NA);
@@ -98,7 +100,8 @@ public class GroupTestPage extends UiPage {
 				}
 			b.leave();
 			//スクロールバー
-			b.enter(new UiHorizontalScrollBar("sb1", g3));
+			b.enter(new UiHorizontalScrollBar("sb1"));
+				b.related(g3);
 				b.style(BuilderStyles.SB);
 				b.focusable(true);
 				b.locate(25.0, 6.0, 1.0, NA, NA, 1.0);
@@ -126,9 +129,9 @@ public class GroupTestPage extends UiPage {
 				b.style(BuilderStyles.FIELD);
 				b.spacing(0);
 				b.locate(25.0, 14.0, 1.0, NA, NA, 2.0);
+				UiTab[] tabs = new UiTab[3];
 				for (int i = 0; i < 3; i++) {
-					final int index = i;
-					b.enter(new UiTab("tab" + i, deck, index));
+					b.enter(tabs[i] = new UiTab("tab" + i));
 						b.style(BuilderStyles.FIELD);
 						b.locate(NA, NA, NA, NA, 8, NA);
 					b.leave();
@@ -140,7 +143,9 @@ public class GroupTestPage extends UiPage {
 				b.spacing(0);
 				b.locate(25.0, 16.0, 1.0, 1.0, NA, NA);
 				for (int i = 0; i < 3; i++) {
-					b.enter(new UiGroup("deck" + i));
+					UiNode r;
+					b.enter(r = new UiGroup("deck" + i));
+						tabs[i].setRelated(r);
 						b.style(BuilderStyles.FIELD);
 						b.locate(1.0, 1.0, 1.0, 1.0, NA, NA);
 						b.enter(new UiButton("button"));

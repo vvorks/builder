@@ -1,5 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+
 public abstract class UiScrollBar extends UiNode implements Scrollable.Listener {
 
 	/** スクロールバー内部のつまみのノード名称（スタイル設定時に使用する） */
@@ -36,13 +38,9 @@ public abstract class UiScrollBar extends UiNode implements Scrollable.Listener 
 
 	protected double ratio;
 
-	protected UiScrollBar(String name, Scrollable scrollable) {
+	protected UiScrollBar(String name) {
 		super(name);
-		if (scrollable != null) {
-			this.scrollable = scrollable;
-		} else {
-			this.scrollable = UiGroup.VOID_SCROLLABLE;
-		}
+		this.scrollable = UiGroup.VOID_SCROLLABLE;
 		this.scrollable.addScrollableListener(this);
 		thumbMain = (UiThumb) appendChild(createThumb());
 		thumbSub = (UiThumb) appendChild(createThumb());
@@ -61,6 +59,14 @@ public abstract class UiScrollBar extends UiNode implements Scrollable.Listener 
 		thumb.setBounds(Length.ZERO, Length.ZERO, null, null, Length.ZERO, Length.ZERO);
 		thumb.setVisible(false);
 		return thumb;
+	}
+
+	@Override
+	public void setRelated(UiNode node) {
+		Asserts.require(node == null || node instanceof Scrollable);
+		this.scrollable.removeScrollableListener(this);
+		scrollable = node != null ? (Scrollable) node : UiGroup.VOID_SCROLLABLE;
+		this.scrollable.addScrollableListener(this);
 	}
 
 	@Override

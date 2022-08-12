@@ -13,7 +13,6 @@ import com.github.vvorks.builder.client.gwt.net.GwtWebSocket;
 import com.github.vvorks.builder.client.gwt.text.GwtDateFormatter;
 import com.github.vvorks.builder.client.gwt.text.GwtNumberFormatter;
 import com.github.vvorks.builder.client.gwt.util.GwtDelayedExecuter;
-import com.github.vvorks.builder.client.gwt.util.GwtResourceBundle;
 import com.github.vvorks.builder.client.gwt.util.GwtTestRunner;
 import com.github.vvorks.builder.client.ui.BuilderUiApplication;
 import com.github.vvorks.builder.shared.common.json.Json;

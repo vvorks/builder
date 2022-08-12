@@ -8,15 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.vvorks.builder.server.domain.ClassContent;
+import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.FieldContent;
 import com.github.vvorks.builder.server.domain.LayoutContent;
+import com.github.vvorks.builder.server.domain.LayoutType;
 import com.github.vvorks.builder.server.domain.MessageContent;
 import com.github.vvorks.builder.server.domain.PageContent;
 import com.github.vvorks.builder.server.mapper.FieldMapper;
 import com.github.vvorks.builder.server.mapper.LayoutMapper;
 import com.github.vvorks.builder.server.mapper.PageMapper;
 import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Asserts;
 
 @Component
 public class PageExtender {
@@ -38,7 +41,6 @@ public class PageExtender {
 	}
 
 	private static class Relation {
-		private int id;
 		private String fullName;
 		private Json node;
 		private Integer relatedId;
@@ -67,28 +69,42 @@ public class PageExtender {
 		Json json = Json.createObject();
 		//関連の設定
 		Relation rel = rels.computeIfAbsent(content.getLayoutId(), x -> new Relation());
-		rel.id = content.getLayoutId();
 		rel.fullName = fullName;
 		rel.node = json;
 		rel.relatedId = content.getRelatedLayoutId();
 		//Jsonへの値設定
+		ClassContent cref = layoutMapper.getCref(content);
+		EnumContent eref = layoutMapper.getEref(content);
+		FieldContent fref = layoutMapper.getFref(content);
 		json.setString("name", content.getLayoutName());
-		json.setString("type", content.getLayoutType().encode());
+		LayoutType type = content.getLayoutType();
+		json.setString("type", type.encode());
+		json.setStringIfExists("param", content.getParam());
+		json.setStringIfExists("layoutparam", content.getLayoutParam());
+		if (type == LayoutType.FIELD || type == LayoutType.INPUT) {
+			Asserts.assumeNotNull(fref);
+			DataType dataType = fref.getType();
+			json.setString("datatype", dataType.encode());
+			if (dataType == DataType.REF) {
+				ClassContent param = fieldMapper.getCref(fref);
+				json.setString("datatypeparam", param.getClassName());
+			} else if (dataType == DataType.ENUM) {
+				EnumContent param = fieldMapper.getEref(fref);
+				json.setString("datatypeparam", param.getEnumName());
+			}
+		}
 		json.setStringIfExists("left", content.getLeft());
 		json.setStringIfExists("top", content.getTop());
 		json.setStringIfExists("right", content.getRight());
 		json.setStringIfExists("bottom", content.getBottom());
 		json.setStringIfExists("width", content.getWidth());
 		json.setStringIfExists("height", content.getHeight());
-		ClassContent cref = layoutMapper.getCref(content);
 		if (cref != null) {
 			json.setStringIfExists("cref", cref.getClassName());
 		}
-		EnumContent eref = layoutMapper.getEref(content);
 		if (eref != null) {
 			json.setStringIfExists("eref", eref.getEnumName());
 		}
-		FieldContent fref = layoutMapper.getFref(content);
 		if (fref != null) {
 			ClassContent cls = fieldMapper.getOwner(fref);
 			String name = cls.getClassName() + "#" + fref.getFieldName();

@@ -557,7 +557,6 @@ public class ClassExtender {
 		}
 		//join番号の参照（又は存在しない場合新たに定義）
 		int n = operands.size();
-		FieldRef last = (FieldRef) operands.get(n - 1);
 		List<FieldContent> flds = new ArrayList<>();
 		if (ctxRef != null) {
 			flds.add(ctxRef);

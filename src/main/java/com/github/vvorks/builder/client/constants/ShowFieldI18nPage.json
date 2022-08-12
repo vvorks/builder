@@ -23,6 +23,8 @@
     }, {
       "name" : "ownerField",
       "type" : "FIELD",
+      "datatype" : "REF",
+      "datatypeparam" : "Field",
       "left" : "10em",
       "top" : "0",
       "right" : "0",
@@ -39,6 +41,8 @@
     }, {
       "name" : "targetField",
       "type" : "FIELD",
+      "datatype" : "REF",
+      "datatypeparam" : "Locale",
       "left" : "10em",
       "top" : "2em",
       "right" : "0",
@@ -55,6 +59,7 @@
     }, {
       "name" : "formatField",
       "type" : "FIELD",
+      "datatype" : "STRING",
       "left" : "10em",
       "top" : "4em",
       "right" : "0",
@@ -71,6 +76,7 @@
     }, {
       "name" : "titleField",
       "type" : "FIELD",
+      "datatype" : "STRING",
       "left" : "10em",
       "top" : "6em",
       "right" : "0",
@@ -87,6 +93,7 @@
     }, {
       "name" : "descriptionField",
       "type" : "FIELD",
+      "datatype" : "STRING",
       "left" : "10em",
       "top" : "8em",
       "right" : "0",

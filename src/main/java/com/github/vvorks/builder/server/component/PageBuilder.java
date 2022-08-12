@@ -207,7 +207,10 @@ public class PageBuilder {
 		ClassContent cls = rel.getContent();
 		b.enter(LayoutType.SIMPLE_PANE, "detail");
 			b.locate(0, 0, 1, 0);
-			List<FieldContent> fields = mappers.getClassMapper().listFieldsContent(cls, 0, 0);
+			//TODO Query追加してSQLレベルで絞り込み
+			Iterable<FieldContent> fields = Iterables.filter(
+					mappers.getClassMapper().listFieldsContent(cls, 0, 0),
+					f -> f.getType() != DataType.SET);
 			top = 0;
 			labelWidth = 10;
 			for (FieldContent fld : fields) {
@@ -249,11 +252,14 @@ public class PageBuilder {
 		b.enter(LayoutType.TABBED_PANE, "body");
 			b.locate(0, 2, 0, 0, NA, NA);
 			for (ClassContent cls : classes) {
-				List<FieldContent> fields = mappers.getClassMapper().listFieldsContent(cls, 0, 0);
+				//TODO Query追加してSQLレベルで絞り込み
+				Iterable<FieldContent> fields = Iterables.filter(
+						mappers.getClassMapper().listFieldsContent(cls, 0, 0),
+						f -> f.getType() != DataType.SET);
 				b.enter(LayoutType.SIMPLE_PANE, cls.getClassName());
 					b.enter(LayoutType.SIMPLE_PANE, "head");
-						b.locate(0, 0, 0, NA, NA, 2);
-						b.related("body");
+						b.locate(0, 0, 1, NA, NA, 2);
+						b.related("list");
 						left = 0;
 						for (FieldContent fld : fields) {
 							width = 10; //TODO 仮。本当はField書式から設定
@@ -264,17 +270,25 @@ public class PageBuilder {
 							left += width;
 						}
 					b.leave();
-					b.enter(LayoutType.SIMPLE_PANE, "body");
-						b.locate(0, 2, 0, 0);
+					b.enter(LayoutType.V_LIST, "list");
+						b.locate(0, 2, 1, 1);
 						left = 0;
 						for (FieldContent fld : fields) {
 							width = 10; //TODO 仮。本当はField書式から設定
 							b.enter(LayoutType.FIELD, fld.getFieldName() + "Field");
-								b.locate(left, 0, NA, 0, width, NA);
+								b.locate(left, 0, NA, NA, width, 2);
 								b.refField(fld);
 							b.leave();
 							left += width;
 						}
+					b.leave();
+					b.enter(LayoutType.V_SCROLLBAR, "vsb");
+						b.locate(NA, 2, 0, 1, 1, NA);
+						b.related("list");
+					b.leave();
+					b.enter(LayoutType.H_SCROLLBAR, "hsb");
+						b.locate(0, NA, 1, 0, NA, 1);
+						b.related("list");
 					b.leave();
 				b.leave();
 			}

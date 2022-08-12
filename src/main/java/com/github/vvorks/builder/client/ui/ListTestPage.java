@@ -78,7 +78,8 @@ public class ListTestPage extends UiPage {
 				b.leave();
 			b.leave();
 			//right side
-			b.enter(new UiVerticalScrollBar("rightSide", list));
+			b.enter(new UiVerticalScrollBar("rightSide"));
+				b.related(list);
 				b.style(BuilderStyles.SB);
 				b.focusable(true);
 				b.locate(NA, 5.0, 1.0, 5.0, 3.0, NA);

@@ -8,6 +8,7 @@
   "children" : [ {
     "name" : "top",
     "type" : "SIMPLE_PANE",
+    "layoutparam" : "top",
     "height" : "50%",
     "children" : [ {
       "name" : "detail",
@@ -27,6 +28,7 @@
       }, {
         "name" : "pageIdField",
         "type" : "FIELD",
+        "datatype" : "KEY",
         "left" : "10em",
         "top" : "0",
         "right" : "0",
@@ -43,6 +45,8 @@
       }, {
         "name" : "ownerField",
         "type" : "FIELD",
+        "datatype" : "REF",
+        "datatypeparam" : "PageSet",
         "left" : "10em",
         "top" : "2em",
         "right" : "0",
@@ -59,6 +63,8 @@
       }, {
         "name" : "contextField",
         "type" : "FIELD",
+        "datatype" : "REF",
+        "datatypeparam" : "Class",
         "left" : "10em",
         "top" : "4em",
         "right" : "0",
@@ -75,6 +81,7 @@
       }, {
         "name" : "widthField",
         "type" : "FIELD",
+        "datatype" : "INTEGER",
         "left" : "10em",
         "top" : "6em",
         "right" : "0",
@@ -91,27 +98,12 @@
       }, {
         "name" : "heightField",
         "type" : "FIELD",
+        "datatype" : "INTEGER",
         "left" : "10em",
         "top" : "8em",
         "right" : "0",
         "height" : "2em",
         "fref" : "Page#height"
-      }, {
-        "name" : "layoutsLabel",
-        "type" : "LABEL",
-        "left" : "0",
-        "top" : "10em",
-        "width" : "10em",
-        "height" : "2em",
-        "fref" : "Page#layouts"
-      }, {
-        "name" : "layoutsField",
-        "type" : "FIELD",
-        "left" : "10em",
-        "top" : "10em",
-        "right" : "0",
-        "height" : "2em",
-        "fref" : "Page#layouts"
       } ]
     }, {
       "name" : "sb",
@@ -125,6 +117,7 @@
   }, {
     "name" : "center",
     "type" : "SIMPLE_PANE",
+    "layoutparam" : "center",
     "children" : [ {
       "name" : "head",
       "type" : "SIMPLE_PANE",
@@ -161,7 +154,7 @@
           "type" : "SIMPLE_PANE",
           "left" : "0",
           "top" : "0",
-          "right" : "0",
+          "right" : "1em",
           "height" : "2em",
           "children" : [ {
             "name" : "layoutIdLabel",
@@ -180,17 +173,9 @@
             "width" : "10em",
             "fref" : "Layout#owner"
           }, {
-            "name" : "childrenLabel",
-            "type" : "LABEL",
-            "left" : "20em",
-            "top" : "0",
-            "bottom" : "0",
-            "width" : "10em",
-            "fref" : "Layout#children"
-          }, {
             "name" : "parentLabel",
             "type" : "LABEL",
-            "left" : "30em",
+            "left" : "20em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -198,7 +183,7 @@
           }, {
             "name" : "layoutNameLabel",
             "type" : "LABEL",
-            "left" : "40em",
+            "left" : "30em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -206,7 +191,7 @@
           }, {
             "name" : "layoutTypeLabel",
             "type" : "LABEL",
-            "left" : "50em",
+            "left" : "40em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -214,7 +199,7 @@
           }, {
             "name" : "crefLabel",
             "type" : "LABEL",
-            "left" : "60em",
+            "left" : "50em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -222,7 +207,7 @@
           }, {
             "name" : "erefLabel",
             "type" : "LABEL",
-            "left" : "70em",
+            "left" : "60em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -230,7 +215,7 @@
           }, {
             "name" : "frefLabel",
             "type" : "LABEL",
-            "left" : "80em",
+            "left" : "70em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -238,7 +223,7 @@
           }, {
             "name" : "mrefLabel",
             "type" : "LABEL",
-            "left" : "90em",
+            "left" : "80em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -246,7 +231,7 @@
           }, {
             "name" : "relatedLabel",
             "type" : "LABEL",
-            "left" : "100em",
+            "left" : "90em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -254,7 +239,7 @@
           }, {
             "name" : "paramLabel",
             "type" : "LABEL",
-            "left" : "110em",
+            "left" : "100em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -262,7 +247,7 @@
           }, {
             "name" : "layoutParamLabel",
             "type" : "LABEL",
-            "left" : "120em",
+            "left" : "110em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -270,7 +255,7 @@
           }, {
             "name" : "styleLabel",
             "type" : "LABEL",
-            "left" : "130em",
+            "left" : "120em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -278,7 +263,7 @@
           }, {
             "name" : "leftLabel",
             "type" : "LABEL",
-            "left" : "140em",
+            "left" : "130em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -286,7 +271,7 @@
           }, {
             "name" : "topLabel",
             "type" : "LABEL",
-            "left" : "150em",
+            "left" : "140em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -294,7 +279,7 @@
           }, {
             "name" : "rightLabel",
             "type" : "LABEL",
-            "left" : "160em",
+            "left" : "150em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -302,7 +287,7 @@
           }, {
             "name" : "bottomLabel",
             "type" : "LABEL",
-            "left" : "170em",
+            "left" : "160em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -310,7 +295,7 @@
           }, {
             "name" : "widthLabel",
             "type" : "LABEL",
-            "left" : "180em",
+            "left" : "170em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
@@ -318,181 +303,217 @@
           }, {
             "name" : "heightLabel",
             "type" : "LABEL",
-            "left" : "190em",
+            "left" : "180em",
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
             "fref" : "Layout#height"
           } ],
-          "related" : "/frame/center/body/Layout/body"
+          "related" : "/frame/center/body/Layout/list"
         }, {
-          "name" : "body",
-          "type" : "SIMPLE_PANE",
+          "name" : "list",
+          "type" : "V_LIST",
           "left" : "0",
           "top" : "2em",
-          "right" : "0",
-          "bottom" : "0",
+          "right" : "1em",
+          "bottom" : "1em",
           "children" : [ {
             "name" : "layoutIdField",
             "type" : "FIELD",
+            "datatype" : "KEY",
             "left" : "0",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#layoutId"
           }, {
             "name" : "ownerField",
             "type" : "FIELD",
+            "datatype" : "REF",
+            "datatypeparam" : "Page",
             "left" : "10em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#owner"
-          }, {
-            "name" : "childrenField",
-            "type" : "FIELD",
-            "left" : "20em",
-            "top" : "0",
-            "bottom" : "0",
-            "width" : "10em",
-            "fref" : "Layout#children"
           }, {
             "name" : "parentField",
             "type" : "FIELD",
-            "left" : "30em",
+            "datatype" : "REF",
+            "datatypeparam" : "Layout",
+            "left" : "20em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#parent"
           }, {
             "name" : "layoutNameField",
             "type" : "FIELD",
-            "left" : "40em",
+            "datatype" : "STRING",
+            "left" : "30em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#layoutName"
           }, {
             "name" : "layoutTypeField",
             "type" : "FIELD",
-            "left" : "50em",
+            "datatype" : "ENUM",
+            "datatypeparam" : "LayoutType",
+            "left" : "40em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#layoutType"
           }, {
             "name" : "crefField",
             "type" : "FIELD",
-            "left" : "60em",
+            "datatype" : "REF",
+            "datatypeparam" : "Class",
+            "left" : "50em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#cref"
           }, {
             "name" : "erefField",
             "type" : "FIELD",
-            "left" : "70em",
+            "datatype" : "REF",
+            "datatypeparam" : "Enum",
+            "left" : "60em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#eref"
           }, {
             "name" : "frefField",
             "type" : "FIELD",
-            "left" : "80em",
+            "datatype" : "REF",
+            "datatypeparam" : "Field",
+            "left" : "70em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#fref"
           }, {
             "name" : "mrefField",
             "type" : "FIELD",
-            "left" : "90em",
+            "datatype" : "REF",
+            "datatypeparam" : "Message",
+            "left" : "80em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#mref"
           }, {
             "name" : "relatedField",
             "type" : "FIELD",
-            "left" : "100em",
+            "datatype" : "REF",
+            "datatypeparam" : "Layout",
+            "left" : "90em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#related"
           }, {
             "name" : "paramField",
             "type" : "FIELD",
-            "left" : "110em",
+            "datatype" : "STRING",
+            "left" : "100em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#param"
           }, {
             "name" : "layoutParamField",
             "type" : "FIELD",
-            "left" : "120em",
+            "datatype" : "STRING",
+            "left" : "110em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#layoutParam"
           }, {
             "name" : "styleField",
             "type" : "FIELD",
-            "left" : "130em",
+            "datatype" : "REF",
+            "datatypeparam" : "Style",
+            "left" : "120em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#style"
           }, {
             "name" : "leftField",
             "type" : "FIELD",
-            "left" : "140em",
+            "datatype" : "STRING",
+            "left" : "130em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#left"
           }, {
             "name" : "topField",
             "type" : "FIELD",
-            "left" : "150em",
+            "datatype" : "STRING",
+            "left" : "140em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#top"
           }, {
             "name" : "rightField",
             "type" : "FIELD",
-            "left" : "160em",
+            "datatype" : "STRING",
+            "left" : "150em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#right"
           }, {
             "name" : "bottomField",
             "type" : "FIELD",
-            "left" : "170em",
+            "datatype" : "STRING",
+            "left" : "160em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#bottom"
           }, {
             "name" : "widthField",
             "type" : "FIELD",
-            "left" : "180em",
+            "datatype" : "STRING",
+            "left" : "170em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#width"
           }, {
             "name" : "heightField",
             "type" : "FIELD",
-            "left" : "190em",
+            "datatype" : "STRING",
+            "left" : "180em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "Layout#height"
           } ]
+        }, {
+          "name" : "vsb",
+          "type" : "V_SCROLLBAR",
+          "top" : "2em",
+          "right" : "0",
+          "bottom" : "1em",
+          "width" : "1em",
+          "related" : "/frame/center/body/Layout/list"
+        }, {
+          "name" : "hsb",
+          "type" : "H_SCROLLBAR",
+          "left" : "0",
+          "right" : "1em",
+          "bottom" : "0",
+          "height" : "1em",
+          "related" : "/frame/center/body/Layout/list"
         } ]
       } ]
     } ]

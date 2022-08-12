@@ -8,6 +8,7 @@
   "children" : [ {
     "name" : "top",
     "type" : "SIMPLE_PANE",
+    "layoutparam" : "top",
     "height" : "50%",
     "children" : [ {
       "name" : "detail",
@@ -27,6 +28,7 @@
       }, {
         "name" : "messageIdField",
         "type" : "FIELD",
+        "datatype" : "KEY",
         "left" : "10em",
         "top" : "0",
         "right" : "0",
@@ -43,6 +45,8 @@
       }, {
         "name" : "ownerField",
         "type" : "FIELD",
+        "datatype" : "REF",
+        "datatypeparam" : "Project",
         "left" : "10em",
         "top" : "2em",
         "right" : "0",
@@ -59,6 +63,7 @@
       }, {
         "name" : "messageNameField",
         "type" : "FIELD",
+        "datatype" : "STRING",
         "left" : "10em",
         "top" : "4em",
         "right" : "0",
@@ -75,27 +80,12 @@
       }, {
         "name" : "messageField",
         "type" : "FIELD",
+        "datatype" : "STRING",
         "left" : "10em",
         "top" : "6em",
         "right" : "0",
         "height" : "2em",
         "fref" : "Message#message"
-      }, {
-        "name" : "i18nsLabel",
-        "type" : "LABEL",
-        "left" : "0",
-        "top" : "8em",
-        "width" : "10em",
-        "height" : "2em",
-        "fref" : "Message#i18ns"
-      }, {
-        "name" : "i18nsField",
-        "type" : "FIELD",
-        "left" : "10em",
-        "top" : "8em",
-        "right" : "0",
-        "height" : "2em",
-        "fref" : "Message#i18ns"
       } ]
     }, {
       "name" : "sb",
@@ -109,6 +99,7 @@
   }, {
     "name" : "center",
     "type" : "SIMPLE_PANE",
+    "layoutparam" : "center",
     "children" : [ {
       "name" : "head",
       "type" : "SIMPLE_PANE",
@@ -145,7 +136,7 @@
           "type" : "SIMPLE_PANE",
           "left" : "0",
           "top" : "0",
-          "right" : "0",
+          "right" : "1em",
           "height" : "2em",
           "children" : [ {
             "name" : "ownerLabel",
@@ -172,39 +163,60 @@
             "width" : "10em",
             "fref" : "MessageI18n#message"
           } ],
-          "related" : "/frame/center/body/MessageI18n/body"
+          "related" : "/frame/center/body/MessageI18n/list"
         }, {
-          "name" : "body",
-          "type" : "SIMPLE_PANE",
+          "name" : "list",
+          "type" : "V_LIST",
           "left" : "0",
           "top" : "2em",
-          "right" : "0",
-          "bottom" : "0",
+          "right" : "1em",
+          "bottom" : "1em",
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
+            "datatype" : "REF",
+            "datatypeparam" : "Message",
             "left" : "0",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "MessageI18n#owner"
           }, {
             "name" : "targetField",
             "type" : "FIELD",
+            "datatype" : "REF",
+            "datatypeparam" : "Locale",
             "left" : "10em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "MessageI18n#target"
           }, {
             "name" : "messageField",
             "type" : "FIELD",
+            "datatype" : "STRING",
             "left" : "20em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "MessageI18n#message"
           } ]
+        }, {
+          "name" : "vsb",
+          "type" : "V_SCROLLBAR",
+          "top" : "2em",
+          "right" : "0",
+          "bottom" : "1em",
+          "width" : "1em",
+          "related" : "/frame/center/body/MessageI18n/list"
+        }, {
+          "name" : "hsb",
+          "type" : "H_SCROLLBAR",
+          "left" : "0",
+          "right" : "1em",
+          "bottom" : "0",
+          "height" : "1em",
+          "related" : "/frame/center/body/MessageI18n/list"
         } ]
       } ]
     } ]

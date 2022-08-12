@@ -8,6 +8,7 @@
   "children" : [ {
     "name" : "top",
     "type" : "SIMPLE_PANE",
+    "layoutparam" : "top",
     "height" : "50%",
     "children" : [ {
       "name" : "detail",
@@ -27,6 +28,8 @@
       }, {
         "name" : "ownerField",
         "type" : "FIELD",
+        "datatype" : "REF",
+        "datatypeparam" : "Enum",
         "left" : "10em",
         "top" : "0",
         "right" : "0",
@@ -43,6 +46,7 @@
       }, {
         "name" : "valueIdField",
         "type" : "FIELD",
+        "datatype" : "STRING",
         "left" : "10em",
         "top" : "2em",
         "right" : "0",
@@ -59,6 +63,7 @@
       }, {
         "name" : "codeField",
         "type" : "FIELD",
+        "datatype" : "INTEGER",
         "left" : "10em",
         "top" : "4em",
         "right" : "0",
@@ -75,6 +80,7 @@
       }, {
         "name" : "titleField",
         "type" : "FIELD",
+        "datatype" : "STRING",
         "left" : "10em",
         "top" : "6em",
         "right" : "0",
@@ -91,6 +97,7 @@
       }, {
         "name" : "descriptionField",
         "type" : "FIELD",
+        "datatype" : "STRING",
         "left" : "10em",
         "top" : "8em",
         "right" : "0",
@@ -107,27 +114,12 @@
       }, {
         "name" : "noteField",
         "type" : "FIELD",
+        "datatype" : "STRING",
         "left" : "10em",
         "top" : "10em",
         "right" : "0",
         "height" : "2em",
         "fref" : "EnumValue#note"
-      }, {
-        "name" : "i18nsLabel",
-        "type" : "LABEL",
-        "left" : "0",
-        "top" : "12em",
-        "width" : "10em",
-        "height" : "2em",
-        "fref" : "EnumValue#i18ns"
-      }, {
-        "name" : "i18nsField",
-        "type" : "FIELD",
-        "left" : "10em",
-        "top" : "12em",
-        "right" : "0",
-        "height" : "2em",
-        "fref" : "EnumValue#i18ns"
       } ]
     }, {
       "name" : "sb",
@@ -141,6 +133,7 @@
   }, {
     "name" : "center",
     "type" : "SIMPLE_PANE",
+    "layoutparam" : "center",
     "children" : [ {
       "name" : "head",
       "type" : "SIMPLE_PANE",
@@ -177,7 +170,7 @@
           "type" : "SIMPLE_PANE",
           "left" : "0",
           "top" : "0",
-          "right" : "0",
+          "right" : "1em",
           "height" : "2em",
           "children" : [ {
             "name" : "ownerLabel",
@@ -212,47 +205,69 @@
             "width" : "10em",
             "fref" : "EnumValueI18n#description"
           } ],
-          "related" : "/frame/center/body/EnumValueI18n/body"
+          "related" : "/frame/center/body/EnumValueI18n/list"
         }, {
-          "name" : "body",
-          "type" : "SIMPLE_PANE",
+          "name" : "list",
+          "type" : "V_LIST",
           "left" : "0",
           "top" : "2em",
-          "right" : "0",
-          "bottom" : "0",
+          "right" : "1em",
+          "bottom" : "1em",
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
+            "datatype" : "REF",
+            "datatypeparam" : "EnumValue",
             "left" : "0",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "EnumValueI18n#owner"
           }, {
             "name" : "targetField",
             "type" : "FIELD",
+            "datatype" : "REF",
+            "datatypeparam" : "Locale",
             "left" : "10em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "EnumValueI18n#target"
           }, {
             "name" : "titleField",
             "type" : "FIELD",
+            "datatype" : "STRING",
             "left" : "20em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "EnumValueI18n#title"
           }, {
             "name" : "descriptionField",
             "type" : "FIELD",
+            "datatype" : "STRING",
             "left" : "30em",
             "top" : "0",
-            "bottom" : "0",
             "width" : "10em",
+            "height" : "2em",
             "fref" : "EnumValueI18n#description"
           } ]
+        }, {
+          "name" : "vsb",
+          "type" : "V_SCROLLBAR",
+          "top" : "2em",
+          "right" : "0",
+          "bottom" : "1em",
+          "width" : "1em",
+          "related" : "/frame/center/body/EnumValueI18n/list"
+        }, {
+          "name" : "hsb",
+          "type" : "H_SCROLLBAR",
+          "left" : "0",
+          "right" : "1em",
+          "bottom" : "0",
+          "height" : "1em",
+          "related" : "/frame/center/body/EnumValueI18n/list"
         } ]
       } ]
     } ]

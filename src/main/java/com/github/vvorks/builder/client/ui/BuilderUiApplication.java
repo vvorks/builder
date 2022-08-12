@@ -13,7 +13,8 @@ public class BuilderUiApplication extends UiApplication {
 	public BuilderUiApplication(DomDocument doc) {
 		super(doc);
 		final UiApplication app = this;
-		addPage("", args -> new GroupTestPage("testPage", app, (Map<String, String>)args[0]));
+		addPage("", args -> new BuilderPage("BuilderPage", app, (Map<String, String>)args[0]));
+		addPage("#test", args -> new GroupTestPage("testPage", app, (Map<String, String>)args[0]));
 		addPage("#list", args -> new ListTestPage("listPage", app, (Map<String, String>)args[0]));
 		addPage("#layout", args -> new LayouterTestPage("layoutPage", app, (Map<String, String>)args[0]));
 		addPage("#fieldList", args -> new FieldListPage("fieldListPage", app, (Map<String, String>)args[0]));

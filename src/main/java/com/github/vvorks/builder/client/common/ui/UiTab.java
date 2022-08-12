@@ -1,24 +1,18 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import com.github.vvorks.builder.shared.common.lang.Asserts;
+
 public class UiTab extends UiButton implements Selectable.Listener {
 
-	private UiDeckGroup deck;
+	private UiNode related;
 
-	private int index;
-
-	public UiTab(String name, UiDeckGroup deck, int index) {
+	public UiTab(String name) {
 		super(name);
-		this.deck = deck;
-		this.index = index;
 		setEnable(false);
-		deck.addSelectableListener(this);
 	}
 
 	public UiTab(UiTab src) {
 		super(src);
-		this.deck = src.deck;
-		this.index = src.index;
-		deck.addSelectableListener(this);
 	}
 
 	@Override
@@ -27,20 +21,46 @@ public class UiTab extends UiButton implements Selectable.Listener {
 	}
 
 	@Override
+	public void setRelated(UiNode related) {
+		Asserts.require(related == null || related.getParent() instanceof UiDeckGroup);
+		if (this.related != null) {
+			UiDeckGroup deck = (UiDeckGroup) this.related.getParent();
+			deck.removeSelectableListener(this);
+		}
+		this.related = related;
+		if (this.related != null) {
+			UiDeckGroup deck = (UiDeckGroup) this.related.getParent();
+			deck.addSelectableListener(this);
+		}
+	}
+
+	@Override
 	public int onMouseClick(UiNode target, int x, int y, int mods, int time) {
-		return deck.select(index) ? EVENT_AFFECTED : EVENT_IGNORED;
+		if (related == null) {
+			return EVENT_IGNORED;
+		}
+		UiDeckGroup deck = (UiDeckGroup) related.getParent();
+		return deck.select(deck.indexOf(related)) ? EVENT_AFFECTED : EVENT_IGNORED;
 	}
 
 	@Override
 	public void onSelected(int selected) {
-		if (index == selected) {
+		if (related == null) {
+			return;
+		}
+		UiDeckGroup deck = (UiDeckGroup) related.getParent();
+		if (deck.indexOf(related) == selected) {
 			this.setEnable(true);
 		}
 	}
 
 	@Override
 	public void onDeselected(int deselected) {
-		if (index == deselected) {
+		if (related == null) {
+			return;
+		}
+		UiDeckGroup deck = (UiDeckGroup) related.getParent();
+		if (deck.indexOf(related) == deselected) {
 			this.setEnable(false);
 		}
 	}

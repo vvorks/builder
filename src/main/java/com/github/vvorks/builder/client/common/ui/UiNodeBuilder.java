@@ -157,6 +157,12 @@ public class UiNodeBuilder {
 		return this;
 	}
 
+	public UiNodeBuilder related(UiNode related) {
+		UiNode node = stack.peek();
+		node.setRelated(related);
+		return this;
+	}
+
 	public UiNode build() {
 		return stack.peekLast();
 	}
