@@ -24,17 +24,17 @@
         "top" : "0",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "EnumValue#owner"
+        "fref" : "EnumValue/owner"
       }, {
         "name" : "ownerField",
         "type" : "FIELD",
-        "datatype" : "REF",
-        "datatypeparam" : "Enum",
+        "dataType" : "REF",
+        "dataTypeParam" : "Enum",
         "left" : "10em",
         "top" : "0",
         "right" : "0",
         "height" : "2em",
-        "fref" : "EnumValue#owner"
+        "fref" : "EnumValue/owner"
       }, {
         "name" : "valueIdLabel",
         "type" : "LABEL",
@@ -42,16 +42,16 @@
         "top" : "2em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "EnumValue#valueId"
+        "fref" : "EnumValue/valueId"
       }, {
         "name" : "valueIdField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "2em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "EnumValue#valueId"
+        "fref" : "EnumValue/valueId"
       }, {
         "name" : "codeLabel",
         "type" : "LABEL",
@@ -59,16 +59,16 @@
         "top" : "4em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "EnumValue#code"
+        "fref" : "EnumValue/code"
       }, {
         "name" : "codeField",
         "type" : "FIELD",
-        "datatype" : "INTEGER",
+        "dataType" : "INTEGER",
         "left" : "10em",
         "top" : "4em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "EnumValue#code"
+        "fref" : "EnumValue/code"
       }, {
         "name" : "titleLabel",
         "type" : "LABEL",
@@ -76,16 +76,16 @@
         "top" : "6em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "EnumValue#title"
+        "fref" : "EnumValue/title"
       }, {
         "name" : "titleField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "6em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "EnumValue#title"
+        "fref" : "EnumValue/title"
       }, {
         "name" : "descriptionLabel",
         "type" : "LABEL",
@@ -93,16 +93,16 @@
         "top" : "8em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "EnumValue#description"
+        "fref" : "EnumValue/description"
       }, {
         "name" : "descriptionField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "8em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "EnumValue#description"
+        "fref" : "EnumValue/description"
       }, {
         "name" : "noteLabel",
         "type" : "LABEL",
@@ -110,16 +110,16 @@
         "top" : "10em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "EnumValue#note"
+        "fref" : "EnumValue/note"
       }, {
         "name" : "noteField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "10em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "EnumValue#note"
+        "fref" : "EnumValue/note"
       } ]
     }, {
       "name" : "sb",
@@ -179,7 +179,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "EnumValueI18n#owner"
+            "fref" : "EnumValueI18n/owner"
           }, {
             "name" : "targetLabel",
             "type" : "LABEL",
@@ -187,7 +187,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "EnumValueI18n#target"
+            "fref" : "EnumValueI18n/target"
           }, {
             "name" : "titleLabel",
             "type" : "LABEL",
@@ -195,7 +195,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "EnumValueI18n#title"
+            "fref" : "EnumValueI18n/title"
           }, {
             "name" : "descriptionLabel",
             "type" : "LABEL",
@@ -203,7 +203,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "EnumValueI18n#description"
+            "fref" : "EnumValueI18n/description"
           } ],
           "related" : "/frame/center/body/EnumValueI18n/list"
         }, {
@@ -216,41 +216,41 @@
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "EnumValue",
+            "dataType" : "REF",
+            "dataTypeParam" : "EnumValue",
             "left" : "0",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "EnumValueI18n#owner"
+            "fref" : "EnumValueI18n/owner"
           }, {
             "name" : "targetField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Locale",
+            "dataType" : "REF",
+            "dataTypeParam" : "Locale",
             "left" : "10em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "EnumValueI18n#target"
+            "fref" : "EnumValueI18n/target"
           }, {
             "name" : "titleField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "20em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "EnumValueI18n#title"
+            "fref" : "EnumValueI18n/title"
           }, {
             "name" : "descriptionField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "30em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "EnumValueI18n#description"
+            "fref" : "EnumValueI18n/description"
           } ]
         }, {
           "name" : "vsb",

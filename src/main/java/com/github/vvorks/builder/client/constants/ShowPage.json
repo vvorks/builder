@@ -50,7 +50,7 @@
           "top" : "0",
           "bottom" : "0",
           "width" : "10em",
-          "fref" : "Project#projectId"
+          "fref" : "Project/projectId"
         }, {
           "name" : "projectNameLabel",
           "type" : "LABEL",
@@ -58,7 +58,7 @@
           "top" : "0",
           "bottom" : "0",
           "width" : "10em",
-          "fref" : "Project#projectName"
+          "fref" : "Project/projectName"
         }, {
           "name" : "gradleNameLabel",
           "type" : "LABEL",
@@ -66,7 +66,7 @@
           "top" : "0",
           "bottom" : "0",
           "width" : "10em",
-          "fref" : "Project#gradleName"
+          "fref" : "Project/gradleName"
         }, {
           "name" : "titleLabel",
           "type" : "LABEL",
@@ -74,7 +74,7 @@
           "top" : "0",
           "bottom" : "0",
           "width" : "10em",
-          "fref" : "Project#title"
+          "fref" : "Project/title"
         }, {
           "name" : "descriptionLabel",
           "type" : "LABEL",
@@ -82,7 +82,7 @@
           "top" : "0",
           "bottom" : "0",
           "width" : "10em",
-          "fref" : "Project#description"
+          "fref" : "Project/description"
         }, {
           "name" : "noteLabel",
           "type" : "LABEL",
@@ -90,7 +90,7 @@
           "top" : "0",
           "bottom" : "0",
           "width" : "10em",
-          "fref" : "Project#note"
+          "fref" : "Project/note"
         }, {
           "name" : "copyrightsLabel",
           "type" : "LABEL",
@@ -98,7 +98,7 @@
           "top" : "0",
           "bottom" : "0",
           "width" : "10em",
-          "fref" : "Project#copyrights"
+          "fref" : "Project/copyrights"
         } ],
         "related" : "/frame/body/Project/list"
       }, {
@@ -111,66 +111,66 @@
         "children" : [ {
           "name" : "projectIdField",
           "type" : "FIELD",
-          "datatype" : "KEY",
+          "dataType" : "KEY",
           "left" : "0",
           "top" : "0",
           "width" : "10em",
           "height" : "2em",
-          "fref" : "Project#projectId"
+          "fref" : "Project/projectId"
         }, {
           "name" : "projectNameField",
           "type" : "FIELD",
-          "datatype" : "STRING",
+          "dataType" : "STRING",
           "left" : "10em",
           "top" : "0",
           "width" : "10em",
           "height" : "2em",
-          "fref" : "Project#projectName"
+          "fref" : "Project/projectName"
         }, {
           "name" : "gradleNameField",
           "type" : "FIELD",
-          "datatype" : "STRING",
+          "dataType" : "STRING",
           "left" : "20em",
           "top" : "0",
           "width" : "10em",
           "height" : "2em",
-          "fref" : "Project#gradleName"
+          "fref" : "Project/gradleName"
         }, {
           "name" : "titleField",
           "type" : "FIELD",
-          "datatype" : "STRING",
+          "dataType" : "STRING",
           "left" : "30em",
           "top" : "0",
           "width" : "10em",
           "height" : "2em",
-          "fref" : "Project#title"
+          "fref" : "Project/title"
         }, {
           "name" : "descriptionField",
           "type" : "FIELD",
-          "datatype" : "STRING",
+          "dataType" : "STRING",
           "left" : "40em",
           "top" : "0",
           "width" : "10em",
           "height" : "2em",
-          "fref" : "Project#description"
+          "fref" : "Project/description"
         }, {
           "name" : "noteField",
           "type" : "FIELD",
-          "datatype" : "STRING",
+          "dataType" : "STRING",
           "left" : "50em",
           "top" : "0",
           "width" : "10em",
           "height" : "2em",
-          "fref" : "Project#note"
+          "fref" : "Project/note"
         }, {
           "name" : "copyrightsField",
           "type" : "FIELD",
-          "datatype" : "STRING",
+          "dataType" : "STRING",
           "left" : "60em",
           "top" : "0",
           "width" : "10em",
           "height" : "2em",
-          "fref" : "Project#copyrights"
+          "fref" : "Project/copyrights"
         } ]
       }, {
         "name" : "vsb",

@@ -19,16 +19,16 @@
       "top" : "0",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Locale#localeId"
+      "fref" : "Locale/localeId"
     }, {
       "name" : "localeIdField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "0",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Locale#localeId"
+      "fref" : "Locale/localeId"
     }, {
       "name" : "ownerLabel",
       "type" : "LABEL",
@@ -36,17 +36,17 @@
       "top" : "2em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Locale#owner"
+      "fref" : "Locale/owner"
     }, {
       "name" : "ownerField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Project",
+      "dataType" : "REF",
+      "dataTypeParam" : "Project",
       "left" : "10em",
       "top" : "2em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Locale#owner"
+      "fref" : "Locale/owner"
     }, {
       "name" : "titleLabel",
       "type" : "LABEL",
@@ -54,16 +54,16 @@
       "top" : "4em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Locale#title"
+      "fref" : "Locale/title"
     }, {
       "name" : "titleField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "4em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Locale#title"
+      "fref" : "Locale/title"
     }, {
       "name" : "descriptionLabel",
       "type" : "LABEL",
@@ -71,16 +71,16 @@
       "top" : "6em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Locale#description"
+      "fref" : "Locale/description"
     }, {
       "name" : "descriptionField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "6em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Locale#description"
+      "fref" : "Locale/description"
     } ]
   }, {
     "name" : "sb",

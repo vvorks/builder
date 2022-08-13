@@ -24,16 +24,16 @@
         "top" : "0",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Message#messageId"
+        "fref" : "Message/messageId"
       }, {
         "name" : "messageIdField",
         "type" : "FIELD",
-        "datatype" : "KEY",
+        "dataType" : "KEY",
         "left" : "10em",
         "top" : "0",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Message#messageId"
+        "fref" : "Message/messageId"
       }, {
         "name" : "ownerLabel",
         "type" : "LABEL",
@@ -41,17 +41,17 @@
         "top" : "2em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Message#owner"
+        "fref" : "Message/owner"
       }, {
         "name" : "ownerField",
         "type" : "FIELD",
-        "datatype" : "REF",
-        "datatypeparam" : "Project",
+        "dataType" : "REF",
+        "dataTypeParam" : "Project",
         "left" : "10em",
         "top" : "2em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Message#owner"
+        "fref" : "Message/owner"
       }, {
         "name" : "messageNameLabel",
         "type" : "LABEL",
@@ -59,16 +59,16 @@
         "top" : "4em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Message#messageName"
+        "fref" : "Message/messageName"
       }, {
         "name" : "messageNameField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "4em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Message#messageName"
+        "fref" : "Message/messageName"
       }, {
         "name" : "messageLabel",
         "type" : "LABEL",
@@ -76,16 +76,16 @@
         "top" : "6em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Message#message"
+        "fref" : "Message/message"
       }, {
         "name" : "messageField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "6em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Message#message"
+        "fref" : "Message/message"
       } ]
     }, {
       "name" : "sb",
@@ -145,7 +145,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "MessageI18n#owner"
+            "fref" : "MessageI18n/owner"
           }, {
             "name" : "targetLabel",
             "type" : "LABEL",
@@ -153,7 +153,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "MessageI18n#target"
+            "fref" : "MessageI18n/target"
           }, {
             "name" : "messageLabel",
             "type" : "LABEL",
@@ -161,7 +161,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "MessageI18n#message"
+            "fref" : "MessageI18n/message"
           } ],
           "related" : "/frame/center/body/MessageI18n/list"
         }, {
@@ -174,32 +174,32 @@
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Message",
+            "dataType" : "REF",
+            "dataTypeParam" : "Message",
             "left" : "0",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "MessageI18n#owner"
+            "fref" : "MessageI18n/owner"
           }, {
             "name" : "targetField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Locale",
+            "dataType" : "REF",
+            "dataTypeParam" : "Locale",
             "left" : "10em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "MessageI18n#target"
+            "fref" : "MessageI18n/target"
           }, {
             "name" : "messageField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "20em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "MessageI18n#message"
+            "fref" : "MessageI18n/message"
           } ]
         }, {
           "name" : "vsb",

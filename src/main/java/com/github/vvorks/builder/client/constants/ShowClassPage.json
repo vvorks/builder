@@ -24,16 +24,16 @@
         "top" : "0",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Class#classId"
+        "fref" : "Class/classId"
       }, {
         "name" : "classIdField",
         "type" : "FIELD",
-        "datatype" : "KEY",
+        "dataType" : "KEY",
         "left" : "10em",
         "top" : "0",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Class#classId"
+        "fref" : "Class/classId"
       }, {
         "name" : "ownerLabel",
         "type" : "LABEL",
@@ -41,17 +41,17 @@
         "top" : "2em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Class#owner"
+        "fref" : "Class/owner"
       }, {
         "name" : "ownerField",
         "type" : "FIELD",
-        "datatype" : "REF",
-        "datatypeparam" : "Project",
+        "dataType" : "REF",
+        "dataTypeParam" : "Project",
         "left" : "10em",
         "top" : "2em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Class#owner"
+        "fref" : "Class/owner"
       }, {
         "name" : "classNameLabel",
         "type" : "LABEL",
@@ -59,16 +59,16 @@
         "top" : "4em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Class#className"
+        "fref" : "Class/className"
       }, {
         "name" : "classNameField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "4em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Class#className"
+        "fref" : "Class/className"
       }, {
         "name" : "orderExprLabel",
         "type" : "LABEL",
@@ -76,16 +76,16 @@
         "top" : "6em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Class#orderExpr"
+        "fref" : "Class/orderExpr"
       }, {
         "name" : "orderExprField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "6em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Class#orderExpr"
+        "fref" : "Class/orderExpr"
       }, {
         "name" : "titleExprLabel",
         "type" : "LABEL",
@@ -93,16 +93,16 @@
         "top" : "8em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Class#titleExpr"
+        "fref" : "Class/titleExpr"
       }, {
         "name" : "titleExprField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "8em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Class#titleExpr"
+        "fref" : "Class/titleExpr"
       }, {
         "name" : "titleLabel",
         "type" : "LABEL",
@@ -110,16 +110,16 @@
         "top" : "10em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Class#title"
+        "fref" : "Class/title"
       }, {
         "name" : "titleField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "10em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Class#title"
+        "fref" : "Class/title"
       }, {
         "name" : "descriptionLabel",
         "type" : "LABEL",
@@ -127,16 +127,16 @@
         "top" : "12em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Class#description"
+        "fref" : "Class/description"
       }, {
         "name" : "descriptionField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "12em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Class#description"
+        "fref" : "Class/description"
       }, {
         "name" : "noteLabel",
         "type" : "LABEL",
@@ -144,16 +144,16 @@
         "top" : "14em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "Class#note"
+        "fref" : "Class/note"
       }, {
         "name" : "noteField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "14em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "Class#note"
+        "fref" : "Class/note"
       } ]
     }, {
       "name" : "sb",
@@ -231,7 +231,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#fieldId"
+            "fref" : "Field/fieldId"
           }, {
             "name" : "ownerLabel",
             "type" : "LABEL",
@@ -239,7 +239,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#owner"
+            "fref" : "Field/owner"
           }, {
             "name" : "fieldNameLabel",
             "type" : "LABEL",
@@ -247,7 +247,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#fieldName"
+            "fref" : "Field/fieldName"
           }, {
             "name" : "typeLabel",
             "type" : "LABEL",
@@ -255,7 +255,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#type"
+            "fref" : "Field/type"
           }, {
             "name" : "widthLabel",
             "type" : "LABEL",
@@ -263,7 +263,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#width"
+            "fref" : "Field/width"
           }, {
             "name" : "scaleLabel",
             "type" : "LABEL",
@@ -271,7 +271,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#scale"
+            "fref" : "Field/scale"
           }, {
             "name" : "crefLabel",
             "type" : "LABEL",
@@ -279,7 +279,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#cref"
+            "fref" : "Field/cref"
           }, {
             "name" : "erefLabel",
             "type" : "LABEL",
@@ -287,7 +287,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#eref"
+            "fref" : "Field/eref"
           }, {
             "name" : "frefLabel",
             "type" : "LABEL",
@@ -295,7 +295,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#fref"
+            "fref" : "Field/fref"
           }, {
             "name" : "pkLabel",
             "type" : "LABEL",
@@ -303,7 +303,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#pk"
+            "fref" : "Field/pk"
           }, {
             "name" : "nullableLabel",
             "type" : "LABEL",
@@ -311,7 +311,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#nullable"
+            "fref" : "Field/nullable"
           }, {
             "name" : "needsSumLabel",
             "type" : "LABEL",
@@ -319,7 +319,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#needsSum"
+            "fref" : "Field/needsSum"
           }, {
             "name" : "needsAvgLabel",
             "type" : "LABEL",
@@ -327,7 +327,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#needsAvg"
+            "fref" : "Field/needsAvg"
           }, {
             "name" : "needsMaxLabel",
             "type" : "LABEL",
@@ -335,7 +335,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#needsMax"
+            "fref" : "Field/needsMax"
           }, {
             "name" : "needsMinLabel",
             "type" : "LABEL",
@@ -343,7 +343,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#needsMin"
+            "fref" : "Field/needsMin"
           }, {
             "name" : "isContainerLabel",
             "type" : "LABEL",
@@ -351,7 +351,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#isContainer"
+            "fref" : "Field/isContainer"
           }, {
             "name" : "formatLabel",
             "type" : "LABEL",
@@ -359,7 +359,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#format"
+            "fref" : "Field/format"
           }, {
             "name" : "titleLabel",
             "type" : "LABEL",
@@ -367,7 +367,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#title"
+            "fref" : "Field/title"
           }, {
             "name" : "descriptionLabel",
             "type" : "LABEL",
@@ -375,7 +375,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#description"
+            "fref" : "Field/description"
           }, {
             "name" : "noteLabel",
             "type" : "LABEL",
@@ -383,7 +383,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Field#note"
+            "fref" : "Field/note"
           } ],
           "related" : "/frame/center/body/Field/list"
         }, {
@@ -396,188 +396,188 @@
           "children" : [ {
             "name" : "fieldIdField",
             "type" : "FIELD",
-            "datatype" : "KEY",
+            "dataType" : "KEY",
             "left" : "0",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#fieldId"
+            "fref" : "Field/fieldId"
           }, {
             "name" : "ownerField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Class",
+            "dataType" : "REF",
+            "dataTypeParam" : "Class",
             "left" : "10em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#owner"
+            "fref" : "Field/owner"
           }, {
             "name" : "fieldNameField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "20em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#fieldName"
+            "fref" : "Field/fieldName"
           }, {
             "name" : "typeField",
             "type" : "FIELD",
-            "datatype" : "ENUM",
-            "datatypeparam" : "DataType",
+            "dataType" : "ENUM",
+            "dataTypeParam" : "DataType",
             "left" : "30em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#type"
+            "fref" : "Field/type"
           }, {
             "name" : "widthField",
             "type" : "FIELD",
-            "datatype" : "INTEGER",
+            "dataType" : "INTEGER",
             "left" : "40em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#width"
+            "fref" : "Field/width"
           }, {
             "name" : "scaleField",
             "type" : "FIELD",
-            "datatype" : "INTEGER",
+            "dataType" : "INTEGER",
             "left" : "50em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#scale"
+            "fref" : "Field/scale"
           }, {
             "name" : "crefField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Class",
+            "dataType" : "REF",
+            "dataTypeParam" : "Class",
             "left" : "60em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#cref"
+            "fref" : "Field/cref"
           }, {
             "name" : "erefField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Enum",
+            "dataType" : "REF",
+            "dataTypeParam" : "Enum",
             "left" : "70em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#eref"
+            "fref" : "Field/eref"
           }, {
             "name" : "frefField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Field",
+            "dataType" : "REF",
+            "dataTypeParam" : "Field",
             "left" : "80em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#fref"
+            "fref" : "Field/fref"
           }, {
             "name" : "pkField",
             "type" : "FIELD",
-            "datatype" : "BOOLEAN",
+            "dataType" : "BOOLEAN",
             "left" : "90em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#pk"
+            "fref" : "Field/pk"
           }, {
             "name" : "nullableField",
             "type" : "FIELD",
-            "datatype" : "BOOLEAN",
+            "dataType" : "BOOLEAN",
             "left" : "100em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#nullable"
+            "fref" : "Field/nullable"
           }, {
             "name" : "needsSumField",
             "type" : "FIELD",
-            "datatype" : "BOOLEAN",
+            "dataType" : "BOOLEAN",
             "left" : "110em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#needsSum"
+            "fref" : "Field/needsSum"
           }, {
             "name" : "needsAvgField",
             "type" : "FIELD",
-            "datatype" : "BOOLEAN",
+            "dataType" : "BOOLEAN",
             "left" : "120em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#needsAvg"
+            "fref" : "Field/needsAvg"
           }, {
             "name" : "needsMaxField",
             "type" : "FIELD",
-            "datatype" : "BOOLEAN",
+            "dataType" : "BOOLEAN",
             "left" : "130em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#needsMax"
+            "fref" : "Field/needsMax"
           }, {
             "name" : "needsMinField",
             "type" : "FIELD",
-            "datatype" : "BOOLEAN",
+            "dataType" : "BOOLEAN",
             "left" : "140em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#needsMin"
+            "fref" : "Field/needsMin"
           }, {
             "name" : "isContainerField",
             "type" : "FIELD",
-            "datatype" : "BOOLEAN",
+            "dataType" : "BOOLEAN",
             "left" : "150em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#isContainer"
+            "fref" : "Field/isContainer"
           }, {
             "name" : "formatField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "160em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#format"
+            "fref" : "Field/format"
           }, {
             "name" : "titleField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "170em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#title"
+            "fref" : "Field/title"
           }, {
             "name" : "descriptionField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "180em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#description"
+            "fref" : "Field/description"
           }, {
             "name" : "noteField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "190em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Field#note"
+            "fref" : "Field/note"
           } ]
         }, {
           "name" : "vsb",
@@ -617,7 +617,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Query#queryId"
+            "fref" : "Query/queryId"
           }, {
             "name" : "ownerLabel",
             "type" : "LABEL",
@@ -625,7 +625,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Query#owner"
+            "fref" : "Query/owner"
           }, {
             "name" : "queryNameLabel",
             "type" : "LABEL",
@@ -633,7 +633,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Query#queryName"
+            "fref" : "Query/queryName"
           }, {
             "name" : "filterLabel",
             "type" : "LABEL",
@@ -641,7 +641,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Query#filter"
+            "fref" : "Query/filter"
           }, {
             "name" : "orderLabel",
             "type" : "LABEL",
@@ -649,7 +649,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Query#order"
+            "fref" : "Query/order"
           }, {
             "name" : "titleLabel",
             "type" : "LABEL",
@@ -657,7 +657,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Query#title"
+            "fref" : "Query/title"
           }, {
             "name" : "descriptionLabel",
             "type" : "LABEL",
@@ -665,7 +665,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Query#description"
+            "fref" : "Query/description"
           }, {
             "name" : "noteLabel",
             "type" : "LABEL",
@@ -673,7 +673,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Query#note"
+            "fref" : "Query/note"
           } ],
           "related" : "/frame/center/body/Query/list"
         }, {
@@ -686,76 +686,76 @@
           "children" : [ {
             "name" : "queryIdField",
             "type" : "FIELD",
-            "datatype" : "KEY",
+            "dataType" : "KEY",
             "left" : "0",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Query#queryId"
+            "fref" : "Query/queryId"
           }, {
             "name" : "ownerField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Class",
+            "dataType" : "REF",
+            "dataTypeParam" : "Class",
             "left" : "10em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Query#owner"
+            "fref" : "Query/owner"
           }, {
             "name" : "queryNameField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "20em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Query#queryName"
+            "fref" : "Query/queryName"
           }, {
             "name" : "filterField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "30em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Query#filter"
+            "fref" : "Query/filter"
           }, {
             "name" : "orderField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "40em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Query#order"
+            "fref" : "Query/order"
           }, {
             "name" : "titleField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "50em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Query#title"
+            "fref" : "Query/title"
           }, {
             "name" : "descriptionField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "60em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Query#description"
+            "fref" : "Query/description"
           }, {
             "name" : "noteField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "70em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Query#note"
+            "fref" : "Query/note"
           } ]
         }, {
           "name" : "vsb",
@@ -795,7 +795,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "ClassI18n#owner"
+            "fref" : "ClassI18n/owner"
           }, {
             "name" : "targetLabel",
             "type" : "LABEL",
@@ -803,7 +803,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "ClassI18n#target"
+            "fref" : "ClassI18n/target"
           }, {
             "name" : "titleLabel",
             "type" : "LABEL",
@@ -811,7 +811,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "ClassI18n#title"
+            "fref" : "ClassI18n/title"
           }, {
             "name" : "descriptionLabel",
             "type" : "LABEL",
@@ -819,7 +819,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "ClassI18n#description"
+            "fref" : "ClassI18n/description"
           } ],
           "related" : "/frame/center/body/ClassI18n/list"
         }, {
@@ -832,41 +832,41 @@
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Class",
+            "dataType" : "REF",
+            "dataTypeParam" : "Class",
             "left" : "0",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "ClassI18n#owner"
+            "fref" : "ClassI18n/owner"
           }, {
             "name" : "targetField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Locale",
+            "dataType" : "REF",
+            "dataTypeParam" : "Locale",
             "left" : "10em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "ClassI18n#target"
+            "fref" : "ClassI18n/target"
           }, {
             "name" : "titleField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "20em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "ClassI18n#title"
+            "fref" : "ClassI18n/title"
           }, {
             "name" : "descriptionField",
             "type" : "FIELD",
-            "datatype" : "STRING",
+            "dataType" : "STRING",
             "left" : "30em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "ClassI18n#description"
+            "fref" : "ClassI18n/description"
           } ]
         }, {
           "name" : "vsb",

@@ -87,13 +87,13 @@ public class PageExtender {
 		if (type == LayoutType.FIELD || type == LayoutType.INPUT) {
 			Asserts.assumeNotNull(fref);
 			DataType dataType = fref.getType();
-			json.setString("datatype", dataType.encode());
+			json.setString("dataType", dataType.encode());
 			if (dataType == DataType.REF) {
 				ClassContent param = fieldMapper.getCref(fref);
-				json.setString("datatypeparam", param.getClassName());
+				json.setString("dataTypeParam", param.getClassName());
 			} else if (dataType == DataType.ENUM) {
 				EnumContent param = fieldMapper.getEref(fref);
-				json.setString("datatypeparam", param.getEnumName());
+				json.setString("dataTypeParam", param.getEnumName());
 			}
 		}
 		json.setStringIfExists("left", content.getLeft());
@@ -110,7 +110,7 @@ public class PageExtender {
 		}
 		if (fref != null) {
 			ClassContent cls = fieldMapper.getOwner(fref);
-			String name = cls.getClassName() + "#" + fref.getFieldName();
+			String name = cls.getClassName() + "/" + fref.getFieldName();
 			json.setStringIfExists("fref", name);
 		}
 		MessageContent mref = layoutMapper.getMref(content);

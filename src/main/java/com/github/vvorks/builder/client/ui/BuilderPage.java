@@ -5,7 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.github.vvorks.builder.client.agent.ClassAgent;
+import com.github.vvorks.builder.client.agent.Agents;
+import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.client.common.ui.LayoutParam;
 import com.github.vvorks.builder.client.common.ui.ListDataSource;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
@@ -174,10 +175,12 @@ public class BuilderPage extends UiPage {
 
 	private static UiNode newFieldNode(Json json) {
 		String name = json.getString("name");
-		String dataType = json.getString("datatype");
+		String dataType = json.getString("dataType");
 		UiNode node;
 		if (dataType.equals("REF")) {
-			node = new UiPickerField(name, ClassAgent.get());
+			String dataTypeParam = json.getString("dataTypeParam");
+			DataRecordAgent agent = Agents.get(dataTypeParam);
+			node = new UiPickerField(name, agent);
 		} else {
 			node = new UiEditField(name);
 		}

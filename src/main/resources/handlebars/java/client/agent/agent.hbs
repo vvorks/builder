@@ -1,7 +1,39 @@
 //
+// Agentsテンプレート
+//
+{{#java this "client/agent/" "Agents" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.client.agent;
+import java.util.Map;
+import java.util.HashMap;
+import {{global.project.projectName}}.client.common.ui.DataRecordAgent;
+
+public class Agents {
+
+	private static final Map<String, DataRecordAgent> AGENTS = new HashMap<>();
+	static {
+		{{#each this.publicClasses}}
+		AGENTS.put("{{className}}", {{className}}Agent.get());
+		{{/each}}
+	}
+
+	public static DataRecordAgent get(String name) {
+		return AGENTS.get(name);
+	}
+
+}
+{{/java}}
+
+//
 // クラスAgentテンプレート
 //
-{{#each this.classes}}
+{{#each this.publicClasses}}
 {{#java this "client/agent/" className "Agent" ".java"}}
 {{#if global.project.copyrightLines}}
 /*

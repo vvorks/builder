@@ -24,16 +24,16 @@
         "top" : "0",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "PageSet#pageSetId"
+        "fref" : "PageSet/pageSetId"
       }, {
         "name" : "pageSetIdField",
         "type" : "FIELD",
-        "datatype" : "KEY",
+        "dataType" : "KEY",
         "left" : "10em",
         "top" : "0",
         "right" : "0",
         "height" : "2em",
-        "fref" : "PageSet#pageSetId"
+        "fref" : "PageSet/pageSetId"
       }, {
         "name" : "ownerLabel",
         "type" : "LABEL",
@@ -41,17 +41,17 @@
         "top" : "2em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "PageSet#owner"
+        "fref" : "PageSet/owner"
       }, {
         "name" : "ownerField",
         "type" : "FIELD",
-        "datatype" : "REF",
-        "datatypeparam" : "Project",
+        "dataType" : "REF",
+        "dataTypeParam" : "Project",
         "left" : "10em",
         "top" : "2em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "PageSet#owner"
+        "fref" : "PageSet/owner"
       }, {
         "name" : "pageSetNameLabel",
         "type" : "LABEL",
@@ -59,16 +59,16 @@
         "top" : "4em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "PageSet#pageSetName"
+        "fref" : "PageSet/pageSetName"
       }, {
         "name" : "pageSetNameField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "4em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "PageSet#pageSetName"
+        "fref" : "PageSet/pageSetName"
       }, {
         "name" : "titleLabel",
         "type" : "LABEL",
@@ -76,16 +76,16 @@
         "top" : "6em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "PageSet#title"
+        "fref" : "PageSet/title"
       }, {
         "name" : "titleField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "6em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "PageSet#title"
+        "fref" : "PageSet/title"
       }, {
         "name" : "descriptionLabel",
         "type" : "LABEL",
@@ -93,16 +93,16 @@
         "top" : "8em",
         "width" : "10em",
         "height" : "2em",
-        "fref" : "PageSet#description"
+        "fref" : "PageSet/description"
       }, {
         "name" : "descriptionField",
         "type" : "FIELD",
-        "datatype" : "STRING",
+        "dataType" : "STRING",
         "left" : "10em",
         "top" : "8em",
         "right" : "0",
         "height" : "2em",
-        "fref" : "PageSet#description"
+        "fref" : "PageSet/description"
       } ]
     }, {
       "name" : "sb",
@@ -162,7 +162,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Page#pageId"
+            "fref" : "Page/pageId"
           }, {
             "name" : "ownerLabel",
             "type" : "LABEL",
@@ -170,7 +170,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Page#owner"
+            "fref" : "Page/owner"
           }, {
             "name" : "contextLabel",
             "type" : "LABEL",
@@ -178,7 +178,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Page#context"
+            "fref" : "Page/context"
           }, {
             "name" : "widthLabel",
             "type" : "LABEL",
@@ -186,7 +186,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Page#width"
+            "fref" : "Page/width"
           }, {
             "name" : "heightLabel",
             "type" : "LABEL",
@@ -194,7 +194,7 @@
             "top" : "0",
             "bottom" : "0",
             "width" : "10em",
-            "fref" : "Page#height"
+            "fref" : "Page/height"
           } ],
           "related" : "/frame/center/body/Page/list"
         }, {
@@ -207,50 +207,50 @@
           "children" : [ {
             "name" : "pageIdField",
             "type" : "FIELD",
-            "datatype" : "KEY",
+            "dataType" : "KEY",
             "left" : "0",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Page#pageId"
+            "fref" : "Page/pageId"
           }, {
             "name" : "ownerField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "PageSet",
+            "dataType" : "REF",
+            "dataTypeParam" : "PageSet",
             "left" : "10em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Page#owner"
+            "fref" : "Page/owner"
           }, {
             "name" : "contextField",
             "type" : "FIELD",
-            "datatype" : "REF",
-            "datatypeparam" : "Class",
+            "dataType" : "REF",
+            "dataTypeParam" : "Class",
             "left" : "20em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Page#context"
+            "fref" : "Page/context"
           }, {
             "name" : "widthField",
             "type" : "FIELD",
-            "datatype" : "INTEGER",
+            "dataType" : "INTEGER",
             "left" : "30em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Page#width"
+            "fref" : "Page/width"
           }, {
             "name" : "heightField",
             "type" : "FIELD",
-            "datatype" : "INTEGER",
+            "dataType" : "INTEGER",
             "left" : "40em",
             "top" : "0",
             "width" : "10em",
             "height" : "2em",
-            "fref" : "Page#height"
+            "fref" : "Page/height"
           } ]
         }, {
           "name" : "vsb",

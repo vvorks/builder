@@ -19,16 +19,16 @@
       "top" : "0",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#layoutId"
+      "fref" : "Layout/layoutId"
     }, {
       "name" : "layoutIdField",
       "type" : "FIELD",
-      "datatype" : "KEY",
+      "dataType" : "KEY",
       "left" : "10em",
       "top" : "0",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#layoutId"
+      "fref" : "Layout/layoutId"
     }, {
       "name" : "ownerLabel",
       "type" : "LABEL",
@@ -36,17 +36,17 @@
       "top" : "2em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#owner"
+      "fref" : "Layout/owner"
     }, {
       "name" : "ownerField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Page",
+      "dataType" : "REF",
+      "dataTypeParam" : "Page",
       "left" : "10em",
       "top" : "2em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#owner"
+      "fref" : "Layout/owner"
     }, {
       "name" : "parentLabel",
       "type" : "LABEL",
@@ -54,17 +54,17 @@
       "top" : "4em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#parent"
+      "fref" : "Layout/parent"
     }, {
       "name" : "parentField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Layout",
+      "dataType" : "REF",
+      "dataTypeParam" : "Layout",
       "left" : "10em",
       "top" : "4em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#parent"
+      "fref" : "Layout/parent"
     }, {
       "name" : "layoutNameLabel",
       "type" : "LABEL",
@@ -72,16 +72,16 @@
       "top" : "6em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#layoutName"
+      "fref" : "Layout/layoutName"
     }, {
       "name" : "layoutNameField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "6em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#layoutName"
+      "fref" : "Layout/layoutName"
     }, {
       "name" : "layoutTypeLabel",
       "type" : "LABEL",
@@ -89,17 +89,17 @@
       "top" : "8em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#layoutType"
+      "fref" : "Layout/layoutType"
     }, {
       "name" : "layoutTypeField",
       "type" : "FIELD",
-      "datatype" : "ENUM",
-      "datatypeparam" : "LayoutType",
+      "dataType" : "ENUM",
+      "dataTypeParam" : "LayoutType",
       "left" : "10em",
       "top" : "8em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#layoutType"
+      "fref" : "Layout/layoutType"
     }, {
       "name" : "crefLabel",
       "type" : "LABEL",
@@ -107,17 +107,17 @@
       "top" : "10em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#cref"
+      "fref" : "Layout/cref"
     }, {
       "name" : "crefField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Class",
+      "dataType" : "REF",
+      "dataTypeParam" : "Class",
       "left" : "10em",
       "top" : "10em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#cref"
+      "fref" : "Layout/cref"
     }, {
       "name" : "erefLabel",
       "type" : "LABEL",
@@ -125,17 +125,17 @@
       "top" : "12em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#eref"
+      "fref" : "Layout/eref"
     }, {
       "name" : "erefField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Enum",
+      "dataType" : "REF",
+      "dataTypeParam" : "Enum",
       "left" : "10em",
       "top" : "12em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#eref"
+      "fref" : "Layout/eref"
     }, {
       "name" : "frefLabel",
       "type" : "LABEL",
@@ -143,17 +143,17 @@
       "top" : "14em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#fref"
+      "fref" : "Layout/fref"
     }, {
       "name" : "frefField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Field",
+      "dataType" : "REF",
+      "dataTypeParam" : "Field",
       "left" : "10em",
       "top" : "14em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#fref"
+      "fref" : "Layout/fref"
     }, {
       "name" : "mrefLabel",
       "type" : "LABEL",
@@ -161,17 +161,17 @@
       "top" : "16em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#mref"
+      "fref" : "Layout/mref"
     }, {
       "name" : "mrefField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Message",
+      "dataType" : "REF",
+      "dataTypeParam" : "Message",
       "left" : "10em",
       "top" : "16em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#mref"
+      "fref" : "Layout/mref"
     }, {
       "name" : "relatedLabel",
       "type" : "LABEL",
@@ -179,17 +179,17 @@
       "top" : "18em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#related"
+      "fref" : "Layout/related"
     }, {
       "name" : "relatedField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Layout",
+      "dataType" : "REF",
+      "dataTypeParam" : "Layout",
       "left" : "10em",
       "top" : "18em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#related"
+      "fref" : "Layout/related"
     }, {
       "name" : "paramLabel",
       "type" : "LABEL",
@@ -197,16 +197,16 @@
       "top" : "20em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#param"
+      "fref" : "Layout/param"
     }, {
       "name" : "paramField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "20em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#param"
+      "fref" : "Layout/param"
     }, {
       "name" : "layoutParamLabel",
       "type" : "LABEL",
@@ -214,16 +214,16 @@
       "top" : "22em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#layoutParam"
+      "fref" : "Layout/layoutParam"
     }, {
       "name" : "layoutParamField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "22em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#layoutParam"
+      "fref" : "Layout/layoutParam"
     }, {
       "name" : "styleLabel",
       "type" : "LABEL",
@@ -231,17 +231,17 @@
       "top" : "24em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#style"
+      "fref" : "Layout/style"
     }, {
       "name" : "styleField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Style",
+      "dataType" : "REF",
+      "dataTypeParam" : "Style",
       "left" : "10em",
       "top" : "24em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#style"
+      "fref" : "Layout/style"
     }, {
       "name" : "leftLabel",
       "type" : "LABEL",
@@ -249,16 +249,16 @@
       "top" : "26em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#left"
+      "fref" : "Layout/left"
     }, {
       "name" : "leftField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "26em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#left"
+      "fref" : "Layout/left"
     }, {
       "name" : "topLabel",
       "type" : "LABEL",
@@ -266,16 +266,16 @@
       "top" : "28em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#top"
+      "fref" : "Layout/top"
     }, {
       "name" : "topField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "28em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#top"
+      "fref" : "Layout/top"
     }, {
       "name" : "rightLabel",
       "type" : "LABEL",
@@ -283,16 +283,16 @@
       "top" : "30em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#right"
+      "fref" : "Layout/right"
     }, {
       "name" : "rightField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "30em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#right"
+      "fref" : "Layout/right"
     }, {
       "name" : "bottomLabel",
       "type" : "LABEL",
@@ -300,16 +300,16 @@
       "top" : "32em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#bottom"
+      "fref" : "Layout/bottom"
     }, {
       "name" : "bottomField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "32em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#bottom"
+      "fref" : "Layout/bottom"
     }, {
       "name" : "widthLabel",
       "type" : "LABEL",
@@ -317,16 +317,16 @@
       "top" : "34em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#width"
+      "fref" : "Layout/width"
     }, {
       "name" : "widthField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "34em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#width"
+      "fref" : "Layout/width"
     }, {
       "name" : "heightLabel",
       "type" : "LABEL",
@@ -334,16 +334,16 @@
       "top" : "36em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Layout#height"
+      "fref" : "Layout/height"
     }, {
       "name" : "heightField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "36em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Layout#height"
+      "fref" : "Layout/height"
     } ]
   }, {
     "name" : "sb",

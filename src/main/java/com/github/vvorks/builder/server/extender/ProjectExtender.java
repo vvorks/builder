@@ -128,6 +128,12 @@ public class ProjectExtender {
 		return Iterables.filter(list, c -> !LAYOUT_STAFF.contains(c.getClassName()));
 	}
 
+	public Iterable<ClassContent> getPublicClasses(ProjectContent prj) {
+		List<ClassContent> list = getClasses(prj);
+		String name = getUpperLastName(prj);
+		return Iterables.filter(list, c -> !name.equals(c.getClassName()));
+	}
+
 	public List<EnumContent> getEnums(ProjectContent prj) {
 		List<EnumContent> list = projectMapper.listEnumsContent(prj, 0, 0);
 		return list;

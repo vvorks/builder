@@ -19,16 +19,16 @@
       "top" : "0",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#styleId"
+      "fref" : "Style/styleId"
     }, {
       "name" : "styleIdField",
       "type" : "FIELD",
-      "datatype" : "KEY",
+      "dataType" : "KEY",
       "left" : "10em",
       "top" : "0",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#styleId"
+      "fref" : "Style/styleId"
     }, {
       "name" : "ownerLabel",
       "type" : "LABEL",
@@ -36,17 +36,17 @@
       "top" : "2em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#owner"
+      "fref" : "Style/owner"
     }, {
       "name" : "ownerField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Project",
+      "dataType" : "REF",
+      "dataTypeParam" : "Project",
       "left" : "10em",
       "top" : "2em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#owner"
+      "fref" : "Style/owner"
     }, {
       "name" : "styleNameLabel",
       "type" : "LABEL",
@@ -54,16 +54,16 @@
       "top" : "4em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#styleName"
+      "fref" : "Style/styleName"
     }, {
       "name" : "styleNameField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "4em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#styleName"
+      "fref" : "Style/styleName"
     }, {
       "name" : "parentLabel",
       "type" : "LABEL",
@@ -71,17 +71,17 @@
       "top" : "6em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#parent"
+      "fref" : "Style/parent"
     }, {
       "name" : "parentField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Style",
+      "dataType" : "REF",
+      "dataTypeParam" : "Style",
       "left" : "10em",
       "top" : "6em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#parent"
+      "fref" : "Style/parent"
     }, {
       "name" : "condLabel",
       "type" : "LABEL",
@@ -89,17 +89,17 @@
       "top" : "8em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#cond"
+      "fref" : "Style/cond"
     }, {
       "name" : "condField",
       "type" : "FIELD",
-      "datatype" : "ENUM",
-      "datatypeparam" : "StyleCondition",
+      "dataType" : "ENUM",
+      "dataTypeParam" : "StyleCondition",
       "left" : "10em",
       "top" : "8em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#cond"
+      "fref" : "Style/cond"
     }, {
       "name" : "condParamLabel",
       "type" : "LABEL",
@@ -107,16 +107,16 @@
       "top" : "10em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#condParam"
+      "fref" : "Style/condParam"
     }, {
       "name" : "condParamField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "10em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#condParam"
+      "fref" : "Style/condParam"
     }, {
       "name" : "textColorLabel",
       "type" : "LABEL",
@@ -124,16 +124,16 @@
       "top" : "12em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#textColor"
+      "fref" : "Style/textColor"
     }, {
       "name" : "textColorField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "12em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#textColor"
+      "fref" : "Style/textColor"
     }, {
       "name" : "backgroundColorLabel",
       "type" : "LABEL",
@@ -141,16 +141,16 @@
       "top" : "14em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#backgroundColor"
+      "fref" : "Style/backgroundColor"
     }, {
       "name" : "backgroundColorField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "14em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#backgroundColor"
+      "fref" : "Style/backgroundColor"
     }, {
       "name" : "backgroundImageLabel",
       "type" : "LABEL",
@@ -158,16 +158,16 @@
       "top" : "16em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#backgroundImage"
+      "fref" : "Style/backgroundImage"
     }, {
       "name" : "backgroundImageField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "16em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#backgroundImage"
+      "fref" : "Style/backgroundImage"
     }, {
       "name" : "borderLeftLabel",
       "type" : "LABEL",
@@ -175,16 +175,16 @@
       "top" : "18em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#borderLeft"
+      "fref" : "Style/borderLeft"
     }, {
       "name" : "borderLeftField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "18em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#borderLeft"
+      "fref" : "Style/borderLeft"
     }, {
       "name" : "borderTopLabel",
       "type" : "LABEL",
@@ -192,16 +192,16 @@
       "top" : "20em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#borderTop"
+      "fref" : "Style/borderTop"
     }, {
       "name" : "borderTopField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "20em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#borderTop"
+      "fref" : "Style/borderTop"
     }, {
       "name" : "borderRightLabel",
       "type" : "LABEL",
@@ -209,16 +209,16 @@
       "top" : "22em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#borderRight"
+      "fref" : "Style/borderRight"
     }, {
       "name" : "borderRightField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "22em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#borderRight"
+      "fref" : "Style/borderRight"
     }, {
       "name" : "borderBottomLabel",
       "type" : "LABEL",
@@ -226,16 +226,16 @@
       "top" : "24em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#borderBottom"
+      "fref" : "Style/borderBottom"
     }, {
       "name" : "borderBottomField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "24em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#borderBottom"
+      "fref" : "Style/borderBottom"
     }, {
       "name" : "borderColorLabel",
       "type" : "LABEL",
@@ -243,16 +243,16 @@
       "top" : "26em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#borderColor"
+      "fref" : "Style/borderColor"
     }, {
       "name" : "borderColorField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "26em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#borderColor"
+      "fref" : "Style/borderColor"
     }, {
       "name" : "borderImageLabel",
       "type" : "LABEL",
@@ -260,16 +260,16 @@
       "top" : "28em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#borderImage"
+      "fref" : "Style/borderImage"
     }, {
       "name" : "borderImageField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "28em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#borderImage"
+      "fref" : "Style/borderImage"
     }, {
       "name" : "fontSizeLabel",
       "type" : "LABEL",
@@ -277,16 +277,16 @@
       "top" : "30em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#fontSize"
+      "fref" : "Style/fontSize"
     }, {
       "name" : "fontSizeField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "30em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#fontSize"
+      "fref" : "Style/fontSize"
     }, {
       "name" : "fontFamilyLabel",
       "type" : "LABEL",
@@ -294,16 +294,16 @@
       "top" : "32em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#fontFamily"
+      "fref" : "Style/fontFamily"
     }, {
       "name" : "fontFamilyField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "32em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#fontFamily"
+      "fref" : "Style/fontFamily"
     }, {
       "name" : "lineHeightLabel",
       "type" : "LABEL",
@@ -311,16 +311,16 @@
       "top" : "34em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#lineHeight"
+      "fref" : "Style/lineHeight"
     }, {
       "name" : "lineHeightField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "34em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#lineHeight"
+      "fref" : "Style/lineHeight"
     }, {
       "name" : "textAlignLabel",
       "type" : "LABEL",
@@ -328,16 +328,16 @@
       "top" : "36em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#textAlign"
+      "fref" : "Style/textAlign"
     }, {
       "name" : "textAlignField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "36em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#textAlign"
+      "fref" : "Style/textAlign"
     }, {
       "name" : "verticalAlignLabel",
       "type" : "LABEL",
@@ -345,16 +345,16 @@
       "top" : "38em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Style#verticalAlign"
+      "fref" : "Style/verticalAlign"
     }, {
       "name" : "verticalAlignField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "38em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Style#verticalAlign"
+      "fref" : "Style/verticalAlign"
     } ]
   }, {
     "name" : "sb",

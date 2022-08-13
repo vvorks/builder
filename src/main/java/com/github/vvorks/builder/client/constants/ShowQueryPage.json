@@ -19,16 +19,16 @@
       "top" : "0",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Query#queryId"
+      "fref" : "Query/queryId"
     }, {
       "name" : "queryIdField",
       "type" : "FIELD",
-      "datatype" : "KEY",
+      "dataType" : "KEY",
       "left" : "10em",
       "top" : "0",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Query#queryId"
+      "fref" : "Query/queryId"
     }, {
       "name" : "ownerLabel",
       "type" : "LABEL",
@@ -36,17 +36,17 @@
       "top" : "2em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Query#owner"
+      "fref" : "Query/owner"
     }, {
       "name" : "ownerField",
       "type" : "FIELD",
-      "datatype" : "REF",
-      "datatypeparam" : "Class",
+      "dataType" : "REF",
+      "dataTypeParam" : "Class",
       "left" : "10em",
       "top" : "2em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Query#owner"
+      "fref" : "Query/owner"
     }, {
       "name" : "queryNameLabel",
       "type" : "LABEL",
@@ -54,16 +54,16 @@
       "top" : "4em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Query#queryName"
+      "fref" : "Query/queryName"
     }, {
       "name" : "queryNameField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "4em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Query#queryName"
+      "fref" : "Query/queryName"
     }, {
       "name" : "filterLabel",
       "type" : "LABEL",
@@ -71,16 +71,16 @@
       "top" : "6em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Query#filter"
+      "fref" : "Query/filter"
     }, {
       "name" : "filterField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "6em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Query#filter"
+      "fref" : "Query/filter"
     }, {
       "name" : "orderLabel",
       "type" : "LABEL",
@@ -88,16 +88,16 @@
       "top" : "8em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Query#order"
+      "fref" : "Query/order"
     }, {
       "name" : "orderField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "8em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Query#order"
+      "fref" : "Query/order"
     }, {
       "name" : "titleLabel",
       "type" : "LABEL",
@@ -105,16 +105,16 @@
       "top" : "10em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Query#title"
+      "fref" : "Query/title"
     }, {
       "name" : "titleField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "10em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Query#title"
+      "fref" : "Query/title"
     }, {
       "name" : "descriptionLabel",
       "type" : "LABEL",
@@ -122,16 +122,16 @@
       "top" : "12em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Query#description"
+      "fref" : "Query/description"
     }, {
       "name" : "descriptionField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "12em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Query#description"
+      "fref" : "Query/description"
     }, {
       "name" : "noteLabel",
       "type" : "LABEL",
@@ -139,16 +139,16 @@
       "top" : "14em",
       "width" : "10em",
       "height" : "2em",
-      "fref" : "Query#note"
+      "fref" : "Query/note"
     }, {
       "name" : "noteField",
       "type" : "FIELD",
-      "datatype" : "STRING",
+      "dataType" : "STRING",
       "left" : "10em",
       "top" : "14em",
       "right" : "0",
       "height" : "2em",
-      "fref" : "Query#note"
+      "fref" : "Query/note"
     } ]
   }, {
     "name" : "sb",
