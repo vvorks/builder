@@ -116,6 +116,33 @@ public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 	}
 
 	@Override
+	public void onMount() {
+		adjustScrollSize();
+		super.onMount();
+	}
+
+	private void adjustScrollSize() {
+		int maxWidth = 0;
+		int maxHeight  = 0;
+		for (UiNode child : getChildrenIf(c -> !c.isDeleted() && c.isVisible())) {
+			if (child.getWidth() != null) {
+				maxWidth = Math.max(maxWidth, child.getLeftPx() + child.getWidthPx());
+			}
+			if (child.getHeight() != null) {
+				maxHeight = Math.max(maxHeight, child.getTopPx() + child.getHeightPx());
+			}
+		}
+		if (maxWidth > 0) {
+			maxWidth += getSpacingWidthPx();
+			setScrollWidth(maxWidth);
+		}
+		if (maxHeight > 0) {
+			maxHeight += getSpacingHeightPx();
+			setScrollHeight(maxHeight);
+		}
+	}
+
+	@Override
 	public void scrollFor(UiNode target) {
 		Asserts.requireNotNull(target);
 		Rect r = target.getRectangleOn(this);
@@ -182,7 +209,7 @@ public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 	@Override
 	public int setHorizontalScroll(int offset) {
 		int result = EVENT_IGNORED;
-		int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
+		int limit = getInnerWidthPx();
 		int count = getScrollWidthPx();
 		offset = between(offset, 0, count - limit);
 		if (offset != getScrollLeftPx()) {
@@ -195,7 +222,7 @@ public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 	@Override
 	public int setVerticalScroll(int offset) {
 		int result = EVENT_IGNORED;
-		int limit = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
+		int limit = getInnerHeightPx();
 		int count = getScrollHeightPx();
 		offset = between(offset, 0, count - limit);
 		if (offset != getScrollTopPx()) {

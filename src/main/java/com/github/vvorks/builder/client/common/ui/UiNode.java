@@ -1471,7 +1471,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public int getScrollWidthPx() {
-		int result = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
+		int result = getInnerWidthPx();
 		if (scrollWidth != null) {
 			result = Math.max(result, scrollWidth.px(() -> getParentWidthPx()));
 		}
@@ -1501,7 +1501,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	public int getScrollHeightPx() {
-		int result = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
+		int result = getInnerHeightPx();
 		if (scrollHeight != null) {
 			result = Math.max(result, scrollHeight.px(() -> getParentHeightPx()));
 		}
@@ -1649,8 +1649,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return new Rect(
 				getScrollLeftPx(),
 				getScrollTopPx(),
-				getWidthPx() - getBorderLeftPx() - getBorderRightPx(),
-				getHeightPx() - getBorderTopPx() - getBorderBottomPx());
+				getInnerWidthPx(),
+				getInnerHeightPx());
 	}
 
 	public UiNode getBlocker() {

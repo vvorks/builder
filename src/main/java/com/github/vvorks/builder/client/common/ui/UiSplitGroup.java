@@ -429,6 +429,9 @@ public class UiSplitGroup extends UiGroup {
 			default:
 				throw new AssertionError();
 			}
+			if ((result & EVENT_AFFECTED) != 0) {
+				fireResize();
+			}
 		}
 		return result;
 	}
@@ -551,6 +554,11 @@ public class UiSplitGroup extends UiGroup {
 		}
 	}
 
+	private void fireResize() {
+		Metrics met = Metrics.get();
+		onResize(met.getScreenWidth(), met.getScreenHeight());
+	}
+
 	@Override
 	public int onMouseUp(UiNode target, int x, int y, int mods, int time) {
 		int result = EVENT_IGNORED;
@@ -575,6 +583,9 @@ public class UiSplitGroup extends UiGroup {
 					break;
 				default:
 					throw new AssertionError();
+				}
+				if ((result & EVENT_AFFECTED) != 0) {
+					fireResize();
 				}
 			}
 			bDragged = false;

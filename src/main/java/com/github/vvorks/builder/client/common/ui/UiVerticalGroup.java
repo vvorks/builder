@@ -58,7 +58,6 @@ public class UiVerticalGroup extends UiGroup {
 			child.setBounds(left, top, right, null, width, height);
 			total += child.getHeightPx() + spc;
 		}
-		setScrollHeight(total);
 	}
 
 }

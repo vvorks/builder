@@ -44,21 +44,24 @@ public class PageExtender {
 		private String fullName;
 		private Json node;
 		private Integer relatedId;
+		public void relate(Map<Integer, Relation> rels) {
+			if (relatedId != null) {
+				Relation r = rels.get(relatedId);
+				if (r != null) {
+					node.setString("related", r.fullName);
+				}
+			}
+		}
 	}
 
 	public Json getLayoutTree(PageContent pg) {
 		LayoutContent root = pageMapper.listLayoutsContentIfRoot(pg, 0, 0).get(0);
 		Map<Integer, Relation> rels = new LinkedHashMap<>();
+		//JSON化
 		Json result = toLayoutJson(root, rels, "/");
 		//関連付け
 		for (Relation r : rels.values()) {
-			if (r.relatedId != null) {
-				Relation rr = rels.get(r.relatedId);
-				if (rr != null) {
-					//TODO 相対パス変換（必要か？）
-					r.node.setString("related", rr.fullName);
-				}
-			}
+			r.relate(rels);
 		}
 		return result;
 	}

@@ -57,7 +57,6 @@ public class UiHorizontalGroup extends UiGroup {
 			child.setBounds(left, top, null, bottom, width, height);
 			total += child.getWidthPx() + spc;
 		}
-		setScrollWidth(total);
 	}
 
 }

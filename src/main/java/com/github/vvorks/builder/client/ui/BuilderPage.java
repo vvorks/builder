@@ -1,11 +1,13 @@
 package com.github.vvorks.builder.client.ui;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 import com.github.vvorks.builder.client.agent.ClassAgent;
 import com.github.vvorks.builder.client.common.ui.LayoutParam;
+import com.github.vvorks.builder.client.common.ui.ListDataSource;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiDeckGroup;
 import com.github.vvorks.builder.client.common.ui.UiEditField;
@@ -52,13 +54,38 @@ public class BuilderPage extends UiPage {
 		NODE_CREATORS.put("INPUT", json -> newInputNode(json));
 	}
 
+	private static class Relation {
+		private final UiNode node;
+		private final String related;
+		public Relation(UiNode node, String related) {
+			this.node = node;
+			this.related = related;
+		}
+		public void relate(Map<String, Relation> rels) {
+			if (related != null) {
+				Relation r = rels.get(related);
+				if (r != null) {
+					node.setRelated(r.node);
+				}
+			}
+		}
+	}
+
 	@Override
 	protected void initialize() {
 		Json json = ConstantsBundle.get().getResource("ShowClassPage");
-		this.appendChild(createNode(json));
+		Map<String, Relation> rels = new LinkedHashMap<>();
+		//UiNode化
+		UiNode root = createNode(json, rels, "/");
+		//関連付け
+		for (Relation r : rels.values()) {
+			r.relate(rels);
+		}
+		this.appendChild(root);
 	}
 
-	private UiNode createNode(Json json) {
+	private UiNode createNode(Json json, Map<String, Relation> rels, String path) {
+		String fullName = path + json.getString("name");
 		String type = json.getString("type");
 		UiNode node = NODE_CREATORS.get(type).apply(json);
 		node.setLeft(json.getString("left", null));
@@ -69,14 +96,16 @@ public class BuilderPage extends UiPage {
 		node.setHeight(json.getString("height", null));
 		Json children = json.get("children");
 		if (children != null) {
+			String cpath = fullName + "/";
 			for (int i = 0; i < children.size(); i++) {
 				Json childJson = children.get(i);
-				UiNode childNode = createNode(childJson);
+				UiNode childNode = createNode(childJson, rels, cpath);
 				String lp = childJson.getString("layoutparam", null);
 				LayoutParam param = node.parseLayoutParam(lp);
 				node.appendChild(childNode, param);
 			}
 		}
+		rels.put(fullName, new Relation(node, json.getString("related", null)));
 		return node;
 	}
 
@@ -113,6 +142,7 @@ public class BuilderPage extends UiPage {
 		String name = json.getString("name");
 		UiNode node = new UiVerticalList(name);
 		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
+		node.setDataSource(new ListDataSource(Collections.emptyList())); //TODO 仮
 		return node;
 	}
 
