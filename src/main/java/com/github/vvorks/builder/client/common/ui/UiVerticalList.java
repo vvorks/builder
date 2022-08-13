@@ -102,6 +102,11 @@ public class UiVerticalList extends UiGroup {
 		}
 
 		@Override
+		public Json getData() {
+			return json;
+		}
+
+		@Override
 		public Class<?> getType(String column) {
 			Asserts.assume(exists());
 			return json.getType().asClass();

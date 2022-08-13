@@ -3,6 +3,8 @@ package com.github.vvorks.builder.client.common.ui;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.github.vvorks.builder.shared.common.json.Json;
+
 /**
  * データレコードI/F
  */
@@ -54,6 +56,13 @@ public interface DataRecord {
 	 * @return データが存在する場合、真
 	 */
 	public abstract boolean exists();
+
+	/**
+	 * レコードデータを取得する
+	 *
+	 * @return レコードデータ
+	 */
+	public abstract Json getData();
 
 	/**
 	 * 指定したカラムのデータ型を取得する

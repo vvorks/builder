@@ -119,7 +119,7 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) {
 		String payload = message.getPayload();
-		LOGGER.debug("RECV(%s) %s", session.getId(), payload);
+		LOGGER.info("RECV(%s) %s", session.getId(), payload);
 		Json req = loadRequest(payload);
 		if (req == null) {
 			//要求元が正当なJsonRpcClientとは考えられないので直ちにセッションをクローズ
@@ -134,7 +134,6 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 		URI uri = session.getUri();
 		String uriStr = uri != null ? uri.toString() : "/";
 		String path = uriStr.substring(uriStr.lastIndexOf('/'));
-		LOGGER.info("path %s", path);
 		String methodName = req.getString(KEY_METHOD);
 		String key = path + "/" + methodName;
 		Invoker invoker = methodMap.get(key);
@@ -196,9 +195,16 @@ public class JsonRpcServer extends TextWebSocketHandler implements JsonRpcConsta
 		Object[] objs = new Object[args.size()];
 		for (int i = 0; i < args.size(); i++) {
 			Parameter arg = args.get(i);
+			Class<?> type = arg.getType();
 			String paramName = arg.getAnnotation(JsonRpcParam.class).value();
 			Json param = params.get(paramName);
-			objs[i] = param.toObject(arg.getType());
+			if (param != null) {
+				objs[i] = param.toObject(type);
+			} else if (!type.isPrimitive()) {
+				objs[i] = null;
+			} else {
+				throw new IllegalArgumentException(paramName);
+			}
 		}
 		return objs;
 	}

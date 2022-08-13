@@ -30,6 +30,9 @@ public class BuilderRpcDataSource extends DataSource {
 	/** データキャッシュ */
 	private Map<Integer, Json> cache;
 
+	/** コンテント */
+	private Json content;
+
 	/** 検索条件 */
 	private Json criteria;
 
@@ -50,6 +53,7 @@ public class BuilderRpcDataSource extends DataSource {
 		this.apiName = apiName;
 		this.pageSize = pageSize;
 		cache = new CacheMap<>(Math.max(cacheSize, pageSize * 4), true);
+		content = null;
 		criteria = null;
 		requests = new HashSet<>();
 	}
@@ -63,13 +67,16 @@ public class BuilderRpcDataSource extends DataSource {
 		loaded = false;
 		lastCount = -1;
 		lastUpdatedAt = null;
-		doRequest(criteria, -1, pageSize);
+		doRequest(content, criteria, -1, pageSize);
 	}
 
-	private void doRequest(Json criteria, int offset, int limit) {
+	private void doRequest(Json content, Json criteria, int offset, int limit) {
 		Json param = Json.createObject();
 		param.setInt("offset", offset);
 		param.setInt("limit", limit);
+		if (content != null) {
+			param.set("content", content);
+		}
 		if (criteria != null) {
 			for (Entry<String, Json> e : criteria.entrySet()) {
 				param.set(e.getKey(), e.getValue());
@@ -125,7 +132,8 @@ public class BuilderRpcDataSource extends DataSource {
 	}
 
 	@Override
-	public void setCriteria(Json criteria) {
+	public void setCriteria(Json content, Json criteria) {
+		this.content = content;
 		this.criteria = criteria;
 		if (isAttached()) {
 			reload();
@@ -173,7 +181,7 @@ public class BuilderRpcDataSource extends DataSource {
 		}
 		int offset = head;
 		int limit = tail - head + 1;
-		doRequest(criteria, offset, limit);
+		doRequest(content, criteria, offset, limit);
 	}
 
 	@Override

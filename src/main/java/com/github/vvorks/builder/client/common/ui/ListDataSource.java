@@ -20,7 +20,7 @@ public class ListDataSource extends DataSource {
 	}
 
 	@Override
-	public void setCriteria(Json criteria) {
+	public void setCriteria(Json content, Json criteria) {
 		//TODO create sublist
 	}
 

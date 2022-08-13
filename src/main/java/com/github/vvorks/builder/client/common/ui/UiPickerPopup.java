@@ -66,6 +66,10 @@ class UiPickerPopup extends UiPage {
 				+ FRAME_STYLE.getBorderBottom().px(0));
 	}
 
+	private Json getContent() {
+		return owner.getDataRecord().getData();
+	}
+
 	@Override
 	protected void initialize() {
 		final double NA = UiNodeBuilder.NA;
@@ -94,7 +98,7 @@ class UiPickerPopup extends UiPage {
 					listTop = unitHeight;
 				}
 				DataSource ds = owner.getDataSource();
-				ds.setCriteria(null);
+				ds.setCriteria(getContent(), null);
 				b.enter(hint = new UiEditText("hint"));
 					b.style(owner.getStyle());
 					b.locate(0, hintTop, NA, NA, width, unitHeight);
@@ -158,7 +162,7 @@ class UiPickerPopup extends UiPage {
 		if (target == hint) {
 			Json criteria = Json.createObject();
 			criteria.setString("hint", content);
-			list.getDataSource().setCriteria(criteria);
+			list.getDataSource().setCriteria(getContent(), criteria);
 		}
 		return EVENT_IGNORED;
 	}

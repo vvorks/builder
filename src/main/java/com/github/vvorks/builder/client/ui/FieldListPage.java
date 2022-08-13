@@ -55,7 +55,6 @@ public class FieldListPage extends UiPage {
 			b.enter(new UiText("owner"));
 				b.text("owner");
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldOwnerCandidate", 20, 40));
 				b.locate( 10.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiText("fieldName"));
@@ -66,7 +65,6 @@ public class FieldListPage extends UiPage {
 			b.enter(new UiText("type"));
 				b.text("type");
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldTypeCandidate", 20, 40));
 				b.locate( 30.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiText("width"));
@@ -82,19 +80,16 @@ public class FieldListPage extends UiPage {
 			b.enter(new UiText("cref"));
 				b.text("cref");
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldCrefCandidate", 20, 40));
 				b.locate( 50.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiText("eref"));
 				b.text("eref");
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldErefCandidate", 20, 40));
 				b.locate( 60.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiText("fref"));
 				b.text("fref");
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldFrefCandidate", 20, 40));
 				b.locate( 70.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiText("pk"));
