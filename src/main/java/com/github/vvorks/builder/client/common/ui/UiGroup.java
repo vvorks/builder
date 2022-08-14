@@ -133,10 +133,10 @@ public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 		int maxWidth = 0;
 		int maxHeight  = 0;
 		for (UiNode child : getChildrenIf(c -> !c.isDeleted() && c.isVisible())) {
-			if (child.getWidth() != null) {
+			if (child.getLeft() != null && child.getWidth() != null) {
 				maxWidth = Math.max(maxWidth, child.getLeftPx() + child.getWidthPx());
 			}
-			if (child.getHeight() != null) {
+			if (child.getTop() != null && child.getHeight() != null) {
 				maxHeight = Math.max(maxHeight, child.getTopPx() + child.getHeightPx());
 			}
 		}
