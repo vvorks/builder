@@ -390,7 +390,7 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	private void updateMetrics() {
-		pageHeight = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
+		pageHeight = getInnerHeightPx();
 		lineHeight = template.getHeightPx(pageHeight);
 		linesPerView = (int) Math.ceil((double)pageHeight / (double)lineHeight);
 	}

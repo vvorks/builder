@@ -1348,44 +1348,30 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		}
 	}
 
-	public Length getBorderLeft() {
-		return (style != null) ? style.getEffectiveStyle(this).getBorderLeft() : Length.ZERO;
-	}
-
-	public int getBorderLeftPx() {
-		return getBorderLeft().px(() -> getParentWidthPx());
-	}
-
-	public Length getBorderTop() {
-		return (style != null) ? style.getEffectiveStyle(this).getBorderTop() : Length.ZERO;
-	}
-
-	public int getBorderTopPx() {
-		return getBorderTop().px(() -> getParentHeightPx());
-	}
-
-	public Length getBorderRight() {
-		return (style != null) ? style.getEffectiveStyle(this).getBorderRight() : Length.ZERO;
-	}
-
-	public int getBorderRightPx() {
-		return getBorderRight().px(() -> getParentWidthPx());
-	}
-
-	public Length getBorderBottom() {
-		return (style != null) ? style.getEffectiveStyle(this).getBorderBottom() : Length.ZERO;
-	}
-
-	public int getBorderBottomPx() {
-		return getBorderBottom().px(() -> getParentHeightPx());
+	public Inset getBorder() {
+		Inset border;
+		if (style != null) {
+			UiStyle es = style.getEffectiveStyle(this);
+			border = new Inset(
+					es.getBorderLeft  ().px(() -> getParentWidthPx() ),
+					es.getBorderTop   ().px(() -> getParentHeightPx()),
+					es.getBorderRight ().px(() -> getParentWidthPx() ),
+					es.getBorderBottom().px(() -> getParentHeightPx())
+					);
+		} else {
+			border = new Inset();
+		}
+		return border;
 	}
 
 	public int getInnerWidthPx() {
-		return getWidthPx() - getBorderLeftPx() - getBorderRightPx();
+		Inset border = getBorder();
+		return getWidthPx() - border.left - border.right;
 	}
 
 	public int getInnerHeightPx() {
-		return getHeightPx() - getBorderTopPx() - getBorderBottomPx();
+		Inset border = getBorder();
+		return getHeightPx() - border.top - border.bottom;
 	}
 
 	public Length getScrollLeft() {
@@ -1417,7 +1403,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			scrollLeft = newValue;
 			setChanged(CHANGED_LOCATION);
 			int offset = getScrollLeftPx();
-			int limit = getWidthPx() - getBorderLeftPx() - getBorderRightPx();
+			int limit = getInnerWidthPx();
 			int count = getScrollWidthPx();
 			notifyHorizontalScroll(offset, limit, count);
 		}
@@ -1452,7 +1438,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			scrollTop = newValue;
 			setChanged(CHANGED_LOCATION);
 			int offset = getScrollTopPx();
-			int limit = getHeightPx() - getBorderTopPx() - getBorderBottomPx();
+			int limit = getInnerHeightPx();
 			int count = getScrollHeightPx();
 			notifyVerticalScroll(offset, limit, count);
 		}
@@ -1646,11 +1632,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
 	/** このノードの表示上の矩形を自身の座標系で返す */
 	public Rect getRectangleOnThis() {
+		Inset border = getBorder();
 		return new Rect(
 				getScrollLeftPx(),
 				getScrollTopPx(),
-				getInnerWidthPx(),
-				getInnerHeightPx());
+				getWidthPx() - border.left - border.right,
+				getHeightPx() - border.top - border.bottom);
 	}
 
 	public UiNode getBlocker() {
@@ -1690,8 +1677,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 * 		-1:上位座標系への変換 +1:下位座標系への変換
 	 */
 	public void translate(Point pt, int sig) {
+		Inset border = getBorder();
 		pt.move(-sig * getLeftPx()      , -sig * getTopPx()      );
-		pt.move(-sig * getBorderLeftPx(), -sig * getBorderTopPx());
+		pt.move(-sig * border.left      , -sig * border.top      );
 		pt.move(+sig * getScrollLeftPx(), +sig * getScrollTopPx());
 	}
 
@@ -1792,10 +1780,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		domElement.setBounds(getLeftPx(), getTopPx(), getWidthPx(), getHeightPx());
 	}
 
+
 	protected void syncElementStyle(CssStyle.Builder b) {
+		Inset border = getBorder();
 		boolean viewable =
-				getWidthPx() > getBorderLeftPx() + getBorderRightPx() &&
-				getHeightPx() > getBorderTopPx() + getBorderBottomPx() ;
+				getWidthPx() > border.left + border.right &&
+				getHeightPx() > border.top + border.bottom ;
 		b.property("position", "absolute");
 		b.display(isVisible() && viewable);
 		b.left(left).right(right).width(width);

@@ -33,7 +33,7 @@ public class UiVerticalGroup extends UiGroup {
 		int result = EVENT_CONSUMED;
 		int delta = dy * ClientSettings.WHEEL_SCALE;
 		int oldTop = getScrollTopPx();
-		int maxTop = getScrollHeightPx() - (getHeightPx() - getBorderTopPx() - getBorderBottomPx());
+		int maxTop = getScrollHeightPx() - getInnerHeightPx();
 		int newTop = between(oldTop + delta, 0, maxTop);
 		if (oldTop != newTop) {
 			setScrollTop(newTop);

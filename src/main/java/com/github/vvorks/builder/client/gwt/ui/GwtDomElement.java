@@ -6,9 +6,9 @@ import com.github.vvorks.builder.client.common.ui.Colors;
 import com.github.vvorks.builder.client.common.ui.CssStyle;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
+import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
-import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 
@@ -145,7 +145,11 @@ public class GwtDomElement implements DomElement {
 		if (nativeElement == null) {
 			return;
 		}
-		nativeElement.setAttribute(PROP_STYLE, document.toCssString(style));
+		String oldCss = nativeElement.getAttribute(PROP_STYLE);
+		String newCss = document.toCssString(style);
+		if (!newCss.equals(oldCss)) {
+			nativeElement.setAttribute(PROP_STYLE, newCss);
+		}
 	}
 
 	@Override
