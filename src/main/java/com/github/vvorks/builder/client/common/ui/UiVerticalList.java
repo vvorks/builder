@@ -405,6 +405,9 @@ public class UiVerticalList extends UiGroup {
 	public void onResize(int screenWidth, int screenHeight) {
 		super.onResize(screenWidth, screenHeight);
 		updateMetrics();
+		if (linesPerView <= 0) {
+			return;
+		}
 		DataSource ds = getDataSource();
 		if (ds.isLoaded()) {
 			int count = ds.getCount();
@@ -832,7 +835,10 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	private static int lap(int index, int count) {
-		return (index + count) % count;
+		if (index < 0) {
+			index += count * ((-index+count-1) / count);
+		}
+		return index % count;
 	}
 
 }
