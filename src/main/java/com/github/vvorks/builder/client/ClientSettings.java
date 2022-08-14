@@ -57,6 +57,7 @@ public class ClientSettings {
 		Factory.configure()
 			//implementation settings
 			.bindTo(UiApplication.class, args -> new BuilderUiApplication((DomDocument) args[0]))
+			//.bindTo(UiApplication.class, args -> new BuilderUiTestApplication((DomDocument) args[0]))
 			.bindTo(Logger.class, args -> new JavaLogger((Class<?>) args[0]))
 			.bindTo(Json.class, args -> new GwtJson(args[0]))
 			.bindTo(WebSocket.class, args -> new GwtWebSocket())

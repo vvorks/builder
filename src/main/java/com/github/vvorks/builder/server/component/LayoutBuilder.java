@@ -105,38 +105,50 @@ public class LayoutBuilder {
 	}
 
 	public LayoutBuilder refClass(ClassContent cls) {
-		LayoutContent content = stack.peek().content;
-		content.setCrefClassId(cls.getClassId());
+		if (cls != null) {
+			LayoutContent content = stack.peek().content;
+			content.setCrefClassId(cls.getClassId());
+		}
 		return this;
 	}
 
 	public LayoutBuilder refEnum(EnumContent enm) {
-		LayoutContent content = stack.peek().content;
-		content.setCrefClassId(enm.getEnumId());
+		if (enm != null) {
+			LayoutContent content = stack.peek().content;
+			content.setCrefClassId(enm.getEnumId());
+		}
 		return this;
 	}
 
 	public LayoutBuilder refField(FieldContent field) {
-		LayoutContent content = stack.peek().content;
-		content.setFrefFieldId(field.getFieldId());
+		if (field != null) {
+			LayoutContent content = stack.peek().content;
+			content.setFrefFieldId(field.getFieldId());
+		}
 		return this;
 	}
 
 	public LayoutBuilder refMessage(MessageContent message) {
-		LayoutContent content = stack.peek().content;
-		content.setMrefMessageId(message.getMessageId());
+		if (message != null) {
+			LayoutContent content = stack.peek().content;
+			content.setMrefMessageId(message.getMessageId());
+		}
 		return this;
 	}
 
 	public LayoutBuilder related(String relatedPath) {
-		Node node = stack.peek();
-		node.relatedPath = relatedPath;
+		if (relatedPath != null) {
+			Node node = stack.peek();
+			node.relatedPath = relatedPath;
+		}
 		return this;
 	}
 
 	public LayoutBuilder style(StyleContent style) {
-		LayoutContent content = stack.peek().content;
-		content.setStyleStyleId(style.getStyleId());
+		if (style != null) {
+			LayoutContent content = stack.peek().content;
+			content.setStyleStyleId(style.getStyleId());
+		}
 		return this;
 	}
 

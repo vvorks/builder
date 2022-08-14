@@ -3,6 +3,7 @@
  */
 package com.github.vvorks.builder.client.agent;
 
+import java.util.Map;
 import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.shared.common.json.Json;
@@ -36,6 +37,13 @@ public class QueryAgent extends DataRecordAgent {
 	@Override
 	public void setValue(DataRecord rec, String name, DataRecord candidate) {
 		rec.setInt(name + "QueryId", candidate.getInt("queryId"));
+	}
+
+	@Override
+	public Json getContentCriteria(Map<String, String> param) {
+		Json criteria = Json.createObject();
+		criteria.setString("queryId", param.get("queryId"));
+		return criteria;
 	}
 
 }

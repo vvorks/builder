@@ -192,7 +192,12 @@ public class UiApplication implements EventHandler {
 
 	public void call(String tag, Map<String, String> params) {
 		try {
-			call(pages.get(tag).create(params));
+			Creator<UiPage> creator = pages.get(tag);
+			if (creator == null) {
+				LOGGER.warn("%s NOT FOUND, call default", tag);
+				creator = pages.get("");
+			}
+			call(creator.create(params));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

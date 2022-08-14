@@ -5,10 +5,11 @@
   "top" : "0",
   "right" : "0",
   "bottom" : "0",
+  "cref" : "PageSet",
   "children" : [ {
     "name" : "top",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "top",
+    "layoutParam" : "top",
     "height" : "50%",
     "children" : [ {
       "name" : "detail",
@@ -116,7 +117,7 @@
   }, {
     "name" : "center",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "center",
+    "layoutParam" : "center",
     "children" : [ {
       "name" : "head",
       "type" : "SIMPLE_PANE",
@@ -125,14 +126,15 @@
       "right" : "0",
       "height" : "2em",
       "children" : [ {
-        "name" : "Page",
+        "name" : "pages",
         "type" : "TAB",
         "left" : "0",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "Page",
-        "related" : "/frame/center/body/Page"
+        "fref" : "PageSet/pages",
+        "related" : "/frame/center/body/pages"
       } ]
     }, {
       "name" : "body",
@@ -142,7 +144,7 @@
       "right" : "0",
       "bottom" : "0",
       "children" : [ {
-        "name" : "Page",
+        "name" : "pages",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -196,7 +198,7 @@
             "width" : "10em",
             "fref" : "Page/height"
           } ],
-          "related" : "/frame/center/body/Page/list"
+          "related" : "/frame/center/body/pages/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -204,6 +206,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "Page",
+          "fref" : "PageSet/pages",
           "children" : [ {
             "name" : "pageIdField",
             "type" : "FIELD",
@@ -259,7 +263,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/Page/list"
+          "related" : "/frame/center/body/pages/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -267,7 +271,7 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/Page/list"
+          "related" : "/frame/center/body/pages/list"
         } ]
       } ]
     } ]

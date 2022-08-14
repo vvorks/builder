@@ -116,6 +116,14 @@ public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 	}
 
 	@Override
+	public void setRelated(UiNode related) {
+		super.setRelated(related);
+		masterGroup.removeScrollableListener(this);
+		masterGroup = (related instanceof Scrollable) ? (Scrollable) related : VOID_SCROLLABLE;
+		masterGroup.addScrollableListener(this);
+	}
+
+	@Override
 	public void onMount() {
 		adjustScrollSize();
 		super.onMount();

@@ -5,10 +5,11 @@
   "top" : "0",
   "right" : "0",
   "bottom" : "0",
+  "cref" : "Enum",
   "children" : [ {
     "name" : "top",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "top",
+    "layoutParam" : "top",
     "height" : "50%",
     "children" : [ {
       "name" : "detail",
@@ -150,7 +151,7 @@
   }, {
     "name" : "center",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "center",
+    "layoutParam" : "center",
     "children" : [ {
       "name" : "head",
       "type" : "SIMPLE_PANE",
@@ -159,23 +160,25 @@
       "right" : "0",
       "height" : "2em",
       "children" : [ {
-        "name" : "EnumValue",
+        "name" : "values",
         "type" : "TAB",
         "left" : "0",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "EnumValue",
-        "related" : "/frame/center/body/EnumValue"
+        "fref" : "Enum/values",
+        "related" : "/frame/center/body/values"
       }, {
-        "name" : "EnumI18n",
+        "name" : "i18ns",
         "type" : "TAB",
         "left" : "10em",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "EnumI18n",
-        "related" : "/frame/center/body/EnumI18n"
+        "fref" : "Enum/i18ns",
+        "related" : "/frame/center/body/i18ns"
       } ]
     }, {
       "name" : "body",
@@ -185,7 +188,7 @@
       "right" : "0",
       "bottom" : "0",
       "children" : [ {
-        "name" : "EnumValue",
+        "name" : "values",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -247,7 +250,7 @@
             "width" : "10em",
             "fref" : "EnumValue/note"
           } ],
-          "related" : "/frame/center/body/EnumValue/list"
+          "related" : "/frame/center/body/values/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -255,6 +258,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "EnumValue",
+          "fref" : "Enum/values",
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
@@ -318,7 +323,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/EnumValue/list"
+          "related" : "/frame/center/body/values/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -326,10 +331,10 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/EnumValue/list"
+          "related" : "/frame/center/body/values/list"
         } ]
       }, {
-        "name" : "EnumI18n",
+        "name" : "i18ns",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -375,7 +380,7 @@
             "width" : "10em",
             "fref" : "EnumI18n/description"
           } ],
-          "related" : "/frame/center/body/EnumI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -383,6 +388,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "EnumI18n",
+          "fref" : "Enum/i18ns",
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
@@ -429,7 +436,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/EnumI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -437,7 +444,7 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/EnumI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         } ]
       } ]
     } ]

@@ -5,10 +5,11 @@
   "top" : "0",
   "right" : "0",
   "bottom" : "0",
+  "cref" : "Project",
   "children" : [ {
     "name" : "top",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "top",
+    "layoutParam" : "top",
     "height" : "50%",
     "children" : [ {
       "name" : "detail",
@@ -149,7 +150,7 @@
   }, {
     "name" : "center",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "center",
+    "layoutParam" : "center",
     "children" : [ {
       "name" : "head",
       "type" : "SIMPLE_PANE",
@@ -158,68 +159,75 @@
       "right" : "0",
       "height" : "2em",
       "children" : [ {
-        "name" : "Class",
+        "name" : "classes",
         "type" : "TAB",
         "left" : "0",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "Class",
-        "related" : "/frame/center/body/Class"
+        "fref" : "Project/classes",
+        "related" : "/frame/center/body/classes"
       }, {
-        "name" : "Enum",
+        "name" : "enums",
         "type" : "TAB",
         "left" : "10em",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "Enum",
-        "related" : "/frame/center/body/Enum"
+        "fref" : "Project/enums",
+        "related" : "/frame/center/body/enums"
       }, {
-        "name" : "Message",
+        "name" : "messages",
         "type" : "TAB",
         "left" : "20em",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "Message",
-        "related" : "/frame/center/body/Message"
+        "fref" : "Project/messages",
+        "related" : "/frame/center/body/messages"
       }, {
-        "name" : "Style",
+        "name" : "styles",
         "type" : "TAB",
         "left" : "30em",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "Style",
-        "related" : "/frame/center/body/Style"
+        "fref" : "Project/styles",
+        "related" : "/frame/center/body/styles"
       }, {
-        "name" : "PageSet",
+        "name" : "pageSets",
         "type" : "TAB",
         "left" : "40em",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "PageSet",
-        "related" : "/frame/center/body/PageSet"
+        "fref" : "Project/pageSets",
+        "related" : "/frame/center/body/pageSets"
       }, {
-        "name" : "Locale",
+        "name" : "locales",
         "type" : "TAB",
         "left" : "50em",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "Locale",
-        "related" : "/frame/center/body/Locale"
+        "fref" : "Project/locales",
+        "related" : "/frame/center/body/locales"
       }, {
-        "name" : "ProjectI18n",
+        "name" : "i18ns",
         "type" : "TAB",
         "left" : "60em",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "ProjectI18n",
-        "related" : "/frame/center/body/ProjectI18n"
+        "fref" : "Project/i18ns",
+        "related" : "/frame/center/body/i18ns"
       } ]
     }, {
       "name" : "body",
@@ -229,7 +237,7 @@
       "right" : "0",
       "bottom" : "0",
       "children" : [ {
-        "name" : "Class",
+        "name" : "classes",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -307,7 +315,7 @@
             "width" : "10em",
             "fref" : "Class/note"
           } ],
-          "related" : "/frame/center/body/Class/list"
+          "related" : "/frame/center/body/classes/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -315,6 +323,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "Class",
+          "fref" : "Project/classes",
           "children" : [ {
             "name" : "classIdField",
             "type" : "FIELD",
@@ -396,7 +406,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/Class/list"
+          "related" : "/frame/center/body/classes/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -404,10 +414,10 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/Class/list"
+          "related" : "/frame/center/body/classes/list"
         } ]
       }, {
-        "name" : "Enum",
+        "name" : "enums",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -477,7 +487,7 @@
             "width" : "10em",
             "fref" : "Enum/note"
           } ],
-          "related" : "/frame/center/body/Enum/list"
+          "related" : "/frame/center/body/enums/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -485,6 +495,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "Enum",
+          "fref" : "Project/enums",
           "children" : [ {
             "name" : "enumIdField",
             "type" : "FIELD",
@@ -557,7 +569,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/Enum/list"
+          "related" : "/frame/center/body/enums/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -565,10 +577,10 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/Enum/list"
+          "related" : "/frame/center/body/enums/list"
         } ]
       }, {
-        "name" : "Message",
+        "name" : "messages",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -614,7 +626,7 @@
             "width" : "10em",
             "fref" : "Message/message"
           } ],
-          "related" : "/frame/center/body/Message/list"
+          "related" : "/frame/center/body/messages/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -622,6 +634,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "Message",
+          "fref" : "Project/messages",
           "children" : [ {
             "name" : "messageIdField",
             "type" : "FIELD",
@@ -667,7 +681,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/Message/list"
+          "related" : "/frame/center/body/messages/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -675,10 +689,10 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/Message/list"
+          "related" : "/frame/center/body/messages/list"
         } ]
       }, {
-        "name" : "Style",
+        "name" : "styles",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -852,7 +866,7 @@
             "width" : "10em",
             "fref" : "Style/verticalAlign"
           } ],
-          "related" : "/frame/center/body/Style/list"
+          "related" : "/frame/center/body/styles/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -860,6 +874,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "Style",
+          "fref" : "Project/styles",
           "children" : [ {
             "name" : "styleIdField",
             "type" : "FIELD",
@@ -1051,7 +1067,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/Style/list"
+          "related" : "/frame/center/body/styles/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -1059,10 +1075,10 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/Style/list"
+          "related" : "/frame/center/body/styles/list"
         } ]
       }, {
-        "name" : "PageSet",
+        "name" : "pageSets",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -1116,7 +1132,7 @@
             "width" : "10em",
             "fref" : "PageSet/description"
           } ],
-          "related" : "/frame/center/body/PageSet/list"
+          "related" : "/frame/center/body/pageSets/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -1124,6 +1140,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "PageSet",
+          "fref" : "Project/pageSets",
           "children" : [ {
             "name" : "pageSetIdField",
             "type" : "FIELD",
@@ -1178,7 +1196,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/PageSet/list"
+          "related" : "/frame/center/body/pageSets/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -1186,10 +1204,10 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/PageSet/list"
+          "related" : "/frame/center/body/pageSets/list"
         } ]
       }, {
-        "name" : "Locale",
+        "name" : "locales",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -1235,7 +1253,7 @@
             "width" : "10em",
             "fref" : "Locale/description"
           } ],
-          "related" : "/frame/center/body/Locale/list"
+          "related" : "/frame/center/body/locales/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -1243,6 +1261,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "Locale",
+          "fref" : "Project/locales",
           "children" : [ {
             "name" : "localeIdField",
             "type" : "FIELD",
@@ -1288,7 +1308,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/Locale/list"
+          "related" : "/frame/center/body/locales/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -1296,10 +1316,10 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/Locale/list"
+          "related" : "/frame/center/body/locales/list"
         } ]
       }, {
-        "name" : "ProjectI18n",
+        "name" : "i18ns",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -1345,7 +1365,7 @@
             "width" : "10em",
             "fref" : "ProjectI18n/description"
           } ],
-          "related" : "/frame/center/body/ProjectI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -1353,6 +1373,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "ProjectI18n",
+          "fref" : "Project/i18ns",
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
@@ -1399,7 +1421,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/ProjectI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -1407,7 +1429,7 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/ProjectI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         } ]
       } ]
     } ]

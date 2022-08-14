@@ -5,10 +5,11 @@
   "top" : "0",
   "right" : "0",
   "bottom" : "0",
+  "cref" : "Class",
   "children" : [ {
     "name" : "top",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "top",
+    "layoutParam" : "top",
     "height" : "50%",
     "children" : [ {
       "name" : "detail",
@@ -167,7 +168,7 @@
   }, {
     "name" : "center",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "center",
+    "layoutParam" : "center",
     "children" : [ {
       "name" : "head",
       "type" : "SIMPLE_PANE",
@@ -176,32 +177,35 @@
       "right" : "0",
       "height" : "2em",
       "children" : [ {
-        "name" : "Field",
+        "name" : "fields",
         "type" : "TAB",
         "left" : "0",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "Field",
-        "related" : "/frame/center/body/Field"
+        "fref" : "Class/fields",
+        "related" : "/frame/center/body/fields"
       }, {
-        "name" : "Query",
+        "name" : "queries",
         "type" : "TAB",
         "left" : "10em",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "Query",
-        "related" : "/frame/center/body/Query"
+        "fref" : "Class/queries",
+        "related" : "/frame/center/body/queries"
       }, {
-        "name" : "ClassI18n",
+        "name" : "i18ns",
         "type" : "TAB",
         "left" : "20em",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "ClassI18n",
-        "related" : "/frame/center/body/ClassI18n"
+        "fref" : "Class/i18ns",
+        "related" : "/frame/center/body/i18ns"
       } ]
     }, {
       "name" : "body",
@@ -211,7 +215,7 @@
       "right" : "0",
       "bottom" : "0",
       "children" : [ {
-        "name" : "Field",
+        "name" : "fields",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -385,7 +389,7 @@
             "width" : "10em",
             "fref" : "Field/note"
           } ],
-          "related" : "/frame/center/body/Field/list"
+          "related" : "/frame/center/body/fields/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -393,6 +397,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "Field",
+          "fref" : "Class/fields",
           "children" : [ {
             "name" : "fieldIdField",
             "type" : "FIELD",
@@ -586,7 +592,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/Field/list"
+          "related" : "/frame/center/body/fields/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -594,10 +600,10 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/Field/list"
+          "related" : "/frame/center/body/fields/list"
         } ]
       }, {
-        "name" : "Query",
+        "name" : "queries",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -675,7 +681,7 @@
             "width" : "10em",
             "fref" : "Query/note"
           } ],
-          "related" : "/frame/center/body/Query/list"
+          "related" : "/frame/center/body/queries/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -683,6 +689,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "Query",
+          "fref" : "Class/queries",
           "children" : [ {
             "name" : "queryIdField",
             "type" : "FIELD",
@@ -764,7 +772,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/Query/list"
+          "related" : "/frame/center/body/queries/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -772,10 +780,10 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/Query/list"
+          "related" : "/frame/center/body/queries/list"
         } ]
       }, {
-        "name" : "ClassI18n",
+        "name" : "i18ns",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -821,7 +829,7 @@
             "width" : "10em",
             "fref" : "ClassI18n/description"
           } ],
-          "related" : "/frame/center/body/ClassI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -829,6 +837,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "ClassI18n",
+          "fref" : "Class/i18ns",
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
@@ -875,7 +885,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/ClassI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -883,7 +893,7 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/ClassI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         } ]
       } ]
     } ]

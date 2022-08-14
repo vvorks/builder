@@ -29,6 +29,10 @@ public class PageBuilder {
 
 	private static final String PAGESET_EDIT = "edit";
 
+	private static final String SUFFIX_FIELD = "Field";
+
+	private static final String SUFFIX_LABEL = "Label";
+
 	private double NA = LayoutBuilder.NA;
 
 	public static class ClassRelation {
@@ -36,6 +40,8 @@ public class PageBuilder {
 		private final ClassContent clazz;
 
 		private ClassRelation owner;
+
+		private FieldContent ownerField;
 
 		private List<ClassRelation> sets;
 
@@ -55,14 +61,19 @@ public class PageBuilder {
 			return owner;
 		}
 
-		public void addSet(ClassRelation r, boolean isContainer) {
+		public FieldContent getOwnerField() {
+			return ownerField;
+		}
+
+		public void addSet(ClassRelation r, FieldContent fld) {
 			if (sets == null) {
 				sets = new ArrayList<>();
 			}
 			sets.add(r);
-			if (isContainer) {
+			if (fld == null || fld.isIsContainer()) {
 				Asserts.assume(r.owner == null);
 				r.owner = this;
+				r.ownerField = fld;
 			}
 		}
 
@@ -117,12 +128,12 @@ public class PageBuilder {
 		}
 		//各クラス中のSETフィールドを元に関連付け
 		for (ClassRelation owner : relations.values()) {
-			ClassContent cls = owner.clazz;
+			ClassContent cls = owner.getContent();
 			for (FieldContent fld : mappers.getClassMapper().listFieldsContent(cls, 0, 0)) {
 				if (fld.getType() == DataType.SET) {
 					FieldContent fref = mappers.getFieldMapper().getFref(fld);
 					ClassRelation set = relations.get(fref.getOwnerClassId());
-					owner.addSet(set, fld.isIsContainer());
+					owner.addSet(set, fld);
 				}
 			}
 		}
@@ -130,7 +141,7 @@ public class PageBuilder {
 		ClassRelation root = new ClassRelation();
 		for (ClassRelation r : relations.values()) {
 			if (!r.isContained()) {
-				root.addSet(r, true);
+				root.addSet(r, null);
 			}
 		}
 		return root;
@@ -179,6 +190,9 @@ public class PageBuilder {
 		boolean hasOwns = !Iterables.isEmpty(rel.getOwns());
 		if (hasFields && hasOwns) {
 			b.enter(LayoutType.PARTED_PANE, "frame");
+				if (cls != null) {
+					b.refClass(cls);
+				}
 				b.enter(LayoutType.SIMPLE_PANE, "top", "", "top");
 					b.locate(null, "50%");
 					insertDetail(b, rel);
@@ -190,10 +204,16 @@ public class PageBuilder {
 			b.leave();
 		} else if (hasFields) {
 			b.enter(LayoutType.SIMPLE_PANE, "frame");
+				if (cls != null) {
+					b.refClass(cls);
+				}
 				insertDetail(b, rel);
 			b.leave();
 		} else if (hasOwns) {
 			b.enter(LayoutType.SIMPLE_PANE, "frame");
+				if (cls != null) {
+					b.refClass(cls);
+				}
 				insertOwnsLists(b, rel);
 			b.leave();
 		}
@@ -215,11 +235,11 @@ public class PageBuilder {
 			labelWidth = 10;
 			for (FieldContent fld : fields) {
 				height = 2; //TODO 仮。本当はField書式から設定
-				b.enter(LayoutType.LABEL, fld.getFieldName() + "Label");
+				b.enter(LayoutType.LABEL, fld.getFieldName() + SUFFIX_LABEL);
 					b.locate(0, top, NA, NA, labelWidth, height);
 					b.refField(fld);
 				b.leave();
-				b.enter(LayoutType.FIELD, fld.getFieldName() + "Field");
+				b.enter(LayoutType.FIELD, fld.getFieldName() + SUFFIX_FIELD);
 					b.locate(labelWidth, top, 0, NA, NA, height);
 					b.refField(fld);
 				b.leave();
@@ -235,35 +255,41 @@ public class PageBuilder {
 	private void insertOwnsLists(LayoutBuilder b, ClassRelation rel) {
 		int left;
 		int width;
-		Iterable<ClassContent> classes = Iterables.from(rel.getOwns(), (r) -> r.getContent());
 		b.enter(LayoutType.SIMPLE_PANE, "head");
 			b.locate(0, 0, 0, NA, NA, 2);
 			left = 0;
 			width = 10;
-			for (ClassContent cls : classes) {
-				b.enter(LayoutType.TAB, cls.getClassName());
+			for (ClassRelation r : rel.getOwns()) {
+				ClassContent cls = r.getContent();
+				FieldContent ownerField = r.getOwnerField();
+				String fieldName = ownerField != null ? ownerField.getFieldName() : cls.getClassName();
+				b.enter(LayoutType.TAB, fieldName);
 					b.locate(left, 0, NA, 0, width, NA);
 					b.refClass(cls);
-					b.related("../body/" + cls.getClassName());
+					b.refField(ownerField);
+					b.related("../body/" + fieldName);
 				b.leave();
 				left += width;
 			}
 		b.leave();
 		b.enter(LayoutType.TABBED_PANE, "body");
 			b.locate(0, 2, 0, 0, NA, NA);
-			for (ClassContent cls : classes) {
+			for (ClassRelation r : rel.getOwns()) {
+				ClassContent cls = r.getContent();
+				FieldContent ownerField = r.getOwnerField();
+				String fieldName = ownerField != null ? ownerField.getFieldName() : cls.getClassName();
 				//TODO Query追加してSQLレベルで絞り込み
 				Iterable<FieldContent> fields = Iterables.filter(
 						mappers.getClassMapper().listFieldsContent(cls, 0, 0),
 						f -> f.getType() != DataType.SET);
-				b.enter(LayoutType.SIMPLE_PANE, cls.getClassName());
+				b.enter(LayoutType.SIMPLE_PANE, fieldName);
 					b.enter(LayoutType.SIMPLE_PANE, "head");
 						b.locate(0, 0, 1, NA, NA, 2);
 						b.related("list");
 						left = 0;
 						for (FieldContent fld : fields) {
 							width = 10; //TODO 仮。本当はField書式から設定
-							b.enter(LayoutType.LABEL, fld.getFieldName() + "Label");
+							b.enter(LayoutType.LABEL, fld.getFieldName() + SUFFIX_LABEL);
 								b.locate(left, 0, NA, 0, width, NA);
 								b.refField(fld);
 							b.leave();
@@ -272,10 +298,12 @@ public class PageBuilder {
 					b.leave();
 					b.enter(LayoutType.V_LIST, "list");
 						b.locate(0, 2, 1, 1);
+						b.refClass(cls);
+						b.refField(ownerField);
 						left = 0;
 						for (FieldContent fld : fields) {
 							width = 10; //TODO 仮。本当はField書式から設定
-							b.enter(LayoutType.FIELD, fld.getFieldName() + "Field");
+							b.enter(LayoutType.FIELD, fld.getFieldName() + SUFFIX_FIELD);
 								b.locate(left, 0, NA, NA, width, 2);
 								b.refField(fld);
 							b.leave();

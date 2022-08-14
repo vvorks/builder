@@ -1,5 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import java.util.Map;
+
 import com.github.vvorks.builder.shared.common.json.Json;
 
 public abstract class DataRecordAgent {
@@ -19,5 +21,7 @@ public abstract class DataRecordAgent {
 	public abstract void setValue(DataRecord rec, String name, Json from);
 
 	public abstract void setValue(DataRecord rec, String name, DataRecord candidate);
+
+	public abstract Json getContentCriteria(Map<String, String> param);
 
 }

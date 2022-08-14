@@ -403,6 +403,7 @@ public class UiVerticalList extends UiGroup {
 
 	@Override
 	public void onResize(int screenWidth, int screenHeight) {
+		super.onResize(screenWidth, screenHeight);
 		updateMetrics();
 		DataSource ds = getDataSource();
 		if (ds.isLoaded()) {

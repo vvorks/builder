@@ -1,14 +1,14 @@
 package com.github.vvorks.builder.client.ui;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import com.github.vvorks.builder.client.agent.Agents;
+import com.github.vvorks.builder.client.common.net.JsonRpcClient;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
+import com.github.vvorks.builder.client.common.ui.DataSource;
 import com.github.vvorks.builder.client.common.ui.LayoutParam;
-import com.github.vvorks.builder.client.common.ui.ListDataSource;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiDeckGroup;
 import com.github.vvorks.builder.client.common.ui.UiEditField;
@@ -24,35 +24,24 @@ import com.github.vvorks.builder.client.common.ui.UiVerticalList;
 import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
 import com.github.vvorks.builder.client.constants.ConstantsBundle;
 import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.Strings;
 
 public class BuilderPage extends UiPage {
 
-	public BuilderPage(String name, UiApplication app, Map<String, String> param) {
-		super(name, app);
-	}
-
-	public BuilderPage(BuilderPage src) {
-		super(src);
-	}
-
-	@Override
-	public BuilderPage copy() {
-		return new BuilderPage(this);
-	}
-
-	private static final Map<String, Function<Json, UiNode>> NODE_CREATORS = new LinkedHashMap<>();
+	private static final Map<String, BiFunction<BuilderPage, Json, UiNode>>
+		NODE_CREATORS = new LinkedHashMap<>();
 	static {
-		NODE_CREATORS.put("SIMPLE_PANE", json -> newSimplePaneNode(json));
-		NODE_CREATORS.put("PARTED_PANE", json -> newPartedPaneNode(json));
-		NODE_CREATORS.put("TABBED_PANE", json -> newTabbedPaneNode(json));
-		NODE_CREATORS.put("TAB", json -> newTabNode(json));
-		NODE_CREATORS.put("V_LIST", json -> newVListNode(json));
-		NODE_CREATORS.put("H_LIST", json -> newHListNode(json));
-		NODE_CREATORS.put("V_SCROLLBAR", json -> newVScrollbarNode(json));
-		NODE_CREATORS.put("H_SCROLLBAR", json -> newHScrollbarNode(json));
-		NODE_CREATORS.put("LABEL", json -> newLabelNode(json));
-		NODE_CREATORS.put("FIELD", json -> newFieldNode(json));
-		NODE_CREATORS.put("INPUT", json -> newInputNode(json));
+		NODE_CREATORS.put("SIMPLE_PANE", (me, json) -> me.newSimplePaneNode(json));
+		NODE_CREATORS.put("PARTED_PANE", (me, json) -> me.newPartedPaneNode(json));
+		NODE_CREATORS.put("TABBED_PANE", (me, json) -> me.newTabbedPaneNode(json));
+		NODE_CREATORS.put("TAB", (me, json) -> me.newTabNode(json));
+		NODE_CREATORS.put("V_LIST", (me, json) -> me.newVListNode(json));
+		NODE_CREATORS.put("H_LIST", (me, json) -> me.newHListNode(json));
+		NODE_CREATORS.put("V_SCROLLBAR", (me, json) -> me.newVScrollbarNode(json));
+		NODE_CREATORS.put("H_SCROLLBAR", (me, json) -> me.newHScrollbarNode(json));
+		NODE_CREATORS.put("LABEL", (me, json) -> me.newLabelNode(json));
+		NODE_CREATORS.put("FIELD", (me, json) -> me.newFieldNode(json));
+		NODE_CREATORS.put("INPUT", (me, json) -> me.newInputNode(json));
 	}
 
 	private static class Relation {
@@ -72,12 +61,42 @@ public class BuilderPage extends UiPage {
 		}
 	}
 
+	private final Json pageInfo;
+	private final String pageClassName;
+	private final Json content;
+	private final JsonRpcClient rpc;
+
+	public BuilderPage(String name, UiApplication app, Map<String, String> param) {
+		super(name, app);
+		rpc = app.getRpcClient();
+		pageInfo = ConstantsBundle.get().getResource(name);
+		pageClassName = pageInfo.getString("cref", null);
+		if (pageClassName == null) {
+			content = null;
+		} else {
+			DataRecordAgent agent = Agents.get(pageClassName);
+			content = agent.getContentCriteria(param);
+		}
+	}
+
+	public BuilderPage(BuilderPage src) {
+		super(src);
+		rpc = src.rpc;
+		pageInfo = src.pageInfo;
+		pageClassName = src.pageClassName;
+		content = src.content;
+	}
+
+	@Override
+	public BuilderPage copy() {
+		return new BuilderPage(this);
+	}
+
 	@Override
 	protected void initialize() {
-		Json json = ConstantsBundle.get().getResource("ShowClassPage");
 		Map<String, Relation> rels = new LinkedHashMap<>();
 		//UiNode化
-		UiNode root = createNode(json, rels, "/");
+		UiNode root = createNode(pageInfo, rels, "/");
 		//関連付け
 		for (Relation r : rels.values()) {
 			r.relate(rels);
@@ -88,7 +107,7 @@ public class BuilderPage extends UiPage {
 	private UiNode createNode(Json json, Map<String, Relation> rels, String path) {
 		String fullName = path + json.getString("name");
 		String type = json.getString("type");
-		UiNode node = NODE_CREATORS.get(type).apply(json);
+		UiNode node = NODE_CREATORS.get(type).apply(this, json);
 		node.setLeft(json.getString("left", null));
 		node.setTop(json.getString("top", null));
 		node.setRight(json.getString("right", null));
@@ -101,7 +120,7 @@ public class BuilderPage extends UiPage {
 			for (int i = 0; i < children.size(); i++) {
 				Json childJson = children.get(i);
 				UiNode childNode = createNode(childJson, rels, cpath);
-				String lp = childJson.getString("layoutparam", null);
+				String lp = childJson.getString("layoutParam", null);
 				LayoutParam param = node.parseLayoutParam(lp);
 				node.appendChild(childNode, param);
 			}
@@ -110,14 +129,14 @@ public class BuilderPage extends UiPage {
 		return node;
 	}
 
-	private static UiNode newSimplePaneNode(Json json) {
+	protected UiNode newSimplePaneNode(Json json) {
 		String name = json.getString("name");
 		UiNode node = new UiGroup(name);
 		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
 		return node;
 	}
 
-	private static UiNode newPartedPaneNode(Json json) {
+	protected UiNode newPartedPaneNode(Json json) {
 		String name = json.getString("name");
 		UiSplitGroup node = new UiSplitGroup(name);
 		node.setStyle(BuilderStyles.GROUP_SPLITTER);  //TODO 仮
@@ -125,55 +144,73 @@ public class BuilderPage extends UiPage {
 		return node;
 	}
 
-	private static UiNode newTabbedPaneNode(Json json) {
+	protected UiNode newTabbedPaneNode(Json json) {
 		String name = json.getString("name");
 		UiNode node = new UiDeckGroup(name);
 		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
 		return node;
 	}
 
-	private static UiNode newTabNode(Json json) {
+	protected UiNode newTabNode(Json json) {
 		String name = json.getString("name");
 		UiNode node = new UiTab(name);
 		node.setStyle(BuilderStyles.FIELD);  //TODO 仮
 		return node;
 	}
 
-	private static UiNode newVListNode(Json json) {
+	protected UiNode newVListNode(Json json) {
 		String name = json.getString("name");
 		UiNode node = new UiVerticalList(name);
 		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
-		node.setDataSource(new ListDataSource(Collections.emptyList())); //TODO 仮
+		DataSource ds;
+		String fref = json.getString("fref", null);
+		if (fref == null) {
+			String cref = json.getString("cref", null);
+			ds = new BuilderRpcDataSource(rpc, "list" + cref,
+					BuilderRpcDataSource.DEFAULT_PAGE_SIZE,
+					BuilderRpcDataSource.DEFAULT_CACHE_SIZE);
+		} else {
+			int sep = fref.lastIndexOf('/');
+			String fieldName = fref.substring(sep + 1);
+			String upperName = Strings.toFirstUpper(fieldName);
+			String apiName = "list" + pageClassName + upperName;
+			LOGGER.debug("apiName %s", apiName);
+			ds = new BuilderRpcDataSource(rpc, apiName,
+					BuilderRpcDataSource.DEFAULT_PAGE_SIZE,
+					BuilderRpcDataSource.DEFAULT_CACHE_SIZE);
+		}
+		ds.setCriteria(content, null);
+		node.setDataSource(ds);
 		return node;
 	}
 
-	private static UiNode newHListNode(Json json) {
+	protected UiNode newHListNode(Json json) {
 		//TODO 要実装
 		throw new UnsupportedOperationException();
 	}
 
-	private static UiNode newVScrollbarNode(Json json) {
+	protected UiNode newVScrollbarNode(Json json) {
 		String name = json.getString("name");
 		UiNode node = new UiVerticalScrollBar(name);
 		node.setStyle(BuilderStyles.SB);  //TODO 仮
 		return node;
 	}
 
-	private static UiNode newHScrollbarNode(Json json) {
+	protected UiNode newHScrollbarNode(Json json) {
 		String name = json.getString("name");
 		UiNode node = new UiHorizontalScrollBar(name);
 		node.setStyle(BuilderStyles.SB);  //TODO 仮
 		return node;
 	}
 
-	private static UiNode newLabelNode(Json json) {
+	protected UiNode newLabelNode(Json json) {
 		String name = json.getString("name");
 		UiNode node = new UiText(name);
 		node.setStyle(BuilderStyles.FIELD);  //TODO 仮
 		return node;
 	}
 
-	private static UiNode newFieldNode(Json json) {
+	protected UiNode newFieldNode(Json json) {
 		String name = json.getString("name");
 		String dataType = json.getString("dataType");
 		UiNode node;
@@ -188,7 +225,7 @@ public class BuilderPage extends UiPage {
 		return node;
 	}
 
-	private static UiNode newInputNode(Json json) {
+	protected UiNode newInputNode(Json json) {
 		return newFieldNode(json); //TODO 仮
 	}
 

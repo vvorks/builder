@@ -18,6 +18,10 @@ public class BuilderRpcDataSource extends DataSource {
 
 	private static final Logger LOGGER = Logger.createLogger(BuilderRpcDataSource.class);
 
+	public static final int DEFAULT_PAGE_SIZE = 50;
+
+	public static final int DEFAULT_CACHE_SIZE = 200;
+
 	/** rpcクライアント */
 	private final JsonRpcClient rpc;
 

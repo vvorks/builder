@@ -44,6 +44,7 @@ public class Agents {
 {{/if}}
 package {{global.project.projectName}}.client.agent;
 
+import java.util.Map;
 import {{global.project.projectName}}.client.common.ui.DataRecord;
 import {{global.project.projectName}}.client.common.ui.DataRecordAgent;
 import {{global.project.projectName}}.shared.common.json.Json;
@@ -83,6 +84,15 @@ public class {{className}}Agent extends DataRecordAgent {
 		{{/each}}
 	}
 
+	@Override
+	public Json getContentCriteria(Map<String, String> param) {
+		Json criteria = Json.createObject();
+		{{#each keys}}
+		criteria.setString("{{fieldName}}", param.get("{{fieldName}}"));
+		{{/each}}
+		return criteria;
+	}
+
 }
 {{/java}}
 {{/each}}
@@ -101,6 +111,7 @@ public class {{className}}Agent extends DataRecordAgent {
 {{/if}}
 package {{global.project.projectName}}.client.agent;
 
+import java.util.Map;
 import {{global.project.projectName}}.client.common.ui.DataRecord;
 import {{global.project.projectName}}.client.common.ui.DataRecordAgent;
 import {{global.project.projectName}}.shared.common.json.Json;
@@ -134,6 +145,11 @@ public class {{enumName}}Agent extends DataRecordAgent {
 	@Override
 	public void setValue(DataRecord rec, String name, DataRecord candidate) {
 		rec.set{{encodeSuffix}}(name, candidate.get{{encodeSuffix}}("value"));
+	}
+
+	@Override
+	public Json getContentCriteria(Map<String, String> param) {
+		return null;
 	}
 
 }

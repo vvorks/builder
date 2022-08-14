@@ -5,10 +5,11 @@
   "top" : "0",
   "right" : "0",
   "bottom" : "0",
+  "cref" : "Message",
   "children" : [ {
     "name" : "top",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "top",
+    "layoutParam" : "top",
     "height" : "50%",
     "children" : [ {
       "name" : "detail",
@@ -99,7 +100,7 @@
   }, {
     "name" : "center",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "center",
+    "layoutParam" : "center",
     "children" : [ {
       "name" : "head",
       "type" : "SIMPLE_PANE",
@@ -108,14 +109,15 @@
       "right" : "0",
       "height" : "2em",
       "children" : [ {
-        "name" : "MessageI18n",
+        "name" : "i18ns",
         "type" : "TAB",
         "left" : "0",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "MessageI18n",
-        "related" : "/frame/center/body/MessageI18n"
+        "fref" : "Message/i18ns",
+        "related" : "/frame/center/body/i18ns"
       } ]
     }, {
       "name" : "body",
@@ -125,7 +127,7 @@
       "right" : "0",
       "bottom" : "0",
       "children" : [ {
-        "name" : "MessageI18n",
+        "name" : "i18ns",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -163,7 +165,7 @@
             "width" : "10em",
             "fref" : "MessageI18n/message"
           } ],
-          "related" : "/frame/center/body/MessageI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -171,6 +173,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "MessageI18n",
+          "fref" : "Message/i18ns",
           "children" : [ {
             "name" : "ownerField",
             "type" : "FIELD",
@@ -208,7 +212,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/MessageI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -216,7 +220,7 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/MessageI18n/list"
+          "related" : "/frame/center/body/i18ns/list"
         } ]
       } ]
     } ]

@@ -3,6 +3,7 @@
  */
 package com.github.vvorks.builder.client.agent;
 
+import java.util.Map;
 import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.shared.common.json.Json;
@@ -38,6 +39,14 @@ public class EnumI18nAgent extends DataRecordAgent {
 	public void setValue(DataRecord rec, String name, DataRecord candidate) {
 		rec.setInt(name + "OwnerEnumId", candidate.getInt("ownerEnumId"));
 		rec.setString(name + "TargetLocaleId", candidate.getString("targetLocaleId"));
+	}
+
+	@Override
+	public Json getContentCriteria(Map<String, String> param) {
+		Json criteria = Json.createObject();
+		criteria.setString("ownerEnumId", param.get("ownerEnumId"));
+		criteria.setString("targetLocaleId", param.get("targetLocaleId"));
+		return criteria;
 	}
 
 }

@@ -83,7 +83,7 @@ public class PageExtender {
 		LayoutType type = content.getLayoutType();
 		json.setString("type", type.encode());
 		json.setStringIfExists("param", content.getParam());
-		json.setStringIfExists("layoutparam", content.getLayoutParam());
+		json.setStringIfExists("layoutParam", content.getLayoutParam());
 		if (type == LayoutType.FIELD || type == LayoutType.INPUT) {
 			Asserts.assumeNotNull(fref);
 			DataType dataType = fref.getType();

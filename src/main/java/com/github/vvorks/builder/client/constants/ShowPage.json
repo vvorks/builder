@@ -108,6 +108,7 @@
         "top" : "2em",
         "right" : "1em",
         "bottom" : "1em",
+        "cref" : "Project",
         "children" : [ {
           "name" : "projectIdField",
           "type" : "FIELD",

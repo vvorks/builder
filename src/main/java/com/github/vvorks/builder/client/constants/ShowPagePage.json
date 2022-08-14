@@ -5,10 +5,11 @@
   "top" : "0",
   "right" : "0",
   "bottom" : "0",
+  "cref" : "Page",
   "children" : [ {
     "name" : "top",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "top",
+    "layoutParam" : "top",
     "height" : "50%",
     "children" : [ {
       "name" : "detail",
@@ -117,7 +118,7 @@
   }, {
     "name" : "center",
     "type" : "SIMPLE_PANE",
-    "layoutparam" : "center",
+    "layoutParam" : "center",
     "children" : [ {
       "name" : "head",
       "type" : "SIMPLE_PANE",
@@ -126,14 +127,15 @@
       "right" : "0",
       "height" : "2em",
       "children" : [ {
-        "name" : "Layout",
+        "name" : "layouts",
         "type" : "TAB",
         "left" : "0",
         "top" : "0",
         "bottom" : "0",
         "width" : "10em",
         "cref" : "Layout",
-        "related" : "/frame/center/body/Layout"
+        "fref" : "Page/layouts",
+        "related" : "/frame/center/body/layouts"
       } ]
     }, {
       "name" : "body",
@@ -143,7 +145,7 @@
       "right" : "0",
       "bottom" : "0",
       "children" : [ {
-        "name" : "Layout",
+        "name" : "layouts",
         "type" : "SIMPLE_PANE",
         "left" : "0",
         "top" : "0",
@@ -309,7 +311,7 @@
             "width" : "10em",
             "fref" : "Layout/height"
           } ],
-          "related" : "/frame/center/body/Layout/list"
+          "related" : "/frame/center/body/layouts/list"
         }, {
           "name" : "list",
           "type" : "V_LIST",
@@ -317,6 +319,8 @@
           "top" : "2em",
           "right" : "1em",
           "bottom" : "1em",
+          "cref" : "Layout",
+          "fref" : "Page/layouts",
           "children" : [ {
             "name" : "layoutIdField",
             "type" : "FIELD",
@@ -505,7 +509,7 @@
           "right" : "0",
           "bottom" : "1em",
           "width" : "1em",
-          "related" : "/frame/center/body/Layout/list"
+          "related" : "/frame/center/body/layouts/list"
         }, {
           "name" : "hsb",
           "type" : "H_SCROLLBAR",
@@ -513,7 +517,7 @@
           "right" : "1em",
           "bottom" : "0",
           "height" : "1em",
-          "related" : "/frame/center/body/Layout/list"
+          "related" : "/frame/center/body/layouts/list"
         } ]
       } ]
     } ]

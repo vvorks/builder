@@ -1,0 +1,35 @@
+//
+// applicationテンプレート
+//
+{{#java this "client/ui/" upperLastName "UiApplication" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.client.ui;
+
+import java.util.Map;
+
+import {{global.project.projectName}}.client.common.ui.DomDocument;
+import {{global.project.projectName}}.client.common.ui.UiApplication;
+
+public class {{upperLastName}}UiApplication extends UiApplication {
+
+	@SuppressWarnings("unchecked")
+	public {{upperLastName}}UiApplication(DomDocument doc) {
+		super(doc);
+		final UiApplication app = this;
+		addPage("", args -> new BuilderPage("ShowPage", app, (Map<String, String>)args[0]));
+		{{#each this.publicClasses}}
+		addPage("#show{{className}}", args -> new BuilderPage("Show{{className}}Page", app, (Map<String, String>)args[0]));
+		{{/each}}
+		{{#each this.styles}}
+		registerStyle({{../upperLastName}}Styles.{{constName}});
+		{{/each}}
+	}
+
+}
+{{/java}}
