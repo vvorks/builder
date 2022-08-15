@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
+import com.github.vvorks.builder.client.constants.ConstantsBundle;
 
 public class BuilderUiApplication extends UiApplication {
 
@@ -43,6 +44,7 @@ public class BuilderUiApplication extends UiApplication {
 		registerStyle(BuilderStyles.SB_INNER);
 		registerStyle(BuilderStyles.SB_FOCUS);
 		registerStyle(BuilderStyles.TRANSPARENT);
+		setResourceBundle(ConstantsBundle.get());
 	}
 
 }

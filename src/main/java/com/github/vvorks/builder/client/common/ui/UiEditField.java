@@ -26,14 +26,16 @@ public class UiEditField extends UiEditText implements DataField {
 	@Override
 	public void setRecord(DataRecord rec) {
 		this.rec = rec;
-		super.setText(rec.getString(getName()));
+		String name = getDataName();
+		super.setText(rec.getString(name));
 		setChanged(CHANGED_CONTENT);
 	}
 
 	@Override
 	public void setText(String text) {
 		super.setText(text);
-		rec.setString(getName(), text);
+		String name = getDataName();
+		rec.setString(name, text);
 	}
 
 }

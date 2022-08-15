@@ -2,6 +2,8 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.util.Objects;
 
+import com.github.vvorks.builder.client.ClientSettings;
+
 public class UiText extends UiNode {
 
 	/** ラベルテキスト */
@@ -30,13 +32,19 @@ public class UiText extends UiNode {
 	}
 
 	public String getDisplayText() {
-		String result;
 		if (text != null) {
-			result = text;
-		} else {
-			result = getName();
+			return text;
 		}
-		return result;
+		//TODO "title"は指定可能であるべき？
+		String resourceText = getResource().getString("title", null);
+		if (resourceText != null) {
+			//TODO テキストに値をキャッシュすべきか？
+			return resourceText;
+		}
+		if (ClientSettings.DEBUG) {
+			return getName();
+		}
+		return "";
 	}
 
 	public void setText(String text) {

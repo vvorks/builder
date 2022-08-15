@@ -76,13 +76,13 @@ public class UiPickerField extends UiNode implements DataField {
 	@Override
 	public void setRecord(DataRecord rec) {
 		this.rec = rec;
-		String name = getName();
+		String name = getDataName();
 		title = agent.getTitle(rec, name);
 		label.setText(title);
 	}
 
 	public void setValue(DataRecord candidate) {
-		String name = getName();
+		String name = getDataName();
 		agent.setValue(rec, name, candidate);
 		agent.setTitle(rec, name, candidate);
 		title = agent.getTitle(rec, name);

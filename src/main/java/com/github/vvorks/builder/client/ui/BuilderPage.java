@@ -10,6 +10,7 @@ import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.client.common.ui.DataSource;
 import com.github.vvorks.builder.client.common.ui.LayoutParam;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
+import com.github.vvorks.builder.client.common.ui.UiDataPanel;
 import com.github.vvorks.builder.client.common.ui.UiDeckGroup;
 import com.github.vvorks.builder.client.common.ui.UiEditField;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
@@ -22,11 +23,18 @@ import com.github.vvorks.builder.client.common.ui.UiTab;
 import com.github.vvorks.builder.client.common.ui.UiText;
 import com.github.vvorks.builder.client.common.ui.UiVerticalList;
 import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
-import com.github.vvorks.builder.client.constants.ConstantsBundle;
 import com.github.vvorks.builder.shared.common.json.Json;
 import com.github.vvorks.builder.shared.common.lang.Strings;
 
 public class BuilderPage extends UiPage {
+
+	private static final String CREF_BUNDLE_PREFIX = "ClassConstants/";
+
+	private static final String FREF_BUNDLE_PREFIX = "FieldConstants/";
+
+	private static final String EREF_BUNDLE_PREFIX = "EnumConstants/";
+
+	private static final String MREF_BUNDLE_PREFIX = "Message/";
 
 	private static final Map<String, BiFunction<BuilderPage, Json, UiNode>>
 		NODE_CREATORS = new LinkedHashMap<>();
@@ -68,8 +76,9 @@ public class BuilderPage extends UiPage {
 
 	public BuilderPage(String name, UiApplication app, Map<String, String> param) {
 		super(name, app);
+		setResourcePath(name);
 		rpc = app.getRpcClient();
-		pageInfo = ConstantsBundle.get().getResource(name);
+		pageInfo = getResource();
 		pageClassName = pageInfo.getString("cref", null);
 		if (pageClassName == null) {
 			content = null;
@@ -129,8 +138,23 @@ public class BuilderPage extends UiPage {
 		return node;
 	}
 
+	protected UiNode newDataPanelNode(Json json) {
+		String name = json.getString("name");
+		UiNode node = new UiDataPanel(name);
+		if (pageClassName != null) {
+			DataSource ds = new BuilderRpcSingleDataSource(rpc, "get" + pageClassName);
+			ds.setCriteria(content, null);
+			node.setDataSource(ds);
+		}
+		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
+		return node;
+	}
+
 	protected UiNode newSimplePaneNode(Json json) {
 		String name = json.getString("name");
+		if (name.equals("detail")) {
+			return newDataPanelNode(json); //TODO 仮
+		}
 		UiNode node = new UiGroup(name);
 		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
 		return node;
@@ -153,7 +177,14 @@ public class BuilderPage extends UiPage {
 
 	protected UiNode newTabNode(Json json) {
 		String name = json.getString("name");
+		String fref = json.getString("fref", null);
+		String cref = json.getString("cref", null);
 		UiNode node = new UiTab(name);
+		if (fref != null) {
+			node.setResourcePath(FREF_BUNDLE_PREFIX + fref);
+		} else {
+			node.setResourcePath(CREF_BUNDLE_PREFIX + cref);
+		}
 		node.setStyle(BuilderStyles.FIELD);  //TODO 仮
 		return node;
 	}
@@ -166,18 +197,14 @@ public class BuilderPage extends UiPage {
 		String fref = json.getString("fref", null);
 		if (fref == null) {
 			String cref = json.getString("cref", null);
-			ds = new BuilderRpcDataSource(rpc, "list" + cref,
-					BuilderRpcDataSource.DEFAULT_PAGE_SIZE,
-					BuilderRpcDataSource.DEFAULT_CACHE_SIZE);
+			String apiName = "list" + cref;
+			ds = new BuilderRpcDataSource(rpc, apiName);
 		} else {
 			int sep = fref.lastIndexOf('/');
 			String fieldName = fref.substring(sep + 1);
 			String upperName = Strings.toFirstUpper(fieldName);
 			String apiName = "list" + pageClassName + upperName;
-			LOGGER.debug("apiName %s", apiName);
-			ds = new BuilderRpcDataSource(rpc, apiName,
-					BuilderRpcDataSource.DEFAULT_PAGE_SIZE,
-					BuilderRpcDataSource.DEFAULT_CACHE_SIZE);
+			ds = new BuilderRpcDataSource(rpc, apiName);
 		}
 		ds.setCriteria(content, null);
 		node.setDataSource(ds);
@@ -205,7 +232,9 @@ public class BuilderPage extends UiPage {
 
 	protected UiNode newLabelNode(Json json) {
 		String name = json.getString("name");
+		String fref = json.getString("fref", null);
 		UiNode node = new UiText(name);
+		node.setResourcePath(FREF_BUNDLE_PREFIX + fref);
 		node.setStyle(BuilderStyles.FIELD);  //TODO 仮
 		return node;
 	}
@@ -213,6 +242,7 @@ public class BuilderPage extends UiPage {
 	protected UiNode newFieldNode(Json json) {
 		String name = json.getString("name");
 		String dataType = json.getString("dataType");
+		String fref = json.getString("fref", null);
 		UiNode node;
 		if (dataType.equals("REF")) {
 			String dataTypeParam = json.getString("dataTypeParam");
@@ -221,6 +251,7 @@ public class BuilderPage extends UiPage {
 		} else {
 			node = new UiEditField(name);
 		}
+		node.setResourcePath(FREF_BUNDLE_PREFIX + fref);
 		node.setStyle(BuilderStyles.FIELD); //TODO 仮
 		return node;
 	}

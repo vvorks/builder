@@ -15,6 +15,7 @@ import java.util.Map;
 
 import {{global.project.projectName}}.client.common.ui.DomDocument;
 import {{global.project.projectName}}.client.common.ui.UiApplication;
+import {{global.project.projectName}}.client.constants.ConstantsBundle;
 
 public class {{upperLastName}}UiApplication extends UiApplication {
 
@@ -29,6 +30,7 @@ public class {{upperLastName}}UiApplication extends UiApplication {
 		{{#each this.styles}}
 		registerStyle({{../upperLastName}}Styles.{{constName}});
 		{{/each}}
+		setResourceBundle(ConstantsBundle.get());
 	}
 
 }

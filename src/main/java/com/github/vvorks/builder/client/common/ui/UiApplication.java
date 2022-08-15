@@ -24,6 +24,7 @@ import com.github.vvorks.builder.shared.common.lang.Factory;
 import com.github.vvorks.builder.shared.common.lang.Iterables;
 import com.github.vvorks.builder.shared.common.logging.Logger;
 import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
+import com.github.vvorks.builder.shared.common.util.JsonResourceBundle;
 
 public class UiApplication implements EventHandler {
 
@@ -104,6 +105,9 @@ public class UiApplication implements EventHandler {
 	/** スタイルマップ */
 	private Map<String, UiStyle> styles;
 
+	/** リソース */
+	private JsonResourceBundle resourceBundle;
+
 	/** Webソケット */
 	private final WebSocket socket;
 
@@ -181,6 +185,15 @@ public class UiApplication implements EventHandler {
 	public void setLocale(String newLocale) {
 		document.setLocale(newLocale);
 	}
+
+	public JsonResourceBundle getResourceBundle() {
+		return resourceBundle;
+	}
+
+	public void setResourceBundle(JsonResourceBundle resourceBundle) {
+		this.resourceBundle = resourceBundle;
+	}
+
 
 	protected void addPage(String tag, Creator<UiPage> creator) {
 		pages.put(tag, creator);

@@ -141,7 +141,7 @@ public class FieldListPage extends UiPage {
 		//リスト
 		b.enter(list);
 			b.style(BuilderStyles.FIELD);
-			b.source(new BuilderRpcDataSource(rpc, "listField", 20, 40));
+			b.source(new BuilderRpcDataSource(rpc, "listField"));
 			b.locate(1.0, 3.5, 2.0, 2.0, NA, NA);
 			b.loop(true);
 			b.flushSoon(false);
@@ -156,7 +156,7 @@ public class FieldListPage extends UiPage {
 			b.leave();
 			b.enter(new UiPickerField("owner", ClassAgent.get()));
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldOwnerCandidate", 20, 40));
+				b.source(new BuilderRpcDataSource(rpc, "listFieldOwnerCandidate"));
 				b.locate( 10.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiEditField("fieldName"));
@@ -165,7 +165,7 @@ public class FieldListPage extends UiPage {
 			b.leave();
 			b.enter(new UiPickerField("type", DataTypeAgent.get()));
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldTypeCandidate", 20, 40));
+				b.source(new BuilderRpcDataSource(rpc, "listFieldTypeCandidate"));
 				b.locate( 30.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiEditField("width"));
@@ -178,17 +178,17 @@ public class FieldListPage extends UiPage {
 			b.leave();
 			b.enter(new UiPickerField("cref", ClassAgent.get()));
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldCrefCandidate", 20, 40));
+				b.source(new BuilderRpcDataSource(rpc, "listFieldCrefCandidate"));
 				b.locate( 50.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiPickerField("eref", ClassAgent.get()));
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldErefCandidate", 20, 40));
+				b.source(new BuilderRpcDataSource(rpc, "listFieldErefCandidate"));
 				b.locate( 60.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiPickerField("fref", ClassAgent.get()));
 				b.style(BuilderStyles.FIELD);
-				b.source(new BuilderRpcDataSource(rpc, "listFieldFrefCandidate", 20, 40));
+				b.source(new BuilderRpcDataSource(rpc, "listFieldFrefCandidate"));
 				b.locate( 70.0, 0.0, NA, NA, 10.0, 2.0);
 			b.leave();
 			b.enter(new UiEditField("pk"));

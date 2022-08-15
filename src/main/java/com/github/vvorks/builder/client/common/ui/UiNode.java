@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,6 +20,7 @@ import com.github.vvorks.builder.shared.common.lang.Copyable;
 import com.github.vvorks.builder.shared.common.lang.Iterables;
 import com.github.vvorks.builder.shared.common.lang.Strings;
 import com.github.vvorks.builder.shared.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.util.JsonResourceBundle;
 
 public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 
@@ -228,6 +230,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	/** スタイル管理マップ */
 	private Map<String, UiStyle> registerdStyles;
 
+	/** リソースパス */
+	private List<String> resourcePath;
+
 	/** データソース */
 	private DataSource dataSource;
 
@@ -291,6 +296,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		this.flags = src.flags;
 		this.changed = src.changed;
 		this.registerdStyles = new LinkedHashMap<>(src.registerdStyles);
+		this.resourcePath = src.resourcePath;
 		this.dataSource = src.dataSource;
 		this.left = src.left;
 		this.top = src.top;
@@ -1687,6 +1693,8 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		return style;
 	}
 
+	//不要？
+	@Deprecated
 	public UiStyle findRegisteredStyle(String styleName) {
 		Asserts.requireNotNull(styleName);
 		UiStyle result;
@@ -1714,6 +1722,39 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			this.style = newValue;
 			setChanged(CHANGED_DISPLAY);
 		}
+	}
+
+	public void setResourcePath(String resourcePath) {
+		this.resourcePath = Arrays.asList(resourcePath.split("/"));
+	}
+
+	public String getDataName() {
+		if (resourcePath == null) {
+			return getName();
+		}
+		return resourcePath.get(resourcePath.size() - 1);
+	}
+
+	protected Json getResource() {
+		if (resourcePath == null) {
+			return Json.EMPTY_OBJECT;
+		}
+		UiApplication app = getApplication();
+		if (app == null) {
+			return Json.EMPTY_OBJECT;
+		}
+		JsonResourceBundle bundle = app.getResourceBundle();
+		if (bundle == null) {
+			return Json.EMPTY_OBJECT;
+		}
+		Json res = bundle.getResource(resourcePath.get(0));
+		if (res == null) {
+			return Json.EMPTY_OBJECT;
+		}
+		if (resourcePath.size() > 1) {
+			res = res.get(resourcePath.subList(1, resourcePath.size()));
+		}
+		return res;
 	}
 
 	public void scrollFor(UiNode target) {

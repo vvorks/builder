@@ -52,11 +52,11 @@ public class BuilderRpcDataSource extends DataSource {
 	/** 最新ロード時刻 */
 	private Date lastUpdatedAt;
 
-	public BuilderRpcDataSource(JsonRpcClient rpc, String apiName, int pageSize, int cacheSize) {
+	public BuilderRpcDataSource(JsonRpcClient rpc, String apiName) {
 		this.rpc = rpc;
 		this.apiName = apiName;
-		this.pageSize = pageSize;
-		cache = new CacheMap<>(Math.max(cacheSize, pageSize * 4), true);
+		this.pageSize = DEFAULT_PAGE_SIZE;
+		cache = new CacheMap<>(Math.max(DEFAULT_CACHE_SIZE, DEFAULT_PAGE_SIZE * 4), true);
 		content = null;
 		criteria = null;
 		requests = new HashSet<>();
@@ -75,17 +75,7 @@ public class BuilderRpcDataSource extends DataSource {
 	}
 
 	private void doRequest(Json content, Json criteria, int offset, int limit) {
-		Json param = Json.createObject();
-		param.setInt("offset", offset);
-		param.setInt("limit", limit);
-		if (content != null) {
-			param.set("content", content);
-		}
-		if (criteria != null) {
-			for (Entry<String, Json> e : criteria.entrySet()) {
-				param.set(e.getKey(), e.getValue());
-			}
-		}
+		Json param = makeParam(content, criteria, offset, limit);
 		IntRange requestRange = offset == -1 ? null : new IntRange(offset, offset + limit - 1);
 		rpc.request(apiName, param, 0, new Callback<Json>() {
 			public void onSuccess(Json result) {
@@ -104,6 +94,21 @@ public class BuilderRpcDataSource extends DataSource {
 		if (requestRange != null) {
 			requests.add(requestRange);
 		}
+	}
+
+	private Json makeParam(Json content, Json criteria, int offset, int limit) {
+		Json param = Json.createObject();
+		param.setInt("offset", offset);
+		param.setInt("limit", limit);
+		if (content != null) {
+			param.set("content", content);
+		}
+		if (criteria != null) {
+			for (Entry<String, Json> e : criteria.entrySet()) {
+				param.set(e.getKey(), e.getValue());
+			}
+		}
+		return param;
 	}
 
 	private void doResponse(Json result) {

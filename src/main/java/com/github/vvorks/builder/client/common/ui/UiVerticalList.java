@@ -156,6 +156,7 @@ public class UiVerticalList extends UiGroup {
 
 		@Override
 		public String getString(String column, String defaultValue) {
+			//TODO 不要？
 			if (ROWID_COLUMN.equals(column)) {
 				return String.valueOf(getIndex());
 			}
