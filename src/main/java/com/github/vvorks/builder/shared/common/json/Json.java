@@ -60,13 +60,19 @@ public abstract class Json {
 	}
 
 	/** null値 */
-	protected static final Json NULL = createJson(null);
+	public static final Json NULL = UnmodifiableJson.wrap(createJson(null));
 
 	/** true値 */
-	protected static final Json TRUE = createJson(true);
+	public static final Json TRUE = UnmodifiableJson.wrap(createJson(true));
 
 	/** false値 */
-	protected static final Json FALSE = createJson(false);
+	public static final Json FALSE = UnmodifiableJson.wrap(createJson(false));
+
+	/** 空オブジェクト */
+	public static final Json EMPTY_OBJECT = UnmodifiableJson.wrap(createJson("{}"));
+
+	/** 空配列 */
+	public static final Json EMPTY_ARRAY = UnmodifiableJson.wrap(createJson("[]"));
 
 	protected static final boolean DEFAULT_BOOLEAN = false;
 
