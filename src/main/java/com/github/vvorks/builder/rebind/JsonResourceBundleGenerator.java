@@ -10,7 +10,7 @@ import java.util.Map;
 
 import com.github.jknack.handlebars.Template;
 import com.github.vvorks.builder.shared.common.json.Json;
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 import com.github.vvorks.builder.shared.common.lang.Strings;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -56,7 +56,7 @@ public class JsonResourceBundleGenerator extends AbstractGenerator {
 			imports.add(cls);
 		}
 		public Iterable<String> getImportNames() {
-			return Iterables.map(imports, c -> c.getName());
+			return RichIterable.from(imports).map(c -> c.getName());
 		}
 		public Map<String, Map<String, List<String>>> getContents() {
 			return contents;

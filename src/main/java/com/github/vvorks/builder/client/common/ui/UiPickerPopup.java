@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.github.vvorks.builder.client.ui.BuilderStyles;
 import com.github.vvorks.builder.shared.common.json.Json;
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 
 class UiPickerPopup extends UiPage {
 
@@ -148,7 +148,9 @@ class UiPickerPopup extends UiPage {
 		int result = EVENT_IGNORED;
 		int k = keyCode|mods;
 		Set<UiNode> targetAns = new HashSet<>();
-		Iterables.addAll(targetAns, target.getAncestors());
+		RichIterable
+			.from(target.getAncestors())
+			.into(targetAns);
 		if (target == hint || targetAns.contains(hint)) {
 			if (k == KeyCodes.ESCAPE) {
 				cancel();

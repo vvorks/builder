@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 
 public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 
@@ -132,7 +133,10 @@ public class UiGroup extends UiNode implements Scrollable, Scrollable.Listener {
 	private void adjustScrollSize() {
 		int maxWidth = 0;
 		int maxHeight  = 0;
-		for (UiNode child : getChildrenIf(c -> !c.isDeleted() && c.isVisible())) {
+		RichIterable<UiNode> itb = RichIterable
+				.from(getChildren())
+				.filter(c -> !c.isDeleted() && c.isVisible());
+		for (UiNode child : itb) {
 			if (child.getLeft() != null && child.getWidth() != null) {
 				maxWidth = Math.max(maxWidth, child.getLeftPx() + child.getWidthPx());
 			}

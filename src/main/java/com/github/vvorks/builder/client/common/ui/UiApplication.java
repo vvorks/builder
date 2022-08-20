@@ -21,7 +21,7 @@ import com.github.vvorks.builder.client.common.net.WebSocket;
 import com.github.vvorks.builder.shared.common.lang.Asserts;
 import com.github.vvorks.builder.shared.common.lang.Creator;
 import com.github.vvorks.builder.shared.common.lang.Factory;
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 import com.github.vvorks.builder.shared.common.logging.Logger;
 import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
 import com.github.vvorks.builder.shared.common.util.JsonResourceBundle;
@@ -228,9 +228,10 @@ public class UiApplication implements EventHandler {
 	}
 
 	public UiNode getFirstFocusable(UiNode owner) {
-		Iterable<UiNode> candidates = Iterables.filter(
-				owner.getFocusCandidates(), c -> c.getBlocker() == null);
-		return Iterables.getFirst(candidates, null);
+		return RichIterable
+			.from(owner.getFocusCandidates())
+			.filter(c -> c.getBlocker() == null)
+			.first(null);
 	}
 
 	public void back() {

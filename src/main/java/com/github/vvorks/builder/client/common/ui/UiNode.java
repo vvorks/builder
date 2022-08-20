@@ -17,7 +17,7 @@ import com.github.vvorks.builder.shared.common.json.Json;
 import com.github.vvorks.builder.shared.common.json.Jsonizable;
 import com.github.vvorks.builder.shared.common.lang.Asserts;
 import com.github.vvorks.builder.shared.common.lang.Copyable;
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 import com.github.vvorks.builder.shared.common.lang.Strings;
 import com.github.vvorks.builder.shared.common.logging.Logger;
 import com.github.vvorks.builder.shared.common.util.JsonResourceBundle;
@@ -636,32 +636,12 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	/**
-	 * 指定条件に合致する祖先ノードを取得する
-	 *
-	 * @param condition 条件
-	 * @return 指定条件に合致する祖先ノードを返すIterable
-	 */
-	public Iterable<UiNode> getAncestorsIf(Predicate<UiNode> condition) {
-		return Iterables.filter(getAncestors(), condition);
-	}
-
-	/**
 	 * 子孫ノードを取得する
 	 *
 	 * @return 子孫ノードを返すIterable
 	 */
 	public Iterable<UiNode> getDescendants() {
 		return () -> new DescendantIterator(this, node -> true, VISIT_DEFAULT_ORDER);
-	}
-
-	/**
-	 * 指定条件に合致する子孫ノードを取得する
-	 *
-	 * @param condition 条件
-	 * @return 指定条件に合致する子孫ノードを返すIterable
-	 */
-	public Iterable<UiNode> getDescendantsIf(Predicate<UiNode> condition) {
-		return Iterables.filter(getDescendants(), condition);
 	}
 
 	public int getDescendantIndex(UiNode descendant) {
@@ -705,8 +685,9 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		if (!(!isDeletedAll() && isVisibleAll() && isEnableAll())) {
 			return Collections.emptyList();
 		}
-		Iterable<UiNode> enables = getEnableDescendants(VISIT_FOCUS_ORDER);
-		return Iterables.filter(enables, d -> d != except && d.isFocusable());
+		return RichIterable
+				.from(getEnableDescendants(VISIT_FOCUS_ORDER))
+				.filter(d -> d != except && d.isFocusable());
 	}
 
 	/**
@@ -721,11 +702,10 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	protected Iterable<DataField> getDataFields() {
-		Iterable<UiNode> it1 = () -> new DescendantIterator(
-				this, d -> d.getDataSource() == null, VISIT_DEFAULT_ORDER);
-		Iterable<UiNode> it2 = Iterables.filter(it1, d -> d instanceof DataField);
-		Iterable<DataField> result = Iterables.map(it2, d -> (DataField) d);
-		return result;
+		return RichIterable.from(() -> new DescendantIterator(
+				this, d -> d.getDataSource() == null, VISIT_DEFAULT_ORDER))
+		.filter(d -> d instanceof DataField)
+		.map(d -> (DataField) d);
 	}
 
 	/**
@@ -751,16 +731,6 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	}
 
 	/**
-	 * 指定条件に合致する子ノードを取得する
-	 *
-	 * @param condition 条件
-	 * @return 指定条件に合致する子ノードを返すIterable
-	 */
-	public Iterable<UiNode> getChildrenIf(Predicate<UiNode> condition) {
-		return Iterables.filter(getChildren(), node -> condition.test(node));
-	}
-
-	/**
 	 * 指定位置に存在する子ノードを返す
 	 *
 	 * 指定位置に子ノードが存在しない場合にはnullを返す
@@ -771,12 +741,13 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 * @return 指定した位置に存在する子ノード、又はnull
 	 */
 	public UiNode getVisibleChildAt(int x, int y) {
-		return Iterables.getLast(
-				getChildrenIf(c ->
-					!c.isDeleted() &&
-					c.isVisible()  &&
-					c.contains(x - c.getLeftPx(), y - c.getTopPx())),
-				null);
+		return RichIterable
+				.from(getChildren())
+				.filter(c ->
+						!c.isDeleted() &&
+						c.isVisible()  &&
+						c.contains(x - c.getLeftPx(), y - c.getTopPx()))
+				.last(null);
 	}
 
 	/**
@@ -814,7 +785,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 			return false;
 		}
 		Set<UiNode> set = new HashSet<>();
-		Iterables.addAll(set, other.getAncestors());
+		RichIterable.from(other.getAncestors()).into(set);
 		return set.contains(this);
 	}
 
@@ -831,7 +802,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 		//祖先集合を作成する。
 		Set<UiNode> set = new HashSet<>();
 		set.add(this);
-		Iterables.addAll(set, getAncestors());
+		RichIterable.from(getAncestors()).into(set);
 		//相手を祖先集合から検索
 		if (set.contains(other)) {
 			return other;
@@ -856,7 +827,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	public int getDegree(UiNode ancestor) {
 		List<UiNode> list = new ArrayList<>();
 		list.add(this);
-		Iterables.addAll(list, getAncestors());
+		RichIterable.from(getAncestors()).into(list);
 		return list.indexOf(ancestor);
 	}
 

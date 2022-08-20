@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.github.vvorks.builder.client.ClientSettings;
 import com.github.vvorks.builder.shared.common.json.Json;
 import com.github.vvorks.builder.shared.common.lang.Asserts;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 
 public class UiVerticalList extends UiGroup {
 
@@ -691,7 +692,10 @@ public class UiVerticalList extends UiGroup {
 		Length spacingWidth = getSpacingWidth();
 		int spacingHeightPx = getSpacingHeightPx();
 		int total = spacingHeightPx;
-		for (UiNode child : this.getChildrenIf(c -> !c.isDeleted() && c.isVisible())) {
+		RichIterable<UiNode> itr = RichIterable
+				.from(getChildren())
+				.filter(c -> !c.isDeleted() && c.isVisible());
+		for (UiNode child : itr) {
 			Length top = new Length(total);
 			Length height = child.getHeight();
 			Length left = child.getLeft();

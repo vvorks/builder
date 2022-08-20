@@ -27,7 +27,7 @@ import com.github.vvorks.builder.client.gwt.intl.TimeStyle;
 import com.github.vvorks.builder.client.gwt.intl.TimeZoneName;
 import com.github.vvorks.builder.client.gwt.intl.Weekday;
 import com.github.vvorks.builder.client.gwt.intl.Year;
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 import com.github.vvorks.builder.shared.common.text.CalendarSelecter;
 import com.github.vvorks.builder.shared.common.text.DateFormatter;
 import com.github.vvorks.builder.shared.common.text.Pattern;
@@ -74,12 +74,13 @@ public class GwtDateFormatter extends DateFormatter {
 
 	private DateTimeFormat createDateTimeFormat(List<Pattern> patterns) {
 		List<Option<?>> options = new ArrayList<>();
-		if (Iterables.exists(patterns, e -> e.isCompositeDateTimePattern())) {
+		RichIterable<Pattern> itr = RichIterable.from(patterns);
+		if (itr.exists(e -> e.isCompositeDateTimePattern())) {
 			for (Pattern p : patterns) {
 				addDateTimeStyleOption(p, options);
 			}
 		} else {
-			boolean hasDayPeriod = Iterables.exists(patterns, e -> e.isDayPeriod());
+			boolean hasDayPeriod = itr.exists(e -> e.isDayPeriod());
 			options.add(hasDayPeriod ? Hour12.TRUE : Hour12.FALSE);
 			for (Pattern p : patterns) {
 				if (p.isDatePattern()) {

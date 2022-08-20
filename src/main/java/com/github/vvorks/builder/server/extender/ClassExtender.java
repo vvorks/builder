@@ -36,7 +36,7 @@ import com.github.vvorks.builder.server.mapper.EnumMapper;
 import com.github.vvorks.builder.server.mapper.MapperInterface;
 import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.lang.Encodable;
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 import com.github.vvorks.builder.shared.common.lang.Strings;
 import com.github.vvorks.builder.shared.common.logging.Logger;
 
@@ -392,7 +392,7 @@ public class ClassExtender {
 
 	private Joint createJoint(ClassContent cls, Class<?> type) {
 		List<FieldContent> list = new ArrayList<>();
-		Iterables.addAll(list, getProperties(cls));
+		RichIterable.from(getProperties(cls)).into(list);
 		FieldContent[] fields = list.toArray(new FieldContent[list.size()]);
 		int n = fields.length;
 		Method[] getters = new Method[n];

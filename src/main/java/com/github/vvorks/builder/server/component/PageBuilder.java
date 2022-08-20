@@ -20,7 +20,7 @@ import com.github.vvorks.builder.server.domain.PageSetContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.lang.Asserts;
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 
 @Component
 public class PageBuilder {
@@ -82,7 +82,9 @@ public class PageBuilder {
 				return Collections.emptyList();
 			}
 			final ClassRelation me = this;
-			return Iterables.filter(sets, c -> c.getOwner() == me);
+			return RichIterable
+					.from(sets)
+					.filter(c -> c.getOwner() == me);
 		}
 
 		public boolean isContained() {
@@ -187,7 +189,7 @@ public class PageBuilder {
 		//insert layouts
 		LayoutBuilder b = new LayoutBuilder(pg, "em", mappers);
 		boolean hasFields = !fields.isEmpty();
-		boolean hasOwns = !Iterables.isEmpty(rel.getOwns());
+		boolean hasOwns = !RichIterable.from(rel.getOwns()).isEmpty();
 		if (hasFields && hasOwns) {
 			b.enter(LayoutType.PARTED_PANE, "frame");
 				if (cls != null) {
@@ -228,9 +230,9 @@ public class PageBuilder {
 		b.enter(LayoutType.SIMPLE_PANE, "detail");
 			b.locate(0, 0, 1, 0);
 			//TODO Query追加してSQLレベルで絞り込み
-			Iterable<FieldContent> fields = Iterables.filter(
-					mappers.getClassMapper().listFieldsContent(cls, 0, 0),
-					f -> f.getType() != DataType.SET);
+			RichIterable<FieldContent> fields = RichIterable
+					.from(mappers.getClassMapper().listFieldsContent(cls, 0, 0))
+					.filter(f -> f.getType() != DataType.SET);
 			top = 0;
 			labelWidth = 10;
 			for (FieldContent fld : fields) {
@@ -279,9 +281,9 @@ public class PageBuilder {
 				FieldContent ownerField = r.getOwnerField();
 				String fieldName = ownerField != null ? ownerField.getFieldName() : cls.getClassName();
 				//TODO Query追加してSQLレベルで絞り込み
-				Iterable<FieldContent> fields = Iterables.filter(
-						mappers.getClassMapper().listFieldsContent(cls, 0, 0),
-						f -> f.getType() != DataType.SET);
+				Iterable<FieldContent> fields = RichIterable
+						.from(mappers.getClassMapper().listFieldsContent(cls, 0, 0))
+						.filter(f -> f.getType() != DataType.SET);
 				b.enter(LayoutType.SIMPLE_PANE, fieldName);
 					b.enter(LayoutType.SIMPLE_PANE, "head");
 						b.locate(0, 0, 1, NA, NA, 2);

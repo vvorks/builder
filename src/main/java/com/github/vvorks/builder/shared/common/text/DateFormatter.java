@@ -3,7 +3,7 @@ package com.github.vvorks.builder.shared.common.text;
 import java.util.Date;
 import java.util.List;
 
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 
 public class DateFormatter extends Formatter {
 
@@ -23,7 +23,7 @@ public class DateFormatter extends Formatter {
 	public String format(Object value) {
 		Date date = asDate(value);
 		StringBuilder sb = new StringBuilder();
-		boolean hasDayPeriod = Iterables.exists(patterns, e -> e.isDayPeriod());
+		boolean hasDayPeriod = RichIterable.from(patterns).exists(e -> e.isDayPeriod());
 		for (Pattern p : patterns) {
 			switch (p.getCommand()) {
 			case Pattern.CMD_DATE:

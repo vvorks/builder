@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.github.vvorks.builder.shared.common.json.Json;
 import com.github.vvorks.builder.shared.common.lang.Asserts;
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 
 public abstract class UiPage extends UiNode implements DataRecord {
 
@@ -81,11 +81,10 @@ public abstract class UiPage extends UiNode implements DataRecord {
 		for (UiNode d : getDescendants()) {
 			list.add(d.getRegisteredStyles());
 		}
-		Iterable<UiStyle> flatList = Iterables.concat(list);
 		Map<String, CssStyle> cssMap = new LinkedHashMap<>();
-		for (UiStyle s : flatList) {
-			s.toCssStyle(cssMap);
-		}
+		RichIterable
+				.from(list)
+				.forEach(s -> s.toCssStyle(cssMap));
 		UiApplication app = getApplication();
 		DomDocument doc = app.getDocument();
 		doc.injectStyleSheet(getClass(), cssMap);

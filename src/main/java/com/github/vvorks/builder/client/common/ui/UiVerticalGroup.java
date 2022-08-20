@@ -1,6 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
 import com.github.vvorks.builder.client.ClientSettings;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 
 public class UiVerticalGroup extends UiGroup {
 
@@ -46,7 +47,10 @@ public class UiVerticalGroup extends UiGroup {
 	private void relocateChildren() {
 		int spc = getSpacingHeightPx();
 		int total = spc;
-		for (UiNode child : getChildrenIf(c -> !c.isDeleted() && c.isVisible())) {
+		RichIterable<UiNode> itr = RichIterable
+				.from(getChildren())
+				.filter(c -> !c.isDeleted() && c.isVisible());
+		for (UiNode child : itr) {
 			Length top = new Length(total);
 			Length height = child.getHeight();
 			Length left = child.getLeft();

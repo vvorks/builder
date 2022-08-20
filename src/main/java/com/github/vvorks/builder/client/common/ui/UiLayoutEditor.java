@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.github.vvorks.builder.shared.common.json.Json;
-import com.github.vvorks.builder.shared.common.lang.Iterables;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 
 /**
  * UiLayoutEditor
@@ -339,9 +339,10 @@ public class UiLayoutEditor extends UiNode {
 		}
 
 		public void onPieceChanged(HandleType dragMode) {
-			for (UiNode child : getChildrenIf(e -> ((HandlePiece)e).getType() == dragMode)) {
-				child.setChanged(CHANGED_DISPLAY);
-			}
+			RichIterable
+				.from(getChildren())
+				.filter(e -> ((HandlePiece)e).getType() == dragMode)
+				.forEach(c -> c.setChanged(CHANGED_DISPLAY));
 		}
 
 		public void setHandleVisible(boolean b) {
@@ -694,9 +695,10 @@ public class UiLayoutEditor extends UiNode {
 
 	private int doSelectAll(int keyCode, int mods, int time) {
 		clearHandles();
-		for (UiNode node : getChildrenIf(c -> !isSpecialNode(c))) {
-			addHandle(node);
-		}
+		RichIterable
+			.from(getChildren())
+			.filter(c -> !isSpecialNode(c))
+			.forEach(node -> addHandle(node));
 		return EVENT_EATEN;
 	}
 
@@ -1005,8 +1007,10 @@ public class UiLayoutEditor extends UiNode {
 			for (UiNode ans = bg; ans != this; ans = ans.getParent()) {
 				ans.translate(r, +1);
 			}
-			Iterable<UiNode> itr = bg.getChildrenIf(c -> !isSpecialNode(c) && r.contains(c.getRectangleOnParent()));
-			if (Iterables.isEmpty(itr)) {
+			RichIterable<UiNode> itr = RichIterable
+					.from(bg.getChildren())
+					.filter(c -> !isSpecialNode(c) && r.contains(c.getRectangleOnParent()));
+			if (itr.isEmpty()) {
 				//指定範囲にノード作成
 				UiNode newNode = new UiBox();
 				newNode.setStyle(GREEN); //TODO 仮
@@ -1019,9 +1023,7 @@ public class UiLayoutEditor extends UiNode {
 				history.done(new SelectionHistory(time, null, getHandleTargets()));
 			} else {
 				//範囲内の子ノード選択
-				for (UiNode child : itr) {
-					addHandle(child);
-				}
+				itr.forEach(child -> addHandle(child));
 			}
 			result |= EVENT_AFFECTED;
 		} else {
