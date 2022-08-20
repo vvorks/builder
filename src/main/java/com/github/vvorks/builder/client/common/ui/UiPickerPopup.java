@@ -118,9 +118,20 @@ class UiPickerPopup extends UiPage {
 			b.leave();
 		b.leave();
 		app.setFocus(hint);
+	}
+
+	@Override
+	public void onMount() {
+		super.onMount();
 		if (isEdit) {
 			hint.startHalfEditing();
 		}
+	}
+
+	@Override
+	public void onUnmount() {
+		hint.endEditing();
+		super.onUnmount();
 	}
 
 	@Override

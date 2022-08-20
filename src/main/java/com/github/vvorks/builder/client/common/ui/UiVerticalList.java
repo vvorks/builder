@@ -71,10 +71,7 @@ public class UiVerticalList extends UiGroup {
 			DataSource ds = list.getDataSource();
 			this.json = ds.getData(index);
 			if (json != null) {
-				for (UiNode d : this.getDescendantsIf(c -> c instanceof DataField)) {
-					DataField field = (DataField) d;
-					field.setRecord(this);
-				}
+				getDataFields().forEach(field -> field.setRecord(this));
 			}
 		}
 
@@ -351,6 +348,9 @@ public class UiVerticalList extends UiGroup {
 			return EVENT_IGNORED;
 		}
 		int count = getDataSource().getCount();
+		if (count == 0) {
+			return EVENT_IGNORED;
+		}
 		int totalHeight = count * lineHeight;
 		UiLine first = (UiLine) getFirstChild();
 		int index = lap(first.getIndex() + VIEW_MARGIN, count) - VIEW_MARGIN;

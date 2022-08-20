@@ -56,7 +56,7 @@ public class JsonResourceBundleGenerator extends AbstractGenerator {
 			imports.add(cls);
 		}
 		public Iterable<String> getImportNames() {
-			return Iterables.from(imports, c -> c.getName());
+			return Iterables.map(imports, c -> c.getName());
 		}
 		public Map<String, Map<String, List<String>>> getContents() {
 			return contents;

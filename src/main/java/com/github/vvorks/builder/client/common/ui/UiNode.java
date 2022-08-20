@@ -720,6 +720,14 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 				visitOrder);
 	}
 
+	protected Iterable<DataField> getDataFields() {
+		Iterable<UiNode> it1 = () -> new DescendantIterator(
+				this, d -> d.getDataSource() == null, VISIT_DEFAULT_ORDER);
+		Iterable<UiNode> it2 = Iterables.filter(it1, d -> d instanceof DataField);
+		Iterable<DataField> result = Iterables.map(it2, d -> (DataField) d);
+		return result;
+	}
+
 	/**
 	 * 子ノード数を取得する
 	 *
@@ -1941,13 +1949,16 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	public void onResize(int screenWidth, int screenHeight) {
 		parentWidthPxCache = 0;
 		parentHeightPxCache = 0;
-		setChanged(CHANGED_LOCATION);
-		UiNode child = firstChild;
-		while (child != null) {
-			child.onResize(screenWidth, screenHeight);
-			child = child.getNextSibling();
+		if ((width  == null || width.getUnit()  == Length.Unit.PCT) ||
+			(height == null || height.getUnit() == Length.Unit.PCT)  ) {
+			setChanged(CHANGED_LOCATION);
+			UiNode child = firstChild;
+			while (child != null) {
+				child.onResize(screenWidth, screenHeight);
+				child = child.getNextSibling();
+			}
+			notifyScroll();
 		}
-		notifyScroll();
 	}
 
 	@Override

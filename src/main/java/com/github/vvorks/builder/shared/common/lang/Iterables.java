@@ -68,7 +68,7 @@ public class Iterables {
 		return collection == null ? Collections.emptyList() : collection;
 	}
 
-	public static <T, R> Iterable<R> from(Iterable<T> xs, Function<T, R> func) {
+	public static <T, R> Iterable<R> map(Iterable<T> xs, Function<T, R> func) {
 		return () -> new ConvertIterator<T, R>(xs.iterator(), func);
 	}
 

@@ -1,5 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import java.util.Objects;
+
 public class UiEditText extends UiText {
 
 	/** 編集状態 */
@@ -64,7 +66,7 @@ public class UiEditText extends UiText {
 			result = EVENT_AFFECTED;
 		} else if (isEditKey(keyCode, mods)) {
 			editState = EditState.FULL;
-			saveText = getText();
+			saveText = Objects.toString(getText(), "");
 			setText("");
 			doc.startEditing(this, saveText, false);
 			result = EVENT_EATEN;
@@ -103,11 +105,25 @@ public class UiEditText extends UiText {
 	}
 
 	public void startHalfEditing() {
-		DomDocument doc = getDocument();
-		editState = EditState.HALF;
-		saveText = getText();
-		setText("");
-		doc.startEditing(this, "", false);
+		if (editState == EditState.NONE) {
+			editState = EditState.HALF;
+			saveText = getText();
+			setText("");
+			DomDocument doc = getDocument();
+			doc.startEditing(this, "", false);
+		}
+	}
+
+	public void endEditing() {
+		if (editState != EditState.NONE) {
+			editState = EditState.NONE;
+			DomDocument doc = getDocument();
+			doc.endEditing(this);
+		}
+	}
+
+	public String getDisplayText() {
+		return getText();
 	}
 
 }

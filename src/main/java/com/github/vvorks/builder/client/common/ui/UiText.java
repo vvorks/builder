@@ -2,8 +2,6 @@ package com.github.vvorks.builder.client.common.ui;
 
 import java.util.Objects;
 
-import com.github.vvorks.builder.client.ClientSettings;
-
 public class UiText extends UiNode {
 
 	/** ラベルテキスト */
@@ -40,9 +38,6 @@ public class UiText extends UiNode {
 		if (resourceText != null) {
 			//TODO テキストに値をキャッシュすべきか？
 			return resourceText;
-		}
-		if (ClientSettings.DEBUG) {
-			return getName();
 		}
 		return "";
 	}
