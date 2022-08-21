@@ -13,14 +13,15 @@ import com.github.vvorks.builder.client.common.ui.DomDocument;
 import com.github.vvorks.builder.client.common.ui.DomElement;
 import com.github.vvorks.builder.client.common.ui.Length;
 import com.github.vvorks.builder.client.common.ui.Rect;
+import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.shared.common.lang.Asserts;
-import com.github.vvorks.builder.client.common.ui.UiNode;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
@@ -318,5 +319,12 @@ public class GwtDomDocument implements DomDocument {
 	private static native void removeLocalStorage(String key)/*-{
 		$wnd.localStorage.removeItem(key);
 	}-*/;
+
+	@Override
+	public void changePage(String fragment) {
+		History.newItem(fragment);
+	}
+
+
 
 }

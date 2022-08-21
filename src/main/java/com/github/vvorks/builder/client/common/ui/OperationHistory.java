@@ -3,11 +3,11 @@ package com.github.vvorks.builder.client.common.ui;
 import com.github.vvorks.builder.shared.common.json.Json;
 import com.github.vvorks.builder.shared.common.json.Jsonizable;
 
-public abstract class History implements Jsonizable {
+public abstract class OperationHistory implements Jsonizable {
 
 	private final int time;
 
-	protected History(int time) {
+	protected OperationHistory(int time) {
 		this.time = time;
 	}
 

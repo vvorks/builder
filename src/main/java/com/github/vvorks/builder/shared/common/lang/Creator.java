@@ -14,8 +14,6 @@ public interface Creator<T> {
 	 * 		コンストラクタ引数
 	 * @return
 	 * 		インスタンス
-	 * @throws Exception
-	 * 		インスタンス作成が失敗した場合
 	 */
-	public T create(Object... args) throws Exception;
+	public T create(Object... args);
 }

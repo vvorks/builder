@@ -114,7 +114,7 @@ public class LayoutContent {
 	private String height;
 
 	/**
-	 * 最終更新時刻
+	 * last updated at
 	 */
 	private java.util.Date _lastUpdatedAt;
 
@@ -528,18 +528,18 @@ public class LayoutContent {
 	}
 
 	/**
-	 * 最終更新時刻を取得する
+	 * last updated atを取得する
 	 *
-	 * @return 最終更新時刻
+	 * @return last updated at
 	 */
 	public java.util.Date get_lastUpdatedAt() {
 		return this._lastUpdatedAt;
 	}
 
 	/**
-	 * 最終更新時刻を設定する
+	 * last updated atを設定する
 	 *
-	 * @param _lastUpdatedAt 設定する最終更新時刻
+	 * @param _lastUpdatedAt 設定するlast updated at
 	 */
 	public void set_lastUpdatedAt(java.util.Date _lastUpdatedAt) {
 		this._lastUpdatedAt = _lastUpdatedAt;

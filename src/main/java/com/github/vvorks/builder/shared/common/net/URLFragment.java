@@ -20,6 +20,11 @@ public class URLFragment {
 		parse(fragment);
 	}
 
+	public URLFragment(String tag, Map<String, String> parameters) {
+		this.tag = tag;
+		this.parameters = parameters;
+	}
+
 	private void parse(String fragment) {
 		if (fragment == null || fragment.isEmpty()) {
 			//デフォルト
@@ -60,6 +65,27 @@ public class URLFragment {
 
 	public String getParameter(String key) {
 		return parameters.get(key);
+	}
+
+	public String encode() {
+		if (tag == null || tag.isEmpty()) {
+			return "";
+		}
+		if (parameters == null || parameters.isEmpty()) {
+			return tag;
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append(tag);
+		sb.append(TAG_SEPARATOR);
+		String sep = "";
+		for (Map.Entry<String, String> e : parameters.entrySet()) {
+			sb.append(sep);sep = PARAM_SEPARATOR;
+			sb.append(e.getKey());
+			if (!e.getValue().isEmpty()) {
+				sb.append(NAME_SEPARATOR).append(e.getValue());
+			}
+		}
+		return sb.toString();
 	}
 
 }

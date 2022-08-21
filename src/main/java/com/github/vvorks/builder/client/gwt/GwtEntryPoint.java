@@ -21,6 +21,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.layout.client.Layout;
 import com.google.gwt.media.client.Video;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HTML;
@@ -126,13 +127,18 @@ public class GwtEntryPoint implements EntryPoint {
 				scheduler.requestAnimationFrame(this);
 			}
 		});
+		History.addValueChangeHandler(event -> {
+	        String historyToken = event.getValue();
+			domPanel.onTransit(historyToken);
+		});
+
 		//フォーカス設定
 		p.setFocus(true);
 		q.addFocusHandler(event -> p.setFocus(true));
 		//起動パラメータの取得
 		String encStr = Window.Location.getHash();
 		String hashStr = URL.decodeQueryString(encStr);
-		URLFragment fragment = new URLFragment(hashStr);
+		URLFragment fragment = new URLFragment(hashStr.substring(1));
 		//ページ読み込み
 		domPanel.load(fragment.getTag(), fragment.getParameters());
 	}

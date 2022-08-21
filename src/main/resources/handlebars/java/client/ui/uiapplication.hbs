@@ -24,8 +24,9 @@ public class {{upperLastName}}UiApplication extends UiApplication {
 		super(doc);
 		final UiApplication app = this;
 		addPage("", args -> new BuilderPage("ShowPage", app, (Map<String, String>)args[0]));
+		addPage("show", args -> new BuilderPage("ShowPage", app, (Map<String, String>)args[0]));
 		{{#each this.publicClasses}}
-		addPage("#show{{className}}", args -> new BuilderPage("Show{{className}}Page", app, (Map<String, String>)args[0]));
+		addPage("show{{className}}", args -> new BuilderPage("Show{{className}}Page", app, (Map<String, String>)args[0]));
 		{{/each}}
 		{{#each this.styles}}
 		registerStyle({{../upperLastName}}Styles.{{constName}});

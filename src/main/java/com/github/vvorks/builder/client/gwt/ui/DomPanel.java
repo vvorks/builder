@@ -9,6 +9,7 @@ import com.github.vvorks.builder.client.common.ui.UiApplication;
 import com.github.vvorks.builder.client.common.ui.UiStyle;
 import com.github.vvorks.builder.shared.common.lang.Factory;
 import com.github.vvorks.builder.shared.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.net.URLFragment;
 import com.github.vvorks.builder.shared.common.util.TestRunner;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -201,6 +202,11 @@ public class DomPanel extends FocusWidget {
 		int screenHeight = event.getHeight();
 		int timestamp = newTimestamp();
 		app.processResize(screenWidth, screenHeight, timestamp);
+	}
+
+	public void onTransit(String token) {
+		URLFragment fragment = new URLFragment(token);
+		app.processLoad(fragment.getTag(), fragment.getParameters());
 	}
 
 	public void onAnimationFrame() {

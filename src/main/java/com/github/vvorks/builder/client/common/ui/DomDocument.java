@@ -77,4 +77,11 @@ public interface DomDocument {
 	 */
 	public void setLocale(String newLocale);
 
+	/**
+	 * （疑似）ページ遷移
+	 *
+	 * @param fragment フラグメント文字列
+	 */
+	public void changePage(String fragment);
+
 }

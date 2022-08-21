@@ -278,10 +278,11 @@ public class BuilderPage extends UiPage {
 	}
 
 	private int transit(UiNode node, DataRecordAgent agent, Json data) {
+		LOGGER.debug("transit %s %s", agent.getTypeName(), data);
 		UiApplication app = getApplication();
-		String tag = "#show" + agent.getTypeName();
+		String tag = "show" + agent.getTypeName();
 		Map<String, String> param = agent.toParam(data);
-		app.call(tag, param);
+		app.transit(tag, param);
 		return EVENT_EATEN;
 	}
 

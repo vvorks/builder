@@ -356,7 +356,7 @@ public class UiLayoutEditor extends UiNode {
 	/**
 	 * 作成操作履歴
 	 */
-	private class NewHistory extends History {
+	private class NewHistory extends OperationHistory {
 
 		/** 対象ノード */
 		private final UiNode target;
@@ -399,7 +399,7 @@ public class UiLayoutEditor extends UiNode {
 	/**
 	 * 削除操作履歴
 	 */
-	private class DeleteHistory extends History {
+	private class DeleteHistory extends OperationHistory {
 
 		/** 対象ノード */
 		private final UiNode target;
@@ -442,7 +442,7 @@ public class UiLayoutEditor extends UiNode {
 	/**
 	 * 移動（及びサイズ変更）操作履歴
 	 */
-	private class MoveHistory extends History {
+	private class MoveHistory extends OperationHistory {
 
 		/** 対象ノード*/
 		private final UiNode target;
@@ -481,7 +481,7 @@ public class UiLayoutEditor extends UiNode {
 
 	}
 
-	public class SelectionHistory extends History {
+	public class SelectionHistory extends OperationHistory {
 
 		/** 操作前の選択対象ノードリスト */
 		private List<UiNode> undoTargets;

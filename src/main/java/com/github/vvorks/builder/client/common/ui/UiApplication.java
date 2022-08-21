@@ -23,6 +23,7 @@ import com.github.vvorks.builder.shared.common.lang.Creator;
 import com.github.vvorks.builder.shared.common.lang.Factory;
 import com.github.vvorks.builder.shared.common.lang.RichIterable;
 import com.github.vvorks.builder.shared.common.logging.Logger;
+import com.github.vvorks.builder.shared.common.net.URLFragment;
 import com.github.vvorks.builder.shared.common.util.DelayedExecuter;
 import com.github.vvorks.builder.shared.common.util.JsonResourceBundle;
 
@@ -203,7 +204,16 @@ public class UiApplication implements EventHandler {
 		pages.remove(tag);
 	}
 
-	public void call(String tag, Map<String, String> params) {
+	public void transit(String tag, Map<String, String> params) {
+		document.changePage(new URLFragment(tag, params).encode());
+	}
+
+	public void load(String tag, Map<String, String> params) {
+		while (!pageStack.isEmpty()) {
+			LivePage p = pageStack.pop();
+			root.deleteChild(p.page);
+		}
+		keyDowns.clear();
 		try {
 			Creator<UiPage> creator = pages.get(tag);
 			if (creator == null) {
@@ -413,7 +423,7 @@ public class UiApplication implements EventHandler {
 			this.onResize(screenWidth, screenHeight);
 			root.onResize(screenWidth, screenHeight);
 			refresh();
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -424,10 +434,20 @@ public class UiApplication implements EventHandler {
 	public void processLoad(String tag, Map<String, String> params) {
 		LOGGER.info("processLoad(%s, %s)", tag, params);
 		try {
-			call(tag, params);
+			while (!pageStack.isEmpty()) {
+				LivePage p = pageStack.pop();
+				root.deleteChild(p.page);
+			}
+			keyDowns.clear();
+			Creator<UiPage> creator = pages.get(tag);
+			if (creator == null) {
+				LOGGER.warn("%s NOT FOUND, call default", tag);
+				creator = pages.get("");
+			}
+			call(creator.create(params));
 			refresh();
 			loaded = true;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -466,7 +486,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -495,7 +515,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -524,7 +544,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -559,7 +579,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -600,7 +620,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -633,7 +653,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -661,7 +681,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -689,7 +709,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -717,7 +737,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -734,7 +754,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return UiNode.EVENT_EATEN;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -751,7 +771,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return UiNode.EVENT_EATEN;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -763,7 +783,7 @@ public class UiApplication implements EventHandler {
 		try {
 			busy = false;
 			return UiNode.EVENT_EATEN;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		}
@@ -779,7 +799,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {
@@ -798,7 +818,7 @@ public class UiApplication implements EventHandler {
 				refresh();
 			}
 			return result;
-		} catch (Exception|AssertionError err) {
+		} catch (RuntimeException|AssertionError err) {
 			LOGGER.error(err);
 			throw err;
 		} finally {

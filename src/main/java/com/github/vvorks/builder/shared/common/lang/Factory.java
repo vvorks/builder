@@ -27,7 +27,7 @@ public class Factory {
 		}
 
 		@Override
-		public T create(Object... args) throws Exception {
+		public T create(Object... args) {
 			if (singleton == null) {
 				singleton = creator.create(args);
 			}

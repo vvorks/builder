@@ -8,7 +8,7 @@ import com.github.vvorks.builder.shared.common.json.Jsonizable;
 
 public class HistoryBuffer implements Jsonizable {
 
-	private final List<History> histories;
+	private final List<OperationHistory> histories;
 
 	private int position;
 
@@ -17,7 +17,7 @@ public class HistoryBuffer implements Jsonizable {
 		position = histories.size();
 	}
 
-	public void done(History h) {
+	public void done(OperationHistory h) {
 		if (position < histories.size()) {
 			histories.subList(position, histories.size()).clear();
 		}
@@ -63,7 +63,7 @@ public class HistoryBuffer implements Jsonizable {
 		Json json = Json.createObject();
 		json.setInt("position", position);
 		Json hs = json.setNewArray("histories");
-		for (History h : histories) {
+		for (OperationHistory h : histories) {
 			hs.add(h.toJson());
 		}
 		return json;

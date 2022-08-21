@@ -14,7 +14,7 @@ public class StyleSummary<T> {
 	/** スタイルIDの最大値 */
 	private int maxStyleId;
 
-	/** 最終更新時刻の最大値 */
+	/** last updated atの最大値 */
 	private java.util.Date max_lastUpdatedAt;
 
 	/** 件数 */
@@ -48,18 +48,18 @@ public class StyleSummary<T> {
 	}
 
 	/**
-	 * 最終更新時刻の最大値を取得する
+	 * last updated atの最大値を取得する
 	 *
-	 * @return 最終更新時刻の最大値
+	 * @return last updated atの最大値
 	 */
 	public java.util.Date getMax_lastUpdatedAt() {
 		return max_lastUpdatedAt;
 	}
 
 	/**
-	 * 最終更新時刻の最大値を設定する
+	 * last updated atの最大値を設定する
 	 *
-	 * @param max_lastUpdatedAt 最終更新時刻の最大値
+	 * @param max_lastUpdatedAt last updated atの最大値
 	 */
 	public void setMax_lastUpdatedAt(java.util.Date max_lastUpdatedAt) {
 		this.max_lastUpdatedAt = max_lastUpdatedAt;
