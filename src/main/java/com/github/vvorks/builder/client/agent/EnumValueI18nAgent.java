@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.client.agent;
 
 import java.util.Map;
+import java.util.LinkedHashMap;
 import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.shared.common.json.Json;
@@ -35,26 +36,37 @@ public class EnumValueI18nAgent extends DataRecordAgent {
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setInt(name + "OwnerOwnerEnumId", from.getInt("ownerOwnerEnumId"));
-		rec.setString(name + "OwnerValueId", from.getString("ownerValueId"));
-		rec.setString(name + "TargetLocaleId", from.getString("targetLocaleId"));
+	public Json getValue(DataRecord rec, String name) {
+		Json data = Json.createObject();
+		data.setInt("ownerOwnerEnumId", rec.getInt(name + "OwnerOwnerEnumId"));
+		data.setString("ownerValueId", rec.getString(name + "OwnerValueId"));
+		data.setString("targetLocaleId", rec.getString(name + "TargetLocaleId"));
+		return data;
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setInt(name + "OwnerOwnerEnumId", candidate.getInt("ownerOwnerEnumId"));
-		rec.setString(name + "OwnerValueId", candidate.getString("ownerValueId"));
-		rec.setString(name + "TargetLocaleId", candidate.getString("targetLocaleId"));
+	public void setValue(DataRecord rec, String name, Json data) {
+		rec.setInt(name + "OwnerOwnerEnumId", data.getInt("ownerOwnerEnumId"));
+		rec.setString(name + "OwnerValueId", data.getString("ownerValueId"));
+		rec.setString(name + "TargetLocaleId", data.getString("targetLocaleId"));
 	}
 
 	@Override
-	public Json getContentCriteria(Map<String, String> param) {
-		Json criteria = Json.createObject();
-		criteria.setString("ownerOwnerEnumId", param.get("ownerOwnerEnumId"));
-		criteria.setString("ownerValueId", param.get("ownerValueId"));
-		criteria.setString("targetLocaleId", param.get("targetLocaleId"));
-		return criteria;
+	public Json fromParam(Map<String, String> param) {
+		Json key = Json.createObject();
+		key.setInt("ownerOwnerEnumId", asInt(param.get("ownerOwnerEnumId")));
+		key.setString("ownerValueId", param.get("ownerValueId"));
+		key.setString("targetLocaleId", param.get("targetLocaleId"));
+		return key;
+	}
+
+	@Override
+	public Map<String, String> toParam(Json data) {
+		Map<String, String> map = new LinkedHashMap<>();
+		map.put("ownerOwnerEnumId", toString(data.getInt("ownerOwnerEnumId")));
+		map.put("ownerValueId", data.getString("ownerValueId"));
+		map.put("targetLocaleId", data.getString("targetLocaleId"));
+		return map;
 	}
 
 }

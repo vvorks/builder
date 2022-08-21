@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.client.agent;
 
 import java.util.Map;
+import java.util.LinkedHashMap;
 import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.shared.common.json.Json;
@@ -35,20 +36,29 @@ public class EnumAgent extends DataRecordAgent {
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setInt(name + "EnumId", from.getInt("enumId"));
+	public Json getValue(DataRecord rec, String name) {
+		Json data = Json.createObject();
+		data.setInt("enumId", rec.getInt(name + "EnumId"));
+		return data;
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setInt(name + "EnumId", candidate.getInt("enumId"));
+	public void setValue(DataRecord rec, String name, Json data) {
+		rec.setInt(name + "EnumId", data.getInt("enumId"));
 	}
 
 	@Override
-	public Json getContentCriteria(Map<String, String> param) {
-		Json criteria = Json.createObject();
-		criteria.setString("enumId", param.get("enumId"));
-		return criteria;
+	public Json fromParam(Map<String, String> param) {
+		Json key = Json.createObject();
+		key.setInt("enumId", asInt(param.get("enumId")));
+		return key;
+	}
+
+	@Override
+	public Map<String, String> toParam(Json data) {
+		Map<String, String> map = new LinkedHashMap<>();
+		map.put("enumId", toString(data.getInt("enumId")));
+		return map;
 	}
 
 }

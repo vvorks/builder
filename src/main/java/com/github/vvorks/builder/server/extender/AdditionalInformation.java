@@ -61,7 +61,7 @@ public class AdditionalInformation {
 		//全クラス共通の追加フィールド挿入
 		FieldContent lastUpdated = new FieldContent();
 		lastUpdated.setFieldName(LAST_UPDATED_AT);
-		lastUpdated.setTitle("最終更新時刻"); //TODO I18N
+		lastUpdated.setTitle("last updated at");
 		lastUpdated.setType(DataType.DATE);
 		lastUpdated.setPk(false);
 		lastUpdated.setNeedsMax(true);

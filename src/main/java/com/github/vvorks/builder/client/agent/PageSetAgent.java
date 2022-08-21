@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.client.agent;
 
 import java.util.Map;
+import java.util.LinkedHashMap;
 import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.shared.common.json.Json;
@@ -35,20 +36,29 @@ public class PageSetAgent extends DataRecordAgent {
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setInt(name + "PageSetId", from.getInt("pageSetId"));
+	public Json getValue(DataRecord rec, String name) {
+		Json data = Json.createObject();
+		data.setInt("pageSetId", rec.getInt(name + "PageSetId"));
+		return data;
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setInt(name + "PageSetId", candidate.getInt("pageSetId"));
+	public void setValue(DataRecord rec, String name, Json data) {
+		rec.setInt(name + "PageSetId", data.getInt("pageSetId"));
 	}
 
 	@Override
-	public Json getContentCriteria(Map<String, String> param) {
-		Json criteria = Json.createObject();
-		criteria.setString("pageSetId", param.get("pageSetId"));
-		return criteria;
+	public Json fromParam(Map<String, String> param) {
+		Json key = Json.createObject();
+		key.setInt("pageSetId", asInt(param.get("pageSetId")));
+		return key;
+	}
+
+	@Override
+	public Map<String, String> toParam(Json data) {
+		Map<String, String> map = new LinkedHashMap<>();
+		map.put("pageSetId", toString(data.getInt("pageSetId")));
+		return map;
 	}
 
 }

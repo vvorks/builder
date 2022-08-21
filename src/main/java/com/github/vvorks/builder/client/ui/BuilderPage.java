@@ -1,15 +1,18 @@
 package com.github.vvorks.builder.client.ui;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import com.github.vvorks.builder.client.agent.Agents;
 import com.github.vvorks.builder.client.common.net.JsonRpcClient;
+import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.client.common.ui.DataSource;
 import com.github.vvorks.builder.client.common.ui.LayoutParam;
 import com.github.vvorks.builder.client.common.ui.UiApplication;
+import com.github.vvorks.builder.client.common.ui.UiButtonField;
 import com.github.vvorks.builder.client.common.ui.UiDeckGroup;
 import com.github.vvorks.builder.client.common.ui.UiEditField;
 import com.github.vvorks.builder.client.common.ui.UiGroup;
@@ -20,6 +23,7 @@ import com.github.vvorks.builder.client.common.ui.UiPickerField;
 import com.github.vvorks.builder.client.common.ui.UiSplitGroup;
 import com.github.vvorks.builder.client.common.ui.UiTab;
 import com.github.vvorks.builder.client.common.ui.UiText;
+import com.github.vvorks.builder.client.common.ui.UiTextField;
 import com.github.vvorks.builder.client.common.ui.UiVerticalList;
 import com.github.vvorks.builder.client.common.ui.UiVerticalScrollBar;
 import com.github.vvorks.builder.shared.common.json.Json;
@@ -35,20 +39,25 @@ public class BuilderPage extends UiPage {
 
 	private static final String MREF_BUNDLE_PREFIX = "Message/";
 
-	private static final Map<String, BiFunction<BuilderPage, Json, UiNode>>
+	@FunctionalInterface
+	interface NodeCreator {
+		UiNode create(BuilderPage page, Json json, Deque<DataRecordAgent> stack);
+	}
+
+	private static final Map<String, NodeCreator>
 		NODE_CREATORS = new LinkedHashMap<>();
 	static {
-		NODE_CREATORS.put("SIMPLE_PANE", (me, json) -> me.newSimplePaneNode(json));
-		NODE_CREATORS.put("PARTED_PANE", (me, json) -> me.newPartedPaneNode(json));
-		NODE_CREATORS.put("TABBED_PANE", (me, json) -> me.newTabbedPaneNode(json));
-		NODE_CREATORS.put("TAB", (me, json) -> me.newTabNode(json));
-		NODE_CREATORS.put("V_LIST", (me, json) -> me.newVListNode(json));
-		NODE_CREATORS.put("H_LIST", (me, json) -> me.newHListNode(json));
-		NODE_CREATORS.put("V_SCROLLBAR", (me, json) -> me.newVScrollbarNode(json));
-		NODE_CREATORS.put("H_SCROLLBAR", (me, json) -> me.newHScrollbarNode(json));
-		NODE_CREATORS.put("LABEL", (me, json) -> me.newLabelNode(json));
-		NODE_CREATORS.put("FIELD", (me, json) -> me.newFieldNode(json));
-		NODE_CREATORS.put("INPUT", (me, json) -> me.newInputNode(json));
+		NODE_CREATORS.put("SIMPLE_PANE", (me, json, stack) -> me.newSimplePaneNode(json, stack));
+		NODE_CREATORS.put("PARTED_PANE", (me, json, stack) -> me.newPartedPaneNode(json, stack));
+		NODE_CREATORS.put("TABBED_PANE", (me, json, stack) -> me.newTabbedPaneNode(json, stack));
+		NODE_CREATORS.put("TAB", (me, json, stack) -> me.newTabNode(json, stack));
+		NODE_CREATORS.put("V_LIST", (me, json, stack) -> me.newVListNode(json, stack));
+		NODE_CREATORS.put("H_LIST", (me, json, stack) -> me.newHListNode(json, stack));
+		NODE_CREATORS.put("V_SCROLLBAR", (me, json, stack) -> me.newVScrollbarNode(json, stack));
+		NODE_CREATORS.put("H_SCROLLBAR", (me, json, stack) -> me.newHScrollbarNode(json, stack));
+		NODE_CREATORS.put("LABEL", (me, json, stack) -> me.newLabelNode(json, stack));
+		NODE_CREATORS.put("FIELD", (me, json, stack) -> me.newFieldNode(json, stack));
+		NODE_CREATORS.put("INPUT", (me, json, stack) -> me.newInputNode(json, stack));
 	}
 
 	private static class Relation {
@@ -86,7 +95,7 @@ public class BuilderPage extends UiPage {
 			content = null;
 		} else {
 			DataRecordAgent agent = Agents.get(pageClassName);
-			content = agent.getContentCriteria(param);
+			content = agent.fromParam(param);
 		}
 	}
 
@@ -106,14 +115,17 @@ public class BuilderPage extends UiPage {
 	@Override
 	protected void initialize() {
 		Map<String, Relation> rels = new LinkedHashMap<>();
+		Deque<DataRecordAgent> stack = new ArrayDeque<>();
 		//自身をマスターデータソース保持者として設定
 		if (pageClassName != null) {
 			DataSource ds = new BuilderRpcSingleDataSource(rpc, "get" + pageClassName);
 			ds.setCriteria(content, null);
+			DataRecordAgent agent = Agents.get(pageClassName);
 			this.setDataSource(ds);
+			stack.push(agent);
 		}
 		//UiNode化
-		UiNode root = createNode(pageInfo, rels, "/");
+		UiNode root = createNode(pageInfo, rels, "/", stack);
 		//関連付け
 		for (Relation r : rels.values()) {
 			r.relate(rels);
@@ -121,10 +133,11 @@ public class BuilderPage extends UiPage {
 		this.appendChild(root);
 	}
 
-	private UiNode createNode(Json json, Map<String, Relation> rels, String path) {
+	private UiNode createNode(Json json, Map<String, Relation> rels, String path, Deque<DataRecordAgent> stack) {
+		int depth = stack.size();
 		String fullName = path + json.getString("name");
 		String type = json.getString("type");
-		UiNode node = NODE_CREATORS.get(type).apply(this, json);
+		UiNode node = NODE_CREATORS.get(type).create(this, json, stack);
 		node.setLeft(json.getString("left", null));
 		node.setTop(json.getString("top", null));
 		node.setRight(json.getString("right", null));
@@ -136,24 +149,27 @@ public class BuilderPage extends UiPage {
 			String cpath = fullName + "/";
 			for (int i = 0; i < children.size(); i++) {
 				Json childJson = children.get(i);
-				UiNode childNode = createNode(childJson, rels, cpath);
+				UiNode childNode = createNode(childJson, rels, cpath, stack);
 				String lp = childJson.getString("layoutParam", null);
 				LayoutParam param = node.parseLayoutParam(lp);
 				node.appendChild(childNode, param);
 			}
 		}
 		rels.put(fullName, new Relation(node, json.getString("related", null)));
+		while (stack.size() > depth) {
+			stack.pop();
+		}
 		return node;
 	}
 
-	protected UiNode newSimplePaneNode(Json json) {
+	protected UiNode newSimplePaneNode(Json json, Deque<DataRecordAgent> stack) {
 		String name = json.getString("name");
 		UiNode node = new UiGroup(name);
 		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
 		return node;
 	}
 
-	protected UiNode newPartedPaneNode(Json json) {
+	protected UiNode newPartedPaneNode(Json json, Deque<DataRecordAgent> stack) {
 		String name = json.getString("name");
 		UiSplitGroup node = new UiSplitGroup(name);
 		node.setStyle(BuilderStyles.GROUP_SPLITTER);  //TODO 仮
@@ -161,14 +177,14 @@ public class BuilderPage extends UiPage {
 		return node;
 	}
 
-	protected UiNode newTabbedPaneNode(Json json) {
+	protected UiNode newTabbedPaneNode(Json json, Deque<DataRecordAgent> stack) {
 		String name = json.getString("name");
 		UiNode node = new UiDeckGroup(name);
 		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
 		return node;
 	}
 
-	protected UiNode newTabNode(Json json) {
+	protected UiNode newTabNode(Json json, Deque<DataRecordAgent> stack) {
 		String name = json.getString("name");
 		UiNode node = new UiTab(name);
 		node.setResourcePath(getResourcePathFrom(json));
@@ -176,48 +192,52 @@ public class BuilderPage extends UiPage {
 		return node;
 	}
 
-	protected UiNode newVListNode(Json json) {
+	protected UiNode newVListNode(Json json, Deque<DataRecordAgent> stack) {
 		String name = json.getString("name");
 		UiNode node = new UiVerticalList(name);
 		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
-		DataSource ds;
-		String fref = json.getString("fref", null);
-		if (fref == null) {
-			String cref = json.getString("cref", null);
-			String apiName = "list" + cref;
-			ds = new BuilderRpcDataSource(rpc, apiName);
+		String apiName;
+		String cref = json.getString("cref", null);
+		if (stack.isEmpty()) {
+			apiName = "list" + cref;
 		} else {
+			String typeName = stack.peek().getTypeName();
+			String fref = json.getString("fref", null);
 			int sep = fref.lastIndexOf('/');
 			String fieldName = fref.substring(sep + 1);
 			String upperName = Strings.toFirstUpper(fieldName);
-			String apiName = "list" + pageClassName + upperName;
-			ds = new BuilderRpcDataSource(rpc, apiName);
+			apiName = "list" + typeName + upperName;
 		}
-		ds.setCriteria(content, null);
+		DataSource ds = new BuilderRpcDataSource(rpc, apiName);
+		DataRecordAgent agent = Agents.get(cref);
+		if (stack.size() < 2) {
+			ds.setCriteria(content, null);
+		}
 		node.setDataSource(ds);
+		stack.push(agent);
 		return node;
 	}
 
-	protected UiNode newHListNode(Json json) {
+	protected UiNode newHListNode(Json json, Deque<DataRecordAgent> stack) {
 		//TODO 要実装
 		throw new UnsupportedOperationException();
 	}
 
-	protected UiNode newVScrollbarNode(Json json) {
+	protected UiNode newVScrollbarNode(Json json, Deque<DataRecordAgent> stack) {
 		String name = json.getString("name");
 		UiNode node = new UiVerticalScrollBar(name);
 		node.setStyle(BuilderStyles.SB);  //TODO 仮
 		return node;
 	}
 
-	protected UiNode newHScrollbarNode(Json json) {
+	protected UiNode newHScrollbarNode(Json json, Deque<DataRecordAgent> stack) {
 		String name = json.getString("name");
 		UiNode node = new UiHorizontalScrollBar(name);
 		node.setStyle(BuilderStyles.SB);  //TODO 仮
 		return node;
 	}
 
-	protected UiNode newLabelNode(Json json) {
+	protected UiNode newLabelNode(Json json, Deque<DataRecordAgent> stack) {
 		String name = json.getString("name");
 		UiNode node = new UiText(name);
 		node.setResourcePath(getResourcePathFrom(json));
@@ -225,32 +245,69 @@ public class BuilderPage extends UiPage {
 		return node;
 	}
 
-	protected UiNode newFieldNode(Json json) {
+	protected UiNode newFieldNode(Json json, Deque<DataRecordAgent> stack) {
 		String name = json.getString("name");
 		String dataType = json.getString("dataType");
 		UiNode node;
-		if (dataType.equals("REF")) {
+		if (dataType.equals("REF") || dataType.equals("ENUM")) {
 			String dataTypeParam = json.getString("dataTypeParam");
 			DataRecordAgent agent = Agents.get(dataTypeParam);
-			node = new UiPickerField(name, agent);
-			String fref = json.getString("fref", null);
-			int sep = fref.lastIndexOf('/');
-			String className = fref.substring(0, sep);
-			String fieldName = fref.substring(sep + 1);
-			String upperName = Strings.toFirstUpper(fieldName);
-			String apiName = "list" + className + upperName + "Candidate";
-			DataSource ds = new BuilderRpcDataSource(rpc, apiName);
-			node.setDataSource(ds);
+			UiButtonField button = new UiButtonField(name, agent);
+			button.setAction(n -> {
+				DataRecord rec = n.getDataRecord();
+				String dataName = n.getDataName();
+				Json data = agent.getValue(rec, dataName);
+				return transit(n, agent, data);
+			});
+			node = button;
+		} else if (stack.size() > 1) {
+			String typeName = stack.peek().getTypeName();
+			DataRecordAgent agent = Agents.get(typeName);
+			UiButtonField button = new UiButtonField(name);
+			button.setAction(n -> {
+				Json data = n.getDataRecord().getData();
+				return transit(n, agent, data);
+			});
+			node = button;
 		} else {
-			node = new UiEditField(name);
+			node = new UiTextField(name);
 		}
 		node.setResourcePath(getResourcePathFrom(json));
 		node.setStyle(BuilderStyles.FIELD); //TODO 仮
 		return node;
 	}
 
-	protected UiNode newInputNode(Json json) {
-		return newFieldNode(json); //TODO 仮
+	private int transit(UiNode node, DataRecordAgent agent, Json data) {
+		UiApplication app = getApplication();
+		String tag = "#show" + agent.getTypeName();
+		Map<String, String> param = agent.toParam(data);
+		app.call(tag, param);
+		return EVENT_EATEN;
+	}
+
+	protected UiNode newInputNode(Json json, Deque<DataRecordAgent> stack) {
+		String name = json.getString("name");
+		String dataType = json.getString("dataType");
+		UiNode node;
+		if (dataType.equals("REF") || dataType.equals("ENUM")) {
+			String typeName = stack.peek().getTypeName();
+			String dataTypeParam = json.getString("dataTypeParam");
+			DataRecordAgent agent = Agents.get(dataTypeParam);
+			node = new UiPickerField(name, agent);
+			String fref = json.getString("fref", null);
+			int sep = fref.lastIndexOf('/');
+			String fieldName = fref.substring(sep + 1);
+			String upperName = Strings.toFirstUpper(fieldName);
+			String apiName = "list" + typeName + upperName + "Candidate";
+			DataSource ds = new BuilderRpcDataSource(rpc, apiName);
+			node.setDataSource(ds);
+			stack.push(agent);
+		} else {
+			node = new UiEditField(name);
+		}
+		node.setResourcePath(getResourcePathFrom(json));
+		node.setStyle(BuilderStyles.FIELD); //TODO 仮
+		return node;
 	}
 
 	private String getResourcePathFrom(Json json) {

@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.client.agent;
 
 import java.util.Map;
+import java.util.LinkedHashMap;
 import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.shared.common.json.Json;
@@ -35,20 +36,29 @@ public class LayoutAgent extends DataRecordAgent {
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setInt(name + "LayoutId", from.getInt("layoutId"));
+	public Json getValue(DataRecord rec, String name) {
+		Json data = Json.createObject();
+		data.setInt("layoutId", rec.getInt(name + "LayoutId"));
+		return data;
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setInt(name + "LayoutId", candidate.getInt("layoutId"));
+	public void setValue(DataRecord rec, String name, Json data) {
+		rec.setInt(name + "LayoutId", data.getInt("layoutId"));
 	}
 
 	@Override
-	public Json getContentCriteria(Map<String, String> param) {
-		Json criteria = Json.createObject();
-		criteria.setString("layoutId", param.get("layoutId"));
-		return criteria;
+	public Json fromParam(Map<String, String> param) {
+		Json key = Json.createObject();
+		key.setInt("layoutId", asInt(param.get("layoutId")));
+		return key;
+	}
+
+	@Override
+	public Map<String, String> toParam(Json data) {
+		Map<String, String> map = new LinkedHashMap<>();
+		map.put("layoutId", toString(data.getInt("layoutId")));
+		return map;
 	}
 
 }

@@ -36,17 +36,24 @@ public class DataTypeAgent extends DataRecordAgent {
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, Json from) {
-		rec.setString(name, from.getString("value"));
+	public Json getValue(DataRecord rec, String name) {
+		Json data = Json.createObject();
+		data.setString(name, rec.getString("value"));
+		return data;
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.setString(name, candidate.getString("value"));
+	public void setValue(DataRecord rec, String name, Json data) {
+		rec.setString(name, data.getString("value"));
 	}
 
 	@Override
-	public Json getContentCriteria(Map<String, String> param) {
+	public Json fromParam(Map<String, String> param) {
+		return null;
+	}
+
+	@Override
+	public Map<String, String> toParam(Json data) {
 		return null;
 	}
 

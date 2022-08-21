@@ -8,6 +8,7 @@ public class UiTab extends UiButton implements Selectable.Listener {
 
 	public UiTab(String name) {
 		super(name);
+		setAction(node -> ((UiTab)node).select());
 		setEnable(false);
 	}
 
@@ -34,8 +35,7 @@ public class UiTab extends UiButton implements Selectable.Listener {
 		}
 	}
 
-	@Override
-	public int onMouseClick(UiNode target, int x, int y, int mods, int time) {
+	private int select() {
 		if (related == null) {
 			return EVENT_IGNORED;
 		}

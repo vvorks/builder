@@ -52,6 +52,7 @@ public class Agents {
 package {{global.project.projectName}}.client.agent;
 
 import java.util.Map;
+import java.util.LinkedHashMap;
 import {{global.project.projectName}}.client.common.ui.DataRecord;
 import {{global.project.projectName}}.client.common.ui.DataRecordAgent;
 import {{global.project.projectName}}.shared.common.json.Json;
@@ -83,26 +84,45 @@ public class {{className}}Agent extends DataRecordAgent {
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, Json from) {
+	public Json getValue(DataRecord rec, String name) {
+		Json data = Json.createObject();
 		{{#each keys}}
-		rec.set{{typeSuffix}}(name + "{{upperName}}", from.get{{typeSuffix}}("{{fieldName}}"));
+		data.set{{typeSuffix}}("{{fieldName}}", rec.get{{typeSuffix}}(name + "{{upperName}}"));
+		{{/each}}
+		return data;
+	}
+
+	@Override
+	public void setValue(DataRecord rec, String name, Json data) {
+		{{#each keys}}
+		rec.set{{typeSuffix}}(name + "{{upperName}}", data.get{{typeSuffix}}("{{fieldName}}"));
 		{{/each}}
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, DataRecord candidate) {
+	public Json fromParam(Map<String, String> param) {
+		Json key = Json.createObject();
 		{{#each keys}}
-		rec.set{{typeSuffix}}(name + "{{upperName}}", candidate.get{{typeSuffix}}("{{fieldName}}"));
+		{{#if stringType}}
+		key.setString("{{fieldName}}", param.get("{{fieldName}}"));
+		{{else}}
+		key.set{{typeSuffix}}("{{fieldName}}", as{{typeSuffix}}(param.get("{{fieldName}}")));
+		{{/if}}
 		{{/each}}
+		return key;
 	}
 
 	@Override
-	public Json getContentCriteria(Map<String, String> param) {
-		Json criteria = Json.createObject();
+	public Map<String, String> toParam(Json data) {
+		Map<String, String> map = new LinkedHashMap<>();
 		{{#each keys}}
-		criteria.setString("{{fieldName}}", param.get("{{fieldName}}"));
+		{{#if stringType}}
+		map.put("{{fieldName}}", data.getString("{{fieldName}}"));
+		{{else}}
+		map.put("{{fieldName}}", toString(data.get{{typeSuffix}}("{{fieldName}}")));
+		{{/if}}
 		{{/each}}
-		return criteria;
+		return map;
 	}
 
 }
@@ -155,17 +175,24 @@ public class {{enumName}}Agent extends DataRecordAgent {
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, Json from) {
-		rec.set{{encodeSuffix}}(name, from.get{{encodeSuffix}}("value"));
+	public Json getValue(DataRecord rec, String name) {
+		Json data = Json.createObject();
+		data.set{{encodeSuffix}}(name, rec.get{{encodeSuffix}}("value"));
+		return data;
 	}
 
 	@Override
-	public void setValue(DataRecord rec, String name, DataRecord candidate) {
-		rec.set{{encodeSuffix}}(name, candidate.get{{encodeSuffix}}("value"));
+	public void setValue(DataRecord rec, String name, Json data) {
+		rec.set{{encodeSuffix}}(name, data.get{{encodeSuffix}}("value"));
 	}
 
 	@Override
-	public Json getContentCriteria(Map<String, String> param) {
+	public Json fromParam(Map<String, String> param) {
+		return null;
+	}
+
+	@Override
+	public Map<String, String> toParam(Json data) {
 		return null;
 	}
 

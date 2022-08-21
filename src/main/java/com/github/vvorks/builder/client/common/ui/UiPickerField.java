@@ -1,5 +1,7 @@
 package com.github.vvorks.builder.client.common.ui;
 
+import com.github.vvorks.builder.shared.common.json.Json;
+
 public class UiPickerField extends UiNode implements DataField {
 
 	private static class UiInnerText extends UiText {
@@ -83,8 +85,9 @@ public class UiPickerField extends UiNode implements DataField {
 
 	public void setValue(DataRecord candidate) {
 		String name = getDataName();
-		agent.setValue(rec, name, candidate);
-		agent.setTitle(rec, name, candidate);
+		Json data = candidate.getData();
+		agent.setValue(rec, name, data);
+		agent.setTitle(rec, name, data);
 		title = agent.getTitle(rec, name);
 		label.setText(title);
 	}
