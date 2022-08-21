@@ -30,6 +30,11 @@ public class LocaleAgent extends DataRecordAgent {
 	}
 
 	@Override
+	public String getTypeName() {
+		return "Locale";
+	}
+
+	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
 		rec.setString(name + "LocaleId", from.getString("localeId"));
 	}

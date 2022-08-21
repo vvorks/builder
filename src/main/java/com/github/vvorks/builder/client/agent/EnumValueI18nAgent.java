@@ -30,6 +30,11 @@ public class EnumValueI18nAgent extends DataRecordAgent {
 	}
 
 	@Override
+	public String getTypeName() {
+		return "EnumValueI18n";
+	}
+
+	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
 		rec.setInt(name + "OwnerOwnerEnumId", from.getInt("ownerOwnerEnumId"));
 		rec.setString(name + "OwnerValueId", from.getString("ownerValueId"));

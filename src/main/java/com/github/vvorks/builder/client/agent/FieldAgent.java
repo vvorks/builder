@@ -30,6 +30,11 @@ public class FieldAgent extends DataRecordAgent {
 	}
 
 	@Override
+	public String getTypeName() {
+		return "Field";
+	}
+
+	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
 		rec.setInt(name + "FieldId", from.getInt("fieldId"));
 	}

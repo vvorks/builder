@@ -30,6 +30,11 @@ public class ProjectI18nAgent extends DataRecordAgent {
 	}
 
 	@Override
+	public String getTypeName() {
+		return "ProjectI18n";
+	}
+
+	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
 		rec.setInt(name + "OwnerProjectId", from.getInt("ownerProjectId"));
 		rec.setString(name + "TargetLocaleId", from.getString("targetLocaleId"));

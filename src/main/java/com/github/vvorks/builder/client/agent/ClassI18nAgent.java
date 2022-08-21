@@ -30,6 +30,11 @@ public class ClassI18nAgent extends DataRecordAgent {
 	}
 
 	@Override
+	public String getTypeName() {
+		return "ClassI18n";
+	}
+
+	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
 		rec.setInt(name + "OwnerClassId", from.getInt("ownerClassId"));
 		rec.setString(name + "TargetLocaleId", from.getString("targetLocaleId"));

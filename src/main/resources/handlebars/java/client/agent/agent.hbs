@@ -16,10 +16,17 @@ import {{global.project.projectName}}.client.common.ui.DataRecordAgent;
 
 public class Agents {
 
+	private static void addAgent(DataRecordAgent agent) {
+		AGENTS.put(agent.getTypeName(), agent);
+	}
+
 	private static final Map<String, DataRecordAgent> AGENTS = new HashMap<>();
 	static {
 		{{#each this.publicClasses}}
-		AGENTS.put("{{className}}", {{className}}Agent.get());
+		addAgent({{className}}Agent.get());
+		{{/each}}
+		{{#each this.enums}}
+		addAgent({{enumName}}Agent.get());
 		{{/each}}
 	}
 
@@ -68,6 +75,11 @@ public class {{className}}Agent extends DataRecordAgent {
 
 	/** プライベートコンストラクタ */
 	private {{className}}Agent() {
+	}
+
+	@Override
+	public String getTypeName() {
+		return "{{className}}";
 	}
 
 	@Override
@@ -135,6 +147,11 @@ public class {{enumName}}Agent extends DataRecordAgent {
 
 	/** プライベートコンストラクタ */
 	private {{enumName}}Agent() {
+	}
+
+	@Override
+	public String getTypeName() {
+		return "{{enumName}}";
 	}
 
 	@Override

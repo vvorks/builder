@@ -30,6 +30,11 @@ public class LayoutAgent extends DataRecordAgent {
 	}
 
 	@Override
+	public String getTypeName() {
+		return "Layout";
+	}
+
+	@Override
 	public void setValue(DataRecord rec, String name, Json from) {
 		rec.setInt(name + "LayoutId", from.getInt("layoutId"));
 	}

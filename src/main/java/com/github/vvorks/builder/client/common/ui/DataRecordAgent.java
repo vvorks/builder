@@ -6,6 +6,8 @@ import com.github.vvorks.builder.shared.common.json.Json;
 
 public abstract class DataRecordAgent {
 
+	public abstract String getTypeName();
+
 	public String getTitle(DataRecord rec, String name) {
 		return rec.getString(name + "_title");
 	}

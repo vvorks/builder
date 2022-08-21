@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.client.agent;
 
 import java.util.Map;
+
 import com.github.vvorks.builder.client.common.ui.DataRecord;
 import com.github.vvorks.builder.client.common.ui.DataRecordAgent;
 import com.github.vvorks.builder.shared.common.json.Json;
@@ -27,6 +28,11 @@ public class DataTypeAgent extends DataRecordAgent {
 
 	/** プライベートコンストラクタ */
 	private DataTypeAgent() {
+	}
+
+	@Override
+	public String getTypeName() {
+		return "DataType";
 	}
 
 	@Override
