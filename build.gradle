@@ -37,6 +37,12 @@ sourceSets {
 gwt {
 	/** Module to compile, can be multiple */
 	module 'com.github.vvorks.builder.Builder'
+	/** GWT version */
+	gwtVersion = '2.10.0'
+	/** Add the gwt-servlet lib */
+	gwtServletLib = false
+	/** Add the gwt-elemental lib */
+	gwtElementalLib = false
 	/** Add GWT plugin config (only if plugin 'eclipse' is enabled) */
 	gwtPluginEclipse = false
 	/** GWT compile options */
@@ -76,6 +82,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	compileOnly 'org.fusesource.restygwt:restygwt:2.2.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'junit:junit:4.13'
 	implementation 'org.apache.poi:poi:5.1.0'
 	implementation 'org.apache.poi:poi-ooxml:5.1.0'
 	implementation 'com.github.jknack:handlebars:4.2.0'
