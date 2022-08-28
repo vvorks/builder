@@ -19,6 +19,9 @@ public class BuilderRpcSingleDataSource extends DataSource {
 	/** rpcクライアント */
 	private final JsonRpcClient rpc;
 
+	/** データ（テーブル）名 */
+	private String dataName;
+
 	/** API名 */
 	private String apiName;
 
@@ -34,8 +37,9 @@ public class BuilderRpcSingleDataSource extends DataSource {
 	/** 最新ロード時刻 */
 	private Date lastUpdatedAt;
 
-	public BuilderRpcSingleDataSource(JsonRpcClient rpc, String apiName) {
+	public BuilderRpcSingleDataSource(JsonRpcClient rpc, String dataName, String apiName) {
 		this.rpc = rpc;
+		this.dataName = dataName;
 		this.apiName = apiName;
 		this.key = null;
 		this.data = null;
@@ -122,7 +126,8 @@ public class BuilderRpcSingleDataSource extends DataSource {
 
 	@Override
 	public void update(Json data) {
-		// TODO 自動生成されたメソッド・スタブ
+		// TODO 要実装
+		LOGGER.warn("DO UPDATE! %s: %s", dataName, data);
 	}
 
 	@Override

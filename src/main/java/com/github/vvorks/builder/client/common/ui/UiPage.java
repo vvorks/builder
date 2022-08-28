@@ -71,6 +71,7 @@ public abstract class UiPage extends UiNode implements DataRecord {
 
 	@Override
 	public void onUnmount() {
+		flush();
 		deinjectStyleInPage();
 		super.onUnmount();
 	}
@@ -120,6 +121,7 @@ public abstract class UiPage extends UiNode implements DataRecord {
 		setFlags(FLAGS_COMMIT_SOON, soon, 0);
 	}
 
+	@Override
 	public void flush() {
 		if (exists() && isFlagsOn(FLAGS_UPDATED)) {
 			DataSource ds = getDataSource();

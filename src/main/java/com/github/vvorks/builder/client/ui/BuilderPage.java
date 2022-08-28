@@ -57,6 +57,7 @@ public class BuilderPage extends UiPage {
 		NODE_CREATORS.put("H_SCROLLBAR", (me, json, stack) -> me.newHScrollbarNode(json, stack));
 		NODE_CREATORS.put("LABEL", (me, json, stack) -> me.newLabelNode(json, stack));
 		NODE_CREATORS.put("FIELD", (me, json, stack) -> me.newFieldNode(json, stack));
+		//NODE_CREATORS.put("FIELD", (me, json, stack) -> me.newInputNode(json, stack));
 		NODE_CREATORS.put("INPUT", (me, json, stack) -> me.newInputNode(json, stack));
 	}
 
@@ -118,7 +119,7 @@ public class BuilderPage extends UiPage {
 		Deque<DataRecordAgent> stack = new ArrayDeque<>();
 		//自身をマスターデータソース保持者として設定
 		if (pageClassName != null) {
-			DataSource ds = new BuilderRpcSingleDataSource(rpc, "get" + pageClassName);
+			DataSource ds = new BuilderRpcSingleDataSource(rpc, pageClassName, "get" + pageClassName);
 			ds.setCriteria(content, null);
 			DataRecordAgent agent = Agents.get(pageClassName);
 			this.setDataSource(ds);
@@ -196,19 +197,23 @@ public class BuilderPage extends UiPage {
 		String name = json.getString("name");
 		UiNode node = new UiVerticalList(name);
 		node.setStyle(BuilderStyles.GROUP);  //TODO 仮
+		String dataName;
 		String apiName;
 		String cref = json.getString("cref", null);
 		if (stack.isEmpty()) {
+			dataName = cref;
 			apiName = "list" + cref;
 		} else {
 			String typeName = stack.peek().getTypeName();
 			String fref = json.getString("fref", null);
+			String dataTypeParam = json.getString("dataTypeParam");
 			int sep = fref.lastIndexOf('/');
 			String fieldName = fref.substring(sep + 1);
 			String upperName = Strings.toFirstUpper(fieldName);
+			dataName = dataTypeParam;
 			apiName = "list" + typeName + upperName;
 		}
-		DataSource ds = new BuilderRpcDataSource(rpc, apiName);
+		DataSource ds = new BuilderRpcDataSource(rpc, dataName, apiName);
 		DataRecordAgent agent = Agents.get(cref);
 		if (stack.size() < 2) {
 			ds.setCriteria(content, null);
@@ -249,7 +254,7 @@ public class BuilderPage extends UiPage {
 		String name = json.getString("name");
 		String dataType = json.getString("dataType");
 		UiNode node;
-		if (dataType.equals("REF") || dataType.equals("ENUM")) {
+		if (dataType.equals("REF")) {
 			String dataTypeParam = json.getString("dataTypeParam");
 			DataRecordAgent agent = Agents.get(dataTypeParam);
 			UiButtonField button = new UiButtonField(name, agent);
@@ -260,7 +265,7 @@ public class BuilderPage extends UiPage {
 				return transit(n, agent, data);
 			});
 			node = button;
-		} else if (stack.size() > 1) {
+		} else if (!stack.isEmpty()) {
 			String typeName = stack.peek().getTypeName();
 			DataRecordAgent agent = Agents.get(typeName);
 			UiButtonField button = new UiButtonField(name);
@@ -300,7 +305,7 @@ public class BuilderPage extends UiPage {
 			String fieldName = fref.substring(sep + 1);
 			String upperName = Strings.toFirstUpper(fieldName);
 			String apiName = "list" + typeName + upperName + "Candidate";
-			DataSource ds = new BuilderRpcDataSource(rpc, apiName);
+			DataSource ds = new BuilderRpcDataSource(rpc, dataTypeParam, apiName);
 			node.setDataSource(ds);
 			stack.push(agent);
 		} else {

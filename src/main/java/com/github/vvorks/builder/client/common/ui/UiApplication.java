@@ -403,6 +403,12 @@ public class UiApplication implements EventHandler {
 				node.onFocus(oldFocus, false, newFocus);
 				node = node.getParent();
 			} while (node != null && node != luca);
+			DataRecord oldRecord = oldFocus.getDataRecord();
+			if (oldRecord != null) {
+				if (newFocus == null || newFocus.getDataRecord() != oldRecord) {
+					oldRecord.flush();
+				}
+			}
 		}
 		if (newFocus != null) {
 			UiNode node = newFocus;

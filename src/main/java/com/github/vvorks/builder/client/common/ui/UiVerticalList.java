@@ -232,7 +232,8 @@ public class UiVerticalList extends UiGroup {
 			}
 		}
 
-		private void flush() {
+		@Override
+		public void flush() {
 			if (exists() && isFlagsOn(FLAGS_UPDATED)) {
 				DataSource ds = list.getDataSource();
 				ds.update(json);
@@ -325,7 +326,7 @@ public class UiVerticalList extends UiGroup {
 	}
 
 	private boolean isScrollable() {
-		return size() >= linesPerView;
+		return linesPerView > 0 && size() >= linesPerView;
 	}
 
 	@Override
@@ -399,6 +400,7 @@ public class UiVerticalList extends UiGroup {
 
 	@Override
 	public void onUnmount() {
+		flushChildren();
 		super.onUnmount();
 		clearChildren();
 	}
@@ -715,6 +717,15 @@ public class UiVerticalList extends UiGroup {
 			UiLine line = (UiLine)c;
 			if (!line.exists()) {
 				line.reload();
+			}
+		}
+	}
+
+	private void flushChildren() {
+		for (UiNode c = getFirstChild(); c != null; c = c.getNextSibling()) {
+			UiLine line = (UiLine)c;
+			if (!line.exists()) {
+				line.flush();
 			}
 		}
 	}

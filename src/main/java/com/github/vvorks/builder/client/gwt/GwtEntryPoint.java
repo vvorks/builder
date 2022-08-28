@@ -138,7 +138,10 @@ public class GwtEntryPoint implements EntryPoint {
 		//起動パラメータの取得
 		String encStr = Window.Location.getHash();
 		String hashStr = URL.decodeQueryString(encStr);
-		URLFragment fragment = new URLFragment(hashStr.substring(1));
+		if (!hashStr.isEmpty()) {
+			hashStr = hashStr.substring(1);
+		}
+		URLFragment fragment = new URLFragment(hashStr);
 		//ページ読み込み
 		domPanel.load(fragment.getTag(), fragment.getParameters());
 	}

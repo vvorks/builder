@@ -25,6 +25,9 @@ public class BuilderRpcDataSource extends DataSource {
 	/** rpcクライアント */
 	private final JsonRpcClient rpc;
 
+	/** データ（テーブル）名 */
+	private String dataName;
+
 	/** API名 */
 	private String apiName;
 
@@ -52,8 +55,9 @@ public class BuilderRpcDataSource extends DataSource {
 	/** 最新ロード時刻 */
 	private Date lastUpdatedAt;
 
-	public BuilderRpcDataSource(JsonRpcClient rpc, String apiName) {
+	public BuilderRpcDataSource(JsonRpcClient rpc, String dataName, String apiName) {
 		this.rpc = rpc;
+		this.dataName = dataName;
 		this.apiName = apiName;
 		this.pageSize = DEFAULT_PAGE_SIZE;
 		cache = new CacheMap<>(Math.max(DEFAULT_CACHE_SIZE, DEFAULT_PAGE_SIZE * 4), true);
@@ -200,8 +204,8 @@ public class BuilderRpcDataSource extends DataSource {
 
 	@Override
 	public void update(Json data) {
-		// TODO 自動生成されたメソッド・スタブ
-
+		// TODO 要実装
+		LOGGER.warn("DO UPDATE! %s: %s", dataName, data);
 	}
 
 	@Override

@@ -295,4 +295,9 @@ public interface DataRecord {
 	 */
 	public abstract void setString(String column, String value);
 
+	/**
+	 * レコード更新
+	 */
+	public abstract void flush();
+
 }
