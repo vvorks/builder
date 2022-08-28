@@ -1,11 +1,8 @@
 package com.github.vvorks.builder.server.component;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +15,9 @@ import com.github.vvorks.builder.server.domain.LayoutType;
 import com.github.vvorks.builder.server.domain.PageContent;
 import com.github.vvorks.builder.server.domain.PageSetContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
+import com.github.vvorks.builder.server.extender.ClassRelation;
+import com.github.vvorks.builder.server.extender.ProjectExtender;
 import com.github.vvorks.builder.server.mapper.Mappers;
-import com.github.vvorks.builder.shared.common.lang.Asserts;
 import com.github.vvorks.builder.shared.common.lang.RichIterable;
 
 @Component
@@ -35,66 +33,11 @@ public class PageBuilder {
 
 	private double NA = LayoutBuilder.NA;
 
-	public static class ClassRelation {
-
-		private final ClassContent clazz;
-
-		private ClassRelation owner;
-
-		private FieldContent ownerField;
-
-		private List<ClassRelation> sets;
-
-		public ClassRelation() {
-			clazz = null;
-		}
-
-		public ClassRelation(ClassContent cls) {
-			clazz = cls;
-		}
-
-		public ClassContent getContent() {
-			return clazz;
-		}
-
-		public ClassRelation getOwner() {
-			return owner;
-		}
-
-		public FieldContent getOwnerField() {
-			return ownerField;
-		}
-
-		public void addSet(ClassRelation r, FieldContent fld) {
-			if (sets == null) {
-				sets = new ArrayList<>();
-			}
-			sets.add(r);
-			if (fld == null || fld.isIsContainer()) {
-				Asserts.assume(r.owner == null);
-				r.owner = this;
-				r.ownerField = fld;
-			}
-		}
-
-		public Iterable<ClassRelation> getOwns() {
-			if (sets == null) {
-				return Collections.emptyList();
-			}
-			final ClassRelation me = this;
-			return RichIterable
-					.from(sets)
-					.filter(c -> c.getOwner() == me);
-		}
-
-		public boolean isContained() {
-			return owner != null;
-		}
-
-	}
-
 	@Autowired
 	private Mappers mappers;
+
+	@Autowired
+	private ProjectExtender projectExtender;
 
 	public void process() throws IOException {
 		List<ProjectContent> list = mappers.getProjectMapper().listAll();
@@ -116,37 +59,10 @@ public class PageBuilder {
 	}
 
 	private void insertShowPageSet(ProjectContent prj) {
-		ClassRelation rel = getRelation(prj);
+		ClassRelation rel = projectExtender.getRelation(prj);
 		PageSetContent ps = insertPageSet(prj, PAGESET_SHOW);
 		insertShowPage(ps, rel);
 		visitRelation(rel, r -> insertShowPage(ps, r));
-	}
-
-	private ClassRelation getRelation(ProjectContent prj) {
-		Map<Integer, ClassRelation> relations = new LinkedHashMap<>();
-		//クラス一覧からリレーションのリストを作成
-		for (ClassContent cls : mappers.getProjectMapper().listClassesContent(prj, 0, 0)) {
-			relations.put(cls.getClassId(), new ClassRelation(cls));
-		}
-		//各クラス中のSETフィールドを元に関連付け
-		for (ClassRelation owner : relations.values()) {
-			ClassContent cls = owner.getContent();
-			for (FieldContent fld : mappers.getClassMapper().listFieldsContent(cls, 0, 0)) {
-				if (fld.getType() == DataType.SET) {
-					FieldContent fref = mappers.getFieldMapper().getFref(fld);
-					ClassRelation set = relations.get(fref.getOwnerClassId());
-					owner.addSet(set, fld);
-				}
-			}
-		}
-		//誰からも保有されていないクラスをトップレベルクラスとし、rootに追加
-		ClassRelation root = new ClassRelation();
-		for (ClassRelation r : relations.values()) {
-			if (!r.isContained()) {
-				root.addSet(r, null);
-			}
-		}
-		return root;
 	}
 
 	private void visitRelation(ClassRelation rel, Consumer<ClassRelation> method) {

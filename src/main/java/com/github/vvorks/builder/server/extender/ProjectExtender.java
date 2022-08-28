@@ -17,6 +17,7 @@ import com.github.vvorks.builder.server.ServerSettings;
 import com.github.vvorks.builder.server.common.util.Patterns;
 import com.github.vvorks.builder.server.domain.ClassContent;
 import com.github.vvorks.builder.server.domain.ClassI18nContent;
+import com.github.vvorks.builder.server.domain.DataType;
 import com.github.vvorks.builder.server.domain.EnumContent;
 import com.github.vvorks.builder.server.domain.EnumI18nContent;
 import com.github.vvorks.builder.server.domain.EnumValueContent;
@@ -323,6 +324,44 @@ public class ProjectExtender {
 			}
 		}
 		return jsonMap.entrySet();
+	}
+
+	public ClassRelation getRelation(ProjectContent prj) {
+		Map<Integer, ClassRelation> relations = getRelationMap(prj);
+		//誰からも保有されていないクラスをトップレベルクラスとし、rootに追加
+		ClassRelation root = new ClassRelation();
+		for (ClassRelation r : relations.values()) {
+			if (!r.isContained()) {
+				root.addSet(r, null);
+			}
+		}
+		//ルートを返却
+		return root;
+	}
+
+	private Map<Integer, ClassRelation> getRelationMap(ProjectContent prj) {
+		Map<Integer, ClassRelation> relations = new LinkedHashMap<>();
+		//クラス一覧からリレーションのリストを作成
+		for (ClassContent cls : projectMapper.listClassesContent(prj, 0, 0)) {
+			relations.put(cls.getClassId(), new ClassRelation(cls));
+		}
+		//各クラス中のSETフィールドを元に関連付け
+		for (ClassRelation owner : relations.values()) {
+			ClassContent cls = owner.getContent();
+			for (FieldContent fld : classMapper.listFieldsContent(cls, 0, 0)) {
+				if (fld.getType() == DataType.SET) {
+					FieldContent fref = fieldMapper.getFref(fld);
+					ClassRelation set = relations.get(fref.getOwnerClassId());
+					owner.addSet(set, fld);
+				}
+			}
+		}
+		return relations;
+	}
+
+	public List<ClassRelation> getRelationAsList(ProjectContent prj) {
+		Map<Integer, ClassRelation> relations = getRelationMap(prj);
+		return new ArrayList<>(relations.values());
 	}
 
 }
