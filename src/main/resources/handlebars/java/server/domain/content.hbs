@@ -1,0 +1,269 @@
+//
+// Contentクラステンプレート
+//
+{{#each this.classes}}
+{{#java this "server/domain/" className "Content" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+import java.util.Objects;
+
+/**
+ * {{titleOrName}}
+{{#if description}}
+ *
+ * {{description}}
+{{/if}}
+{{#if note}}
+ *
+ * {{note}}
+{{/if}}
+ */
+public class {{className}}Content {
+
+	{{#each properties}}
+
+	/**
+	 * {{titleOrName}}
+	{{#if description}}
+	 *
+	 * {{description}}
+	{{/if}}
+	{{#if note}}
+	 *
+	 * {{note}}
+	{{/if}}
+	 */
+	private {{javaType}} {{fieldName}};
+	{{/each}}
+
+	{{#each _titleFields}}
+
+	/**
+	 * {{titleOrName}}
+	 */
+	private {{javaType}} {{fieldName}};
+	{{/each}}
+
+	/**
+	 * 空の{{titleOrName}}を作成する
+	 */
+	public {{className}}Content() {
+	}
+
+	/**
+	 * 指定のキー項目を持つ{{titleOrName}}を作成する
+	 *
+	{{#each keys}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 */
+	public {{className}}Content(
+		{{#each keys}}
+		{{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
+	) {
+		{{#each keys}}
+		this.{{fieldName}} = {{fieldName}};
+		{{/each}}
+	}
+
+	{{#each properties}}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @return {{titleOrName}}
+	 */
+	public {{javaType}} {{getterName}}() {
+		return this.{{fieldName}};
+	}
+
+	/**
+	 * {{titleOrName}}を設定する
+	 *
+	 * @param {{fieldName}} 設定する{{titleOrName}}
+	 */
+	public void {{setterName}}({{javaType}} {{fieldName}}) {
+		this.{{fieldName}} = {{fieldName}};
+	}
+	{{/each}}
+
+	{{#each _titleFields}}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @return {{titleOrName}}
+	 */
+	public {{javaType}} {{getterName}}() {
+		return this.{{fieldName}};
+	}
+
+	/**
+	 * {{titleOrName}}を設定する
+	 *
+	 * @param {{fieldName}} 設定する{{titleOrName}}
+	 */
+	public void {{setterName}}({{javaType}} {{fieldName}}) {
+		this.{{fieldName}} = {{fieldName}};
+	}
+	{{/each}}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(
+			{{#each properties}}
+			{{fieldName}}{{#separator}},{{/separator}}
+			{{/each}}
+			);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			return equals(({{className}}Content) obj);
+		}
+	}
+
+	private boolean equals({{className}}Content other) {
+		return
+			{{#each properties}}
+			{{#if primitiveOrEnum}}
+			this.{{fieldName}} == other.{{fieldName}}{{#separator}} && {{/separator}}
+			{{else}}
+			Objects.equals(this.{{fieldName}}, other.{{fieldName}}){{#separator}} && {{/separator}}
+			{{/if}}
+			{{/each}}
+			;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{className}}Content [");
+		{{#each properties}}
+		sb.append("{{fieldName}}=").append({{fieldName}}){{#separator}}.append(", "){{/separator}};
+		{{/each}}
+		sb.append("]");
+		return sb.toString();
+	}
+
+}
+{{/java}}
+{{/each}}
+
+//
+// Enumテンプレート
+//
+{{#each this.enums}}
+{{#java this "server/domain/" enumName ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+import {{global.project.projectName}}.shared.common.lang.Encodable;
+
+/**
+ * {{titleOrName}}
+{{#if description}}
+ *
+ * {{description}}
+{{/if}}
+{{#if note}}
+ *
+ * {{note}}
+{{/if}}
+ */
+public enum {{enumName}} implements Encodable<{{encodeType}}> {
+
+	{{#each enumValues}}
+
+	/**
+	 * {{titleOrName}}
+	{{#if description}}
+	 *
+	 * {{description}}
+	{{/if}}
+	{{#if note}}
+	 *
+	 * {{note}}
+	{{/if}}
+	 */
+	{{valueId}}({{code}}, "{{_title}}"){{#separator}},{{/separator}}
+	{{/each}}
+	;
+
+	/**
+	 * 列挙コード
+	 */
+	private final int code;
+
+	/**
+	 * タイトル
+	 */
+	private final String _title;
+
+	/**
+	 * {{enumName}}を作成する
+	 *
+	 * @param code 列挙コード
+	 */
+	private {{enumName}}(int code, String _title) {
+		this.code = code;
+		this._title = _title;
+	}
+
+	/**
+	 * 列挙コードを取得する
+	 */
+	public int code() {
+		return this.code;
+	}
+
+	@Override
+	public {{encodeType}} encode() {
+		{{#if encodeString}}
+		return name();
+		{{else}}
+		return code();
+		{{/if}}
+	}
+
+	public String get_title() {
+		return _title;
+	}
+
+	/**
+	 * 列挙コードから列挙オブジェクトを取得する
+	 */
+	public static {{enumName}} valueOf(int value) {
+		for ({{enumName}} e : values()) {
+			if (e.code() == value) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+}
+{{/java}}
+{{/each}}
+
+

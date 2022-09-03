@@ -46,6 +46,10 @@
 			T1.F_CLASS_NAME = #{ className }
 	</select>
 
+	<select id="getTopicPath" resultType="map">
+		SELECT 0 FROM T_BUILDER T1 WHERE 0=1
+	</select>
+
 	<select id="listSummary" resultType="BuilderSummary">
 		SELECT
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",

@@ -67,6 +67,31 @@
 			T1.F_VALUE_ID = #{ valueId }
 	</select>
 
+	<select id="getTopicPath" resultType="map">
+		SELECT
+			"EnumValue" AS "P1__type",
+			T1.F_OWNER_ENUM_ID AS "P1_ownerEnumId",
+			T1.F_VALUE_ID AS "P1_valueId",
+			T1.F_VALUE_ID AS "P1__title",
+			"Enum" AS "P2__type",
+			T2.F_ENUM_ID AS "P2_enumId",
+			T2.F_ENUM_NAME || '(' || T2.F_TITLE || ')' AS "P2__title",
+			"Project" AS "P3__type",
+			T3.F_PROJECT_ID AS "P3_projectId",
+			T3.F_PROJECT_NAME || '(' || T3.F_TITLE || ')' AS "P3__title"
+		FROM
+			T_ENUM_VALUE T1
+		LEFT JOIN T_ENUM T2 ON
+			T1.F_OWNER_ENUM_ID = T2.F_ENUM_ID
+		LEFT JOIN T_PROJECT T3 ON
+			T2.F_OWNER_PROJECT_ID = T3.F_PROJECT_ID
+		WHERE
+			T1.F_OWNER_ENUM_ID = #{ ownerEnumId } AND 
+			T1.F_VALUE_ID = #{ valueId }
+		ORDER BY
+			T1.F_CODE ASC
+	</select>
+
 	<select id="listSummary" resultType="EnumValueSummary">
 		SELECT
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",

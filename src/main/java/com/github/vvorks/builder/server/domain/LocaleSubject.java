@@ -3,6 +3,7 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -12,7 +13,15 @@ import java.util.Objects;
  *
  * 必要な分だけ登録
  */
-public class LocaleSubject {
+public class LocaleSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		LocaleSubject subject = new LocaleSubject(
+				asString(args.get("localeId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * ロケールID
@@ -42,10 +51,18 @@ public class LocaleSubject {
 	}
 
 	/**
+	 * ロケールIDを取得する
+	 */
+	public String getLocaleId() {
+		return localeId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

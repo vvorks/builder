@@ -3,12 +3,22 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * プロジェクト(I18n)の見出し
  */
-public class ProjectI18nSubject {
+public class ProjectI18nSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		ProjectI18nSubject subject = new ProjectI18nSubject(
+				asInt(args.get("ownerProjectId")),
+				asString(args.get("targetLocaleId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * 所属プロジェクトのプロジェクトID
@@ -46,10 +56,25 @@ public class ProjectI18nSubject {
 	}
 
 	/**
+	 * 所属プロジェクトのプロジェクトIDを取得する
+	 */
+	public int getOwnerProjectId() {
+		return ownerProjectId;
+	}
+
+	/**
+	 * 対象ロケールのロケールIDを取得する
+	 */
+	public String getTargetLocaleId() {
+		return targetLocaleId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

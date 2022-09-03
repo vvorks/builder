@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -51,6 +52,14 @@ public interface StyleMapper extends MapperInterface<StyleContent> {
 	public StyleContent get(
 		@Param("styleId") int styleId
 	);
+
+	/**
+	 * スタイルのトピックパスを取得する
+	 *
+	 * @param content スタイル
+	 * @return スタイルのトピックパス
+	 */
+	public Map<String, Object> getTopicPath(StyleContent content);
 
 	/**
 	 * 全てのスタイルのサマリーを取得する

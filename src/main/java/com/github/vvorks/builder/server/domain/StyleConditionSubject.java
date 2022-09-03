@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * スタイル条件の見出し
  */
-public class StyleConditionSubject {
+public class StyleConditionSubject extends Subject {
 
 	private final StyleCondition value;
 
@@ -25,6 +25,7 @@ public class StyleConditionSubject {
 		return value;
 	}
 
+	@Override
 	public String get_title() {
 		return value.get_title();
 	}

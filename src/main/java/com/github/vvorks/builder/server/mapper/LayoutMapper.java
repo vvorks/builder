@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -51,6 +52,14 @@ public interface LayoutMapper extends MapperInterface<LayoutContent> {
 	public LayoutContent get(
 		@Param("layoutId") int layoutId
 	);
+
+	/**
+	 * レイアウトのトピックパスを取得する
+	 *
+	 * @param content レイアウト
+	 * @return レイアウトのトピックパス
+	 */
+	public Map<String, Object> getTopicPath(LayoutContent content);
 
 	/**
 	 * 全てのレイアウトのサマリーを取得する

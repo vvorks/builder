@@ -3,12 +3,21 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * ページセットの見出し
  */
-public class PageSetSubject {
+public class PageSetSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		PageSetSubject subject = new PageSetSubject(
+				asInt(args.get("pageSetId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * ページセットId
@@ -38,10 +47,18 @@ public class PageSetSubject {
 	}
 
 	/**
+	 * ページセットIdを取得する
+	 */
+	public int getPageSetId() {
+		return pageSetId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

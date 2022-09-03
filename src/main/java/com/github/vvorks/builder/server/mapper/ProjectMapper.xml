@@ -66,6 +66,19 @@
 			T1.F_PROJECT_ID = #{ projectId }
 	</select>
 
+	<select id="getTopicPath" resultType="map">
+		SELECT
+			"Project" AS "P1__type",
+			T1.F_PROJECT_ID AS "P1_projectId",
+			T1.F_PROJECT_NAME || '(' || T1.F_TITLE || ')' AS "P1__title"
+		FROM
+			T_PROJECT T1
+		WHERE
+			T1.F_PROJECT_ID = #{ projectId }
+		ORDER BY
+			T1.F_PROJECT_ID ASC
+	</select>
+
 	<select id="listSummary" resultType="ProjectSummary">
 		SELECT
 			MAX(T1.F_PROJECT_ID) AS "maxProjectId",

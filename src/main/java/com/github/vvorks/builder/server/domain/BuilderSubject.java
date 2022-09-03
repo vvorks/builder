@@ -3,12 +3,21 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * Builderの見出し
  */
-public class BuilderSubject {
+public class BuilderSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		BuilderSubject subject = new BuilderSubject(
+				asString(args.get("className"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * className
@@ -38,10 +47,18 @@ public class BuilderSubject {
 	}
 
 	/**
+	 * classNameを取得する
+	 */
+	public String getClassName() {
+		return className;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -53,6 +54,14 @@ public interface FieldI18nMapper extends MapperInterface<FieldI18nContent> {
 		@Param("ownerFieldId") int ownerFieldId, 
 		@Param("targetLocaleId") String targetLocaleId
 	);
+
+	/**
+	 * フィールド(I18n)のトピックパスを取得する
+	 *
+	 * @param content フィールド(I18n)
+	 * @return フィールド(I18n)のトピックパス
+	 */
+	public Map<String, Object> getTopicPath(FieldI18nContent content);
 
 	/**
 	 * 全てのフィールド(I18n)のサマリーを取得する

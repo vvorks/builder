@@ -182,6 +182,7 @@ public class FieldExtender {
 	public boolean isStringType(FieldContent fld) {
 		return fld.getType() == DataType.STRING;
 	}
+
 	public String getTypeSuffix(FieldContent fld) {
 		Class<?> cls = getJavaClass(fld, true);
 		return SUFFIX_MAP.get(cls);

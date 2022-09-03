@@ -1,0 +1,387 @@
+//
+// 基底Subjectクラス
+//
+{{#java this "server/domain/" "Subject" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(
+		  use = JsonTypeInfo.Id.NAME,
+		  include = JsonTypeInfo.As.PROPERTY,
+		  property = "_type")
+@JsonSubTypes({
+		{{#each this.classes}}
+		@Type(value = {{className}}Subject.class, name = "{{className}}"){{#separator}},{{/separator}}
+		{{/each}}
+		})
+public abstract class Subject {
+
+	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSSZ";
+
+	private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT =
+			ThreadLocal.withInitial(() -> new SimpleDateFormat(DATE_PATTERN));
+
+	private static final Map<String, Function<Map<String, Object>, Subject>> CREATORS = new HashMap<>();
+	static {
+		{{#each this.classes}}
+		CREATORS.put("{{className}}", map -> {{className}}Subject.createFrom(map));
+		{{/each}}
+	}
+
+	public static Subject createFrom(Map<String, Object> args) {
+		String type = args.get("_type").toString();
+		return CREATORS.get(type).apply(args);
+	}
+
+	protected static Boolean asBoolean(Object obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj instanceof Boolean) {
+			return (Boolean) obj;
+		}
+		return Boolean.parseBoolean(obj.toString());
+	}
+
+	protected static Integer asInt(Object obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj instanceof Number) {
+			return ((Number)obj).intValue();
+		}
+		return Integer.decode(obj.toString());
+	}
+
+	protected static Long asLong(Object obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj instanceof Number) {
+			return ((Number)obj).longValue();
+		}
+		return Long.decode(obj.toString());
+	}
+
+	protected static Float asFloat(Object obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj instanceof Number) {
+			return ((Number)obj).floatValue();
+		}
+		return Float.parseFloat(obj.toString());
+	}
+
+	protected static Double asDouble(Object obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj instanceof Number) {
+			return ((Number)obj).doubleValue();
+		}
+		return Double.parseDouble(obj.toString());
+	}
+
+	protected static BigDecimal asDecimal(Object obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj instanceof BigDecimal) {
+			return (BigDecimal) obj;
+		} else if (obj instanceof Number) {
+			return BigDecimal.valueOf(((Number)obj).doubleValue());
+		}
+		return new BigDecimal(obj.toString());
+	}
+
+	protected static Date asDate(Object obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj instanceof Date) {
+			return (Date) obj;
+		} else if (obj instanceof Number) {
+			return new Date(((Number)obj).longValue());
+		}
+		try {
+			return DATE_FORMAT.get().parse(obj.toString());
+		} catch (ParseException err) {
+			throw new RuntimeException(err);
+		}
+	}
+
+	protected static String asString(Object obj) {
+		if (obj == null) {
+			return null;
+		}
+		return obj.toString();
+	}
+
+	public abstract String get_title();
+
+}
+{{/java}}
+
+//
+// Subjectクラステンプレート
+//
+{{#each this.classes}}
+{{#java this "server/domain/" className "Subject" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * {{titleOrName}}の見出し
+{{#if description}}
+ *
+ * {{description}}
+{{/if}}
+{{#if note}}
+ *
+ * {{note}}
+{{/if}}
+ */
+public class {{className}}Subject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		{{className}}Subject subject = new {{className}}Subject(
+				{{#each keys}}
+				as{{typeSuffix}}(args.get("{{fieldName}}")){{#separator}},{{/separator}}
+				{{/each}}
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
+
+	{{#each keys}}
+
+	/**
+	 * {{titleOrName}}
+	{{#if description}}
+	 *
+	 * {{description}}
+	{{/if}}
+	{{#if note}}
+	 *
+	 * {{note}}
+	{{/if}}
+	 */
+	private {{javaType}} {{fieldName}};
+	{{/each}}
+
+	{{#with _titleField}}
+
+	/**
+	 * {{titleOrName}}
+	 */
+	private {{javaType}} {{fieldName}};
+	{{/with}}
+
+	/**
+	 * 空の{{titleOrName}}の見出しを作成する
+	 */
+	public {{className}}Subject() {
+	}
+
+	/**
+	 * 指定のキー項目を持つ{{titleOrName}}の見出しを作成する
+	 *
+	{{#each keys}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 */
+	public {{className}}Subject(
+		{{#each keys}}
+		{{javaType}} {{fieldName}}{{#separator}},{{/separator}}
+		{{/each}}
+	) {
+		{{#each keys}}
+		this.{{fieldName}} = {{fieldName}};
+		{{/each}}
+	}
+
+	{{#each keys}}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 */
+	public {{javaType}} {{getterName}}() {
+		return {{fieldName}};
+	}
+	{{/each}}
+
+	{{#with _titleField}}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	 * @return {{titleOrName}}
+	 */
+	@Override
+	public {{javaType}} {{getterName}}() {
+		return this.{{fieldName}};
+	}
+
+	/**
+	 * {{titleOrName}}を設定する
+	 *
+	 * @param {{fieldName}} 設定する{{titleOrName}}
+	 */
+	public void {{setterName}}({{javaType}} {{fieldName}}) {
+		this.{{fieldName}} = {{fieldName}};
+	}
+	{{/with}}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(
+			{{#each keys}}
+			{{fieldName}}{{#separator}},{{/separator}}
+			{{/each}}
+			);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			return equals(({{className}}Subject) obj);
+		}
+	}
+
+	private boolean equals({{className}}Subject other) {
+		return
+			{{#each keys}}
+			{{#if primitiveOrEnum}}
+			this.{{fieldName}} == other.{{fieldName}}{{#separator}} && {{/separator}}
+			{{else}}
+			Objects.equals(this.{{fieldName}}, other.{{fieldName}}){{#separator}} && {{/separator}}
+			{{/if}}
+			{{/each}}
+			;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{className}}Subject [");
+		{{#each keys}}
+		sb.append("{{fieldName}}=").append({{fieldName}}){{#separator}}.append(", "){{/separator}};
+		{{/each}}
+		sb.append("]");
+		return sb.toString();
+	}
+
+}
+{{/java}}
+{{/each}}
+
+//
+// EnumのSubjectテンプレート
+//
+{{#each this.enums}}
+{{#java this "server/domain/" enumName "Subject" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.domain;
+
+import java.util.Objects;
+
+/**
+ * {{titleOrName}}の見出し
+{{#if description}}
+ *
+ * {{description}}
+{{/if}}
+{{#if note}}
+ *
+ * {{note}}
+{{/if}}
+ */
+public class {{enumName}}Subject extends Subject {
+
+	private final {{enumName}} value;
+
+	/**
+	 * 指定の列挙値と見出しを持つ{{titleOrName}}の見出しを作成する
+	 *
+	 * @param value 列挙値
+	 */
+	public {{enumName}}Subject({{enumName}} value) {
+		this.value = value;
+	}
+
+	public {{enumName}} getValue() {
+		return value;
+	}
+
+	@Override
+	public String get_title() {
+		return value.get_title();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(value);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null) {
+			return false;
+		} else if (getClass() != obj.getClass()) {
+			return false;
+		} else {
+			return equals(({{enumName}}Subject) obj);
+		}
+	}
+
+	private boolean equals({{enumName}}Subject other) {
+		return this.value == other.value;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{enumName}}Subject [");
+		sb.append("value=").append(value);
+		sb.append("]");
+		return sb.toString();
+	}
+
+}
+{{/java}}
+{{/each}}

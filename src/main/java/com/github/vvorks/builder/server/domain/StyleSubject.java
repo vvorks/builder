@@ -3,12 +3,21 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * スタイルの見出し
  */
-public class StyleSubject {
+public class StyleSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		StyleSubject subject = new StyleSubject(
+				asInt(args.get("styleId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * スタイルID
@@ -38,10 +47,18 @@ public class StyleSubject {
 	}
 
 	/**
+	 * スタイルIDを取得する
+	 */
+	public int getStyleId() {
+		return styleId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

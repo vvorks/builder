@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -51,6 +52,14 @@ public interface LocaleMapper extends MapperInterface<LocaleContent> {
 	public LocaleContent get(
 		@Param("localeId") String localeId
 	);
+
+	/**
+	 * ロケールのトピックパスを取得する
+	 *
+	 * @param content ロケール
+	 * @return ロケールのトピックパス
+	 */
+	public Map<String, Object> getTopicPath(LocaleContent content);
 
 	/**
 	 * 全てのロケールのサマリーを取得する

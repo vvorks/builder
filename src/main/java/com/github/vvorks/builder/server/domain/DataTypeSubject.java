@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * データ型の見出し
  */
-public class DataTypeSubject {
+public class DataTypeSubject extends Subject {
 
 	private final DataType value;
 
@@ -25,6 +25,7 @@ public class DataTypeSubject {
 		return value;
 	}
 
+	@Override
 	public String get_title() {
 		return value.get_title();
 	}

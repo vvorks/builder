@@ -3,12 +3,22 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * フィールド(I18n)の見出し
  */
-public class FieldI18nSubject {
+public class FieldI18nSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		FieldI18nSubject subject = new FieldI18nSubject(
+				asInt(args.get("ownerFieldId")),
+				asString(args.get("targetLocaleId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * 所属フィールドのフィールドID
@@ -46,10 +56,25 @@ public class FieldI18nSubject {
 	}
 
 	/**
+	 * 所属フィールドのフィールドIDを取得する
+	 */
+	public int getOwnerFieldId() {
+		return ownerFieldId;
+	}
+
+	/**
+	 * 対象ロケールのロケールIDを取得する
+	 */
+	public String getTargetLocaleId() {
+		return targetLocaleId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -53,6 +54,14 @@ public interface ClassI18nMapper extends MapperInterface<ClassI18nContent> {
 		@Param("ownerClassId") int ownerClassId, 
 		@Param("targetLocaleId") String targetLocaleId
 	);
+
+	/**
+	 * クラス(I18n)のトピックパスを取得する
+	 *
+	 * @param content クラス(I18n)
+	 * @return クラス(I18n)のトピックパス
+	 */
+	public Map<String, Object> getTopicPath(ClassI18nContent content);
 
 	/**
 	 * 全てのクラス(I18n)のサマリーを取得する

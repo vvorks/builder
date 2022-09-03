@@ -146,6 +146,34 @@
 			T1.F_LAYOUT_ID = #{ layoutId }
 	</select>
 
+	<select id="getTopicPath" resultType="map">
+		SELECT
+			"Layout" AS "P1__type",
+			T1.F_LAYOUT_ID AS "P1_layoutId",
+			T1.F_LAYOUT_ID AS "P1__title",
+			"Page" AS "P2__type",
+			T2.F_PAGE_ID AS "P2_pageId",
+			T3.F_PAGE_SET_NAME || '(' || T2.F_WIDTH || 'x' || T2.F_HEIGHT || ')' AS "P2__title",
+			"PageSet" AS "P3__type",
+			T3.F_PAGE_SET_ID AS "P3_pageSetId",
+			T3.F_PAGE_SET_NAME AS "P3__title",
+			"Project" AS "P4__type",
+			T4.F_PROJECT_ID AS "P4_projectId",
+			T4.F_PROJECT_NAME || '(' || T4.F_TITLE || ')' AS "P4__title"
+		FROM
+			T_LAYOUT T1
+		LEFT JOIN T_PAGE T2 ON
+			T1.F_OWNER_PAGE_ID = T2.F_PAGE_ID
+		LEFT JOIN T_PAGE_SET T3 ON
+			T2.F_OWNER_PAGE_SET_ID = T3.F_PAGE_SET_ID
+		LEFT JOIN T_PROJECT T4 ON
+			T3.F_OWNER_PROJECT_ID = T4.F_PROJECT_ID
+		WHERE
+			T1.F_LAYOUT_ID = #{ layoutId }
+		ORDER BY
+			T1.F_LAYOUT_ID
+	</select>
+
 	<select id="listSummary" resultType="LayoutSummary">
 		SELECT
 			MAX(T1.F_LAYOUT_ID) AS "maxLayoutId",

@@ -3,12 +3,22 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * 列挙(I18n)の見出し
  */
-public class EnumI18nSubject {
+public class EnumI18nSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		EnumI18nSubject subject = new EnumI18nSubject(
+				asInt(args.get("ownerEnumId")),
+				asString(args.get("targetLocaleId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * 所属列挙の列挙ID
@@ -46,10 +56,25 @@ public class EnumI18nSubject {
 	}
 
 	/**
+	 * 所属列挙の列挙IDを取得する
+	 */
+	public int getOwnerEnumId() {
+		return ownerEnumId;
+	}
+
+	/**
+	 * 対象ロケールのロケールIDを取得する
+	 */
+	public String getTargetLocaleId() {
+		return targetLocaleId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

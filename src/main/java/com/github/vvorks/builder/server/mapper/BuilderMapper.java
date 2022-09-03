@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -51,6 +52,14 @@ public interface BuilderMapper extends MapperInterface<BuilderContent> {
 	public BuilderContent get(
 		@Param("className") String className
 	);
+
+	/**
+	 * Builderのトピックパスを取得する
+	 *
+	 * @param content Builder
+	 * @return Builderのトピックパス
+	 */
+	public Map<String, Object> getTopicPath(BuilderContent content);
 
 	/**
 	 * 全てのBuilderのサマリーを取得する

@@ -3,12 +3,21 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * レイアウトの見出し
  */
-public class LayoutSubject {
+public class LayoutSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		LayoutSubject subject = new LayoutSubject(
+				asInt(args.get("layoutId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * レイアウトId
@@ -38,10 +47,18 @@ public class LayoutSubject {
 	}
 
 	/**
+	 * レイアウトIdを取得する
+	 */
+	public int getLayoutId() {
+		return layoutId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

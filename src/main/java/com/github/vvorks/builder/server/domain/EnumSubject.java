@@ -3,12 +3,21 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * 列挙の見出し
  */
-public class EnumSubject {
+public class EnumSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		EnumSubject subject = new EnumSubject(
+				asInt(args.get("enumId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * 列挙ID
@@ -40,10 +49,18 @@ public class EnumSubject {
 	}
 
 	/**
+	 * 列挙IDを取得する
+	 */
+	public int getEnumId() {
+		return enumId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -53,6 +54,14 @@ public interface MessageI18nMapper extends MapperInterface<MessageI18nContent> {
 		@Param("ownerMessageId") int ownerMessageId, 
 		@Param("targetLocaleId") String targetLocaleId
 	);
+
+	/**
+	 * メッセージ(I18n)のトピックパスを取得する
+	 *
+	 * @param content メッセージ(I18n)
+	 * @return メッセージ(I18n)のトピックパス
+	 */
+	public Map<String, Object> getTopicPath(MessageI18nContent content);
 
 	/**
 	 * 全てのメッセージ(I18n)のサマリーを取得する

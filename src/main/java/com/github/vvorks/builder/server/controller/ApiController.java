@@ -3,6 +3,7 @@ package com.github.vvorks.builder.server.controller;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +14,12 @@ import com.github.vvorks.builder.BuilderApplication;
 import com.github.vvorks.builder.server.component.PageBuilder;
 import com.github.vvorks.builder.server.component.SourceWriter;
 import com.github.vvorks.builder.server.component.XlsxLoader;
+import com.github.vvorks.builder.server.domain.BuilderContent;
 import com.github.vvorks.builder.server.domain.ClassContent;
-import com.github.vvorks.builder.server.domain.ProjectContent;
-import com.github.vvorks.builder.server.extender.ClassRelation;
-import com.github.vvorks.builder.server.extender.ProjectExtender;
-import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.github.vvorks.builder.server.domain.EnumValueI18nContent;
+import com.github.vvorks.builder.server.domain.FieldContent;
+import com.github.vvorks.builder.server.domain.Subject;
+import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.logging.Logger;
 
 
@@ -81,30 +83,30 @@ public class ApiController {
 	}
 
 	@Autowired
-	private ProjectMapper projectMapper;
+	private Mappers mappers;
 
-	@Autowired
-	private ProjectExtender projectExtender;
+	@GetMapping("/classTopic")
+	public List<Subject> clssTopic(@RequestParam(value = "id", defaultValue = "1") Integer id) {
+		ClassContent cls = mappers.getClassMapper().get(id);
+		return mappers.getClassMapper().listTopicPath(cls);
+	}
 
-	@GetMapping("/hoge")
-	public String hoge() {
-		StringBuilder sb = new StringBuilder();
-		for (ProjectContent prj : projectMapper.listAll()) {
-			sb.append(prj.getProjectName());
-			sb.append("\n");
-			for (ClassRelation r : projectExtender.getRelationAsList(prj)) {
-				sb.append("    ");
-				sb.append(r.getContent().getClassName());
-				sb.append(":");
-				String sep = "";
-				for (ClassContent c : r.getOwners()) {
-					sb.append(sep);sep =",";
-					sb.append(c.getClassName());
-				}
-				sb.append("\n");
-			}
-		}
-		return sb.toString();
+	@GetMapping("/fieldTopic")
+	public List<Subject> fieldTopic(@RequestParam(value = "id", defaultValue = "1") Integer id) {
+		FieldContent fld = mappers.getFieldMapper().get(id);
+		return mappers.getFieldMapper().listTopicPath(fld);
+	}
+
+	@GetMapping("/evI18nTopic")
+	public List<Subject> evI18nTopic(@RequestParam(value = "id", defaultValue = "1") Integer id) {
+		EnumValueI18nContent ev = mappers.getEnumValueI18nMapper().get(id, "KEY", "ja");
+		return mappers.getEnumValueI18nMapper().listTopicPath(ev);
+	}
+
+	@GetMapping("/builderTopic")
+	public List<Subject> builderTopic(@RequestParam(value = "id", defaultValue = "1") Integer id) {
+		BuilderContent b = mappers.getBuilderMapper().get("Class");
+		return mappers.getBuilderMapper().listTopicPath(b);
 	}
 
 	/**

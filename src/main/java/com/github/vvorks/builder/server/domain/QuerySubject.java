@@ -3,12 +3,21 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * クエリーの見出し
  */
-public class QuerySubject {
+public class QuerySubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		QuerySubject subject = new QuerySubject(
+				asInt(args.get("queryId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * クエリーID
@@ -40,10 +49,18 @@ public class QuerySubject {
 	}
 
 	/**
+	 * クエリーIDを取得する
+	 */
+	public int getQueryId() {
+		return queryId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

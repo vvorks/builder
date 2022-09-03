@@ -68,6 +68,36 @@
 			T1.F_TARGET_LOCALE_ID = #{ targetLocaleId }
 	</select>
 
+	<select id="getTopicPath" resultType="map">
+		SELECT
+			"FieldI18n" AS "P1__type",
+			T1.F_OWNER_FIELD_ID AS "P1_ownerFieldId",
+			T1.F_TARGET_LOCALE_ID AS "P1_targetLocaleId",
+			T3.F_CLASS_NAME || '/' || T2.F_FIELD_NAME AS "P1__title",
+			"Field" AS "P2__type",
+			T2.F_FIELD_ID AS "P2_fieldId",
+			T3.F_CLASS_NAME || '/' || T2.F_FIELD_NAME AS "P2__title",
+			"Class" AS "P3__type",
+			T3.F_CLASS_ID AS "P3_classId",
+			T3.F_CLASS_NAME || '(' || T3.F_TITLE || ')' AS "P3__title",
+			"Project" AS "P4__type",
+			T4.F_PROJECT_ID AS "P4_projectId",
+			T4.F_PROJECT_NAME || '(' || T4.F_TITLE || ')' AS "P4__title"
+		FROM
+			T_FIELD_I18N T1
+		LEFT JOIN T_FIELD T2 ON
+			T1.F_OWNER_FIELD_ID = T2.F_FIELD_ID
+		LEFT JOIN T_CLASS T3 ON
+			T2.F_OWNER_CLASS_ID = T3.F_CLASS_ID
+		LEFT JOIN T_PROJECT T4 ON
+			T3.F_OWNER_PROJECT_ID = T4.F_PROJECT_ID
+		WHERE
+			T1.F_OWNER_FIELD_ID = #{ ownerFieldId } AND 
+			T1.F_TARGET_LOCALE_ID = #{ targetLocaleId }
+		ORDER BY
+			T2.F_FIELD_ID ASC
+	</select>
+
 	<select id="listSummary" resultType="FieldI18nSummary">
 		SELECT
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",

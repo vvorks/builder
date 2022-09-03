@@ -73,6 +73,24 @@
 			T1.F_CLASS_ID = #{ classId }
 	</select>
 
+	<select id="getTopicPath" resultType="map">
+		SELECT
+			"Class" AS "P1__type",
+			T1.F_CLASS_ID AS "P1_classId",
+			T1.F_CLASS_NAME || '(' || T1.F_TITLE || ')' AS "P1__title",
+			"Project" AS "P2__type",
+			T2.F_PROJECT_ID AS "P2_projectId",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "P2__title"
+		FROM
+			T_CLASS T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_CLASS_ID = #{ classId }
+		ORDER BY
+			T1.F_CLASS_ID ASC
+	</select>
+
 	<select id="listSummary" resultType="ClassSummary">
 		SELECT
 			MAX(T1.F_CLASS_ID) AS "maxClassId",

@@ -15,7 +15,9 @@ public class ClassRelation {
 
 	private ClassRelation owner;
 
-	private FieldContent ownerField;
+	private FieldContent ownerSetField;
+
+	private FieldContent ownerRefField;
 
 	private List<ClassRelation> sets;
 
@@ -35,19 +37,34 @@ public class ClassRelation {
 		return owner;
 	}
 
-	public FieldContent getOwnerField() {
-		return ownerField;
+	public FieldContent getOwnerSetField() {
+		return ownerSetField;
 	}
 
-	public void addSet(ClassRelation r, FieldContent fld) {
+	public FieldContent getOwnerRefField() {
+		return ownerRefField;
+	}
+
+	public void addSet(ClassRelation r) {
 		if (sets == null) {
 			sets = new ArrayList<>();
 		}
 		sets.add(r);
-		if (fld == null || fld.isIsContainer()) {
+		r.owner = this;
+		r.ownerSetField = null;
+		r.ownerRefField = null;
+	}
+
+	public void addSet(ClassRelation r, FieldContent setField, FieldContent refField) {
+		if (sets == null) {
+			sets = new ArrayList<>();
+		}
+		sets.add(r);
+		if (setField.isIsContainer()) {
 			Asserts.assume(r.owner == null);
 			r.owner = this;
-			r.ownerField = fld;
+			r.ownerSetField = setField;
+			r.ownerRefField = refField;
 		}
 	}
 

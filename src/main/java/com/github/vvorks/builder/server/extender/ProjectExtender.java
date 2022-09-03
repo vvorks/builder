@@ -332,14 +332,14 @@ public class ProjectExtender {
 		ClassRelation root = new ClassRelation();
 		for (ClassRelation r : relations.values()) {
 			if (!r.isContained()) {
-				root.addSet(r, null);
+				root.addSet(r);
 			}
 		}
 		//ルートを返却
 		return root;
 	}
 
-	private Map<Integer, ClassRelation> getRelationMap(ProjectContent prj) {
+	public Map<Integer, ClassRelation> getRelationMap(ProjectContent prj) {
 		Map<Integer, ClassRelation> relations = new LinkedHashMap<>();
 		//クラス一覧からリレーションのリストを作成
 		for (ClassContent cls : projectMapper.listClassesContent(prj, 0, 0)) {
@@ -350,18 +350,13 @@ public class ProjectExtender {
 			ClassContent cls = owner.getContent();
 			for (FieldContent fld : classMapper.listFieldsContent(cls, 0, 0)) {
 				if (fld.getType() == DataType.SET) {
-					FieldContent fref = fieldMapper.getFref(fld);
-					ClassRelation set = relations.get(fref.getOwnerClassId());
-					owner.addSet(set, fld);
+					FieldContent ref = fieldMapper.getFref(fld);
+					ClassRelation set = relations.get(ref.getOwnerClassId());
+					owner.addSet(set, fld, ref);
 				}
 			}
 		}
 		return relations;
-	}
-
-	public List<ClassRelation> getRelationAsList(ProjectContent prj) {
-		Map<Integer, ClassRelation> relations = getRelationMap(prj);
-		return new ArrayList<>(relations.values());
 	}
 
 }

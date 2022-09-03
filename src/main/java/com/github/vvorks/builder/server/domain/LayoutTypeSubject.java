@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * レイアウト種別の見出し
  */
-public class LayoutTypeSubject {
+public class LayoutTypeSubject extends Subject {
 
 	private final LayoutType value;
 
@@ -25,6 +25,7 @@ public class LayoutTypeSubject {
 		return value;
 	}
 
+	@Override
 	public String get_title() {
 		return value.get_title();
 	}

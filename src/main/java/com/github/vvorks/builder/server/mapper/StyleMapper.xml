@@ -128,6 +128,24 @@
 			T1.F_STYLE_ID = #{ styleId }
 	</select>
 
+	<select id="getTopicPath" resultType="map">
+		SELECT
+			"Style" AS "P1__type",
+			T1.F_STYLE_ID AS "P1_styleId",
+			T1.F_STYLE_NAME AS "P1__title",
+			"Project" AS "P2__type",
+			T2.F_PROJECT_ID AS "P2_projectId",
+			T2.F_PROJECT_NAME || '(' || T2.F_TITLE || ')' AS "P2__title"
+		FROM
+			T_STYLE T1
+		LEFT JOIN T_PROJECT T2 ON
+			T1.F_OWNER_PROJECT_ID = T2.F_PROJECT_ID
+		WHERE
+			T1.F_STYLE_ID = #{ styleId }
+		ORDER BY
+			T1.F_STYLE_NAME
+	</select>
+
 	<select id="listSummary" resultType="StyleSummary">
 		SELECT
 			MAX(T1.F_STYLE_ID) AS "maxStyleId",

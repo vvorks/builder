@@ -62,6 +62,31 @@
 			T1.F_TARGET_LOCALE_ID = #{ targetLocaleId }
 	</select>
 
+	<select id="getTopicPath" resultType="map">
+		SELECT
+			"ClassI18n" AS "P1__type",
+			T1.F_OWNER_CLASS_ID AS "P1_ownerClassId",
+			T1.F_TARGET_LOCALE_ID AS "P1_targetLocaleId",
+			T2.F_CLASS_NAME || '(' || T2.F_TITLE || ')' AS "P1__title",
+			"Class" AS "P2__type",
+			T2.F_CLASS_ID AS "P2_classId",
+			T2.F_CLASS_NAME || '(' || T2.F_TITLE || ')' AS "P2__title",
+			"Project" AS "P3__type",
+			T3.F_PROJECT_ID AS "P3_projectId",
+			T3.F_PROJECT_NAME || '(' || T3.F_TITLE || ')' AS "P3__title"
+		FROM
+			T_CLASS_I18N T1
+		LEFT JOIN T_CLASS T2 ON
+			T1.F_OWNER_CLASS_ID = T2.F_CLASS_ID
+		LEFT JOIN T_PROJECT T3 ON
+			T2.F_OWNER_PROJECT_ID = T3.F_PROJECT_ID
+		WHERE
+			T1.F_OWNER_CLASS_ID = #{ ownerClassId } AND 
+			T1.F_TARGET_LOCALE_ID = #{ targetLocaleId }
+		ORDER BY
+			T2.F_CLASS_ID ASC
+	</select>
+
 	<select id="listSummary" resultType="ClassI18nSummary">
 		SELECT
 			MAX(T1.F__LAST_UPDATED_AT) AS "max_lastUpdatedAt",

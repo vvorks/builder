@@ -179,7 +179,7 @@ public class PageBuilder {
 			width = 10;
 			for (ClassRelation r : rel.getOwns()) {
 				ClassContent cls = r.getContent();
-				FieldContent ownerField = r.getOwnerField();
+				FieldContent ownerField = r.getOwnerSetField();
 				String fieldName = ownerField != null ? ownerField.getFieldName() : cls.getClassName();
 				b.enter(LayoutType.TAB, fieldName);
 					b.locate(left, 0, NA, 0, width, NA);
@@ -194,7 +194,7 @@ public class PageBuilder {
 			b.locate(0, 2, 0, 0, NA, NA);
 			for (ClassRelation r : rel.getOwns()) {
 				ClassContent cls = r.getContent();
-				FieldContent ownerField = r.getOwnerField();
+				FieldContent ownerField = r.getOwnerSetField();
 				String fieldName = ownerField != null ? ownerField.getFieldName() : cls.getClassName();
 				//TODO Query追加してSQLレベルで絞り込み
 				Iterable<FieldContent> fields = RichIterable

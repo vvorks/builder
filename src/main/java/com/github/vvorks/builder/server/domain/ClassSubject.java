@@ -3,12 +3,21 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * クラスの見出し
  */
-public class ClassSubject {
+public class ClassSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		ClassSubject subject = new ClassSubject(
+				asInt(args.get("classId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * クラスID
@@ -40,10 +49,18 @@ public class ClassSubject {
 	}
 
 	/**
+	 * クラスIDを取得する
+	 */
+	public int getClassId() {
+		return classId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

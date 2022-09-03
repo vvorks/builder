@@ -3,12 +3,21 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * メッセージの見出し
  */
-public class MessageSubject {
+public class MessageSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		MessageSubject subject = new MessageSubject(
+				asInt(args.get("messageId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * メッセージID
@@ -38,10 +47,18 @@ public class MessageSubject {
 	}
 
 	/**
+	 * メッセージIDを取得する
+	 */
+	public int getMessageId() {
+		return messageId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

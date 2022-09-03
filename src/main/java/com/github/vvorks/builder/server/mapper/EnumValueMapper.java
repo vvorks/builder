@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -53,6 +54,14 @@ public interface EnumValueMapper extends MapperInterface<EnumValueContent> {
 		@Param("ownerEnumId") int ownerEnumId, 
 		@Param("valueId") String valueId
 	);
+
+	/**
+	 * 列挙値のトピックパスを取得する
+	 *
+	 * @param content 列挙値
+	 * @return 列挙値のトピックパス
+	 */
+	public Map<String, Object> getTopicPath(EnumValueContent content);
 
 	/**
 	 * 全ての列挙値のサマリーを取得する

@@ -3,12 +3,21 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * ページの見出し
  */
-public class PageSubject {
+public class PageSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		PageSubject subject = new PageSubject(
+				asInt(args.get("pageId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * ページId
@@ -38,10 +47,18 @@ public class PageSubject {
 	}
 
 	/**
+	 * ページIdを取得する
+	 */
+	public int getPageId() {
+		return pageId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

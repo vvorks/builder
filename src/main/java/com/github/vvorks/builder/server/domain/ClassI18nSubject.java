@@ -3,12 +3,22 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * クラス(I18n)の見出し
  */
-public class ClassI18nSubject {
+public class ClassI18nSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		ClassI18nSubject subject = new ClassI18nSubject(
+				asInt(args.get("ownerClassId")),
+				asString(args.get("targetLocaleId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * 所属クラスのクラスID
@@ -46,10 +56,25 @@ public class ClassI18nSubject {
 	}
 
 	/**
+	 * 所属クラスのクラスIDを取得する
+	 */
+	public int getOwnerClassId() {
+		return ownerClassId;
+	}
+
+	/**
+	 * 対象ロケールのロケールIDを取得する
+	 */
+	public String getTargetLocaleId() {
+		return targetLocaleId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -51,6 +52,14 @@ public interface QueryMapper extends MapperInterface<QueryContent> {
 	public QueryContent get(
 		@Param("queryId") int queryId
 	);
+
+	/**
+	 * クエリーのトピックパスを取得する
+	 *
+	 * @param content クエリー
+	 * @return クエリーのトピックパス
+	 */
+	public Map<String, Object> getTopicPath(QueryContent content);
 
 	/**
 	 * 全てのクエリーのサマリーを取得する

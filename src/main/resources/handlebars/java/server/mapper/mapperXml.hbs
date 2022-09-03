@@ -97,6 +97,44 @@
 	</select>
 
 	{{sql}}
+	<select id="getTopicPath" resultType="map">
+		{{#if topics}}
+		SELECT
+			{{#each topics}}
+			"{{topicClass.className}}" AS "P{{topicNo}}__type",
+			{{#each topicClass.keys}}
+			T{{../topicNo}}.{{columnName}} AS "P{{../topicNo}}_{{fieldName}}",
+			{{/each}}
+			{{title.titleExpr}} AS "P{{topicNo}}_{{title.fieldName}}"{{#separator}},{{/separator}}
+			{{/each}}
+		FROM
+			{{tableName}} T1
+		{{#reverse}}
+		{{#each joins}}
+		LEFT JOIN {{nextClass.tableName}} T{{nextNo}} ON
+			{{#each lastField.refKeyFields}}
+			{{#if optionKey}}
+			T{{../nextNo}}.{{optionKey}} = {{optionValue}} AND
+			{{/if}}
+			T{{../lastNo}}.{{columnName}} = T{{../nextNo}}.{{refKeyColumnName}}{{#separator}} AND {{/separator}}
+			{{/each}}
+		{{/each}}
+		{{^}}
+		WHERE
+			{{#each keys}}
+			T1.{{columnName}} = #{ {{fieldName}} }{{#separator}} AND {{/separator}}
+			{{/each}}
+		{{#if sqlOrder}}
+		ORDER BY
+			{{sqlOrder}}
+		{{/if}}
+		{{/reverse}}
+		{{else}}
+		SELECT 0 FROM {{tableName}} T1 WHERE 0=1
+		{{/if}}
+	</select>
+
+	{{sql}}
 	<select id="listSummary" resultType="{{className}}Summary">
 		SELECT
 			{{#each properties}}

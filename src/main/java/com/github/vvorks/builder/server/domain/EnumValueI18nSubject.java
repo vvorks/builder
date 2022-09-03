@@ -3,12 +3,23 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * 列挙値(I18n)の見出し
  */
-public class EnumValueI18nSubject {
+public class EnumValueI18nSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		EnumValueI18nSubject subject = new EnumValueI18nSubject(
+				asInt(args.get("ownerOwnerEnumId")),
+				asString(args.get("ownerValueId")),
+				asString(args.get("targetLocaleId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * 所属列挙値の所属列挙の列挙ID
@@ -54,10 +65,32 @@ public class EnumValueI18nSubject {
 	}
 
 	/**
+	 * 所属列挙値の所属列挙の列挙IDを取得する
+	 */
+	public int getOwnerOwnerEnumId() {
+		return ownerOwnerEnumId;
+	}
+
+	/**
+	 * 所属列挙値の列挙名を取得する
+	 */
+	public String getOwnerValueId() {
+		return ownerValueId;
+	}
+
+	/**
+	 * 対象ロケールのロケールIDを取得する
+	 */
+	public String getTargetLocaleId() {
+		return targetLocaleId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

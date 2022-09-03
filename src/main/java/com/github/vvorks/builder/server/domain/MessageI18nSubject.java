@@ -3,12 +3,22 @@
  */
 package com.github.vvorks.builder.server.domain;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * メッセージ(I18n)の見出し
  */
-public class MessageI18nSubject {
+public class MessageI18nSubject extends Subject {
+
+	public static Subject createFrom(Map<String, Object> args) {
+		MessageI18nSubject subject = new MessageI18nSubject(
+				asInt(args.get("ownerMessageId")),
+				asString(args.get("targetLocaleId"))
+				);
+		subject.set_title(asString(args.get("_title")));
+		return subject;
+	}
 
 	/**
 	 * 所属列挙値のメッセージID
@@ -46,10 +56,25 @@ public class MessageI18nSubject {
 	}
 
 	/**
+	 * 所属列挙値のメッセージIDを取得する
+	 */
+	public int getOwnerMessageId() {
+		return ownerMessageId;
+	}
+
+	/**
+	 * 対象ロケールのロケールIDを取得する
+	 */
+	public String getTargetLocaleId() {
+		return targetLocaleId;
+	}
+
+	/**
 	 * タイトルを取得する
 	 *
 	 * @return タイトル
 	 */
+	@Override
 	public String get_title() {
 		return this._title;
 	}

@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -51,6 +52,14 @@ public interface ClassMapper extends MapperInterface<ClassContent> {
 	public ClassContent get(
 		@Param("classId") int classId
 	);
+
+	/**
+	 * クラスのトピックパスを取得する
+	 *
+	 * @param content クラス
+	 * @return クラスのトピックパス
+	 */
+	public Map<String, Object> getTopicPath(ClassContent content);
 
 	/**
 	 * 全てのクラスのサマリーを取得する

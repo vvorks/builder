@@ -4,6 +4,7 @@
 package com.github.vvorks.builder.server.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -51,6 +52,14 @@ public interface PageSetMapper extends MapperInterface<PageSetContent> {
 	public PageSetContent get(
 		@Param("pageSetId") int pageSetId
 	);
+
+	/**
+	 * ページセットのトピックパスを取得する
+	 *
+	 * @param content ページセット
+	 * @return ページセットのトピックパス
+	 */
+	public Map<String, Object> getTopicPath(PageSetContent content);
 
 	/**
 	 * 全てのページセットのサマリーを取得する

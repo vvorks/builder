@@ -64,6 +64,29 @@
 			T1.F_PAGE_ID = #{ pageId }
 	</select>
 
+	<select id="getTopicPath" resultType="map">
+		SELECT
+			"Page" AS "P1__type",
+			T1.F_PAGE_ID AS "P1_pageId",
+			T2.F_PAGE_SET_NAME || '(' || T1.F_WIDTH || 'x' || T1.F_HEIGHT || ')' AS "P1__title",
+			"PageSet" AS "P2__type",
+			T2.F_PAGE_SET_ID AS "P2_pageSetId",
+			T2.F_PAGE_SET_NAME AS "P2__title",
+			"Project" AS "P3__type",
+			T3.F_PROJECT_ID AS "P3_projectId",
+			T3.F_PROJECT_NAME || '(' || T3.F_TITLE || ')' AS "P3__title"
+		FROM
+			T_PAGE T1
+		LEFT JOIN T_PAGE_SET T2 ON
+			T1.F_OWNER_PAGE_SET_ID = T2.F_PAGE_SET_ID
+		LEFT JOIN T_PROJECT T3 ON
+			T2.F_OWNER_PROJECT_ID = T3.F_PROJECT_ID
+		WHERE
+			T1.F_PAGE_ID = #{ pageId }
+		ORDER BY
+			T1.F_WIDTH DESC, T1.F_HEIGHT DESC
+	</select>
+
 	<select id="listSummary" resultType="PageSummary">
 		SELECT
 			MAX(T1.F_PAGE_ID) AS "maxPageId",
