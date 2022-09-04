@@ -76,25 +76,7 @@ import com.github.vvorks.builder.server.domain.LayoutTypeSummary;
 import com.github.vvorks.builder.server.domain.StyleCondition;
 import com.github.vvorks.builder.server.domain.StyleConditionSubject;
 import com.github.vvorks.builder.server.domain.StyleConditionSummary;
-import com.github.vvorks.builder.server.mapper.BuilderMapper;
-import com.github.vvorks.builder.server.mapper.ClassMapper;
-import com.github.vvorks.builder.server.mapper.ClassI18nMapper;
-import com.github.vvorks.builder.server.mapper.EnumMapper;
-import com.github.vvorks.builder.server.mapper.EnumI18nMapper;
-import com.github.vvorks.builder.server.mapper.EnumValueMapper;
-import com.github.vvorks.builder.server.mapper.EnumValueI18nMapper;
-import com.github.vvorks.builder.server.mapper.FieldMapper;
-import com.github.vvorks.builder.server.mapper.FieldI18nMapper;
-import com.github.vvorks.builder.server.mapper.LayoutMapper;
-import com.github.vvorks.builder.server.mapper.LocaleMapper;
-import com.github.vvorks.builder.server.mapper.MessageMapper;
-import com.github.vvorks.builder.server.mapper.MessageI18nMapper;
-import com.github.vvorks.builder.server.mapper.PageMapper;
-import com.github.vvorks.builder.server.mapper.PageSetMapper;
-import com.github.vvorks.builder.server.mapper.ProjectMapper;
-import com.github.vvorks.builder.server.mapper.ProjectI18nMapper;
-import com.github.vvorks.builder.server.mapper.QueryMapper;
-import com.github.vvorks.builder.server.mapper.StyleMapper;
+import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.lang.Strings;
 
 /**
@@ -103,81 +85,8 @@ import com.github.vvorks.builder.shared.common.lang.Strings;
 @JsonRpcController("/builder")
 public class BuilderRpcController {
 
-	/** プロジェクトのMapper */
 	@Autowired
-	private ProjectMapper projectMapper;
-
-	/** プロジェクト(I18n)のMapper */
-	@Autowired
-	private ProjectI18nMapper projectI18nMapper;
-
-	/** クラスのMapper */
-	@Autowired
-	private ClassMapper classMapper;
-
-	/** クラス(I18n)のMapper */
-	@Autowired
-	private ClassI18nMapper classI18nMapper;
-
-	/** フィールドのMapper */
-	@Autowired
-	private FieldMapper fieldMapper;
-
-	/** フィールド(I18n)のMapper */
-	@Autowired
-	private FieldI18nMapper fieldI18nMapper;
-
-	/** クエリーのMapper */
-	@Autowired
-	private QueryMapper queryMapper;
-
-	/** 列挙のMapper */
-	@Autowired
-	private EnumMapper enumMapper;
-
-	/** 列挙(I18n)のMapper */
-	@Autowired
-	private EnumI18nMapper enumI18nMapper;
-
-	/** 列挙値のMapper */
-	@Autowired
-	private EnumValueMapper enumValueMapper;
-
-	/** 列挙値(I18n)のMapper */
-	@Autowired
-	private EnumValueI18nMapper enumValueI18nMapper;
-
-	/** メッセージのMapper */
-	@Autowired
-	private MessageMapper messageMapper;
-
-	/** メッセージ(I18n)のMapper */
-	@Autowired
-	private MessageI18nMapper messageI18nMapper;
-
-	/** スタイルのMapper */
-	@Autowired
-	private StyleMapper styleMapper;
-
-	/** ページセットのMapper */
-	@Autowired
-	private PageSetMapper pageSetMapper;
-
-	/** ページのMapper */
-	@Autowired
-	private PageMapper pageMapper;
-
-	/** レイアウトのMapper */
-	@Autowired
-	private LayoutMapper layoutMapper;
-
-	/** ロケールのMapper */
-	@Autowired
-	private LocaleMapper localeMapper;
-
-	/** BuilderのMapper */
-	@Autowired
-	private BuilderMapper builderMapper;
+	private Mappers mappers;
 
 	/**
 	 * プロジェクトを挿入する
@@ -187,7 +96,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertProject(ProjectContent content) {
-		return projectMapper.insert(content);
+		return mappers.getProjectMapper().insert(content);
 	}
 
 	/**
@@ -198,7 +107,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateProject(ProjectContent content) {
-		return projectMapper.update(content);
+		return mappers.getProjectMapper().update(content);
 	}
 
 	/**
@@ -209,7 +118,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteProject(ProjectContent content) {
-		return projectMapper.delete(content);
+		return mappers.getProjectMapper().delete(content);
 	}
 
 	/**
@@ -222,7 +131,7 @@ public class BuilderRpcController {
 	public ProjectContent getProject(
 		@JsonRpcParam("projectId") int projectId
 	) {
-		return projectMapper.get(
+		return mappers.getProjectMapper().get(
 				projectId
 				);
 	}
@@ -239,12 +148,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectContent> summary = projectMapper.listSummary();
+		ProjectSummary<ProjectContent> summary = mappers.getProjectMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectContent> contents = projectMapper.listContent(offset, limit);
+		List<ProjectContent> contents = mappers.getProjectMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -263,14 +172,14 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectContent> summary = projectMapper.listSummaryIfNameIs(
+		ProjectSummary<ProjectContent> summary = mappers.getProjectMapper().listSummaryIfNameIs(
 				name
 				);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectContent> contents = projectMapper.listContentIfNameIs(
+		List<ProjectContent> contents = mappers.getProjectMapper().listContentIfNameIs(
 				name,
 				offset, limit);
 		summary.setContents(contents);
@@ -291,13 +200,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassContent> summary = projectMapper.listClassesSummary(content);
+		ClassSummary<ClassContent> summary = mappers.getProjectMapper().listClassesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<ClassContent> contents =
-				projectMapper.listClassesContent(content, offset, limit);
+				mappers.getProjectMapper().listClassesContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -317,7 +226,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassContent> summary = projectMapper.listClassesSummaryIfNameIs(
+		ClassSummary<ClassContent> summary = mappers.getProjectMapper().listClassesSummaryIfNameIs(
 				content,
 				name
 				);
@@ -325,7 +234,7 @@ public class BuilderRpcController {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassContent> contents = projectMapper.listClassesContentIfNameIs(
+		List<ClassContent> contents = mappers.getProjectMapper().listClassesContentIfNameIs(
 				content,
 				name,
 				offset, limit);
@@ -347,13 +256,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumSummary<EnumContent> summary = projectMapper.listEnumsSummary(content);
+		EnumSummary<EnumContent> summary = mappers.getProjectMapper().listEnumsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<EnumContent> contents =
-				projectMapper.listEnumsContent(content, offset, limit);
+				mappers.getProjectMapper().listEnumsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -373,7 +282,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumSummary<EnumContent> summary = projectMapper.listEnumsSummaryIfNameIs(
+		EnumSummary<EnumContent> summary = mappers.getProjectMapper().listEnumsSummaryIfNameIs(
 				content,
 				name
 				);
@@ -381,7 +290,7 @@ public class BuilderRpcController {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumContent> contents = projectMapper.listEnumsContentIfNameIs(
+		List<EnumContent> contents = mappers.getProjectMapper().listEnumsContentIfNameIs(
 				content,
 				name,
 				offset, limit);
@@ -403,13 +312,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		MessageSummary<MessageContent> summary = projectMapper.listMessagesSummary(content);
+		MessageSummary<MessageContent> summary = mappers.getProjectMapper().listMessagesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<MessageContent> contents =
-				projectMapper.listMessagesContent(content, offset, limit);
+				mappers.getProjectMapper().listMessagesContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -428,13 +337,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		StyleSummary<StyleContent> summary = projectMapper.listStylesSummary(content);
+		StyleSummary<StyleContent> summary = mappers.getProjectMapper().listStylesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<StyleContent> contents =
-				projectMapper.listStylesContent(content, offset, limit);
+				mappers.getProjectMapper().listStylesContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -453,13 +362,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		PageSetSummary<PageSetContent> summary = projectMapper.listPageSetsSummary(content);
+		PageSetSummary<PageSetContent> summary = mappers.getProjectMapper().listPageSetsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<PageSetContent> contents =
-				projectMapper.listPageSetsContent(content, offset, limit);
+				mappers.getProjectMapper().listPageSetsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -478,13 +387,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LocaleSummary<LocaleContent> summary = projectMapper.listLocalesSummary(content);
+		LocaleSummary<LocaleContent> summary = mappers.getProjectMapper().listLocalesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<LocaleContent> contents =
-				projectMapper.listLocalesContent(content, offset, limit);
+				mappers.getProjectMapper().listLocalesContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -503,13 +412,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectI18nSummary<ProjectI18nContent> summary = projectMapper.listI18nsSummary(content);
+		ProjectI18nSummary<ProjectI18nContent> summary = mappers.getProjectMapper().listI18nsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<ProjectI18nContent> contents =
-				projectMapper.listI18nsContent(content, offset, limit);
+				mappers.getProjectMapper().listI18nsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -522,7 +431,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertProjectI18n(ProjectI18nContent content) {
-		return projectI18nMapper.insert(content);
+		return mappers.getProjectI18nMapper().insert(content);
 	}
 
 	/**
@@ -533,7 +442,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateProjectI18n(ProjectI18nContent content) {
-		return projectI18nMapper.update(content);
+		return mappers.getProjectI18nMapper().update(content);
 	}
 
 	/**
@@ -544,7 +453,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteProjectI18n(ProjectI18nContent content) {
-		return projectI18nMapper.delete(content);
+		return mappers.getProjectI18nMapper().delete(content);
 	}
 
 	/**
@@ -559,7 +468,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("ownerProjectId") int ownerProjectId, 
 		@JsonRpcParam("targetLocaleId") String targetLocaleId
 	) {
-		return projectI18nMapper.get(
+		return mappers.getProjectI18nMapper().get(
 				ownerProjectId, 
 				targetLocaleId
 				);
@@ -577,12 +486,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectI18nSummary<ProjectI18nContent> summary = projectI18nMapper.listSummary();
+		ProjectI18nSummary<ProjectI18nContent> summary = mappers.getProjectI18nMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectI18nContent> contents = projectI18nMapper.listContent(offset, limit);
+		List<ProjectI18nContent> contents = mappers.getProjectI18nMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -597,7 +506,7 @@ public class BuilderRpcController {
 	public ProjectContent getProjectI18nOwner(
 		@JsonRpcParam("content") ProjectI18nContent content
 	) {
-		return projectI18nMapper.getOwner(content);
+		return mappers.getProjectI18nMapper().getOwner(content);
 	}
 
 	/**
@@ -613,13 +522,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectSubject> summary = projectI18nMapper.listOwnerCandidateSummary(
+		ProjectSummary<ProjectSubject> summary = mappers.getProjectI18nMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectSubject> contents = projectI18nMapper.listOwnerCandidateSubject(
+		List<ProjectSubject> contents = mappers.getProjectI18nMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -636,7 +545,7 @@ public class BuilderRpcController {
 	public LocaleContent getProjectI18nTarget(
 		@JsonRpcParam("content") ProjectI18nContent content
 	) {
-		return projectI18nMapper.getTarget(content);
+		return mappers.getProjectI18nMapper().getTarget(content);
 	}
 
 	/**
@@ -652,13 +561,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LocaleSummary<LocaleSubject> summary = projectI18nMapper.listTargetCandidateSummary(
+		LocaleSummary<LocaleSubject> summary = mappers.getProjectI18nMapper().listTargetCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LocaleSubject> contents = projectI18nMapper.listTargetCandidateSubject(
+		List<LocaleSubject> contents = mappers.getProjectI18nMapper().listTargetCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -673,7 +582,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertClass(ClassContent content) {
-		return classMapper.insert(content);
+		return mappers.getClassMapper().insert(content);
 	}
 
 	/**
@@ -684,7 +593,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateClass(ClassContent content) {
-		return classMapper.update(content);
+		return mappers.getClassMapper().update(content);
 	}
 
 	/**
@@ -695,7 +604,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteClass(ClassContent content) {
-		return classMapper.delete(content);
+		return mappers.getClassMapper().delete(content);
 	}
 
 	/**
@@ -708,7 +617,7 @@ public class BuilderRpcController {
 	public ClassContent getClass(
 		@JsonRpcParam("classId") int classId
 	) {
-		return classMapper.get(
+		return mappers.getClassMapper().get(
 				classId
 				);
 	}
@@ -725,12 +634,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassContent> summary = classMapper.listSummary();
+		ClassSummary<ClassContent> summary = mappers.getClassMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassContent> contents = classMapper.listContent(offset, limit);
+		List<ClassContent> contents = mappers.getClassMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -749,14 +658,14 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassContent> summary = classMapper.listSummaryIfNameIs(
+		ClassSummary<ClassContent> summary = mappers.getClassMapper().listSummaryIfNameIs(
 				name
 				);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassContent> contents = classMapper.listContentIfNameIs(
+		List<ClassContent> contents = mappers.getClassMapper().listContentIfNameIs(
 				name,
 				offset, limit);
 		summary.setContents(contents);
@@ -773,7 +682,7 @@ public class BuilderRpcController {
 	public ProjectContent getClassOwner(
 		@JsonRpcParam("content") ClassContent content
 	) {
-		return classMapper.getOwner(content);
+		return mappers.getClassMapper().getOwner(content);
 	}
 
 	/**
@@ -789,13 +698,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectSubject> summary = classMapper.listOwnerCandidateSummary(
+		ProjectSummary<ProjectSubject> summary = mappers.getClassMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectSubject> contents = classMapper.listOwnerCandidateSubject(
+		List<ProjectSubject> contents = mappers.getClassMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -816,13 +725,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldSummary<FieldContent> summary = classMapper.listFieldsSummary(content);
+		FieldSummary<FieldContent> summary = mappers.getClassMapper().listFieldsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<FieldContent> contents =
-				classMapper.listFieldsContent(content, offset, limit);
+				mappers.getClassMapper().listFieldsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -842,7 +751,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldSummary<FieldContent> summary = classMapper.listFieldsSummaryIfNameIs(
+		FieldSummary<FieldContent> summary = mappers.getClassMapper().listFieldsSummaryIfNameIs(
 				content,
 				name
 				);
@@ -850,7 +759,7 @@ public class BuilderRpcController {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FieldContent> contents = classMapper.listFieldsContentIfNameIs(
+		List<FieldContent> contents = mappers.getClassMapper().listFieldsContentIfNameIs(
 				content,
 				name,
 				offset, limit);
@@ -872,13 +781,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		QuerySummary<QueryContent> summary = classMapper.listQueriesSummary(content);
+		QuerySummary<QueryContent> summary = mappers.getClassMapper().listQueriesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<QueryContent> contents =
-				classMapper.listQueriesContent(content, offset, limit);
+				mappers.getClassMapper().listQueriesContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -897,13 +806,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassI18nSummary<ClassI18nContent> summary = classMapper.listI18nsSummary(content);
+		ClassI18nSummary<ClassI18nContent> summary = mappers.getClassMapper().listI18nsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<ClassI18nContent> contents =
-				classMapper.listI18nsContent(content, offset, limit);
+				mappers.getClassMapper().listI18nsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -916,7 +825,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertClassI18n(ClassI18nContent content) {
-		return classI18nMapper.insert(content);
+		return mappers.getClassI18nMapper().insert(content);
 	}
 
 	/**
@@ -927,7 +836,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateClassI18n(ClassI18nContent content) {
-		return classI18nMapper.update(content);
+		return mappers.getClassI18nMapper().update(content);
 	}
 
 	/**
@@ -938,7 +847,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteClassI18n(ClassI18nContent content) {
-		return classI18nMapper.delete(content);
+		return mappers.getClassI18nMapper().delete(content);
 	}
 
 	/**
@@ -953,7 +862,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("ownerClassId") int ownerClassId, 
 		@JsonRpcParam("targetLocaleId") String targetLocaleId
 	) {
-		return classI18nMapper.get(
+		return mappers.getClassI18nMapper().get(
 				ownerClassId, 
 				targetLocaleId
 				);
@@ -971,12 +880,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassI18nSummary<ClassI18nContent> summary = classI18nMapper.listSummary();
+		ClassI18nSummary<ClassI18nContent> summary = mappers.getClassI18nMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassI18nContent> contents = classI18nMapper.listContent(offset, limit);
+		List<ClassI18nContent> contents = mappers.getClassI18nMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -991,7 +900,7 @@ public class BuilderRpcController {
 	public ClassContent getClassI18nOwner(
 		@JsonRpcParam("content") ClassI18nContent content
 	) {
-		return classI18nMapper.getOwner(content);
+		return mappers.getClassI18nMapper().getOwner(content);
 	}
 
 	/**
@@ -1007,13 +916,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassSubject> summary = classI18nMapper.listOwnerCandidateSummary(
+		ClassSummary<ClassSubject> summary = mappers.getClassI18nMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassSubject> contents = classI18nMapper.listOwnerCandidateSubject(
+		List<ClassSubject> contents = mappers.getClassI18nMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1030,7 +939,7 @@ public class BuilderRpcController {
 	public LocaleContent getClassI18nTarget(
 		@JsonRpcParam("content") ClassI18nContent content
 	) {
-		return classI18nMapper.getTarget(content);
+		return mappers.getClassI18nMapper().getTarget(content);
 	}
 
 	/**
@@ -1046,13 +955,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LocaleSummary<LocaleSubject> summary = classI18nMapper.listTargetCandidateSummary(
+		LocaleSummary<LocaleSubject> summary = mappers.getClassI18nMapper().listTargetCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LocaleSubject> contents = classI18nMapper.listTargetCandidateSubject(
+		List<LocaleSubject> contents = mappers.getClassI18nMapper().listTargetCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1067,7 +976,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertField(FieldContent content) {
-		return fieldMapper.insert(content);
+		return mappers.getFieldMapper().insert(content);
 	}
 
 	/**
@@ -1078,7 +987,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateField(FieldContent content) {
-		return fieldMapper.update(content);
+		return mappers.getFieldMapper().update(content);
 	}
 
 	/**
@@ -1089,7 +998,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteField(FieldContent content) {
-		return fieldMapper.delete(content);
+		return mappers.getFieldMapper().delete(content);
 	}
 
 	/**
@@ -1102,7 +1011,7 @@ public class BuilderRpcController {
 	public FieldContent getField(
 		@JsonRpcParam("fieldId") int fieldId
 	) {
-		return fieldMapper.get(
+		return mappers.getFieldMapper().get(
 				fieldId
 				);
 	}
@@ -1119,12 +1028,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldSummary<FieldContent> summary = fieldMapper.listSummary();
+		FieldSummary<FieldContent> summary = mappers.getFieldMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FieldContent> contents = fieldMapper.listContent(offset, limit);
+		List<FieldContent> contents = mappers.getFieldMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1143,14 +1052,14 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldSummary<FieldContent> summary = fieldMapper.listSummaryIfNameIs(
+		FieldSummary<FieldContent> summary = mappers.getFieldMapper().listSummaryIfNameIs(
 				name
 				);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FieldContent> contents = fieldMapper.listContentIfNameIs(
+		List<FieldContent> contents = mappers.getFieldMapper().listContentIfNameIs(
 				name,
 				offset, limit);
 		summary.setContents(contents);
@@ -1167,7 +1076,7 @@ public class BuilderRpcController {
 	public ClassContent getFieldOwner(
 		@JsonRpcParam("content") FieldContent content
 	) {
-		return fieldMapper.getOwner(content);
+		return mappers.getFieldMapper().getOwner(content);
 	}
 
 	/**
@@ -1183,13 +1092,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassSubject> summary = fieldMapper.listOwnerCandidateSummary(
+		ClassSummary<ClassSubject> summary = mappers.getFieldMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassSubject> contents = fieldMapper.listOwnerCandidateSubject(
+		List<ClassSubject> contents = mappers.getFieldMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1206,7 +1115,7 @@ public class BuilderRpcController {
 	public ClassContent getFieldCref(
 		@JsonRpcParam("content") FieldContent content
 	) {
-		return fieldMapper.getCref(content);
+		return mappers.getFieldMapper().getCref(content);
 	}
 
 	/**
@@ -1222,13 +1131,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassSubject> summary = fieldMapper.listCrefCandidateSummary(
+		ClassSummary<ClassSubject> summary = mappers.getFieldMapper().listCrefCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassSubject> contents = fieldMapper.listCrefCandidateSubject(
+		List<ClassSubject> contents = mappers.getFieldMapper().listCrefCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1245,7 +1154,7 @@ public class BuilderRpcController {
 	public EnumContent getFieldEref(
 		@JsonRpcParam("content") FieldContent content
 	) {
-		return fieldMapper.getEref(content);
+		return mappers.getFieldMapper().getEref(content);
 	}
 
 	/**
@@ -1261,13 +1170,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumSummary<EnumSubject> summary = fieldMapper.listErefCandidateSummary(
+		EnumSummary<EnumSubject> summary = mappers.getFieldMapper().listErefCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumSubject> contents = fieldMapper.listErefCandidateSubject(
+		List<EnumSubject> contents = mappers.getFieldMapper().listErefCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1284,7 +1193,7 @@ public class BuilderRpcController {
 	public FieldContent getFieldFref(
 		@JsonRpcParam("content") FieldContent content
 	) {
-		return fieldMapper.getFref(content);
+		return mappers.getFieldMapper().getFref(content);
 	}
 
 	/**
@@ -1300,13 +1209,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldSummary<FieldSubject> summary = fieldMapper.listFrefCandidateSummary(
+		FieldSummary<FieldSubject> summary = mappers.getFieldMapper().listFrefCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FieldSubject> contents = fieldMapper.listFrefCandidateSubject(
+		List<FieldSubject> contents = mappers.getFieldMapper().listFrefCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1378,13 +1287,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldI18nSummary<FieldI18nContent> summary = fieldMapper.listI18nsSummary(content);
+		FieldI18nSummary<FieldI18nContent> summary = mappers.getFieldMapper().listI18nsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<FieldI18nContent> contents =
-				fieldMapper.listI18nsContent(content, offset, limit);
+				mappers.getFieldMapper().listI18nsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1397,7 +1306,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertFieldI18n(FieldI18nContent content) {
-		return fieldI18nMapper.insert(content);
+		return mappers.getFieldI18nMapper().insert(content);
 	}
 
 	/**
@@ -1408,7 +1317,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateFieldI18n(FieldI18nContent content) {
-		return fieldI18nMapper.update(content);
+		return mappers.getFieldI18nMapper().update(content);
 	}
 
 	/**
@@ -1419,7 +1328,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteFieldI18n(FieldI18nContent content) {
-		return fieldI18nMapper.delete(content);
+		return mappers.getFieldI18nMapper().delete(content);
 	}
 
 	/**
@@ -1434,7 +1343,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("ownerFieldId") int ownerFieldId, 
 		@JsonRpcParam("targetLocaleId") String targetLocaleId
 	) {
-		return fieldI18nMapper.get(
+		return mappers.getFieldI18nMapper().get(
 				ownerFieldId, 
 				targetLocaleId
 				);
@@ -1452,12 +1361,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldI18nSummary<FieldI18nContent> summary = fieldI18nMapper.listSummary();
+		FieldI18nSummary<FieldI18nContent> summary = mappers.getFieldI18nMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FieldI18nContent> contents = fieldI18nMapper.listContent(offset, limit);
+		List<FieldI18nContent> contents = mappers.getFieldI18nMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1472,7 +1381,7 @@ public class BuilderRpcController {
 	public FieldContent getFieldI18nOwner(
 		@JsonRpcParam("content") FieldI18nContent content
 	) {
-		return fieldI18nMapper.getOwner(content);
+		return mappers.getFieldI18nMapper().getOwner(content);
 	}
 
 	/**
@@ -1488,13 +1397,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldSummary<FieldSubject> summary = fieldI18nMapper.listOwnerCandidateSummary(
+		FieldSummary<FieldSubject> summary = mappers.getFieldI18nMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FieldSubject> contents = fieldI18nMapper.listOwnerCandidateSubject(
+		List<FieldSubject> contents = mappers.getFieldI18nMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1511,7 +1420,7 @@ public class BuilderRpcController {
 	public LocaleContent getFieldI18nTarget(
 		@JsonRpcParam("content") FieldI18nContent content
 	) {
-		return fieldI18nMapper.getTarget(content);
+		return mappers.getFieldI18nMapper().getTarget(content);
 	}
 
 	/**
@@ -1527,13 +1436,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LocaleSummary<LocaleSubject> summary = fieldI18nMapper.listTargetCandidateSummary(
+		LocaleSummary<LocaleSubject> summary = mappers.getFieldI18nMapper().listTargetCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LocaleSubject> contents = fieldI18nMapper.listTargetCandidateSubject(
+		List<LocaleSubject> contents = mappers.getFieldI18nMapper().listTargetCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1548,7 +1457,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertQuery(QueryContent content) {
-		return queryMapper.insert(content);
+		return mappers.getQueryMapper().insert(content);
 	}
 
 	/**
@@ -1559,7 +1468,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateQuery(QueryContent content) {
-		return queryMapper.update(content);
+		return mappers.getQueryMapper().update(content);
 	}
 
 	/**
@@ -1570,7 +1479,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteQuery(QueryContent content) {
-		return queryMapper.delete(content);
+		return mappers.getQueryMapper().delete(content);
 	}
 
 	/**
@@ -1583,7 +1492,7 @@ public class BuilderRpcController {
 	public QueryContent getQuery(
 		@JsonRpcParam("queryId") int queryId
 	) {
-		return queryMapper.get(
+		return mappers.getQueryMapper().get(
 				queryId
 				);
 	}
@@ -1600,12 +1509,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		QuerySummary<QueryContent> summary = queryMapper.listSummary();
+		QuerySummary<QueryContent> summary = mappers.getQueryMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<QueryContent> contents = queryMapper.listContent(offset, limit);
+		List<QueryContent> contents = mappers.getQueryMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1620,7 +1529,7 @@ public class BuilderRpcController {
 	public ClassContent getQueryOwner(
 		@JsonRpcParam("content") QueryContent content
 	) {
-		return queryMapper.getOwner(content);
+		return mappers.getQueryMapper().getOwner(content);
 	}
 
 	/**
@@ -1636,13 +1545,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassSubject> summary = queryMapper.listOwnerCandidateSummary(
+		ClassSummary<ClassSubject> summary = mappers.getQueryMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassSubject> contents = queryMapper.listOwnerCandidateSubject(
+		List<ClassSubject> contents = mappers.getQueryMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1657,7 +1566,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertEnum(EnumContent content) {
-		return enumMapper.insert(content);
+		return mappers.getEnumMapper().insert(content);
 	}
 
 	/**
@@ -1668,7 +1577,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateEnum(EnumContent content) {
-		return enumMapper.update(content);
+		return mappers.getEnumMapper().update(content);
 	}
 
 	/**
@@ -1679,7 +1588,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteEnum(EnumContent content) {
-		return enumMapper.delete(content);
+		return mappers.getEnumMapper().delete(content);
 	}
 
 	/**
@@ -1692,7 +1601,7 @@ public class BuilderRpcController {
 	public EnumContent getEnum(
 		@JsonRpcParam("enumId") int enumId
 	) {
-		return enumMapper.get(
+		return mappers.getEnumMapper().get(
 				enumId
 				);
 	}
@@ -1709,12 +1618,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumSummary<EnumContent> summary = enumMapper.listSummary();
+		EnumSummary<EnumContent> summary = mappers.getEnumMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumContent> contents = enumMapper.listContent(offset, limit);
+		List<EnumContent> contents = mappers.getEnumMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1733,14 +1642,14 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumSummary<EnumContent> summary = enumMapper.listSummaryIfNameIs(
+		EnumSummary<EnumContent> summary = mappers.getEnumMapper().listSummaryIfNameIs(
 				name
 				);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumContent> contents = enumMapper.listContentIfNameIs(
+		List<EnumContent> contents = mappers.getEnumMapper().listContentIfNameIs(
 				name,
 				offset, limit);
 		summary.setContents(contents);
@@ -1757,7 +1666,7 @@ public class BuilderRpcController {
 	public ProjectContent getEnumOwner(
 		@JsonRpcParam("content") EnumContent content
 	) {
-		return enumMapper.getOwner(content);
+		return mappers.getEnumMapper().getOwner(content);
 	}
 
 	/**
@@ -1773,13 +1682,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectSubject> summary = enumMapper.listOwnerCandidateSummary(
+		ProjectSummary<ProjectSubject> summary = mappers.getEnumMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectSubject> contents = enumMapper.listOwnerCandidateSubject(
+		List<ProjectSubject> contents = mappers.getEnumMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1800,13 +1709,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumValueSummary<EnumValueContent> summary = enumMapper.listValuesSummary(content);
+		EnumValueSummary<EnumValueContent> summary = mappers.getEnumMapper().listValuesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<EnumValueContent> contents =
-				enumMapper.listValuesContent(content, offset, limit);
+				mappers.getEnumMapper().listValuesContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1825,13 +1734,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumI18nSummary<EnumI18nContent> summary = enumMapper.listI18nsSummary(content);
+		EnumI18nSummary<EnumI18nContent> summary = mappers.getEnumMapper().listI18nsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<EnumI18nContent> contents =
-				enumMapper.listI18nsContent(content, offset, limit);
+				mappers.getEnumMapper().listI18nsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1844,7 +1753,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertEnumI18n(EnumI18nContent content) {
-		return enumI18nMapper.insert(content);
+		return mappers.getEnumI18nMapper().insert(content);
 	}
 
 	/**
@@ -1855,7 +1764,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateEnumI18n(EnumI18nContent content) {
-		return enumI18nMapper.update(content);
+		return mappers.getEnumI18nMapper().update(content);
 	}
 
 	/**
@@ -1866,7 +1775,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteEnumI18n(EnumI18nContent content) {
-		return enumI18nMapper.delete(content);
+		return mappers.getEnumI18nMapper().delete(content);
 	}
 
 	/**
@@ -1881,7 +1790,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("ownerEnumId") int ownerEnumId, 
 		@JsonRpcParam("targetLocaleId") String targetLocaleId
 	) {
-		return enumI18nMapper.get(
+		return mappers.getEnumI18nMapper().get(
 				ownerEnumId, 
 				targetLocaleId
 				);
@@ -1899,12 +1808,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumI18nSummary<EnumI18nContent> summary = enumI18nMapper.listSummary();
+		EnumI18nSummary<EnumI18nContent> summary = mappers.getEnumI18nMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumI18nContent> contents = enumI18nMapper.listContent(offset, limit);
+		List<EnumI18nContent> contents = mappers.getEnumI18nMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -1919,7 +1828,7 @@ public class BuilderRpcController {
 	public EnumContent getEnumI18nOwner(
 		@JsonRpcParam("content") EnumI18nContent content
 	) {
-		return enumI18nMapper.getOwner(content);
+		return mappers.getEnumI18nMapper().getOwner(content);
 	}
 
 	/**
@@ -1935,13 +1844,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumSummary<EnumSubject> summary = enumI18nMapper.listOwnerCandidateSummary(
+		EnumSummary<EnumSubject> summary = mappers.getEnumI18nMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumSubject> contents = enumI18nMapper.listOwnerCandidateSubject(
+		List<EnumSubject> contents = mappers.getEnumI18nMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1958,7 +1867,7 @@ public class BuilderRpcController {
 	public LocaleContent getEnumI18nTarget(
 		@JsonRpcParam("content") EnumI18nContent content
 	) {
-		return enumI18nMapper.getTarget(content);
+		return mappers.getEnumI18nMapper().getTarget(content);
 	}
 
 	/**
@@ -1974,13 +1883,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LocaleSummary<LocaleSubject> summary = enumI18nMapper.listTargetCandidateSummary(
+		LocaleSummary<LocaleSubject> summary = mappers.getEnumI18nMapper().listTargetCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LocaleSubject> contents = enumI18nMapper.listTargetCandidateSubject(
+		List<LocaleSubject> contents = mappers.getEnumI18nMapper().listTargetCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -1995,7 +1904,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertEnumValue(EnumValueContent content) {
-		return enumValueMapper.insert(content);
+		return mappers.getEnumValueMapper().insert(content);
 	}
 
 	/**
@@ -2006,7 +1915,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateEnumValue(EnumValueContent content) {
-		return enumValueMapper.update(content);
+		return mappers.getEnumValueMapper().update(content);
 	}
 
 	/**
@@ -2017,7 +1926,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteEnumValue(EnumValueContent content) {
-		return enumValueMapper.delete(content);
+		return mappers.getEnumValueMapper().delete(content);
 	}
 
 	/**
@@ -2032,7 +1941,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("ownerEnumId") int ownerEnumId, 
 		@JsonRpcParam("valueId") String valueId
 	) {
-		return enumValueMapper.get(
+		return mappers.getEnumValueMapper().get(
 				ownerEnumId, 
 				valueId
 				);
@@ -2050,12 +1959,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumValueSummary<EnumValueContent> summary = enumValueMapper.listSummary();
+		EnumValueSummary<EnumValueContent> summary = mappers.getEnumValueMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumValueContent> contents = enumValueMapper.listContent(offset, limit);
+		List<EnumValueContent> contents = mappers.getEnumValueMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2070,7 +1979,7 @@ public class BuilderRpcController {
 	public EnumContent getEnumValueOwner(
 		@JsonRpcParam("content") EnumValueContent content
 	) {
-		return enumValueMapper.getOwner(content);
+		return mappers.getEnumValueMapper().getOwner(content);
 	}
 
 	/**
@@ -2086,13 +1995,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumSummary<EnumSubject> summary = enumValueMapper.listOwnerCandidateSummary(
+		EnumSummary<EnumSubject> summary = mappers.getEnumValueMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumSubject> contents = enumValueMapper.listOwnerCandidateSubject(
+		List<EnumSubject> contents = mappers.getEnumValueMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2113,13 +2022,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumValueI18nSummary<EnumValueI18nContent> summary = enumValueMapper.listI18nsSummary(content);
+		EnumValueI18nSummary<EnumValueI18nContent> summary = mappers.getEnumValueMapper().listI18nsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<EnumValueI18nContent> contents =
-				enumValueMapper.listI18nsContent(content, offset, limit);
+				mappers.getEnumValueMapper().listI18nsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2132,7 +2041,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertEnumValueI18n(EnumValueI18nContent content) {
-		return enumValueI18nMapper.insert(content);
+		return mappers.getEnumValueI18nMapper().insert(content);
 	}
 
 	/**
@@ -2143,7 +2052,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateEnumValueI18n(EnumValueI18nContent content) {
-		return enumValueI18nMapper.update(content);
+		return mappers.getEnumValueI18nMapper().update(content);
 	}
 
 	/**
@@ -2154,7 +2063,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteEnumValueI18n(EnumValueI18nContent content) {
-		return enumValueI18nMapper.delete(content);
+		return mappers.getEnumValueI18nMapper().delete(content);
 	}
 
 	/**
@@ -2171,7 +2080,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("ownerValueId") String ownerValueId, 
 		@JsonRpcParam("targetLocaleId") String targetLocaleId
 	) {
-		return enumValueI18nMapper.get(
+		return mappers.getEnumValueI18nMapper().get(
 				ownerOwnerEnumId, 
 				ownerValueId, 
 				targetLocaleId
@@ -2190,12 +2099,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumValueI18nSummary<EnumValueI18nContent> summary = enumValueI18nMapper.listSummary();
+		EnumValueI18nSummary<EnumValueI18nContent> summary = mappers.getEnumValueI18nMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumValueI18nContent> contents = enumValueI18nMapper.listContent(offset, limit);
+		List<EnumValueI18nContent> contents = mappers.getEnumValueI18nMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2210,7 +2119,7 @@ public class BuilderRpcController {
 	public EnumValueContent getEnumValueI18nOwner(
 		@JsonRpcParam("content") EnumValueI18nContent content
 	) {
-		return enumValueI18nMapper.getOwner(content);
+		return mappers.getEnumValueI18nMapper().getOwner(content);
 	}
 
 	/**
@@ -2226,13 +2135,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumValueSummary<EnumValueSubject> summary = enumValueI18nMapper.listOwnerCandidateSummary(
+		EnumValueSummary<EnumValueSubject> summary = mappers.getEnumValueI18nMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumValueSubject> contents = enumValueI18nMapper.listOwnerCandidateSubject(
+		List<EnumValueSubject> contents = mappers.getEnumValueI18nMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2249,7 +2158,7 @@ public class BuilderRpcController {
 	public LocaleContent getEnumValueI18nTarget(
 		@JsonRpcParam("content") EnumValueI18nContent content
 	) {
-		return enumValueI18nMapper.getTarget(content);
+		return mappers.getEnumValueI18nMapper().getTarget(content);
 	}
 
 	/**
@@ -2265,13 +2174,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LocaleSummary<LocaleSubject> summary = enumValueI18nMapper.listTargetCandidateSummary(
+		LocaleSummary<LocaleSubject> summary = mappers.getEnumValueI18nMapper().listTargetCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LocaleSubject> contents = enumValueI18nMapper.listTargetCandidateSubject(
+		List<LocaleSubject> contents = mappers.getEnumValueI18nMapper().listTargetCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2286,7 +2195,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertMessage(MessageContent content) {
-		return messageMapper.insert(content);
+		return mappers.getMessageMapper().insert(content);
 	}
 
 	/**
@@ -2297,7 +2206,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateMessage(MessageContent content) {
-		return messageMapper.update(content);
+		return mappers.getMessageMapper().update(content);
 	}
 
 	/**
@@ -2308,7 +2217,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteMessage(MessageContent content) {
-		return messageMapper.delete(content);
+		return mappers.getMessageMapper().delete(content);
 	}
 
 	/**
@@ -2321,7 +2230,7 @@ public class BuilderRpcController {
 	public MessageContent getMessage(
 		@JsonRpcParam("messageId") int messageId
 	) {
-		return messageMapper.get(
+		return mappers.getMessageMapper().get(
 				messageId
 				);
 	}
@@ -2338,12 +2247,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		MessageSummary<MessageContent> summary = messageMapper.listSummary();
+		MessageSummary<MessageContent> summary = mappers.getMessageMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<MessageContent> contents = messageMapper.listContent(offset, limit);
+		List<MessageContent> contents = mappers.getMessageMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2358,7 +2267,7 @@ public class BuilderRpcController {
 	public ProjectContent getMessageOwner(
 		@JsonRpcParam("content") MessageContent content
 	) {
-		return messageMapper.getOwner(content);
+		return mappers.getMessageMapper().getOwner(content);
 	}
 
 	/**
@@ -2374,13 +2283,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectSubject> summary = messageMapper.listOwnerCandidateSummary(
+		ProjectSummary<ProjectSubject> summary = mappers.getMessageMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectSubject> contents = messageMapper.listOwnerCandidateSubject(
+		List<ProjectSubject> contents = mappers.getMessageMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2401,13 +2310,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		MessageI18nSummary<MessageI18nContent> summary = messageMapper.listI18nsSummary(content);
+		MessageI18nSummary<MessageI18nContent> summary = mappers.getMessageMapper().listI18nsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<MessageI18nContent> contents =
-				messageMapper.listI18nsContent(content, offset, limit);
+				mappers.getMessageMapper().listI18nsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2420,7 +2329,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertMessageI18n(MessageI18nContent content) {
-		return messageI18nMapper.insert(content);
+		return mappers.getMessageI18nMapper().insert(content);
 	}
 
 	/**
@@ -2431,7 +2340,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateMessageI18n(MessageI18nContent content) {
-		return messageI18nMapper.update(content);
+		return mappers.getMessageI18nMapper().update(content);
 	}
 
 	/**
@@ -2442,7 +2351,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteMessageI18n(MessageI18nContent content) {
-		return messageI18nMapper.delete(content);
+		return mappers.getMessageI18nMapper().delete(content);
 	}
 
 	/**
@@ -2457,7 +2366,7 @@ public class BuilderRpcController {
 		@JsonRpcParam("ownerMessageId") int ownerMessageId, 
 		@JsonRpcParam("targetLocaleId") String targetLocaleId
 	) {
-		return messageI18nMapper.get(
+		return mappers.getMessageI18nMapper().get(
 				ownerMessageId, 
 				targetLocaleId
 				);
@@ -2475,12 +2384,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		MessageI18nSummary<MessageI18nContent> summary = messageI18nMapper.listSummary();
+		MessageI18nSummary<MessageI18nContent> summary = mappers.getMessageI18nMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<MessageI18nContent> contents = messageI18nMapper.listContent(offset, limit);
+		List<MessageI18nContent> contents = mappers.getMessageI18nMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2495,7 +2404,7 @@ public class BuilderRpcController {
 	public MessageContent getMessageI18nOwner(
 		@JsonRpcParam("content") MessageI18nContent content
 	) {
-		return messageI18nMapper.getOwner(content);
+		return mappers.getMessageI18nMapper().getOwner(content);
 	}
 
 	/**
@@ -2511,13 +2420,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		MessageSummary<MessageSubject> summary = messageI18nMapper.listOwnerCandidateSummary(
+		MessageSummary<MessageSubject> summary = mappers.getMessageI18nMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<MessageSubject> contents = messageI18nMapper.listOwnerCandidateSubject(
+		List<MessageSubject> contents = mappers.getMessageI18nMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2534,7 +2443,7 @@ public class BuilderRpcController {
 	public LocaleContent getMessageI18nTarget(
 		@JsonRpcParam("content") MessageI18nContent content
 	) {
-		return messageI18nMapper.getTarget(content);
+		return mappers.getMessageI18nMapper().getTarget(content);
 	}
 
 	/**
@@ -2550,13 +2459,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LocaleSummary<LocaleSubject> summary = messageI18nMapper.listTargetCandidateSummary(
+		LocaleSummary<LocaleSubject> summary = mappers.getMessageI18nMapper().listTargetCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LocaleSubject> contents = messageI18nMapper.listTargetCandidateSubject(
+		List<LocaleSubject> contents = mappers.getMessageI18nMapper().listTargetCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2571,7 +2480,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertStyle(StyleContent content) {
-		return styleMapper.insert(content);
+		return mappers.getStyleMapper().insert(content);
 	}
 
 	/**
@@ -2582,7 +2491,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateStyle(StyleContent content) {
-		return styleMapper.update(content);
+		return mappers.getStyleMapper().update(content);
 	}
 
 	/**
@@ -2593,7 +2502,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteStyle(StyleContent content) {
-		return styleMapper.delete(content);
+		return mappers.getStyleMapper().delete(content);
 	}
 
 	/**
@@ -2606,7 +2515,7 @@ public class BuilderRpcController {
 	public StyleContent getStyle(
 		@JsonRpcParam("styleId") int styleId
 	) {
-		return styleMapper.get(
+		return mappers.getStyleMapper().get(
 				styleId
 				);
 	}
@@ -2623,12 +2532,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		StyleSummary<StyleContent> summary = styleMapper.listSummary();
+		StyleSummary<StyleContent> summary = mappers.getStyleMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<StyleContent> contents = styleMapper.listContent(offset, limit);
+		List<StyleContent> contents = mappers.getStyleMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2643,7 +2552,7 @@ public class BuilderRpcController {
 	public ProjectContent getStyleOwner(
 		@JsonRpcParam("content") StyleContent content
 	) {
-		return styleMapper.getOwner(content);
+		return mappers.getStyleMapper().getOwner(content);
 	}
 
 	/**
@@ -2659,13 +2568,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectSubject> summary = styleMapper.listOwnerCandidateSummary(
+		ProjectSummary<ProjectSubject> summary = mappers.getStyleMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectSubject> contents = styleMapper.listOwnerCandidateSubject(
+		List<ProjectSubject> contents = mappers.getStyleMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2682,7 +2591,7 @@ public class BuilderRpcController {
 	public StyleContent getStyleParent(
 		@JsonRpcParam("content") StyleContent content
 	) {
-		return styleMapper.getParent(content);
+		return mappers.getStyleMapper().getParent(content);
 	}
 
 	/**
@@ -2698,13 +2607,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		StyleSummary<StyleSubject> summary = styleMapper.listParentCandidateSummary(
+		StyleSummary<StyleSubject> summary = mappers.getStyleMapper().listParentCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<StyleSubject> contents = styleMapper.listParentCandidateSubject(
+		List<StyleSubject> contents = mappers.getStyleMapper().listParentCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2776,13 +2685,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		StyleSummary<StyleContent> summary = styleMapper.listChildrenSummary(content);
+		StyleSummary<StyleContent> summary = mappers.getStyleMapper().listChildrenSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<StyleContent> contents =
-				styleMapper.listChildrenContent(content, offset, limit);
+				mappers.getStyleMapper().listChildrenContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2795,7 +2704,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertPageSet(PageSetContent content) {
-		return pageSetMapper.insert(content);
+		return mappers.getPageSetMapper().insert(content);
 	}
 
 	/**
@@ -2806,7 +2715,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updatePageSet(PageSetContent content) {
-		return pageSetMapper.update(content);
+		return mappers.getPageSetMapper().update(content);
 	}
 
 	/**
@@ -2817,7 +2726,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deletePageSet(PageSetContent content) {
-		return pageSetMapper.delete(content);
+		return mappers.getPageSetMapper().delete(content);
 	}
 
 	/**
@@ -2830,7 +2739,7 @@ public class BuilderRpcController {
 	public PageSetContent getPageSet(
 		@JsonRpcParam("pageSetId") int pageSetId
 	) {
-		return pageSetMapper.get(
+		return mappers.getPageSetMapper().get(
 				pageSetId
 				);
 	}
@@ -2847,12 +2756,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		PageSetSummary<PageSetContent> summary = pageSetMapper.listSummary();
+		PageSetSummary<PageSetContent> summary = mappers.getPageSetMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<PageSetContent> contents = pageSetMapper.listContent(offset, limit);
+		List<PageSetContent> contents = mappers.getPageSetMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2867,7 +2776,7 @@ public class BuilderRpcController {
 	public ProjectContent getPageSetOwner(
 		@JsonRpcParam("content") PageSetContent content
 	) {
-		return pageSetMapper.getOwner(content);
+		return mappers.getPageSetMapper().getOwner(content);
 	}
 
 	/**
@@ -2883,13 +2792,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectSubject> summary = pageSetMapper.listOwnerCandidateSummary(
+		ProjectSummary<ProjectSubject> summary = mappers.getPageSetMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectSubject> contents = pageSetMapper.listOwnerCandidateSubject(
+		List<ProjectSubject> contents = mappers.getPageSetMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -2910,13 +2819,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		PageSummary<PageContent> summary = pageSetMapper.listPagesSummary(content);
+		PageSummary<PageContent> summary = mappers.getPageSetMapper().listPagesSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<PageContent> contents =
-				pageSetMapper.listPagesContent(content, offset, limit);
+				mappers.getPageSetMapper().listPagesContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -2929,7 +2838,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertPage(PageContent content) {
-		return pageMapper.insert(content);
+		return mappers.getPageMapper().insert(content);
 	}
 
 	/**
@@ -2940,7 +2849,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updatePage(PageContent content) {
-		return pageMapper.update(content);
+		return mappers.getPageMapper().update(content);
 	}
 
 	/**
@@ -2951,7 +2860,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deletePage(PageContent content) {
-		return pageMapper.delete(content);
+		return mappers.getPageMapper().delete(content);
 	}
 
 	/**
@@ -2964,7 +2873,7 @@ public class BuilderRpcController {
 	public PageContent getPage(
 		@JsonRpcParam("pageId") int pageId
 	) {
-		return pageMapper.get(
+		return mappers.getPageMapper().get(
 				pageId
 				);
 	}
@@ -2981,12 +2890,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		PageSummary<PageContent> summary = pageMapper.listSummary();
+		PageSummary<PageContent> summary = mappers.getPageMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<PageContent> contents = pageMapper.listContent(offset, limit);
+		List<PageContent> contents = mappers.getPageMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -3001,7 +2910,7 @@ public class BuilderRpcController {
 	public PageSetContent getPageOwner(
 		@JsonRpcParam("content") PageContent content
 	) {
-		return pageMapper.getOwner(content);
+		return mappers.getPageMapper().getOwner(content);
 	}
 
 	/**
@@ -3017,13 +2926,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		PageSetSummary<PageSetSubject> summary = pageMapper.listOwnerCandidateSummary(
+		PageSetSummary<PageSetSubject> summary = mappers.getPageMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<PageSetSubject> contents = pageMapper.listOwnerCandidateSubject(
+		List<PageSetSubject> contents = mappers.getPageMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3040,7 +2949,7 @@ public class BuilderRpcController {
 	public ClassContent getPageContext(
 		@JsonRpcParam("content") PageContent content
 	) {
-		return pageMapper.getContext(content);
+		return mappers.getPageMapper().getContext(content);
 	}
 
 	/**
@@ -3056,13 +2965,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassSubject> summary = pageMapper.listContextCandidateSummary(
+		ClassSummary<ClassSubject> summary = mappers.getPageMapper().listContextCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassSubject> contents = pageMapper.listContextCandidateSubject(
+		List<ClassSubject> contents = mappers.getPageMapper().listContextCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3083,13 +2992,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LayoutSummary<LayoutContent> summary = pageMapper.listLayoutsSummary(content);
+		LayoutSummary<LayoutContent> summary = mappers.getPageMapper().listLayoutsSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<LayoutContent> contents =
-				pageMapper.listLayoutsContent(content, offset, limit);
+				mappers.getPageMapper().listLayoutsContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -3108,14 +3017,14 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LayoutSummary<LayoutContent> summary = pageMapper.listLayoutsSummaryIfRoot(
+		LayoutSummary<LayoutContent> summary = mappers.getPageMapper().listLayoutsSummaryIfRoot(
 				content
 				);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LayoutContent> contents = pageMapper.listLayoutsContentIfRoot(
+		List<LayoutContent> contents = mappers.getPageMapper().listLayoutsContentIfRoot(
 				content,
 				offset, limit);
 		summary.setContents(contents);
@@ -3130,7 +3039,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertLayout(LayoutContent content) {
-		return layoutMapper.insert(content);
+		return mappers.getLayoutMapper().insert(content);
 	}
 
 	/**
@@ -3141,7 +3050,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateLayout(LayoutContent content) {
-		return layoutMapper.update(content);
+		return mappers.getLayoutMapper().update(content);
 	}
 
 	/**
@@ -3152,7 +3061,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteLayout(LayoutContent content) {
-		return layoutMapper.delete(content);
+		return mappers.getLayoutMapper().delete(content);
 	}
 
 	/**
@@ -3165,7 +3074,7 @@ public class BuilderRpcController {
 	public LayoutContent getLayout(
 		@JsonRpcParam("layoutId") int layoutId
 	) {
-		return layoutMapper.get(
+		return mappers.getLayoutMapper().get(
 				layoutId
 				);
 	}
@@ -3182,12 +3091,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LayoutSummary<LayoutContent> summary = layoutMapper.listSummary();
+		LayoutSummary<LayoutContent> summary = mappers.getLayoutMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LayoutContent> contents = layoutMapper.listContent(offset, limit);
+		List<LayoutContent> contents = mappers.getLayoutMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -3204,13 +3113,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LayoutSummary<LayoutContent> summary = layoutMapper.listSummaryIfRoot(
+		LayoutSummary<LayoutContent> summary = mappers.getLayoutMapper().listSummaryIfRoot(
 				);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LayoutContent> contents = layoutMapper.listContentIfRoot(
+		List<LayoutContent> contents = mappers.getLayoutMapper().listContentIfRoot(
 				offset, limit);
 		summary.setContents(contents);
 		return summary;
@@ -3226,7 +3135,7 @@ public class BuilderRpcController {
 	public PageContent getLayoutOwner(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getOwner(content);
+		return mappers.getLayoutMapper().getOwner(content);
 	}
 
 	/**
@@ -3242,13 +3151,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		PageSummary<PageSubject> summary = layoutMapper.listOwnerCandidateSummary(
+		PageSummary<PageSubject> summary = mappers.getLayoutMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<PageSubject> contents = layoutMapper.listOwnerCandidateSubject(
+		List<PageSubject> contents = mappers.getLayoutMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3265,7 +3174,7 @@ public class BuilderRpcController {
 	public LayoutContent getLayoutParent(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getParent(content);
+		return mappers.getLayoutMapper().getParent(content);
 	}
 
 	/**
@@ -3281,13 +3190,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LayoutSummary<LayoutSubject> summary = layoutMapper.listParentCandidateSummary(
+		LayoutSummary<LayoutSubject> summary = mappers.getLayoutMapper().listParentCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LayoutSubject> contents = layoutMapper.listParentCandidateSubject(
+		List<LayoutSubject> contents = mappers.getLayoutMapper().listParentCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3304,7 +3213,7 @@ public class BuilderRpcController {
 	public ClassContent getLayoutCref(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getCref(content);
+		return mappers.getLayoutMapper().getCref(content);
 	}
 
 	/**
@@ -3320,13 +3229,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ClassSummary<ClassSubject> summary = layoutMapper.listCrefCandidateSummary(
+		ClassSummary<ClassSubject> summary = mappers.getLayoutMapper().listCrefCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ClassSubject> contents = layoutMapper.listCrefCandidateSubject(
+		List<ClassSubject> contents = mappers.getLayoutMapper().listCrefCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3343,7 +3252,7 @@ public class BuilderRpcController {
 	public EnumContent getLayoutEref(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getEref(content);
+		return mappers.getLayoutMapper().getEref(content);
 	}
 
 	/**
@@ -3359,13 +3268,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		EnumSummary<EnumSubject> summary = layoutMapper.listErefCandidateSummary(
+		EnumSummary<EnumSubject> summary = mappers.getLayoutMapper().listErefCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<EnumSubject> contents = layoutMapper.listErefCandidateSubject(
+		List<EnumSubject> contents = mappers.getLayoutMapper().listErefCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3382,7 +3291,7 @@ public class BuilderRpcController {
 	public FieldContent getLayoutFref(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getFref(content);
+		return mappers.getLayoutMapper().getFref(content);
 	}
 
 	/**
@@ -3398,13 +3307,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		FieldSummary<FieldSubject> summary = layoutMapper.listFrefCandidateSummary(
+		FieldSummary<FieldSubject> summary = mappers.getLayoutMapper().listFrefCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<FieldSubject> contents = layoutMapper.listFrefCandidateSubject(
+		List<FieldSubject> contents = mappers.getLayoutMapper().listFrefCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3421,7 +3330,7 @@ public class BuilderRpcController {
 	public MessageContent getLayoutMref(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getMref(content);
+		return mappers.getLayoutMapper().getMref(content);
 	}
 
 	/**
@@ -3437,13 +3346,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		MessageSummary<MessageSubject> summary = layoutMapper.listMrefCandidateSummary(
+		MessageSummary<MessageSubject> summary = mappers.getLayoutMapper().listMrefCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<MessageSubject> contents = layoutMapper.listMrefCandidateSubject(
+		List<MessageSubject> contents = mappers.getLayoutMapper().listMrefCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3460,7 +3369,7 @@ public class BuilderRpcController {
 	public LayoutContent getLayoutRelated(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getRelated(content);
+		return mappers.getLayoutMapper().getRelated(content);
 	}
 
 	/**
@@ -3476,13 +3385,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LayoutSummary<LayoutSubject> summary = layoutMapper.listRelatedCandidateSummary(
+		LayoutSummary<LayoutSubject> summary = mappers.getLayoutMapper().listRelatedCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LayoutSubject> contents = layoutMapper.listRelatedCandidateSubject(
+		List<LayoutSubject> contents = mappers.getLayoutMapper().listRelatedCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3499,7 +3408,7 @@ public class BuilderRpcController {
 	public StyleContent getLayoutStyle(
 		@JsonRpcParam("content") LayoutContent content
 	) {
-		return layoutMapper.getStyle(content);
+		return mappers.getLayoutMapper().getStyle(content);
 	}
 
 	/**
@@ -3515,13 +3424,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		StyleSummary<StyleSubject> summary = layoutMapper.listStyleCandidateSummary(
+		StyleSummary<StyleSubject> summary = mappers.getLayoutMapper().listStyleCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<StyleSubject> contents = layoutMapper.listStyleCandidateSubject(
+		List<StyleSubject> contents = mappers.getLayoutMapper().listStyleCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3593,13 +3502,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LayoutSummary<LayoutContent> summary = layoutMapper.listChildrenSummary(content);
+		LayoutSummary<LayoutContent> summary = mappers.getLayoutMapper().listChildrenSummary(content);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
 		List<LayoutContent> contents =
-				layoutMapper.listChildrenContent(content, offset, limit);
+				mappers.getLayoutMapper().listChildrenContent(content, offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -3618,14 +3527,14 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LayoutSummary<LayoutContent> summary = layoutMapper.listChildrenSummaryIfRoot(
+		LayoutSummary<LayoutContent> summary = mappers.getLayoutMapper().listChildrenSummaryIfRoot(
 				content
 				);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LayoutContent> contents = layoutMapper.listChildrenContentIfRoot(
+		List<LayoutContent> contents = mappers.getLayoutMapper().listChildrenContentIfRoot(
 				content,
 				offset, limit);
 		summary.setContents(contents);
@@ -3640,7 +3549,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertLocale(LocaleContent content) {
-		return localeMapper.insert(content);
+		return mappers.getLocaleMapper().insert(content);
 	}
 
 	/**
@@ -3651,7 +3560,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateLocale(LocaleContent content) {
-		return localeMapper.update(content);
+		return mappers.getLocaleMapper().update(content);
 	}
 
 	/**
@@ -3662,7 +3571,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteLocale(LocaleContent content) {
-		return localeMapper.delete(content);
+		return mappers.getLocaleMapper().delete(content);
 	}
 
 	/**
@@ -3675,7 +3584,7 @@ public class BuilderRpcController {
 	public LocaleContent getLocale(
 		@JsonRpcParam("localeId") String localeId
 	) {
-		return localeMapper.get(
+		return mappers.getLocaleMapper().get(
 				localeId
 				);
 	}
@@ -3692,12 +3601,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		LocaleSummary<LocaleContent> summary = localeMapper.listSummary();
+		LocaleSummary<LocaleContent> summary = mappers.getLocaleMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<LocaleContent> contents = localeMapper.listContent(offset, limit);
+		List<LocaleContent> contents = mappers.getLocaleMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}
@@ -3712,7 +3621,7 @@ public class BuilderRpcController {
 	public ProjectContent getLocaleOwner(
 		@JsonRpcParam("content") LocaleContent content
 	) {
-		return localeMapper.getOwner(content);
+		return mappers.getLocaleMapper().getOwner(content);
 	}
 
 	/**
@@ -3728,13 +3637,13 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		ProjectSummary<ProjectSubject> summary = localeMapper.listOwnerCandidateSummary(
+		ProjectSummary<ProjectSubject> summary = mappers.getLocaleMapper().listOwnerCandidateSummary(
 				content, hint);
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<ProjectSubject> contents = localeMapper.listOwnerCandidateSubject(
+		List<ProjectSubject> contents = mappers.getLocaleMapper().listOwnerCandidateSubject(
 				content, hint,
 				offset, limit);
 		summary.setContents(contents);
@@ -3749,7 +3658,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean insertBuilder(BuilderContent content) {
-		return builderMapper.insert(content);
+		return mappers.getBuilderMapper().insert(content);
 	}
 
 	/**
@@ -3760,7 +3669,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean updateBuilder(BuilderContent content) {
-		return builderMapper.update(content);
+		return mappers.getBuilderMapper().update(content);
 	}
 
 	/**
@@ -3771,7 +3680,7 @@ public class BuilderRpcController {
 	 */
 	@JsonRpcMethod
 	public boolean deleteBuilder(BuilderContent content) {
-		return builderMapper.delete(content);
+		return mappers.getBuilderMapper().delete(content);
 	}
 
 	/**
@@ -3784,7 +3693,7 @@ public class BuilderRpcController {
 	public BuilderContent getBuilder(
 		@JsonRpcParam("className") String className
 	) {
-		return builderMapper.get(
+		return mappers.getBuilderMapper().get(
 				className
 				);
 	}
@@ -3801,12 +3710,12 @@ public class BuilderRpcController {
 		@JsonRpcParam("offset") int offset,
 		@JsonRpcParam("limit") int limit
 	) {
-		BuilderSummary<BuilderContent> summary = builderMapper.listSummary();
+		BuilderSummary<BuilderContent> summary = mappers.getBuilderMapper().listSummary();
 		if (offset < 0) {
 			offset = summary.getFocus();
 		}
 		summary.setOffset(offset);
-		List<BuilderContent> contents = builderMapper.listContent(offset, limit);
+		List<BuilderContent> contents = mappers.getBuilderMapper().listContent(offset, limit);
 		summary.setContents(contents);
 		return summary;
 	}

@@ -34,7 +34,7 @@ import com.github.vvorks.builder.server.common.io.Resources;
 import com.github.vvorks.builder.server.common.sql.SqlHelper;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.extender.Extenders;
-import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.logging.Logger;
 
 @Component
@@ -50,7 +50,7 @@ public class SourceWriter {
 	private static final String HBS_EXT = ".hbs";
 
 	@Autowired
-	private ProjectMapper projectMapper;
+	private Mappers mappers;
 
 	@Autowired
 	private Extenders extenders;
@@ -61,7 +61,7 @@ public class SourceWriter {
 		String now = String.format("%tY%<tm%<td_%<tH%<tM%<tS", new Date());
 		File outDir = new File("out/" + now + "/"); ////TODO for Debug
 		File srcDir = new File(outDir, "src");
-		List<ProjectContent> projects = projectMapper.listContent(0, 0);
+		List<ProjectContent> projects = mappers.getProjectMapper().listContent(0, 0);
 		try (
 			Writer writer = new LoggerWriter(s -> LOGGER.debug(s))
 		) {

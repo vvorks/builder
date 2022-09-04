@@ -21,9 +21,6 @@ public class QueryExtender {
 	private QueryMapper queryMapper;
 
 	@Autowired
-	private ClassExtender classExtender;
-
-	@Autowired
 	private Extenders extenders;
 
 	public String getTitleOrName(QueryContent q) {
@@ -39,18 +36,20 @@ public class QueryExtender {
 	}
 
 	public List<ClassExtender.JoinInfo> getJoins(QueryContent q) {
-		return classExtender.getJoins(queryMapper.getOwner(q));
+		return extenders.getClassExtender().getJoins(queryMapper.getOwner(q));
 	}
 
 	public String getSqlExpr(QueryContent q) {
 		ClassContent cls = queryMapper.getOwner(q);
-		ClassExtender.ExprInfo info = classExtender.referExpr(cls, q.getFilter(), ExprParser.CODE_TYPE_WHERE);
+		ClassExtender.ExprInfo info = extenders.getClassExtender().referExpr(
+				cls, q.getFilter(), ExprParser.CODE_TYPE_WHERE);
 		return info.getExpr().accept(sqlWriter, extenders);
 	}
 
 	public List<FieldContent> getArguments(QueryContent q) {
 		ClassContent cls = queryMapper.getOwner(q);
-		ClassExtender.ExprInfo info = classExtender.referExpr(cls, q.getFilter(), ExprParser.CODE_TYPE_WHERE);
+		ClassExtender.ExprInfo info = extenders.getClassExtender().referExpr(
+				cls, q.getFilter(), ExprParser.CODE_TYPE_WHERE);
 		return info.getArguments();
 	}
 

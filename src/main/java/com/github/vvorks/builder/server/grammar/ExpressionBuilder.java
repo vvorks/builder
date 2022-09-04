@@ -34,10 +34,7 @@ import com.github.vvorks.builder.server.expression.NumericLiteral;
 import com.github.vvorks.builder.server.expression.Operation;
 import com.github.vvorks.builder.server.expression.OrderByExpression;
 import com.github.vvorks.builder.server.expression.StringLiteral;
-import com.github.vvorks.builder.server.mapper.ClassMapper;
-import com.github.vvorks.builder.server.mapper.EnumValueMapper;
-import com.github.vvorks.builder.server.mapper.FieldMapper;
-import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.lang.Strings;
 
 @Component
@@ -51,16 +48,7 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	private ExprParser parser;
 
 	@Autowired
-	private ProjectMapper projectMapper;
-
-	@Autowired
-	private ClassMapper classMapper;
-
-	@Autowired
-	private FieldMapper fieldMapper;
-
-	@Autowired
-	private EnumValueMapper enumValueMapper;
+	private Mappers mappers;
 
 	private ProjectContent project;
 
@@ -73,21 +61,22 @@ public class ExpressionBuilder implements ExprParserVisitor {
 	}
 
 	private FieldContent getField(String name, ClassContent cls) {
-		List<FieldContent> fields = classMapper.listFieldsContentIfNameIs(cls, name, 0, 0);
+		List<FieldContent> fields = mappers.getClassMapper().listFieldsContentIfNameIs(cls, name, 0, 0);
 		return (fields.size() == 1) ? fields.get(0) : null;
 	}
 
 	private ClassContent getReturnClass(FieldContent fld) {
-		return fieldMapper.getCref(fld);
+		return mappers.getFieldMapper().getCref(fld);
 	}
 
 	private EnumContent getEnum(String name, ProjectContent prj) {
-		List<EnumContent> enums = projectMapper.listEnumsContentIfNameIs(prj, name, 0, 0);
+		List<EnumContent> enums = mappers.getProjectMapper()
+				.listEnumsContentIfNameIs(prj, name, 0, 0);
 		return (enums.size() == 1) ? enums.get(0) : null;
 	}
 
 	private EnumValueContent getEnumValue(String rName, EnumContent enm) {
-		return enumValueMapper.get(enm.getEnumId(), rName);
+		return mappers.getEnumValueMapper().get(enm.getEnumId(), rName);
 	}
 
 	public Expression visitChildren(ExprNode node, Expression unused) throws ParseException {

@@ -30,12 +30,7 @@ import com.github.vvorks.builder.server.domain.PageSetContent;
 import com.github.vvorks.builder.server.domain.ProjectContent;
 import com.github.vvorks.builder.server.domain.ProjectI18nContent;
 import com.github.vvorks.builder.server.domain.StyleContent;
-import com.github.vvorks.builder.server.mapper.ClassMapper;
-import com.github.vvorks.builder.server.mapper.EnumMapper;
-import com.github.vvorks.builder.server.mapper.EnumValueMapper;
-import com.github.vvorks.builder.server.mapper.FieldMapper;
-import com.github.vvorks.builder.server.mapper.MessageMapper;
-import com.github.vvorks.builder.server.mapper.ProjectMapper;
+import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.json.Json;
 import com.github.vvorks.builder.shared.common.lang.Strings;
 import com.google.gwt.thirdparty.guava.common.collect.Iterables;
@@ -57,25 +52,10 @@ public class ProjectExtender {
 			"PageSet", "Page", "Layout"));
 
 	@Autowired
-    private ProjectMapper projectMapper;
+    private Mappers mappers;
 
     @Autowired
-    private ClassMapper classMapper;
-
-    @Autowired
-    private ClassExtender classExtender;
-
-    @Autowired
-    private FieldMapper fieldMapper;
-
-    @Autowired
-    private EnumMapper enumMapper;
-
-    @Autowired
-    private EnumValueMapper enumValueMapper;
-
-    @Autowired
-    private MessageMapper messageMapper;
+    private Extenders extenders;
 
     @Autowired
     private AdditionalInformation adder;
@@ -108,7 +88,7 @@ public class ProjectExtender {
 	}
 
 	public List<ClassContent> getClasses(ProjectContent prj) {
-		List<ClassContent> list = projectMapper.listClassesContent(prj, 0, 0);
+		List<ClassContent> list = mappers.getProjectMapper().listClassesContent(prj, 0, 0);
 		list.addAll(adder.getAdditionalClasses(prj));
 		return list;
 	}
@@ -121,7 +101,7 @@ public class ProjectExtender {
 
 	public Iterable<ClassContent> getSurrogateClasses(ProjectContent prj) {
 		List<ClassContent> list = getClasses(prj);
-		return Iterables.filter(list, c -> classExtender.isSurrogateClass(c));
+		return Iterables.filter(list, c -> extenders.getClassExtender().isSurrogateClass(c));
 	}
 
 	public Iterable<ClassContent> getBuilderClasses(ProjectContent prj) {
@@ -136,7 +116,7 @@ public class ProjectExtender {
 	}
 
 	public List<EnumContent> getEnums(ProjectContent prj) {
-		List<EnumContent> list = projectMapper.listEnumsContent(prj, 0, 0);
+		List<EnumContent> list = mappers.getProjectMapper().listEnumsContent(prj, 0, 0);
 		return list;
 	}
 
@@ -155,7 +135,7 @@ public class ProjectExtender {
 	}
 
 	public List<StyleContent> getStyles(ProjectContent prj) {
-		List<StyleContent> list = projectMapper.listStylesContent(prj, 0, 0);
+		List<StyleContent> list = mappers.getProjectMapper().listStylesContent(prj, 0, 0);
 		List<StyleContent> result = new ArrayList<>();
 		StyleContent root = new StyleContent();
 		root.setStyleId(0);
@@ -175,7 +155,7 @@ public class ProjectExtender {
 	}
 
 	public List<PageSetContent> getPageSets(ProjectContent prj) {
-		List<PageSetContent> list = projectMapper.listPageSetsContent(prj, 0, 0);
+		List<PageSetContent> list = mappers.getProjectMapper().listPageSetsContent(prj, 0, 0);
 		return list;
 	}
 
@@ -190,7 +170,7 @@ public class ProjectExtender {
 		Json pjson = jsonMap.computeIfAbsent("", MAKE_NODE);
 		pjson.setStringIfExists(JSONKEY_TITLE, prj.getTitle());
 		pjson.setStringIfExists(JSONKEY_DESCRIPTION, prj.getDescription());
-		for (ProjectI18nContent i18n : projectMapper.listI18nsContent(prj, 0, 0)) {
+		for (ProjectI18nContent i18n : mappers.getProjectMapper().listI18nsContent(prj, 0, 0)) {
 			String suffix = "_" + i18n.getTargetLocaleId();
 			pjson = jsonMap.computeIfAbsent(suffix, MAKE_NODE);
 			pjson.setStringIfExists(JSONKEY_TITLE, i18n.getTitle());
@@ -207,11 +187,11 @@ public class ProjectExtender {
 	public Set<Map.Entry<String, Json>> getClassConstants(ProjectContent prj) {
 		Map<String, Json> jsonMap = new LinkedHashMap<>();
 		Json pjson = jsonMap.computeIfAbsent("", MAKE_NODE);
-		for (ClassContent cls : projectMapper.listClassesContent(prj, 0, 0)) {
+		for (ClassContent cls : mappers.getProjectMapper().listClassesContent(prj, 0, 0)) {
 			Json cjson = pjson.computeIfAbsent(cls.getClassName(), MAKE_NODE);
 			cjson.setStringIfExists(JSONKEY_TITLE, cls.getTitle());
 			cjson.setStringIfExists(JSONKEY_DESCRIPTION, cls.getDescription());
-			for (ClassI18nContent i18n : classMapper.listI18nsContent(cls, 0, 0)) {
+			for (ClassI18nContent i18n : mappers.getClassMapper().listI18nsContent(cls, 0, 0)) {
 				String suffix = "_" + i18n.getTargetLocaleId();
 				Json pjsonI18n = jsonMap.computeIfAbsent(suffix, MAKE_NODE);
 				Json cjsonI18n = pjsonI18n.computeIfAbsent(cls.getClassName(), MAKE_NODE);
@@ -231,14 +211,14 @@ public class ProjectExtender {
 	public Set<Map.Entry<String, Json>> getFieldConstants(ProjectContent prj) {
 		Map<String, Json> jsonMap = new LinkedHashMap<>();
 		Json pjson = jsonMap.computeIfAbsent("", MAKE_NODE);
-		for (ClassContent cls : projectMapper.listClassesContent(prj, 0, 0)) {
+		for (ClassContent cls : mappers.getProjectMapper().listClassesContent(prj, 0, 0)) {
 			Json cjson = pjson.computeIfAbsent(cls.getClassName(), MAKE_NODE);
-			for (FieldContent fld : classMapper.listFieldsContent(cls, 0, 0)) {
+			for (FieldContent fld : mappers.getClassMapper().listFieldsContent(cls, 0, 0)) {
 				Json fjson = cjson.computeIfAbsent(fld.getFieldName(), MAKE_NODE);
 				fjson.setStringIfExists(JSONKEY_FORMAT, fld.getFormat());
 				fjson.setStringIfExists(JSONKEY_TITLE, fld.getTitle());
 				fjson.setStringIfExists(JSONKEY_DESCRIPTION, fld.getDescription());
-				for (FieldI18nContent i18n : fieldMapper.listI18nsContent(fld, 0, 0)) {
+				for (FieldI18nContent i18n : mappers.getFieldMapper().listI18nsContent(fld, 0, 0)) {
 					String suffix = "_" + i18n.getTargetLocaleId();
 					Json pjsonI18n = jsonMap.computeIfAbsent(suffix, MAKE_NODE);
 					Json cjsonI18n = pjsonI18n.computeIfAbsent(cls.getClassName(), MAKE_NODE);
@@ -261,11 +241,11 @@ public class ProjectExtender {
 	public Set<Map.Entry<String, Json>> getEnumConstants(ProjectContent prj) {
 		Map<String, Json> jsonMap = new LinkedHashMap<>();
 		Json pjson = jsonMap.computeIfAbsent("", MAKE_NODE);
-		for (EnumContent enm : projectMapper.listEnumsContent(prj, 0, 0)) {
+		for (EnumContent enm : mappers.getProjectMapper().listEnumsContent(prj, 0, 0)) {
 			Json ejson = pjson.computeIfAbsent(enm.getEnumName(), MAKE_NODE);
 			ejson.setStringIfExists(JSONKEY_TITLE, enm.getTitle());
 			ejson.setStringIfExists(JSONKEY_DESCRIPTION, enm.getDescription());
-			for (EnumI18nContent i18n : enumMapper.listI18nsContent(enm, 0, 0)) {
+			for (EnumI18nContent i18n : mappers.getEnumMapper().listI18nsContent(enm, 0, 0)) {
 				String suffix = "_" + i18n.getTargetLocaleId();
 				Json pjsonI18n = jsonMap.computeIfAbsent(suffix, MAKE_NODE);
 				Json ejsonI18n = pjsonI18n.computeIfAbsent(enm.getEnumName(), MAKE_NODE);
@@ -285,13 +265,13 @@ public class ProjectExtender {
 	public Set<Map.Entry<String, Json>> getEnumValueConstants(ProjectContent prj) {
 		Map<String, Json> jsonMap = new LinkedHashMap<>();
 		Json pjson = jsonMap.computeIfAbsent("", MAKE_NODE);
-		for (EnumContent enm : projectMapper.listEnumsContent(prj, 0, 0)) {
+		for (EnumContent enm : mappers.getProjectMapper().listEnumsContent(prj, 0, 0)) {
 			Json ejson = pjson.computeIfAbsent(enm.getEnumName(), MAKE_NODE);
-			for (EnumValueContent eva : enumMapper.listValuesContent(enm, 0, 0)) {
+			for (EnumValueContent eva : mappers.getEnumMapper().listValuesContent(enm, 0, 0)) {
 				Json vjson = ejson.computeIfAbsent(eva.getValueId(), MAKE_NODE);
 				vjson.setStringIfExists(JSONKEY_TITLE, eva.getTitle());
 				vjson.setStringIfExists(JSONKEY_DESCRIPTION, eva.getDescription());
-				for (EnumValueI18nContent i18n : enumValueMapper.listI18nsContent(eva, 0, 0)) {
+				for (EnumValueI18nContent i18n : mappers.getEnumValueMapper().listI18nsContent(eva, 0, 0)) {
 					String suffix = "_" + i18n.getTargetLocaleId();
 					Json pjsonI18n = jsonMap.computeIfAbsent(suffix, MAKE_NODE);
 					Json ejsonI18n = pjsonI18n.computeIfAbsent(enm.getEnumName(), MAKE_NODE);
@@ -313,10 +293,10 @@ public class ProjectExtender {
 	public Set<Map.Entry<String, Json>> getMessages(ProjectContent prj) {
 		Map<String, Json> jsonMap = new LinkedHashMap<>();
 		Json pjson = jsonMap.computeIfAbsent("", MAKE_NODE);
-		for (MessageContent msg : projectMapper.listMessagesContent(prj, 0, 0)) {
+		for (MessageContent msg : mappers.getProjectMapper().listMessagesContent(prj, 0, 0)) {
 			Json mjson = pjson.computeIfAbsent(msg.getMessageName(), MAKE_NODE);
 			mjson.setStringIfExists(JSONKEY_MESSAGE, msg.getMessage());
-			for (MessageI18nContent i18n : messageMapper.listI18nsContent(msg, 0, 0)) {
+			for (MessageI18nContent i18n : mappers.getMessageMapper().listI18nsContent(msg, 0, 0)) {
 				String suffix = "_" + i18n.getTargetLocaleId();
 				Json pjsonI18n = jsonMap.computeIfAbsent(suffix, MAKE_NODE);
 				Json mjsonI18n = pjsonI18n.computeIfAbsent(msg.getMessageName(), MAKE_NODE);
@@ -342,15 +322,15 @@ public class ProjectExtender {
 	public Map<Integer, ClassRelation> getRelationMap(ProjectContent prj) {
 		Map<Integer, ClassRelation> relations = new LinkedHashMap<>();
 		//クラス一覧からリレーションのリストを作成
-		for (ClassContent cls : projectMapper.listClassesContent(prj, 0, 0)) {
+		for (ClassContent cls : mappers.getProjectMapper().listClassesContent(prj, 0, 0)) {
 			relations.put(cls.getClassId(), new ClassRelation(cls));
 		}
 		//各クラス中のSETフィールドを元に関連付け
 		for (ClassRelation owner : relations.values()) {
 			ClassContent cls = owner.getContent();
-			for (FieldContent fld : classMapper.listFieldsContent(cls, 0, 0)) {
+			for (FieldContent fld : mappers.getClassMapper().listFieldsContent(cls, 0, 0)) {
 				if (fld.getType() == DataType.SET) {
-					FieldContent ref = fieldMapper.getFref(fld);
+					FieldContent ref = mappers.getFieldMapper().getFref(fld);
 					ClassRelation set = relations.get(ref.getOwnerClassId());
 					owner.addSet(set, fld, ref);
 				}
