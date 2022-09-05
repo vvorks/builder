@@ -1,0 +1,172 @@
+//
+// ApiControllerテンプレート
+//
+{{#java this "server/controller/" upperLastName "ApiController" ".java"}}
+{{#if global.project.copyrightLines}}
+/*
+{{#each global.project.copyrightLines}}
+ * {{this}}
+{{/each}}
+ */
+{{/if}}
+package {{global.project.projectName}}.server.controller;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+{{#each classesByName}}
+import {{global.project.projectName}}.server.domain.{{className}}Content;
+{{/each}}
+import {{global.project.projectName}}.server.mapper.Mappers;
+import {{global.project.projectName}}.shared.common.lang.Strings;
+
+/**
+ * {{titleOrName}}の REST API
+ */
+@RestController
+public class {{upperLastName}}ApiController {
+
+	@Autowired
+	private Mappers mappers;
+
+	{{#each classes}}
+
+	/**
+	 * {{titleOrName}}を取得する
+	 *
+	{{#each keys}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @return 取得した{{titleOrName}}
+	 */
+	@GetMapping("/get{{className}}")
+	public {{className}}Content get{{className}}(
+		{{#each keys}}
+		@RequestParam(value = "{{fieldName}}") {{javaType}} {{fieldName}}{{#separator}}, {{/separator}}
+		{{/each}}
+	) {
+		return mappers.get{{className}}Mapper().get(
+				{{#each keys}}
+				{{fieldName}}{{#separator}}, {{/separator}}
+				{{/each}}
+				);
+	}
+
+	/**
+	 * 全ての{{titleOrName}}情報を取得する
+	 *
+	 * @param offset 取得開始位置（既定値０、全件取得の場合は無効）
+	 * @param limit 件数（既定値０、０または負値を指定した場合には全件）
+	 * @return {{titleOrName}}情報
+	 */
+	@GetMapping("/list{{className}}")
+	public List<{{className}}Content> list{{className}}(
+		@RequestParam(value = "offset", defaultValue = "0") int offset,
+		@RequestParam(value = "limit", defaultValue = "0") int limit
+	) {
+		return mappers.get{{className}}Mapper().listContent(offset, limit);
+	}
+
+	{{#each queries}}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}情報を取得する
+	 *
+	{{#each arguments}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @param offset 取得開始位置（既定値０、全件取得の場合は無効）
+	 * @param limit 件数（既定値０、０または負値を指定した場合には全件）
+	 * @return {{../titleOrName}}情報
+	 */
+	@GetMapping("/list{{../className}}If{{upperName}}")
+	public List<{{../className}}Content> list{{../className}}If{{upperName}}(
+		{{#each arguments}}
+		@RequestParam(value = "{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		@RequestParam(value = "offset", defaultValue = "0") int offset,
+		@RequestParam(value = "limit", defaultValue = "0") int limit
+	) {
+		return mappers.get{{../className}}Mapper().listContentIf{{upperName}}(
+				{{#each arguments}}
+				{{fieldName}},
+				{{/each}}
+				offset, limit);
+	}
+	{{/each}}
+
+	{{#each sets}}
+
+	/**
+	 * {{titleOrName}}情報を取得する
+	 *
+	{{#each ../keys}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @param offset 取得開始位置（既定値０、全件取得の場合は無効）
+	 * @param limit 件数（既定値０、０または負値を指定した場合には全件）
+	 * @return {{titleOrName}}情報
+	 */
+	@GetMapping("/list{{../className}}{{upperName}}")
+	public List<{{fref.owner.className}}Content> list{{../className}}{{upperName}}(
+		{{#each ../keys}}
+		@RequestParam(value = "{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		@RequestParam(value = "offset", defaultValue = "0") int offset,
+		@RequestParam(value = "limit", defaultValue = "0") int limit
+	) {
+		{{../className}}Content content = mappers.get{{../className}}Mapper().get(
+				{{#each ../keys}}
+				{{fieldName}}{{#separator}}, {{/separator}}
+				{{/each}}
+				);
+		return mappers.get{{../className}}Mapper().list{{upperName}}Content(content, offset, limit);
+	}
+
+	{{#each fref.owner.queries}}
+
+	/**
+	 * {{titleOrName}}に合致する{{../titleOrName}}情報を取得する
+	 *
+	{{#each ../../keys}}
+	 * @param {{fieldName}} {{titleOrName}}
+	{{/each}}
+	 * @param offset 取得開始位置（既定値０、全件取得の場合は無効）
+	 * @param limit 件数（既定値０、０または負値を指定した場合には全件）
+	 * @return {{../titleOrName}}情報
+	 */
+	@GetMapping("list{{../../className}}{{../upperName}}If{{upperName}}")
+	public List<{{fref.owner.className}}Content> list{{../../className}}{{../upperName}}If{{upperName}}(
+		{{#each ../../keys}}
+		@RequestParam(value = "{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		{{#each arguments}}
+		@RequestParam(value = "{{fieldName}}") {{javaType}} {{fieldName}},
+		{{/each}}
+		@RequestParam(value = "offset", defaultValue = "0") int offset,
+		@RequestParam(value = "limit", defaultValue = "0") int limit
+	) {
+		{{../../className}}Content content = mappers.get{{../../className}}Mapper().get(
+				{{#each ../keys}}
+				{{fieldName}}{{#separator}}, {{/separator}}
+				{{/each}}
+				);
+		return mappers.get{{../../className}}Mapper().list{{../upperName}}ContentIf{{upperName}}(
+				content,
+				{{#each arguments}}
+				{{fieldName}},
+				{{/each}}
+				offset, limit);
+	}
+	{{/each}}
+
+	{{/each}}
+
+	{{/each}}
+
+}
+{{/java}}

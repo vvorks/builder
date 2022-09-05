@@ -76,6 +76,7 @@ import com.github.vvorks.builder.server.domain.LayoutTypeSummary;
 import com.github.vvorks.builder.server.domain.StyleCondition;
 import com.github.vvorks.builder.server.domain.StyleConditionSubject;
 import com.github.vvorks.builder.server.domain.StyleConditionSummary;
+import com.github.vvorks.builder.server.domain.Subject;
 import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.lang.Strings;
 
@@ -134,6 +135,17 @@ public class BuilderRpcController {
 		return mappers.getProjectMapper().get(
 				projectId
 				);
+	}
+
+	/**
+	 * プロジェクトのトピックパスを取得する
+	 *
+	 * @param content 取得対象プロジェクト
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listProjectTopicPath(ProjectContent content) {
+		return mappers.getProjectMapper().listTopicPath(content);
 	}
 
 	/**
@@ -475,6 +487,17 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * プロジェクト(I18n)のトピックパスを取得する
+	 *
+	 * @param content 取得対象プロジェクト(I18n)
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listProjectI18nTopicPath(ProjectI18nContent content) {
+		return mappers.getProjectI18nMapper().listTopicPath(content);
+	}
+
+	/**
 	 * 全てのプロジェクト(I18n)情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -620,6 +643,17 @@ public class BuilderRpcController {
 		return mappers.getClassMapper().get(
 				classId
 				);
+	}
+
+	/**
+	 * クラスのトピックパスを取得する
+	 *
+	 * @param content 取得対象クラス
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listClassTopicPath(ClassContent content) {
+		return mappers.getClassMapper().listTopicPath(content);
 	}
 
 	/**
@@ -869,6 +903,17 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * クラス(I18n)のトピックパスを取得する
+	 *
+	 * @param content 取得対象クラス(I18n)
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listClassI18nTopicPath(ClassI18nContent content) {
+		return mappers.getClassI18nMapper().listTopicPath(content);
+	}
+
+	/**
 	 * 全てのクラス(I18n)情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -1014,6 +1059,17 @@ public class BuilderRpcController {
 		return mappers.getFieldMapper().get(
 				fieldId
 				);
+	}
+
+	/**
+	 * フィールドのトピックパスを取得する
+	 *
+	 * @param content 取得対象フィールド
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listFieldTopicPath(FieldContent content) {
+		return mappers.getFieldMapper().listTopicPath(content);
 	}
 
 	/**
@@ -1350,6 +1406,17 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * フィールド(I18n)のトピックパスを取得する
+	 *
+	 * @param content 取得対象フィールド(I18n)
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listFieldI18nTopicPath(FieldI18nContent content) {
+		return mappers.getFieldI18nMapper().listTopicPath(content);
+	}
+
+	/**
 	 * 全てのフィールド(I18n)情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -1498,6 +1565,17 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * クエリーのトピックパスを取得する
+	 *
+	 * @param content 取得対象クエリー
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listQueryTopicPath(QueryContent content) {
+		return mappers.getQueryMapper().listTopicPath(content);
+	}
+
+	/**
 	 * 全てのクエリー情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -1604,6 +1682,17 @@ public class BuilderRpcController {
 		return mappers.getEnumMapper().get(
 				enumId
 				);
+	}
+
+	/**
+	 * 列挙のトピックパスを取得する
+	 *
+	 * @param content 取得対象列挙
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listEnumTopicPath(EnumContent content) {
+		return mappers.getEnumMapper().listTopicPath(content);
 	}
 
 	/**
@@ -1797,6 +1886,17 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 列挙(I18n)のトピックパスを取得する
+	 *
+	 * @param content 取得対象列挙(I18n)
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listEnumI18nTopicPath(EnumI18nContent content) {
+		return mappers.getEnumI18nMapper().listTopicPath(content);
+	}
+
+	/**
 	 * 全ての列挙(I18n)情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -1948,6 +2048,17 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * 列挙値のトピックパスを取得する
+	 *
+	 * @param content 取得対象列挙値
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listEnumValueTopicPath(EnumValueContent content) {
+		return mappers.getEnumValueMapper().listTopicPath(content);
+	}
+
+	/**
 	 * 全ての列挙値情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -2085,6 +2196,17 @@ public class BuilderRpcController {
 				ownerValueId, 
 				targetLocaleId
 				);
+	}
+
+	/**
+	 * 列挙値(I18n)のトピックパスを取得する
+	 *
+	 * @param content 取得対象列挙値(I18n)
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listEnumValueI18nTopicPath(EnumValueI18nContent content) {
+		return mappers.getEnumValueI18nMapper().listTopicPath(content);
 	}
 
 	/**
@@ -2236,6 +2358,17 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * メッセージのトピックパスを取得する
+	 *
+	 * @param content 取得対象メッセージ
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listMessageTopicPath(MessageContent content) {
+		return mappers.getMessageMapper().listTopicPath(content);
+	}
+
+	/**
 	 * 全てのメッセージ情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -2370,6 +2503,17 @@ public class BuilderRpcController {
 				ownerMessageId, 
 				targetLocaleId
 				);
+	}
+
+	/**
+	 * メッセージ(I18n)のトピックパスを取得する
+	 *
+	 * @param content 取得対象メッセージ(I18n)
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listMessageI18nTopicPath(MessageI18nContent content) {
+		return mappers.getMessageI18nMapper().listTopicPath(content);
 	}
 
 	/**
@@ -2518,6 +2662,17 @@ public class BuilderRpcController {
 		return mappers.getStyleMapper().get(
 				styleId
 				);
+	}
+
+	/**
+	 * スタイルのトピックパスを取得する
+	 *
+	 * @param content 取得対象スタイル
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listStyleTopicPath(StyleContent content) {
+		return mappers.getStyleMapper().listTopicPath(content);
 	}
 
 	/**
@@ -2745,6 +2900,17 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * ページセットのトピックパスを取得する
+	 *
+	 * @param content 取得対象ページセット
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listPageSetTopicPath(PageSetContent content) {
+		return mappers.getPageSetMapper().listTopicPath(content);
+	}
+
+	/**
 	 * 全てのページセット情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -2876,6 +3042,17 @@ public class BuilderRpcController {
 		return mappers.getPageMapper().get(
 				pageId
 				);
+	}
+
+	/**
+	 * ページのトピックパスを取得する
+	 *
+	 * @param content 取得対象ページ
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listPageTopicPath(PageContent content) {
+		return mappers.getPageMapper().listTopicPath(content);
 	}
 
 	/**
@@ -3077,6 +3254,17 @@ public class BuilderRpcController {
 		return mappers.getLayoutMapper().get(
 				layoutId
 				);
+	}
+
+	/**
+	 * レイアウトのトピックパスを取得する
+	 *
+	 * @param content 取得対象レイアウト
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listLayoutTopicPath(LayoutContent content) {
+		return mappers.getLayoutMapper().listTopicPath(content);
 	}
 
 	/**
@@ -3590,6 +3778,17 @@ public class BuilderRpcController {
 	}
 
 	/**
+	 * ロケールのトピックパスを取得する
+	 *
+	 * @param content 取得対象ロケール
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listLocaleTopicPath(LocaleContent content) {
+		return mappers.getLocaleMapper().listTopicPath(content);
+	}
+
+	/**
 	 * 全てのロケール情報を取得する
 	 *
 	 * @param offset 取得開始位置（全件取得の場合は無効）
@@ -3696,6 +3895,17 @@ public class BuilderRpcController {
 		return mappers.getBuilderMapper().get(
 				className
 				);
+	}
+
+	/**
+	 * Builderのトピックパスを取得する
+	 *
+	 * @param content 取得対象Builder
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> listBuilderTopicPath(BuilderContent content) {
+		return mappers.getBuilderMapper().listTopicPath(content);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 //
-// Controlerテンプレート
+// RpcControllerテンプレート
 //
 {{#java this "server/controller/" upperLastName "RpcController" ".java"}}
 {{#if global.project.copyrightLines}}
@@ -28,6 +28,7 @@ import {{global.project.projectName}}.server.domain.{{enumName}};
 import {{global.project.projectName}}.server.domain.{{enumName}}Subject;
 import {{global.project.projectName}}.server.domain.{{enumName}}Summary;
 {{/each}}
+import {{global.project.projectName}}.server.domain.Subject;
 import {{global.project.projectName}}.server.mapper.Mappers;
 import {{global.project.projectName}}.shared.common.lang.Strings;
 
@@ -94,6 +95,17 @@ public class {{upperLastName}}RpcController {
 				{{fieldName}}{{#separator}}, {{/separator}}
 				{{/each}}
 				);
+	}
+
+	/**
+	 * {{titleOrName}}のトピックパスを取得する
+	 *
+	 * @param content 取得対象{{titleOrName}}
+	 * @return Subjectリスト
+	 */
+	@JsonRpcMethod
+	public List<Subject> list{{className}}TopicPath({{className}}Content content) {
+		return mappers.get{{className}}Mapper().listTopicPath(content);
 	}
 
 	/**
