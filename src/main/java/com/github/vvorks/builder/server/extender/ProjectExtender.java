@@ -2,6 +2,7 @@ package com.github.vvorks.builder.server.extender;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -317,6 +318,10 @@ public class ProjectExtender {
 		}
 		//ルートを返却
 		return root;
+	}
+
+	public Collection<ClassRelation> getRelationList(ProjectContent prj) {
+		return getRelationMap(prj).values();
 	}
 
 	public Map<Integer, ClassRelation> getRelationMap(ProjectContent prj) {

@@ -104,7 +104,7 @@ public class Metrics implements Jsonizable {
 	/**
 	 * システムで利用可能な言語一覧を設定する
 	 *
-	 * @param locales システムで利用可能な言語一覧
+	 * @return システムで利用可能な言語一覧
 	 */
 	public String[] getLanguages() {
 		return languages;

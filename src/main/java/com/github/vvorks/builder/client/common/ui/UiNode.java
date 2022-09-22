@@ -570,7 +570,7 @@ public class UiNode implements Copyable<UiNode>, EventHandler, Jsonizable {
 	 * 指定位置の子ノードを取得する
 	 *
 	 * @param index 位置
-	 * @return 指定位置の子ノード。index < 0 又は index >= 子ノード数の場合、null
+	 * @return 指定位置の子ノード。index &lt; 0 又は index &gt;= 子ノード数の場合、null
 	 */
 	public UiNode getChild(int index) {
 		if (index < 0) {

@@ -23,7 +23,7 @@ public abstract class DataSource {
 	/**
 	 * 検索条件を指定する
 	 *
-	 * @oaram content コンテント
+	 * @param content コンテント
 	 * @param criteria 検索条件
 	 */
 	public abstract void setCriteria(Json content, Json criteria);

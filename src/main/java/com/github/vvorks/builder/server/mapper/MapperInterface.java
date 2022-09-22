@@ -23,8 +23,8 @@ public interface MapperInterface<T> {
 	/**
 	 * トピックパスをリスト形式で取得する
 	 *
-	 * @param content ビルダープロジェクト
-	 * @param トピックパス要素のリスト
+	 * @param content 対象コンテント
+	 * @return トピックパス要素のリスト
 	 */
 	public default List<Subject> listTopicPath(T content) {
 		//トピック情報のマップを取得

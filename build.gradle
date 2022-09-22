@@ -34,6 +34,11 @@ sourceSets {
 	}
 }
 
+javadoc {
+    options.charSet = 'UTF-8'
+    options.encoding = 'UTF-8'
+}
+
 gwt {
 	/** Module to compile, can be multiple */
 	module 'com.github.vvorks.builder.Builder'

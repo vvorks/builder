@@ -55,7 +55,7 @@ public class Unit implements StringOption {
 	 * 単位を作成する
 	 *
 	 * @param value 基本単位又はそれを"-per-"で結合した複合単位
-	 * @see https://tc39.es/proposal-unified-intl-numberformat/section6/locales-currencies-tz_proposed_out.html#sec-issanctionedsimpleunitidentifier
+	 * @see <a href="https://tc39.es/proposal-unified-intl-numberformat/section6/locales-currencies-tz_proposed_out.html#sec-issanctionedsimpleunitidentifier">intl</a>
 	 */
 	public Unit(String value) {
 		this.value = value;

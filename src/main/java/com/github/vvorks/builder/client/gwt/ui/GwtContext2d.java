@@ -249,9 +249,9 @@ public class GwtContext2d {
 	 * 		X座標（ピクセル単位）
 	 * @param y
 	 * 		Y座標（ピクセル単位）
-	 * @param width
+	 * @param w
 	 * 		幅（ピクセル単位）
-	 * @param height
+	 * @param h
 	 * 		高さ（ピクセル単位）
 	 */
 	public void drawRect(int x, int y, int w, int h) {
@@ -278,13 +278,13 @@ public class GwtContext2d {
 	 * 		X座標（ピクセル単位）
 	 * @param y
 	 * 		Y座標（ピクセル単位）
-	 * @param width
+	 * @param w
 	 * 		幅（ピクセル単位）
-	 * @param height
+	 * @param h
 	 * 		高さ（ピクセル単位）
-	 * @param drx
+	 * @param rx
 	 * 		角丸のx半径
-	 * @param dry
+	 * @param ry
 	 * 		角丸のy半径
 	 */
 	public void drawRoundRect(int x, int y, int w, int h, int rx, int ry) {
@@ -427,7 +427,7 @@ public class GwtContext2d {
 	 * @param h
 	 * 		高さ（ピクセル単位）
 	 * @param ratio
-	 * 		内周比（0.0 <= ratio < 1.0) 0.0を指定するとdrawPieと同じ事になる
+	 * 		内周比（0.0 &lt;= ratio &lt; 1.0) 0.0を指定するとdrawPieと同じ事になる
 	 * @param startDegree
 	 * 		アーチ型の開始角度を（12時を０とした時計回りの）度数で与える。
 	 * @param arcDegree
@@ -451,7 +451,7 @@ public class GwtContext2d {
 	 * @param h
 	 * 		高さ（ピクセル単位）
 	 * @param ratio
-	 * 		内周比（0.0 <= ratio < 1.0) 0.0を指定するとdrawPieと同じ事になる
+	 * 		内周比（0.0 &lt;= ratio &lt; 1.0) 0.0を指定するとdrawPieと同じ事になる
 	 * @param startDegree
 	 * 		扇型の開始角度を（12時を０とした時計回りの）度数で与える。
 	 * @param arcDegree
@@ -505,11 +505,11 @@ public class GwtContext2d {
 	 * 		X座標（ピクセル単位）
 	 * @param y
 	 * 		Y座標（ピクセル単位）
-	 * @param width
+	 * @param w
 	 * 		幅（ピクセル単位）
-	 * @param height
+	 * @param h
 	 * 		高さ（ピクセル単位）
-	 * @param p
+	 * @param n
 	 * 		頂点の数（３以上である事）
 	 * @param startAngle
 	 * 		描画開始位置を（12時を０とした時計回りの）度数で与える
@@ -541,15 +541,14 @@ public class GwtContext2d {
 	 * 		X座標（ピクセル単位）
 	 * @param y
 	 * 		Y座標（ピクセル単位）
-	 * @param width
+	 * @param w
 	 * 		幅（ピクセル単位）
-	 * @param height
+	 * @param h
 	 * 		高さ（ピクセル単位）
-	 * @param p
+	 * @param n
 	 * 		頂点の数（５以上である事）
 	 * @param ratio
 	 * 		内周／外周の比率（0.0～1.0）
-	 *
 	 * @param startAngle
 	 * 		描画開始位置を度数で与える（12時を０とする）
 	 */
@@ -687,7 +686,7 @@ public class GwtContext2d {
 	/**
 	 * 文字列をdrawTextで描画した場合に必要となる「高さ」をピクセル単位で算出する
 	 *
-	 * @param w
+	 * @param width
 	 * 		基準幅（ピクセル単位）
 	 * @param text
 	 * 		描画対象文字列（段落区切りとして\nが含まれていてよい。一方、タブは無視される）
@@ -712,9 +711,9 @@ public class GwtContext2d {
 	 * 		X座標（ピクセル単位）
 	 * @param y
 	 * 		Y座標（ピクセル単位）
-	 * @param w
+	 * @param width
 	 * 		幅（ピクセル単位）
-	 * @param h
+	 * @param height
 	 * 		高さ（ピクセル単位）
 	 * @param text
 	 * 		描画対象文字列（段落区切りとして\nが含まれていてよい。一方、タブは無視される）

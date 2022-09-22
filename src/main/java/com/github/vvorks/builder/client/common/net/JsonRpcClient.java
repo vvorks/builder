@@ -108,7 +108,6 @@ public class JsonRpcClient implements WebSocketHandler {
 	 *
 	 * @param webSocket
 	 * 		通信先WebSocket
-	 * @throws IOException
 	 */
 	public JsonRpcClient(WebSocket webSocket) {
 		this.waitings = new HashMap<>();
