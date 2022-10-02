@@ -57,8 +57,17 @@ public class SourceWriter {
 
 	private SqlHelper sqlHelper = SqlHelper.get();
 
+	public static class Counter {
+		private int figNo;
+		public int getFigNo() {
+			return ++figNo;
+		}
+	}
+
 	public void process() throws IOException {
-		String now = String.format("%tY%<tm%<td_%<tH%<tM%<tS", new Date());
+		Date time = new Date();
+		String now = String.format("%tY%<tm%<td_%<tH%<tM%<tS", time);
+		String today = String.format("%tY-%<tm-%<td", time);
 		File outDir = new File("out/" + now + "/"); ////TODO for Debug
 		File srcDir = new File(outDir, "src");
 		List<ProjectContent> projects = mappers.getProjectMapper().listContent(0, 0);
@@ -78,6 +87,7 @@ public class SourceWriter {
 				File javaRootDir = new File(srcDir, gradleName + "/java/");
 				File javaCodeDir = new File(javaRootDir, prj.getProjectName().replace('.', '/'));
 				File resRootDir = new File(srcDir, gradleName + "/resources/");
+				File docRootDir = new File(srcDir, gradleName + "/docs/");
 				Handlebars hbs = new Handlebars(loader)
 						.with(EscapingStrategy.NOOP)
 						.setCharset(StandardCharsets.UTF_8)
@@ -86,12 +96,15 @@ public class SourceWriter {
 						.registerHelper("reverse", new ReverseHelper())
 						.registerHelper("java", new SourceHelper(javaCodeDir))
 						.registerHelper("resources", new SourceHelper(resRootDir))
+						.registerHelper("doc", new SourceHelper(docRootDir))
 						.registerHelper("indent", new IndentHelper("\t"))
 						;
 				Map<String, Object> globalMap = new HashMap<>();
 				globalMap.put("project", prj);
 				globalMap.put("disableForeignKey", sqlHelper.disableForeignKey());
 				globalMap.put("enableForeignKey", sqlHelper.enableForeignKey());
+				globalMap.put("today", today);
+				globalMap.put("counter", new Counter());
 				Context context = Context.newBuilder(prj)
 						.resolver(
 								new GlobalResolver("global", globalMap),

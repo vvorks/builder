@@ -1,0 +1,2111 @@
+= ビルダープロジェクト モデル仕様書
+:revnumber!:
+:revdate: 2022-10-02
+:version-label!:
+:nofooter:
+:toc:
+
+== 概要
+
+=== 全体クラス図
+
+本モデルの全体クラス図を以下に示す。
+
+[plantuml,fig1,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Project {
+  projectId:KEY
+  projectName:STRING
+  gradleName:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  copyrights:STRING
+  classes:SET<Class.owner>
+  enums:SET<Enum.owner>
+  messages:SET<Message.owner>
+  styles:SET<Style.owner>
+  pageSets:SET<PageSet.owner>
+  locales:SET<Locale.owner>
+  i18ns:SET<ProjectI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class ProjectI18n {
+  owner:REF<Project>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Class {
+  classId:KEY
+  owner:REF<Project>
+  className:STRING
+  orderExpr:STRING
+  titleExpr:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  fields:SET<Field.owner>
+  queries:SET<Query.owner>
+  i18ns:SET<ClassI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class ClassI18n {
+  owner:REF<Class>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Field {
+  fieldId:KEY
+  owner:REF<Class>
+  fieldName:STRING
+  type:ENUM<DataType>
+  width:INTEGER
+  scale:INTEGER
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  pk:BOOLEAN
+  nullable:BOOLEAN
+  needsSum:BOOLEAN
+  needsAvg:BOOLEAN
+  needsMax:BOOLEAN
+  needsMin:BOOLEAN
+  isContainer:BOOLEAN
+  format:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<FieldI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class FieldI18n {
+  owner:REF<Field>
+  target:REF<Locale>
+  format:STRING
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Query {
+  queryId:KEY
+  owner:REF<Class>
+  queryName:STRING
+  filter:STRING
+  order:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  _lastUpdatedAt:DATE
+}
+class Enum {
+  enumId:KEY
+  owner:REF<Project>
+  enumName:STRING
+  encodeString:BOOLEAN
+  title:STRING
+  description:STRING
+  note:STRING
+  values:SET<EnumValue.owner>
+  i18ns:SET<EnumI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class EnumI18n {
+  owner:REF<Enum>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class EnumValue {
+  owner:REF<Enum>
+  valueId:STRING
+  code:INTEGER
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<EnumValueI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class EnumValueI18n {
+  owner:REF<EnumValue>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Message {
+  messageId:KEY
+  owner:REF<Project>
+  messageName:STRING
+  message:STRING
+  i18ns:SET<MessageI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class MessageI18n {
+  owner:REF<Message>
+  target:REF<Locale>
+  message:STRING
+  _lastUpdatedAt:DATE
+}
+class Style {
+  styleId:KEY
+  owner:REF<Project>
+  styleName:STRING
+  children:SET<Style.parent>
+  parent:REF<Style>
+  cond:ENUM<StyleCondition>
+  condParam:STRING
+  textColor:STRING
+  backgroundColor:STRING
+  backgroundImage:STRING
+  borderLeft:STRING
+  borderTop:STRING
+  borderRight:STRING
+  borderBottom:STRING
+  borderColor:STRING
+  borderImage:STRING
+  fontSize:STRING
+  fontFamily:STRING
+  lineHeight:STRING
+  textAlign:STRING
+  verticalAlign:STRING
+  _lastUpdatedAt:DATE
+}
+class PageSet {
+  pageSetId:KEY
+  owner:REF<Project>
+  pageSetName:STRING
+  title:STRING
+  description:STRING
+  pages:SET<Page.owner>
+  _lastUpdatedAt:DATE
+}
+class Page {
+  pageId:KEY
+  owner:REF<PageSet>
+  context:REF<Class>
+  width:INTEGER
+  height:INTEGER
+  layouts:SET<Layout.owner>
+  _lastUpdatedAt:DATE
+}
+class Layout {
+  layoutId:KEY
+  owner:REF<Page>
+  children:SET<Layout.parent>
+  parent:REF<Layout>
+  layoutName:STRING
+  layoutType:ENUM<LayoutType>
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  mref:REF<Message>
+  related:REF<Layout>
+  param:STRING
+  layoutParam:STRING
+  style:REF<Style>
+  left:STRING
+  top:STRING
+  right:STRING
+  bottom:STRING
+  width:STRING
+  height:STRING
+  _lastUpdatedAt:DATE
+}
+class Locale {
+  localeId:STRING
+  owner:REF<Project>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+
+enum DataType {
+  KEY
+  REF
+  ENUM
+  SET
+  ENUM_VALUE
+  BOOLEAN
+  INTEGER
+  REAL
+  NUMERIC
+  DATE
+  STRING
+}
+enum StyleCondition {
+  DEFAULT
+  ENABLE
+  DISABLE
+  FOCUS
+  CLICKING
+  NAMED
+}
+enum LayoutType {
+  SIMPLE_PANE
+  PARTED_PANE
+  TABBED_PANE
+  TAB
+  V_LIST
+  H_LIST
+  V_SCROLLBAR
+  H_SCROLLBAR
+  LABEL
+  FIELD
+  INPUT
+}
+
+Project *-- Class : classes
+Project *-- Enum : enums
+Project *-- Message : messages
+Project *-- Style : styles
+Project *-- PageSet : pageSets
+Project *-- Locale : locales
+Project *-- ProjectI18n : i18ns
+Class *-- Field : fields
+Class *-- Query : queries
+Class *-- ClassI18n : i18ns
+Field *-- FieldI18n : i18ns
+Enum *-- EnumValue : values
+Enum *-- EnumI18n : i18ns
+EnumValue *-- EnumValueI18n : i18ns
+Message *-- MessageI18n : i18ns
+Style *-- Style : children
+PageSet *-- Page : pages
+Page *-- Layout : layouts
+Layout *-- Layout : children
+
+ProjectI18n -- Locale : target
+ClassI18n -- Locale : target
+Field -- Class : cref
+Field -- Enum : eref
+Field -- Field : fref
+FieldI18n -- Locale : target
+EnumI18n -- Locale : target
+EnumValueI18n -- Locale : target
+MessageI18n -- Locale : target
+Page -- Class : context
+Layout -- Class : cref
+Layout -- Enum : eref
+Layout -- Field : fref
+Layout -- Message : mref
+Layout -- Layout : related
+Layout -- Style : style
+
+Field -- DataType : type
+Style -- StyleCondition : cond
+Layout -- LayoutType : layoutType
+
+@enduml
+----
+
+=== クラス一覧
+
+本モデルのクラス一覧を以下に示す。
+
+|===
+|クラスID|名称|説明
+
+|<<Project>>|プロジェクト|
+|<<ProjectI18n>>|プロジェクト(I18n)|
+|<<Class>>|クラス|
+|<<ClassI18n>>|クラス(I18n)|
+|<<Field>>|フィールド|
+|<<FieldI18n>>|フィールド(I18n)|
+|<<Query>>|クエリー|
+|<<Enum>>|列挙|
+|<<EnumI18n>>|列挙(I18n)|
+|<<EnumValue>>|列挙値|
+|<<EnumValueI18n>>|列挙値(I18n)|
+|<<Message>>|メッセージ|
+|<<MessageI18n>>|メッセージ(I18n)|
+|<<Style>>|スタイル|
+|<<PageSet>>|ページセット|
+|<<Page>>|ページ|
+|<<Layout>>|レイアウト|
+|<<Locale>>|ロケール|ロケールマスタ
+|===
+
+=== 列挙一覧
+
+本モデルの列挙一覧を以下に示す。
+
+|===
+|列挙ID|名称|説明
+
+|<<DataType>>|データ型|
+|<<StyleCondition>>|スタイル条件|
+|<<LayoutType>>|レイアウト種別|
+|===
+
+== クラス定義
+
+=== Project
+
+==== 関連クラス図
+
+[plantuml,fig2,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Project {
+  projectId:KEY
+  projectName:STRING
+  gradleName:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  copyrights:STRING
+  classes:SET<Class.owner>
+  enums:SET<Enum.owner>
+  messages:SET<Message.owner>
+  styles:SET<Style.owner>
+  pageSets:SET<PageSet.owner>
+  locales:SET<Locale.owner>
+  i18ns:SET<ProjectI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Class {
+  classId:KEY
+  owner:REF<Project>
+  className:STRING
+  orderExpr:STRING
+  titleExpr:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  fields:SET<Field.owner>
+  queries:SET<Query.owner>
+  i18ns:SET<ClassI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Enum {
+  enumId:KEY
+  owner:REF<Project>
+  enumName:STRING
+  encodeString:BOOLEAN
+  title:STRING
+  description:STRING
+  note:STRING
+  values:SET<EnumValue.owner>
+  i18ns:SET<EnumI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Message {
+  messageId:KEY
+  owner:REF<Project>
+  messageName:STRING
+  message:STRING
+  i18ns:SET<MessageI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Style {
+  styleId:KEY
+  owner:REF<Project>
+  styleName:STRING
+  children:SET<Style.parent>
+  parent:REF<Style>
+  cond:ENUM<StyleCondition>
+  condParam:STRING
+  textColor:STRING
+  backgroundColor:STRING
+  backgroundImage:STRING
+  borderLeft:STRING
+  borderTop:STRING
+  borderRight:STRING
+  borderBottom:STRING
+  borderColor:STRING
+  borderImage:STRING
+  fontSize:STRING
+  fontFamily:STRING
+  lineHeight:STRING
+  textAlign:STRING
+  verticalAlign:STRING
+  _lastUpdatedAt:DATE
+}
+class PageSet {
+  pageSetId:KEY
+  owner:REF<Project>
+  pageSetName:STRING
+  title:STRING
+  description:STRING
+  pages:SET<Page.owner>
+  _lastUpdatedAt:DATE
+}
+class Locale {
+  localeId:STRING
+  owner:REF<Project>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class ProjectI18n {
+  owner:REF<Project>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+
+Project *-- Class : classes
+Project *-- Enum : enums
+Project *-- Message : messages
+Project *-- Style : styles
+Project *-- PageSet : pageSets
+Project *-- Locale : locales
+Project *-- ProjectI18n : i18ns
+
+@enduml
+----
+
+==== フィールド一覧
+
+Project は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|projectId|プロジェクトID|
+|projectName|プロジェクト名|
+|gradleName|gradleサブプロジェクト名|
+|title|タイトル|
+|description|説明|
+|note|メモ|
+|copyrights|著作権|
+|classes|クラス一覧|
+|enums|列挙一覧|
+|messages|メッセージ一覧|
+|styles|スタイル一覧|
+|pageSets|ページセット一覧|
+|locales|ロケール一覧|
+|i18ns|I18n一覧|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== ProjectI18n
+
+==== 関連クラス図
+
+[plantuml,fig3,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class ProjectI18n {
+  owner:REF<Project>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Project {
+  projectId:KEY
+  projectName:STRING
+  gradleName:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  copyrights:STRING
+  classes:SET<Class.owner>
+  enums:SET<Enum.owner>
+  messages:SET<Message.owner>
+  styles:SET<Style.owner>
+  pageSets:SET<PageSet.owner>
+  locales:SET<Locale.owner>
+  i18ns:SET<ProjectI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Locale {
+  localeId:STRING
+  owner:REF<Project>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+
+Project *-- ProjectI18n : i18ns
+
+ProjectI18n -- Locale : target
+
+@enduml
+----
+
+==== フィールド一覧
+
+ProjectI18n は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|owner|所属プロジェクト|
+|target|対象ロケール|
+|title|タイトル|
+|description|説明|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== Class
+
+==== 関連クラス図
+
+[plantuml,fig4,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Class {
+  classId:KEY
+  owner:REF<Project>
+  className:STRING
+  orderExpr:STRING
+  titleExpr:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  fields:SET<Field.owner>
+  queries:SET<Query.owner>
+  i18ns:SET<ClassI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Project {
+  projectId:KEY
+  projectName:STRING
+  gradleName:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  copyrights:STRING
+  classes:SET<Class.owner>
+  enums:SET<Enum.owner>
+  messages:SET<Message.owner>
+  styles:SET<Style.owner>
+  pageSets:SET<PageSet.owner>
+  locales:SET<Locale.owner>
+  i18ns:SET<ProjectI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Field {
+  fieldId:KEY
+  owner:REF<Class>
+  fieldName:STRING
+  type:ENUM<DataType>
+  width:INTEGER
+  scale:INTEGER
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  pk:BOOLEAN
+  nullable:BOOLEAN
+  needsSum:BOOLEAN
+  needsAvg:BOOLEAN
+  needsMax:BOOLEAN
+  needsMin:BOOLEAN
+  isContainer:BOOLEAN
+  format:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<FieldI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Query {
+  queryId:KEY
+  owner:REF<Class>
+  queryName:STRING
+  filter:STRING
+  order:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  _lastUpdatedAt:DATE
+}
+class ClassI18n {
+  owner:REF<Class>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Page {
+  pageId:KEY
+  owner:REF<PageSet>
+  context:REF<Class>
+  width:INTEGER
+  height:INTEGER
+  layouts:SET<Layout.owner>
+  _lastUpdatedAt:DATE
+}
+class Layout {
+  layoutId:KEY
+  owner:REF<Page>
+  children:SET<Layout.parent>
+  parent:REF<Layout>
+  layoutName:STRING
+  layoutType:ENUM<LayoutType>
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  mref:REF<Message>
+  related:REF<Layout>
+  param:STRING
+  layoutParam:STRING
+  style:REF<Style>
+  left:STRING
+  top:STRING
+  right:STRING
+  bottom:STRING
+  width:STRING
+  height:STRING
+  _lastUpdatedAt:DATE
+}
+
+Project *-- Class : classes
+Class *-- Field : fields
+Class *-- Query : queries
+Class *-- ClassI18n : i18ns
+
+Field -- Class : cref
+Page -- Class : context
+Layout -- Class : cref
+
+@enduml
+----
+
+==== フィールド一覧
+
+Class は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|classId|クラスID|
+|owner|所属プロジェクト|
+|className|クラス名|
+|orderExpr|オーダー式|デフォルトの表示順を表す式
+|titleExpr|タイトル表示式|オブジェクトのタイトルを表現する式
+|title|タイトル|
+|description|説明|
+|note|メモ|
+|fields|フィールド一覧|
+|queries|クエリー一覧|
+|i18ns|I18n一覧|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== ClassI18n
+
+==== 関連クラス図
+
+[plantuml,fig5,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class ClassI18n {
+  owner:REF<Class>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Class {
+  classId:KEY
+  owner:REF<Project>
+  className:STRING
+  orderExpr:STRING
+  titleExpr:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  fields:SET<Field.owner>
+  queries:SET<Query.owner>
+  i18ns:SET<ClassI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Locale {
+  localeId:STRING
+  owner:REF<Project>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+
+Class *-- ClassI18n : i18ns
+
+ClassI18n -- Locale : target
+
+@enduml
+----
+
+==== フィールド一覧
+
+ClassI18n は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|owner|所属クラス|
+|target|対象ロケール|
+|title|タイトル|
+|description|説明|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== Field
+
+==== 関連クラス図
+
+[plantuml,fig6,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Field {
+  fieldId:KEY
+  owner:REF<Class>
+  fieldName:STRING
+  type:ENUM<DataType>
+  width:INTEGER
+  scale:INTEGER
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  pk:BOOLEAN
+  nullable:BOOLEAN
+  needsSum:BOOLEAN
+  needsAvg:BOOLEAN
+  needsMax:BOOLEAN
+  needsMin:BOOLEAN
+  isContainer:BOOLEAN
+  format:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<FieldI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Class {
+  classId:KEY
+  owner:REF<Project>
+  className:STRING
+  orderExpr:STRING
+  titleExpr:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  fields:SET<Field.owner>
+  queries:SET<Query.owner>
+  i18ns:SET<ClassI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class FieldI18n {
+  owner:REF<Field>
+  target:REF<Locale>
+  format:STRING
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Enum {
+  enumId:KEY
+  owner:REF<Project>
+  enumName:STRING
+  encodeString:BOOLEAN
+  title:STRING
+  description:STRING
+  note:STRING
+  values:SET<EnumValue.owner>
+  i18ns:SET<EnumI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Layout {
+  layoutId:KEY
+  owner:REF<Page>
+  children:SET<Layout.parent>
+  parent:REF<Layout>
+  layoutName:STRING
+  layoutType:ENUM<LayoutType>
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  mref:REF<Message>
+  related:REF<Layout>
+  param:STRING
+  layoutParam:STRING
+  style:REF<Style>
+  left:STRING
+  top:STRING
+  right:STRING
+  bottom:STRING
+  width:STRING
+  height:STRING
+  _lastUpdatedAt:DATE
+}
+
+enum DataType {
+  KEY
+  REF
+  ENUM
+  SET
+  ENUM_VALUE
+  BOOLEAN
+  INTEGER
+  REAL
+  NUMERIC
+  DATE
+  STRING
+}
+
+Class *-- Field : fields
+Field *-- FieldI18n : i18ns
+
+Field -- Class : cref
+Field -- Enum : eref
+Field -- Field : fref
+Layout -- Field : fref
+
+Field -- DataType : type
+
+@enduml
+----
+
+==== フィールド一覧
+
+Field は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|fieldId|フィールドID|
+|owner|所属クラス|
+|fieldName|フィールド名|
+|type|フィールド型|
+|width|フィールド型の幅|
+|scale|フィールド型精度|
+|cref|クラス参照先|
+|eref|列挙参照先|
+|fref|フィールド参照先|
+|pk|プライマリキー|
+|nullable|NULL許容|
+|needsSum|要合計値|数値型のみ使用
+|needsAvg|要平均値|数値型のみ使用
+|needsMax|要最大値|数値型のみ使用
+|needsMin|要最小値|数値型のみ使用
+|isContainer|主保持SET|SET型のみ使用。このSETが保持要素の主たる保持先か否かを示す。
+|format|書式|画面用項目書式
+|title|タイトル|
+|description|説明|
+|note|メモ|
+|i18ns|I18n一覧|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== FieldI18n
+
+==== 関連クラス図
+
+[plantuml,fig7,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class FieldI18n {
+  owner:REF<Field>
+  target:REF<Locale>
+  format:STRING
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Field {
+  fieldId:KEY
+  owner:REF<Class>
+  fieldName:STRING
+  type:ENUM<DataType>
+  width:INTEGER
+  scale:INTEGER
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  pk:BOOLEAN
+  nullable:BOOLEAN
+  needsSum:BOOLEAN
+  needsAvg:BOOLEAN
+  needsMax:BOOLEAN
+  needsMin:BOOLEAN
+  isContainer:BOOLEAN
+  format:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<FieldI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Locale {
+  localeId:STRING
+  owner:REF<Project>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+
+Field *-- FieldI18n : i18ns
+
+FieldI18n -- Locale : target
+
+@enduml
+----
+
+==== フィールド一覧
+
+FieldI18n は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|owner|所属フィールド|
+|target|対象ロケール|
+|format|書式|
+|title|タイトル|
+|description|説明|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== Query
+
+==== 関連クラス図
+
+[plantuml,fig8,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Query {
+  queryId:KEY
+  owner:REF<Class>
+  queryName:STRING
+  filter:STRING
+  order:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  _lastUpdatedAt:DATE
+}
+class Class {
+  classId:KEY
+  owner:REF<Project>
+  className:STRING
+  orderExpr:STRING
+  titleExpr:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  fields:SET<Field.owner>
+  queries:SET<Query.owner>
+  i18ns:SET<ClassI18n.owner>
+  _lastUpdatedAt:DATE
+}
+
+Class *-- Query : queries
+
+@enduml
+----
+
+==== フィールド一覧
+
+Query は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|queryId|クエリーID|
+|owner|所属クラス|
+|queryName|クエリー名|
+|filter|抽出条件|抽出条件を式形式で記載する
+|order|ソート条件|ソート条件を式形式で記載する
+|title|タイトル|
+|description|説明|
+|note|メモ|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== Enum
+
+==== 関連クラス図
+
+[plantuml,fig9,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Enum {
+  enumId:KEY
+  owner:REF<Project>
+  enumName:STRING
+  encodeString:BOOLEAN
+  title:STRING
+  description:STRING
+  note:STRING
+  values:SET<EnumValue.owner>
+  i18ns:SET<EnumI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Project {
+  projectId:KEY
+  projectName:STRING
+  gradleName:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  copyrights:STRING
+  classes:SET<Class.owner>
+  enums:SET<Enum.owner>
+  messages:SET<Message.owner>
+  styles:SET<Style.owner>
+  pageSets:SET<PageSet.owner>
+  locales:SET<Locale.owner>
+  i18ns:SET<ProjectI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class EnumValue {
+  owner:REF<Enum>
+  valueId:STRING
+  code:INTEGER
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<EnumValueI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class EnumI18n {
+  owner:REF<Enum>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Field {
+  fieldId:KEY
+  owner:REF<Class>
+  fieldName:STRING
+  type:ENUM<DataType>
+  width:INTEGER
+  scale:INTEGER
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  pk:BOOLEAN
+  nullable:BOOLEAN
+  needsSum:BOOLEAN
+  needsAvg:BOOLEAN
+  needsMax:BOOLEAN
+  needsMin:BOOLEAN
+  isContainer:BOOLEAN
+  format:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<FieldI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Layout {
+  layoutId:KEY
+  owner:REF<Page>
+  children:SET<Layout.parent>
+  parent:REF<Layout>
+  layoutName:STRING
+  layoutType:ENUM<LayoutType>
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  mref:REF<Message>
+  related:REF<Layout>
+  param:STRING
+  layoutParam:STRING
+  style:REF<Style>
+  left:STRING
+  top:STRING
+  right:STRING
+  bottom:STRING
+  width:STRING
+  height:STRING
+  _lastUpdatedAt:DATE
+}
+
+Project *-- Enum : enums
+Enum *-- EnumValue : values
+Enum *-- EnumI18n : i18ns
+
+Field -- Enum : eref
+Layout -- Enum : eref
+
+@enduml
+----
+
+==== フィールド一覧
+
+Enum は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|enumId|列挙ID|
+|owner|所属プロジェクト|
+|enumName|列挙名|
+|encodeString|文字列エンコード|文字列エンコードする場合、真
+|title|タイトル|
+|description|説明|
+|note|メモ|
+|values|列挙値一覧|
+|i18ns|I18n一覧|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== EnumI18n
+
+==== 関連クラス図
+
+[plantuml,fig10,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class EnumI18n {
+  owner:REF<Enum>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Enum {
+  enumId:KEY
+  owner:REF<Project>
+  enumName:STRING
+  encodeString:BOOLEAN
+  title:STRING
+  description:STRING
+  note:STRING
+  values:SET<EnumValue.owner>
+  i18ns:SET<EnumI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Locale {
+  localeId:STRING
+  owner:REF<Project>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+
+Enum *-- EnumI18n : i18ns
+
+EnumI18n -- Locale : target
+
+@enduml
+----
+
+==== フィールド一覧
+
+EnumI18n は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|owner|所属列挙|
+|target|対象ロケール|
+|title|タイトル|
+|description|説明|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== EnumValue
+
+==== 関連クラス図
+
+[plantuml,fig11,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class EnumValue {
+  owner:REF<Enum>
+  valueId:STRING
+  code:INTEGER
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<EnumValueI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Enum {
+  enumId:KEY
+  owner:REF<Project>
+  enumName:STRING
+  encodeString:BOOLEAN
+  title:STRING
+  description:STRING
+  note:STRING
+  values:SET<EnumValue.owner>
+  i18ns:SET<EnumI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class EnumValueI18n {
+  owner:REF<EnumValue>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+
+Enum *-- EnumValue : values
+EnumValue *-- EnumValueI18n : i18ns
+
+@enduml
+----
+
+==== フィールド一覧
+
+EnumValue は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|owner|所属列挙|
+|valueId|列挙名|
+|code|列挙コード|
+|title|タイトル|
+|description|説明|
+|note|メモ|
+|i18ns|I18n一覧|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== EnumValueI18n
+
+==== 関連クラス図
+
+[plantuml,fig12,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class EnumValueI18n {
+  owner:REF<EnumValue>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class EnumValue {
+  owner:REF<Enum>
+  valueId:STRING
+  code:INTEGER
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<EnumValueI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Locale {
+  localeId:STRING
+  owner:REF<Project>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+
+EnumValue *-- EnumValueI18n : i18ns
+
+EnumValueI18n -- Locale : target
+
+@enduml
+----
+
+==== フィールド一覧
+
+EnumValueI18n は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|owner|所属列挙値|
+|target|対象ロケール|
+|title|タイトル|
+|description|説明|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== Message
+
+==== 関連クラス図
+
+[plantuml,fig13,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Message {
+  messageId:KEY
+  owner:REF<Project>
+  messageName:STRING
+  message:STRING
+  i18ns:SET<MessageI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Project {
+  projectId:KEY
+  projectName:STRING
+  gradleName:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  copyrights:STRING
+  classes:SET<Class.owner>
+  enums:SET<Enum.owner>
+  messages:SET<Message.owner>
+  styles:SET<Style.owner>
+  pageSets:SET<PageSet.owner>
+  locales:SET<Locale.owner>
+  i18ns:SET<ProjectI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class MessageI18n {
+  owner:REF<Message>
+  target:REF<Locale>
+  message:STRING
+  _lastUpdatedAt:DATE
+}
+class Layout {
+  layoutId:KEY
+  owner:REF<Page>
+  children:SET<Layout.parent>
+  parent:REF<Layout>
+  layoutName:STRING
+  layoutType:ENUM<LayoutType>
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  mref:REF<Message>
+  related:REF<Layout>
+  param:STRING
+  layoutParam:STRING
+  style:REF<Style>
+  left:STRING
+  top:STRING
+  right:STRING
+  bottom:STRING
+  width:STRING
+  height:STRING
+  _lastUpdatedAt:DATE
+}
+
+Project *-- Message : messages
+Message *-- MessageI18n : i18ns
+
+Layout -- Message : mref
+
+@enduml
+----
+
+==== フィールド一覧
+
+Message は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|messageId|メッセージID|
+|owner|所属プロジェクト|
+|messageName|メッセージ名|
+|message|メッセージ|
+|i18ns|I18n一覧|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== MessageI18n
+
+==== 関連クラス図
+
+[plantuml,fig14,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class MessageI18n {
+  owner:REF<Message>
+  target:REF<Locale>
+  message:STRING
+  _lastUpdatedAt:DATE
+}
+class Message {
+  messageId:KEY
+  owner:REF<Project>
+  messageName:STRING
+  message:STRING
+  i18ns:SET<MessageI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Locale {
+  localeId:STRING
+  owner:REF<Project>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+
+Message *-- MessageI18n : i18ns
+
+MessageI18n -- Locale : target
+
+@enduml
+----
+
+==== フィールド一覧
+
+MessageI18n は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|owner|所属列挙値|
+|target|対象ロケール|
+|message|メッセージ|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== Style
+
+==== 関連クラス図
+
+[plantuml,fig15,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Style {
+  styleId:KEY
+  owner:REF<Project>
+  styleName:STRING
+  children:SET<Style.parent>
+  parent:REF<Style>
+  cond:ENUM<StyleCondition>
+  condParam:STRING
+  textColor:STRING
+  backgroundColor:STRING
+  backgroundImage:STRING
+  borderLeft:STRING
+  borderTop:STRING
+  borderRight:STRING
+  borderBottom:STRING
+  borderColor:STRING
+  borderImage:STRING
+  fontSize:STRING
+  fontFamily:STRING
+  lineHeight:STRING
+  textAlign:STRING
+  verticalAlign:STRING
+  _lastUpdatedAt:DATE
+}
+class Project {
+  projectId:KEY
+  projectName:STRING
+  gradleName:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  copyrights:STRING
+  classes:SET<Class.owner>
+  enums:SET<Enum.owner>
+  messages:SET<Message.owner>
+  styles:SET<Style.owner>
+  pageSets:SET<PageSet.owner>
+  locales:SET<Locale.owner>
+  i18ns:SET<ProjectI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Layout {
+  layoutId:KEY
+  owner:REF<Page>
+  children:SET<Layout.parent>
+  parent:REF<Layout>
+  layoutName:STRING
+  layoutType:ENUM<LayoutType>
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  mref:REF<Message>
+  related:REF<Layout>
+  param:STRING
+  layoutParam:STRING
+  style:REF<Style>
+  left:STRING
+  top:STRING
+  right:STRING
+  bottom:STRING
+  width:STRING
+  height:STRING
+  _lastUpdatedAt:DATE
+}
+
+enum StyleCondition {
+  DEFAULT
+  ENABLE
+  DISABLE
+  FOCUS
+  CLICKING
+  NAMED
+}
+
+Project *-- Style : styles
+Style *-- Style : children
+
+Layout -- Style : style
+
+Style -- StyleCondition : cond
+
+@enduml
+----
+
+==== フィールド一覧
+
+Style は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|styleId|スタイルID|
+|owner|所属プロジェクト|
+|styleName|スタイル名|
+|children|派生スタイル|
+|parent|基底スタイル|
+|cond|適用条件|
+|condParam|適用条件パラメータ|
+|textColor|前景色|
+|backgroundColor|背景色|
+|backgroundImage|背景画像URL|
+|borderLeft|ボーダーサイズ(Length)（左）|
+|borderTop|ボーダーサイズ(Length)（上）|
+|borderRight|ボーダーサイズ(Length)（右）|
+|borderBottom|ボーダーサイズ(Length)（下）|
+|borderColor|ボーダー色|
+|borderImage|ボーダー画像URL|
+|fontSize|フォントサイズ(Length)|
+|fontFamily|フォントの種類|
+|lineHeight|行の高さ(Length)|
+|textAlign|行の揃え位置|
+|verticalAlign|縦方向の揃え位置|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== PageSet
+
+==== 関連クラス図
+
+[plantuml,fig16,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class PageSet {
+  pageSetId:KEY
+  owner:REF<Project>
+  pageSetName:STRING
+  title:STRING
+  description:STRING
+  pages:SET<Page.owner>
+  _lastUpdatedAt:DATE
+}
+class Project {
+  projectId:KEY
+  projectName:STRING
+  gradleName:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  copyrights:STRING
+  classes:SET<Class.owner>
+  enums:SET<Enum.owner>
+  messages:SET<Message.owner>
+  styles:SET<Style.owner>
+  pageSets:SET<PageSet.owner>
+  locales:SET<Locale.owner>
+  i18ns:SET<ProjectI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Page {
+  pageId:KEY
+  owner:REF<PageSet>
+  context:REF<Class>
+  width:INTEGER
+  height:INTEGER
+  layouts:SET<Layout.owner>
+  _lastUpdatedAt:DATE
+}
+
+Project *-- PageSet : pageSets
+PageSet *-- Page : pages
+
+@enduml
+----
+
+==== フィールド一覧
+
+PageSet は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|pageSetId|ページセットId|
+|owner|所属プロジェクト|
+|pageSetName|ページセット名|
+|title|タイトル|
+|description|説明|
+|pages|ページ一覧|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== Page
+
+==== 関連クラス図
+
+[plantuml,fig17,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Page {
+  pageId:KEY
+  owner:REF<PageSet>
+  context:REF<Class>
+  width:INTEGER
+  height:INTEGER
+  layouts:SET<Layout.owner>
+  _lastUpdatedAt:DATE
+}
+class PageSet {
+  pageSetId:KEY
+  owner:REF<Project>
+  pageSetName:STRING
+  title:STRING
+  description:STRING
+  pages:SET<Page.owner>
+  _lastUpdatedAt:DATE
+}
+class Layout {
+  layoutId:KEY
+  owner:REF<Page>
+  children:SET<Layout.parent>
+  parent:REF<Layout>
+  layoutName:STRING
+  layoutType:ENUM<LayoutType>
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  mref:REF<Message>
+  related:REF<Layout>
+  param:STRING
+  layoutParam:STRING
+  style:REF<Style>
+  left:STRING
+  top:STRING
+  right:STRING
+  bottom:STRING
+  width:STRING
+  height:STRING
+  _lastUpdatedAt:DATE
+}
+class Class {
+  classId:KEY
+  owner:REF<Project>
+  className:STRING
+  orderExpr:STRING
+  titleExpr:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  fields:SET<Field.owner>
+  queries:SET<Query.owner>
+  i18ns:SET<ClassI18n.owner>
+  _lastUpdatedAt:DATE
+}
+
+PageSet *-- Page : pages
+Page *-- Layout : layouts
+
+Page -- Class : context
+
+@enduml
+----
+
+==== フィールド一覧
+
+Page は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|pageId|ページId|
+|owner|所属ページセット|
+|context|コンテキストクラス|
+|width|ページ幅|
+|height|ページ高さ|
+|layouts|レイアウト一覧|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== Layout
+
+==== 関連クラス図
+
+[plantuml,fig18,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Layout {
+  layoutId:KEY
+  owner:REF<Page>
+  children:SET<Layout.parent>
+  parent:REF<Layout>
+  layoutName:STRING
+  layoutType:ENUM<LayoutType>
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  mref:REF<Message>
+  related:REF<Layout>
+  param:STRING
+  layoutParam:STRING
+  style:REF<Style>
+  left:STRING
+  top:STRING
+  right:STRING
+  bottom:STRING
+  width:STRING
+  height:STRING
+  _lastUpdatedAt:DATE
+}
+class Page {
+  pageId:KEY
+  owner:REF<PageSet>
+  context:REF<Class>
+  width:INTEGER
+  height:INTEGER
+  layouts:SET<Layout.owner>
+  _lastUpdatedAt:DATE
+}
+class Class {
+  classId:KEY
+  owner:REF<Project>
+  className:STRING
+  orderExpr:STRING
+  titleExpr:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  fields:SET<Field.owner>
+  queries:SET<Query.owner>
+  i18ns:SET<ClassI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Enum {
+  enumId:KEY
+  owner:REF<Project>
+  enumName:STRING
+  encodeString:BOOLEAN
+  title:STRING
+  description:STRING
+  note:STRING
+  values:SET<EnumValue.owner>
+  i18ns:SET<EnumI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Field {
+  fieldId:KEY
+  owner:REF<Class>
+  fieldName:STRING
+  type:ENUM<DataType>
+  width:INTEGER
+  scale:INTEGER
+  cref:REF<Class>
+  eref:REF<Enum>
+  fref:REF<Field>
+  pk:BOOLEAN
+  nullable:BOOLEAN
+  needsSum:BOOLEAN
+  needsAvg:BOOLEAN
+  needsMax:BOOLEAN
+  needsMin:BOOLEAN
+  isContainer:BOOLEAN
+  format:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  i18ns:SET<FieldI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Message {
+  messageId:KEY
+  owner:REF<Project>
+  messageName:STRING
+  message:STRING
+  i18ns:SET<MessageI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class Style {
+  styleId:KEY
+  owner:REF<Project>
+  styleName:STRING
+  children:SET<Style.parent>
+  parent:REF<Style>
+  cond:ENUM<StyleCondition>
+  condParam:STRING
+  textColor:STRING
+  backgroundColor:STRING
+  backgroundImage:STRING
+  borderLeft:STRING
+  borderTop:STRING
+  borderRight:STRING
+  borderBottom:STRING
+  borderColor:STRING
+  borderImage:STRING
+  fontSize:STRING
+  fontFamily:STRING
+  lineHeight:STRING
+  textAlign:STRING
+  verticalAlign:STRING
+  _lastUpdatedAt:DATE
+}
+
+enum LayoutType {
+  SIMPLE_PANE
+  PARTED_PANE
+  TABBED_PANE
+  TAB
+  V_LIST
+  H_LIST
+  V_SCROLLBAR
+  H_SCROLLBAR
+  LABEL
+  FIELD
+  INPUT
+}
+
+Page *-- Layout : layouts
+Layout *-- Layout : children
+
+Layout -- Class : cref
+Layout -- Enum : eref
+Layout -- Field : fref
+Layout -- Message : mref
+Layout -- Layout : related
+Layout -- Style : style
+
+Layout -- LayoutType : layoutType
+
+@enduml
+----
+
+==== フィールド一覧
+
+Layout は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|layoutId|レイアウトId|
+|owner|所属ページ|
+|children|子レイアウト|
+|parent|親レイアウト|
+|layoutName|レイアウト名|
+|layoutType|レイアウト種別|
+|cref|対象クラス|
+|eref|対象列挙|
+|fref|対象フィールド|
+|mref|対象メッセージ|
+|related|関連レイアウト|
+|param|Widgetパラメータ|定義値はWidget毎に異なる
+|layoutParam|レイアウトパラメータ|定義値はWidget毎に異なる
+|style|使用スタイル|
+|left|左位置|
+|top|上位置|
+|right|右位置|
+|bottom|下位置|
+|width|幅|
+|height|高さ|
+|_lastUpdatedAt|last updated at|
+|===
+
+=== Locale
+
+==== 関連クラス図
+
+[plantuml,fig19,svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+class Locale {
+  localeId:STRING
+  owner:REF<Project>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class Project {
+  projectId:KEY
+  projectName:STRING
+  gradleName:STRING
+  title:STRING
+  description:STRING
+  note:STRING
+  copyrights:STRING
+  classes:SET<Class.owner>
+  enums:SET<Enum.owner>
+  messages:SET<Message.owner>
+  styles:SET<Style.owner>
+  pageSets:SET<PageSet.owner>
+  locales:SET<Locale.owner>
+  i18ns:SET<ProjectI18n.owner>
+  _lastUpdatedAt:DATE
+}
+class ProjectI18n {
+  owner:REF<Project>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class ClassI18n {
+  owner:REF<Class>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class FieldI18n {
+  owner:REF<Field>
+  target:REF<Locale>
+  format:STRING
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class EnumI18n {
+  owner:REF<Enum>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class EnumValueI18n {
+  owner:REF<EnumValue>
+  target:REF<Locale>
+  title:STRING
+  description:STRING
+  _lastUpdatedAt:DATE
+}
+class MessageI18n {
+  owner:REF<Message>
+  target:REF<Locale>
+  message:STRING
+  _lastUpdatedAt:DATE
+}
+
+Project *-- Locale : locales
+
+ProjectI18n -- Locale : target
+ClassI18n -- Locale : target
+FieldI18n -- Locale : target
+EnumI18n -- Locale : target
+EnumValueI18n -- Locale : target
+MessageI18n -- Locale : target
+
+@enduml
+----
+
+==== フィールド一覧
+
+Locale は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+|localeId|ロケールID|
+|owner|所属プロジェクト|
+|title|タイトル|
+|description|説明|
+|_lastUpdatedAt|last updated at|
+|===
+
+== 列挙定義
+
+=== DataType
+
+==== 列挙値一覧
+
+DataType は以下の列挙値を持つ。
+
+|===
+|列挙値ID|名称|説明
+
+|KEY|（自動）キー|
+|REF|クラス参照型|
+|ENUM|列挙参照型|
+|SET|集合（被参照）型|
+|ENUM_VALUE|列挙値型|
+|BOOLEAN|真偽値|
+|INTEGER|整数|
+|REAL|浮動小数|
+|NUMERIC|１０進小数|
+|DATE|日付・時刻|
+|STRING|文字列|
+|===
+
+=== StyleCondition
+
+==== 列挙値一覧
+
+StyleCondition は以下の列挙値を持つ。
+
+|===
+|列挙値ID|名称|説明
+
+|DEFAULT|基本状態|
+|ENABLE|有効状態|
+|DISABLE|無効状態|
+|FOCUS|フォーカス状態|
+|CLICKING|クリック中|
+|NAMED|UIノード名限定|
+|===
+
+=== LayoutType
+
+==== 列挙値一覧
+
+LayoutType は以下の列挙値を持つ。
+
+|===
+|列挙値ID|名称|説明
+
+|SIMPLE_PANE|基本領域|複数レイアウトを位置指定通り配置（スクロール可）
+|PARTED_PANE|分割領域|複数レイアウトを上下左右に分割配置
+|TABBED_PANE|タブ領域|複数レイアウトをタブ切り替え可能に配置
+|TAB|タブ|タブ領域切り替え用のタブ
+|V_LIST|垂直リスト|SETデータをリスト表示する。内部にSET先の項目を定義する。
+|H_LIST|水平リスト|SETデータをリスト表示する。内部にSET先の項目を定義する。
+|V_SCROLLBAR|垂直スクロールバー|SIMPLE_LAYOUT又は(V/H)LISTの垂直スクロールバー
+|H_SCROLLBAR|水平スクロールバー|SIMPLE_LAYOUT又は(V/H)LISTの水平スクロールバー
+|LABEL|ラベル表示要素|cre/eref/frefのラベル部又はmrefを出力する
+|FIELD|フィールド出力要素|frefのデータを出力する
+|INPUT|フィールド入力要素|frefのデータを入出力する
+|===
+

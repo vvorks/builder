@@ -188,6 +188,22 @@ public class FieldExtender {
 		return SUFFIX_MAP.get(cls);
 	}
 
+	public String getUmlType(FieldContent fld) {
+		DataType type = fld.getType();
+		switch (type) {
+		case SET:
+			FieldContent setFld = getFref(fld);
+			ClassContent setCls = getOwner(setFld);
+			return String.format("%s<%s.%s>", type.name(), setCls.getClassName(), setFld.getFieldName());
+		case REF:
+			return String.format("%s<%s>", type.name(), getCref(fld).getClassName());
+		case ENUM:
+			return String.format("%s<%s>", type.name(), getEref(fld).getEnumName());
+		default:
+			return type.name();
+		}
+	}
+
 	public String getUpperName(FieldContent fld) {
 		return Strings.toFirstUpper(fld.getFieldName());
 	}

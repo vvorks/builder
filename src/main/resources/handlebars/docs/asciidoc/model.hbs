@@ -1,0 +1,156 @@
+{{#doc this "asciidoc/model.adoc"}}
+= {{global.project.title}} モデル仕様書
+:revnumber!:
+:revdate: {{global.today}}
+:version-label!:
+:nofooter:
+:toc:
+
+{{#with this.model}}
+== 概要
+
+=== 全体クラス図
+
+本モデルの全体クラス図を以下に示す。
+
+[plantuml,fig{{global.counter.figNo}},svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+{{#each classes}}
+class {{className}} {
+  {{#each fields}}
+  {{fieldName}}:{{umlType}}
+  {{/each}}
+}
+{{/each}}
+
+{{#each enums}}
+enum {{enumName}} {
+  {{#each enumValues}}
+  {{valueId}}
+  {{/each}}
+}
+{{/each}}
+
+{{#each sets}}
+{{first.className}} *-- {{second.fref.owner.className}} : {{second.fieldName}}
+{{/each}}
+
+{{#each refs}}
+{{first.className}} -- {{second.cref.className}} : {{second.fieldName}}
+{{/each}}
+
+{{#each enumRefs}}
+{{first.className}} -- {{second.eref.enumName}} : {{second.fieldName}}
+{{/each}}
+
+@enduml
+----
+
+=== クラス一覧
+
+本モデルのクラス一覧を以下に示す。
+
+|===
+|クラスID|名称|説明
+
+{{#each classes}}
+|<<{{className}}>>|{{title}}|{{description}}
+{{/each}}
+|===
+
+=== 列挙一覧
+
+本モデルの列挙一覧を以下に示す。
+
+|===
+|列挙ID|名称|説明
+
+{{#each enums}}
+|<<{{enumName}}>>|{{title}}|{{description}}
+{{/each}}
+|===
+
+== クラス定義
+
+{{#each classesAsModel}}
+
+=== {{content.className}}
+
+==== 関連クラス図
+
+[plantuml,fig{{global.counter.figNo}},svg,opts=inline]
+----
+@startuml
+skinparam monochrome true
+
+{{#each relatedClasses}}
+class {{className}} {
+  {{#each fields}}
+  {{fieldName}}:{{umlType}}
+  {{/each}}
+}
+{{/each}}
+
+{{#each relatedEnums}}
+enum {{enumName}} {
+  {{#each enumValues}}
+  {{valueId}}
+  {{/each}}
+}
+{{/each}}
+
+{{#each sets}}
+{{first.className}} *-- {{second.fref.owner.className}} : {{second.fieldName}}
+{{/each}}
+
+{{#each refs}}
+{{first.className}} -- {{second.cref.className}} : {{second.fieldName}}
+{{/each}}
+
+{{#each enumRefs}}
+{{first.className}} -- {{second.eref.enumName}} : {{second.fieldName}}
+{{/each}}
+
+@enduml
+----
+
+==== フィールド一覧
+
+{{content.className}} は以下のフィールドを持つ。
+
+|===
+|フィールドID|名称|説明
+
+{{#each content.fields}}
+|{{fieldName}}|{{title}}|{{description}}
+{{/each}}
+|===
+
+{{/each}}
+
+== 列挙定義
+
+{{#each enums}}
+
+=== {{enumName}}
+
+==== 列挙値一覧
+
+{{enumName}} は以下の列挙値を持つ。
+
+|===
+|列挙値ID|名称|説明
+
+{{#each enumValues}}
+|{{valueId}}|{{title}}|{{description}}
+{{/each}}
+|===
+
+{{/each}}
+
+{{/with}}
+
+{{/doc}}

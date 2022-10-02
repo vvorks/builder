@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,8 +34,9 @@ import com.github.vvorks.builder.server.domain.ProjectI18nContent;
 import com.github.vvorks.builder.server.domain.StyleContent;
 import com.github.vvorks.builder.server.mapper.Mappers;
 import com.github.vvorks.builder.shared.common.json.Json;
+import com.github.vvorks.builder.shared.common.lang.RichIterable;
 import com.github.vvorks.builder.shared.common.lang.Strings;
-import com.google.gwt.thirdparty.guava.common.collect.Iterables;
+import com.github.vvorks.builder.shared.common.util.Pair;
 
 @Component
 public class ProjectExtender {
@@ -102,18 +104,18 @@ public class ProjectExtender {
 
 	public Iterable<ClassContent> getSurrogateClasses(ProjectContent prj) {
 		List<ClassContent> list = getClasses(prj);
-		return Iterables.filter(list, c -> extenders.getClassExtender().isSurrogateClass(c));
+		return RichIterable.from(list).filter(c -> extenders.getClassExtender().isSurrogateClass(c));
 	}
 
 	public Iterable<ClassContent> getBuilderClasses(ProjectContent prj) {
 		List<ClassContent> list = getClasses(prj);
-		return Iterables.filter(list, c -> !LAYOUT_STAFF.contains(c.getClassName()));
+		return RichIterable.from(list).filter(c -> !LAYOUT_STAFF.contains(c.getClassName()));
 	}
 
 	public Iterable<ClassContent> getPublicClasses(ProjectContent prj) {
 		List<ClassContent> list = getClasses(prj);
 		String name = getUpperLastName(prj);
-		return Iterables.filter(list, c -> !name.equals(c.getClassName()));
+		return RichIterable.from(list).filter(c -> !name.equals(c.getClassName()));
 	}
 
 	public List<EnumContent> getEnums(ProjectContent prj) {
@@ -342,6 +344,160 @@ public class ProjectExtender {
 			}
 		}
 		return relations;
+	}
+
+	public class ProjectModel {
+
+		private final ProjectContent prj;
+
+		private final Iterable<Pair<ClassContent, FieldContent>> sets;
+
+		private final Iterable<Pair<ClassContent, FieldContent>> refs;
+
+		private final Iterable<Pair<ClassContent, FieldContent>> enumRefs;
+
+		public ProjectModel(ProjectContent prj) {
+			this.prj = prj;
+			this.sets = createSets();
+			this.refs = createRefs();
+			this.enumRefs = createEnumRefs();
+		}
+
+		private Iterable<Pair<ClassContent, FieldContent>> createSets() {
+			List<Pair<ClassContent, FieldContent>> pairs = new ArrayList<>();
+			for (ClassContent c : getClasses()) {
+				for (FieldContent f : extenders.getClassExtender().getSets(c)) {
+					pairs.add(new Pair<>(c, f));
+				}
+			}
+			return pairs;
+		}
+
+		private Iterable<Pair<ClassContent, FieldContent>> createRefs() {
+			Set<Integer> setPairs = new HashSet<>();
+			for (FieldContent f : mappers.getFieldMapper().listAll()) {
+				if (f.getType() == DataType.SET && f.getFrefFieldId() != null) {
+					setPairs.add(f.getFrefFieldId());
+				}
+			}
+			List<Pair<ClassContent, FieldContent>> pairs = new ArrayList<>();
+			for (ClassContent c : getClasses()) {
+				for (FieldContent f : extenders.getClassExtender().getRefs(c)) {
+					if (!setPairs.contains(f.getFieldId())) {
+						pairs.add(new Pair<>(c, f));
+					}
+				}
+			}
+			return pairs;
+		}
+
+		private Iterable<Pair<ClassContent, FieldContent>> createEnumRefs() {
+			List<Pair<ClassContent, FieldContent>> pairs = new ArrayList<>();
+			for (ClassContent c : getClasses()) {
+				for (FieldContent f : extenders.getClassExtender().getEnums(c)) {
+					pairs.add(new Pair<>(c, f));
+				}
+			}
+			return pairs;
+		}
+
+		public Iterable<ClassContent> getClasses() {
+			return ProjectExtender.this.getPublicClasses(prj);
+		}
+
+		public Iterable<ClassModel> getClassesAsModel() {
+			ProjectModel self = this;
+			return RichIterable.from(getClasses()).map(c -> new ClassModel(self, c));
+		}
+
+		public Iterable<EnumContent> getEnums() {
+			return ProjectExtender.this.getEnums(prj);
+		}
+
+		public Iterable<Pair<ClassContent, FieldContent>> getSets() {
+			return sets;
+		}
+
+		public Iterable<Pair<ClassContent, FieldContent>> getRefs() {
+			return refs;
+		}
+
+		public Iterable<Pair<ClassContent, FieldContent>> getEnumRefs() {
+			return enumRefs;
+		}
+
+	}
+
+	public class ClassModel {
+
+		private final ProjectModel model;
+
+		private final ClassContent cls;
+
+		public ClassModel(ProjectModel model, ClassContent cls) {
+			this.model = model;
+			this.cls = cls;
+		}
+
+		public ClassContent getContent() {
+			return cls;
+		}
+
+		public Iterable<ClassContent> getRelatedClasses() {
+			Set<ClassContent> relates = new LinkedHashSet<>();
+			FieldExtender fe = extenders.getFieldExtender();
+			relates.add(cls);
+			for (Pair<ClassContent, FieldContent> pair : getSets()) {
+				relates.add(pair.getFirst());
+				relates.add(fe.getOwner(fe.getFref(pair.getSecond())));
+			}
+			for (Pair<ClassContent, FieldContent> pair : getRefs()) {
+				relates.add(pair.getFirst());
+				relates.add(fe.getCref(pair.getSecond()));
+			}
+			return relates;
+		}
+
+		public Iterable<EnumContent> getRelatedEnums() {
+			Set<Integer> ids = new HashSet<>();
+			List<EnumContent> relates = new ArrayList<>();
+			FieldExtender fe = extenders.getFieldExtender();
+			for (Pair<ClassContent, FieldContent> pair : getEnumRefs()) {
+				EnumContent e = fe.getEref(pair.getSecond());
+				if (!ids.contains(e.getEnumId())) {
+					ids.add(e.getEnumId());
+					relates.add(e);
+				}
+			}
+			return relates;
+		}
+
+		public Iterable<Pair<ClassContent, FieldContent>> getSets() {
+			int id = cls.getClassId();
+			FieldExtender fe = extenders.getFieldExtender();
+			return RichIterable.from(model.getSets()).filter(e ->
+					id == e.getFirst().getClassId() ||
+					id == fe.getOwner(fe.getFref(e.getSecond())).getClassId());
+		}
+
+		public Iterable<Pair<ClassContent, FieldContent>> getRefs() {
+			int id = cls.getClassId();
+			FieldExtender fe = extenders.getFieldExtender();
+			return RichIterable.from(model.getRefs()).filter(e ->
+					id == e.getFirst().getClassId() ||
+					id == fe.getCref(e.getSecond()).getClassId());
+		}
+
+		public Iterable<Pair<ClassContent, FieldContent>> getEnumRefs() {
+			int id = cls.getClassId();
+			return RichIterable.from(model.getEnumRefs()).filter(e ->
+					id == e.getFirst().getClassId());
+		}
+
+	}
+
+	public ProjectModel getModel(ProjectContent prj) {
+		return new ProjectModel(prj);
 	}
 
 }

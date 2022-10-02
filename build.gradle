@@ -2,9 +2,10 @@ plugins {
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
-	id "de.esoco.gwt" version "1.1.0"
-	id "ca.coglinc.javacc" version "2.4.0"
-	id "de.undercouch.download" version "5.0.1"
+	id 'de.esoco.gwt' version '1.1.0'
+	id 'ca.coglinc.javacc' version '2.4.0'
+	id 'de.undercouch.download' version '5.0.1'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 apply plugin: 'eclipse'
@@ -27,6 +28,7 @@ sourceSets {
  		java {
 			srcDir compileJjtree.outputDirectory
 			srcDir compileJavacc.outputDirectory
+			srcDir 'src/main/docs/asciidoc'
 		}
 		resources {
 			srcDir 'src/main/java'
@@ -37,6 +39,19 @@ sourceSets {
 javadoc {
     options.charSet = 'UTF-8'
     options.encoding = 'UTF-8'
+    failOnError = false
+}
+
+asciidoctor {
+	sourceDir file('src/main/docs/asciidoc')
+	outputDir file('build/docs/asciidoc')
+}
+
+asciidoctorj {
+	modules {
+		diagram.use()
+		diagram.version '2.2.1'
+	}
 }
 
 gwt {
@@ -53,9 +68,9 @@ gwt {
 	/** GWT compile options */
 	compile {
 		/** The level of logging detail (ERROR, WARN, INFO, TRACE, DEBUG, SPAM, ALL) */
-		logLevel = "INFO"
+		logLevel = 'INFO'
 		/** Script output style. (OBF, PRETTY, DETAILED)*/
-		style = "PRETTY"
+		style = 'PRETTY'
 		/** Sets the optimization level used by the compiler. 0=none 9=maximum. */
 		optimize = 5
 		/** avoid classpath too long problem */
@@ -67,7 +82,7 @@ gwt {
 	}
 }
 
-task copyGWTCode(dependsOn: ["gwtCompile"], type: Copy) {
+task copyGWTCode(dependsOn: ['gwtCompile'], type: Copy) {
 	from file("${buildDir}/gwt/out")
 	into file("${buildDir}/resources/main/static")
 }
